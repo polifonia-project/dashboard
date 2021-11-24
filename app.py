@@ -23,11 +23,17 @@ def access_data_sources(pilot_name):
 @app.route("/<string:page_name>")
 def index(page_name):
     details = access_data_sources(page_name)
-    title = True
-    sub = True
-    curator = True
-    desc = True
-    return render_template('index.html', details=details, title=title, sub=sub, curator=curator, desc=desc)
+    template = details['template_mode']
+    if template == 'standard':
+        title = True
+        sub = True
+        curator = True
+        desc = True
+        return render_template('index.html', details=details, title=title, sub=sub, curator=curator, desc=desc)
+    elif template == 'alt':
+        return render_template('ui-maps.html')
+    else:
+        return render_template('page-404.html')
 
 
 # @app.route("/<string:page_name>")
