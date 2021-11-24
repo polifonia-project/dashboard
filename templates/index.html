@@ -1,0 +1,595 @@
+{% extends "layout.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card main-card">
+            <div class="card-header mb-5">
+                <h1 class="card-title">
+                    {% if title %}
+                    {{ details.title }}
+                    {% endif %}
+                </h1>
+                <h3 class="card-title">
+                    {% if sub %}
+                    {{ details.subtitle }}
+                    {% endif %}</h3>
+                <h3 class="card-category">
+                    {% if curator %}
+                    {{ details.curator }}
+                    {% endif %}
+                </h3>
+            </div>
+            <div>
+<!--                DESCRIPTION-->
+                <p style="padding:0 5%">
+                    {% if desc %}
+                    {{ details.description }}
+                    {% endif %}
+                </p>
+            </div>
+<!--            COUNTINGS-->
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-category">Count 1</h5>
+                        </div>
+                        <div class="card-body option-1">
+                            <div>
+                                34
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-category">Count 2</h5>
+                        </div>
+                        <div class="card-body option-2">
+                            <div>
+                                8679
+                            </div>
+                        </div>
+                        <div class="card-body option-2b">
+                            <div>
+                                8679
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-category">Count 3</h5>
+                        </div>
+                        <div class="card-body option-3">
+                            <div>
+                                1,894
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--DATA STORY-->
+            <div class="card-body">
+                <div class="typography-line">
+                    <h2>A Random Subtitle</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet nibh nec odio commodo
+                        egestas. Donec a tortor lacus. Donec iaculis porta magna id scelerisque. Donec fringilla, mauris
+                        ut maximus porta, leo est molestie orci, in scelerisque massa metus non ligula. Donec pulvinar
+                        auctor mollis. Proin nec convallis diam. Nunc a tellus ac tellus tincidunt hendrerit.
+                        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                        egestas.</p>
+                </div>
+                <!--                <div class="typography-line">
+                                    <h2><span>Header 2</span>The Life of Black Dashboard </h2>
+                                </div>
+                                <div class="typography-line">
+                                    <h3><span>Header 3</span>The Life of Black Dashboard </h3>
+                                </div>
+                                <div class="typography-line">
+                                    <h4><span>Header 4</span>The Life of Black Dashboard </h4>
+                                </div>
+                                <div class="typography-line">
+                                    <h5><span>Header 5</span>The Life of Black Dashboard </h5>
+                                </div>
+                                <div class="typography-line">
+                                    <h6><span>Header 6</span>The Life of Black Dashboard </h6>
+                                </div>-->
+                <!--                <div class="typography-line">
+                                    <p><span>Paragraph</span>
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I
+                                        have, to push possibilities, to show people, this is the level that things could be at.
+                                    </p>
+                                </div>-->
+                <!--
+                                <div class="typography-line">
+                                    <span>Quote</span>
+                                    <blockquote>
+                                        <p class="blockquote blockquote-primary">
+                                            "I will be the leader of a company that ends up being worth billions of dollars, because I
+                                            got the answers. I understand culture. I am the nucleus. I think that’s a responsibility
+                                            that I have, to push possibilities, to show people, this is the level that things could be
+                                            at."
+                                            <br>
+                                            <br>
+                                            <small>
+                                                - Noaa
+                                            </small>
+                                        </p>
+                                    </blockquote>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Muted Text</span>
+                                    <p class="text-muted">
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers...
+                                    </p>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Primary Text</span>
+                                    <p class="text-primary">
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers...</p>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Info Text</span>
+                                    <p class="text-info">
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers... </p>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Success Text</span>
+                                    <p class="text-success">
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers... </p>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Warning Text</span>
+                                    <p class="text-warning">
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers...
+                                    </p>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Danger Text</span>
+                                    <p class="text-danger">
+                                        I will be the leader of a company that ends up being worth billions of dollars, because I got
+                                        the answers... </p>
+                                </div>
+                                <div class="typography-line">
+                                    <h2><span>Small Tag</span>
+                                        Header with small subtitle <br>
+                                        <small>Use "small" tag for the headers</small>
+                                    </h2>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Lists</span>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h5>Unordered List</h5>
+                                            <ul>
+                                                <li>List Item</li>
+                                                <li>List Item</li>
+                                                <li class="list-unstyled">
+                                                    <ul>
+                                                        <li>List Item</li>
+                                                        <li>List Item</li>
+                                                        <li>List Item</li>
+                                                    </ul>
+                                                </li>
+                                                <li>List Item</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5>Ordered List</h5>
+                                            <ol>
+                                                <li>List Item</li>
+                                                <li>List Item</li>
+                                                <li>List item</li>
+                                                <li>List Item</li>
+                                            </ol>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5>Unstyled List</h5>
+                                            <ul class="list-unstyled">
+                                                <li>List Item</li>
+                                                <li>List Item</li>
+                                                <li>List item</li>
+                                                <li>List Item</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h5>Inline List</h5>
+                                            <ul class="list-inline">
+                                                <li class="list-inline-item">List1</li>
+                                                <li class="list-inline-item">List2</li>
+                                                <li class="list-inline-item">List3</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="typography-line">
+                                    <span>Code</span>
+                                    <p>This is
+                                        <code>.css-class-as-code</code>, an example of an inline code element. Wrap inline code within a
+                                        <code> &lt;code&gt;...&lt;/code&gt;</code>tag.
+                                    </p>
+                                    <pre>1. #This is an example of preformatted text.<br/>2. #Here is another line of code</pre>
+                                </div>
+                -->
+            </div>
+<!--GRAPHS-->
+                    <div class="card card-chart">
+                        <div class="card-header ">
+                            <div class="row">
+                                <div class="col-sm-6 text-left">
+                                    <h5 class="card-category">Total Shipments</h5>
+                                    <h2 class="card-title">Performance</h2>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                                        <label class="btn btn-sm btn-primary btn-simple active" id="0">
+                                            <input type="radio" name="options" checked>
+                                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Accounts</span>
+                                            <span class="d-block d-sm-none">
+                                            <i class="tim-icons icon-single-02"></i>
+                    </span>
+                                        </label>
+                                        <label class="btn btn-sm btn-primary btn-simple" id="1">
+                                            <input type="radio" class="d-none d-sm-none" name="options">
+                                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Purchases</span>
+                                            <span class="d-block d-sm-none">
+                      <i class="tim-icons icon-gift-2"></i>
+                    </span>
+                                        </label>
+                                        <label class="btn btn-sm btn-primary btn-simple" id="2">
+                                            <input type="radio" class="d-none" name="options">
+                                            <span class="d-none d-sm-block d-md-block d-lg-block d-xl-block">Sessions</span>
+                                            <span class="d-block d-sm-none">
+                      <i class="tim-icons icon-tap-02"></i>
+                    </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="chartBig1"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--
+<div class="row">
+    <div class="col-lg-6 col-md-12">
+        <div class="card card-tasks">
+            <div class="card-header ">
+                <h6 class="title d-inline">Tasks(5)</h6>
+                <p class="card-category d-inline">today</p>
+                <div class="dropdown">
+                    <button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
+                        <i class="tim-icons icon-settings-gear-63"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#pablo">Action</a>
+                        <a class="dropdown-item" href="#pablo">Another action</a>
+                        <a class="dropdown-item" href="#pablo">Something else</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body ">
+                <div class="table-full-width table-responsive">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="">
+                                        <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="title">Update the Documentation</p>
+                                <p class="text-muted">Dwuamish Head, Seattle, WA 8:47 AM</p>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="" class="btn btn-link"
+                                        data-original-title="Edit Task">
+                                    <i class="tim-icons icon-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="" checked="">
+                                        <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="title">GDPR Compliance</p>
+                                <p class="text-muted">The GDPR is a regulation that requires businesses to protect the
+                                    personal data and privacy of Europe citizens for transactions that occur within EU
+                                    member states.</p>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="" class="btn btn-link"
+                                        data-original-title="Edit Task">
+                                    <i class="tim-icons icon-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="">
+                                        <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="title">Solve the issues</p>
+                                <p class="text-muted">Fifty percent of all respondents said they would be more likely to
+                                    shop at a company </p>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="" class="btn btn-link"
+                                        data-original-title="Edit Task">
+                                    <i class="tim-icons icon-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="">
+                                        <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="title">Release v2.0.0</p>
+                                <p class="text-muted">Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM</p>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="" class="btn btn-link"
+                                        data-original-title="Edit Task">
+                                    <i class="tim-icons icon-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="">
+                                        <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="title">Export the processed files</p>
+                                <p class="text-muted">The report also shows that consumers will not easily forgive a
+                                    company once a breach exposing their personal data occurs. </p>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="" class="btn btn-link"
+                                        data-original-title="Edit Task">
+                                    <i class="tim-icons icon-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" value="">
+                                        <span class="form-check-sign">
+                            <span class="check"></span>
+                          </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="title">Arival at export process</p>
+                                <p class="text-muted">Capitol Hill, Seattle, WA 12:34 AM</p>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="" class="btn btn-link"
+                                        data-original-title="Edit Task">
+                                    <i class="tim-icons icon-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-12">
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-title"> Simple Table</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table tablesorter " id="">
+                        <thead class=" text-primary">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Country
+                            </th>
+                            <th>
+                                City
+                            </th>
+                            <th class="text-center">
+                                Salary
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                Dakota Rice
+                            </td>
+                            <td>
+                                Niger
+                            </td>
+                            <td>
+                                Oud-Turnhout
+                            </td>
+                            <td class="text-center">
+                                $36,738
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Minerva Hooper
+                            </td>
+                            <td>
+                                Curaçao
+                            </td>
+                            <td>
+                                Sinaai-Waas
+                            </td>
+                            <td class="text-center">
+                                $23,789
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Sage Rodriguez
+                            </td>
+                            <td>
+                                Netherlands
+                            </td>
+                            <td>
+                                Baileux
+                            </td>
+                            <td class="text-center">
+                                $56,142
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Philip Chaney
+                            </td>
+                            <td>
+                                Korea, South
+                            </td>
+                            <td>
+                                Overland Park
+                            </td>
+                            <td class="text-center">
+                                $38,735
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Doris Greene
+                            </td>
+                            <td>
+                                Malawi
+                            </td>
+                            <td>
+                                Feldkirchen in Kärnten
+                            </td>
+                            <td class="text-center">
+                                $63,542
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Mason Porter
+                            </td>
+                            <td>
+                                Chile
+                            </td>
+                            <td>
+                                Gloucester
+                            </td>
+                            <td class="text-center">
+                                $78,615
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Jon Porter
+                            </td>
+                            <td>
+                                Portugal
+                            </td>
+                            <td>
+                                Gloucester
+                            </td>
+                            <td class="text-center">
+                                $98,615
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      demo.initDashboardPageCharts();
+
+    });
+
+
+
+
+
+</script>
+
+{% endblock javascripts %}

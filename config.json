@@ -1,0 +1,36 @@
+{
+  "app_port": "8080",
+  "app_host": "0.0.0.0",
+  "index_host": "localhost",
+  "index_channel": 1491,
+  "index_pw": "SecretPassword",
+  "data_sources": {
+    "musow": {
+      "iri_base": "https://w3id.org/musow/",
+      "query_method": "sparql_endpoint",
+      "github": "",
+      "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+      "color_code": "",
+      "logo_path": "",
+      "template_mode": "standard",
+      "title": "musoW",
+      "subtitle": "Discover music data on the Web",
+      "curator": "Marilena Daquino",
+      "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need."
+    },
+    "wikidata": {
+      "iri_base": "https://www.wikidata.org/",
+      "query_method": "sparql_endpoint",
+      "github": "",
+      "sparql_endpoint": "https://query.wikidata.org/",
+      "color_code": "",
+      "logo_path": "",
+      "template_mode": "alt",
+      "title": "Wikidata",
+      "subtitle": "",
+      "curator": "Giulia Renda",
+      "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\n\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web."
+    }
+  }
+}
+
