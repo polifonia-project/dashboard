@@ -43,7 +43,7 @@
                         <div class="card-header">
                             <h5 class="card-category">Count 1</h5>
                         </div>
-                        <div class="card-body option-1">
+                        <div id="first" class="card-body option-1">
                             <div>
                                 34
                             </div>
@@ -585,11 +585,9 @@
       demo.initDashboardPageCharts();
 
     });
-
-
-
-
-
 </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script type="text/javascript"> var data = {{ details|tojson }} </script>
 {% endblock javascripts %}
