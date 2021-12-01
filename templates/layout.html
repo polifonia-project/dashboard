@@ -19,7 +19,7 @@
   <link href="/static/css/nucleo-icons.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link href="/static/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
-<!--  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.css" rel="stylesheet" />-->
+  <!--  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.css" rel="stylesheet" />-->
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="/static/demo/demo.css" rel="stylesheet" />
 
@@ -28,35 +28,35 @@
 
 </head>
 
-<body class="menu-on-right " onload="activateAJAX()">
-  <div class="wrapper">
+<body class="menu-on-right">
+<div class="wrapper">
 
-    {% include 'sidebar.html' %}
+  {% include 'sidebar.html' %}
 
-    <div class="main-panel">
+  <div class="main-panel">
 
-      {% include 'navigation.html' %}
+    {% include 'navigation.html' %}
 
-      <div class="content">
+    <div class="content">
 
-        {% block content %}{% endblock content %}
-
-      </div>
-
-      {% include 'footer.html' %}
+      {% block content %}{% endblock content %}
 
     </div>
 
+    {% include 'footer.html' %}
+
   </div>
 
+</div>
 
 
-  {% include 'scripts.html' %}
 
-  {% include 'scripts-sidebar.html' %}
+{% include 'scripts.html' %}
 
-  <!-- Specific Page JS goes HERE  -->
-  {% block javascripts %}{% endblock javascripts %}
+{% include 'scripts-sidebar.html' %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
 
 </body>
 
