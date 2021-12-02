@@ -17,7 +17,16 @@
       "subtitle": "Discover music data on the Web",
       "curator": "Marilena Daquino",
       "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
-      "count1": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}"
+      "count": [
+        {
+          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
+          "label": "Repositories"
+        },
+        {
+          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
+          "label": "Digital Libraries"
+        }
+      ]
     },
     "wikidata": {
       "iri_base": "https://www.wikidata.org/",
