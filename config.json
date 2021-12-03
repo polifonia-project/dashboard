@@ -23,8 +23,20 @@
           "label": "Repositories"
         },
         {
+          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
+          "label": "Catalogues"
+        },
+        {
+          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
+          "label": "Datasets"
+        },
+        {
           "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
           "label": "Digital Libraries"
+        },
+        {
+          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
+          "label": "Softwares"
         }
       ]
     },

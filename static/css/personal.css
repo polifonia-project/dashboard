@@ -3,7 +3,7 @@
 }
 
 .option-1 {
-    background: #e14eca;
+    background: #5e72e4;
     color: rgba(255, 255, 255, 0.8);
     font-size: 2rem;
     text-align: center;
@@ -19,7 +19,7 @@
     border-radius: 5px;
     background: #27293d;
     box-shadow: inset 20px 20px 39px #1f2131,
-                inset -20px -20px 39px #2f3149;
+    inset -20px -20px 39px #2f3149;
 }
 
 .option-2b {
@@ -30,7 +30,7 @@
     border-radius: 5px;
     background: #27293d;
     box-shadow:  20px 20px 39px #1f2131,
-                -20px -20px 39px #2f3149;
+    -20px -20px 39px #2f3149;
 }
 
 .option-3 {
