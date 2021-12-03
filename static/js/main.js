@@ -1,5 +1,9 @@
 window.onload = function () {
-    if(data.count) {
+    counter();
+}
+
+function counter() {
+    if (data.count) {
         data.count.forEach(element => {
             var query = element.query;
             // check if the query is an API request
@@ -21,7 +25,7 @@ window.onload = function () {
                 $.ajax({
                     type: 'GET',
                     url: sparqlEndpoint + '?query=' + encoded,
-                    headers: {Accept: 'application/sparql-results+json; charset=utf-8'},
+                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
                     success: function (returnedJson) {
                         for (i = 0; i < returnedJson.results.bindings.length; i++) {
                             var count = returnedJson.results.bindings[i].count.value;
