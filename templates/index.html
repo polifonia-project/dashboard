@@ -38,51 +38,7 @@
             </div>
             <!--            COUNTINGS-->
             <div class="row" id="count_container">
-                <!--                <div class="col-lg-4">-->
-                <!--                    <div class="card">-->
-                <!--                        <div class="card-header">-->
-                <!--                            <h5 class="card-category">Count 1</h5>-->
-                <!--                        </div>-->
-                <!--                        <div id="first" class="card-body option-1">-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-<!--                <div class="col-lg-4">-->
-<!--                    <div class="card-body option-2b">-->
-<!--                        rrrrrrrrrrrrrrrrrrrrrrrrrrrr<br>-->
-<!--                        label-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-lg-4">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-header">-->
-<!--                            <h5 class="card-category">Count 2</h5>-->
-<!--                        </div>-->
-<!--                        <div class="card-body option-2">-->
-<!--                            <div>-->
-<!--                                8679-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="card-body option-2b">-->
-<!--                            <div>-->
-<!--                                8679-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-lg-4">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-header">-->
-<!--                            <h5 class="card-category">Count 3</h5>-->
-<!--                        </div>-->
-<!--                        <div class="card-body option-3">-->
-<!--                            <div>-->
-<!--                                1,894-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+<!--               where countings show-->
             </div>
             <!--DATA STORY-->
             <div class="card-body">
@@ -590,10 +546,7 @@
     });
 
 </script>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 <script type="text/javascript"> var data = {{ details | tojson }};</script>
-
 {% endblock javascripts %}
