@@ -12,33 +12,34 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card main-card">
-            <div class="card-header mb-5">
-                <h1 class="card-title">
-                    {% if title %}
-                    {{ details.title }}
-                    {% endif %}
-                </h1>
-                <h3 class="card-title">
-                    {% if sub %}
-                    {{ details.subtitle }}
-                    {% endif %}</h3>
-                <h3 class="card-category">
-                    {% if curator %}
-                    {{ details.curator }}
-                    {% endif %}
-                </h3>
-            </div>
-            <div>
-                <!--                DESCRIPTION-->
-                <p style="padding:0 5%">
-                    {% if desc %}
-                    {{ details.description }}
-                    {% endif %}
-                </p>
-            </div>
-            <!--            COUNTINGS-->
-            <div class="row" id="count_container">
-                <!--               where countings show-->
+            <div class="container" id="overview">
+                <!-- OVERVIEW -->
+                <div class="card-header mb-5">
+                    <h1 class="card-title">
+                        {% if title %}
+                        {{ details.title }}
+                        {% endif %}
+                    </h1>
+                    <h3 class="card-title">
+                        {% if sub %}
+                        {{ details.subtitle }}
+                        {% endif %}</h3>
+                    <h3 class="card-category">
+                        {% if curator %}
+                        {{ details.curator }}
+                        {% endif %}
+                    </h3>
+                    <!--                DESCRIPTION-->
+                    <p>
+                        {% if desc %}
+                        {{ details.description }}
+                        {% endif %}
+                    </p>
+                </div>
+                <!--            COUNTINGS-->
+                <div class="row" id="count_container">
+                    <!--               where countings show-->
+                </div>
             </div>
             <!--DATA STORY-->
             <div class="card-body">

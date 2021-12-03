@@ -23,7 +23,7 @@
 }
 
 .option-2b {
-    font-size: 2rem;
+    font-size: 1rem;
     text-align: center;
     color: rgba(255, 255, 255, 0.8);
     margin: 15px 15px 0 15px;
@@ -41,3 +41,7 @@
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.8);
 }
+
+/* #overview {
+    display: flex;
+} */
