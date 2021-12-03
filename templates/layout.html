@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://appseed.us/admin-dashboards/flask-dashboard-black">
 
   <title>
-    Polifonia Dashboard - {% block title %}{% endblock %} | AppSeed
+    Polifonia Dashboard - {% block title %}{% endblock %}
   </title>
 
   <!--     Fonts and icons     -->
@@ -29,37 +29,37 @@
 </head>
 
 <body class="menu-on-right">
-<div class="wrapper">
+  <div class="wrapper">
 
-  {% include 'sidebar.html' %}
+    {% include 'sidebar.html' %}
 
-  <div class="main-panel">
+    <div class="main-panel">
 
-    {% include 'navigation.html' %}
+      {% include 'navigation.html' %}
 
-    <div class="content">
+      <div class="content">
 
-      {% block content %}{% endblock content %}
+        {% block content %}{% endblock content %}
+
+      </div>
+
+      {% include 'footer.html' %}
 
     </div>
 
-    {% include 'footer.html' %}
-
   </div>
 
-</div>
 
 
+  {% include 'scripts.html' %}
 
-{% include 'scripts.html' %}
-
-{% include 'scripts-sidebar.html' %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-<script type="text/javascript"> var data = {{ details | tojson }};</script>
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}
-{% endblock javascripts %}
+  {% include 'scripts-sidebar.html' %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script type="text/javascript"> var data = {{ details | tojson }};</script>
+  <!-- Specific Page JS goes HERE  -->
+  {% block javascripts %}
+  {% endblock javascripts %}
 
 </body>
 
