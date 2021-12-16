@@ -113,7 +113,7 @@ function barchart(element, index) {
 
                 // create div that contains canva
                 var chartArea = document.createElement("div");
-                chartArea.className = "chart-area";
+                chartArea.className = "chart-container";
                 chartArea.appendChild(chartCanva);
 
                 // create card body div
@@ -128,7 +128,7 @@ function barchart(element, index) {
 
                 // create card header
                 var cardHeader = document.createElement("div");
-                cardHeader.className = "card-header";
+                // cardHeader.className = "card-header";
                 cardHeader.appendChild(chartTitle);
 
                 // get general container and append elements
@@ -139,34 +139,30 @@ function barchart(element, index) {
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                     chartLabels[i] = returnedJson.results.bindings[i].x.value;
                     chartData[i] = returnedJson.results.bindings[i].y.value;
-                } var ctx = document.getElementById(chartId).getContext("2d");
+                }
 
-                var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-                gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
-                gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
-                gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); //blue colors
-
-                var myChart = new Chart(ctx, {
+                var myBarChart = new Chart(chartId, {
                     type: 'bar',
-                    responsive: true,
-                    legend: {
-                        display: false
-                    },
                     data: {
                         labels: chartLabels,
                         datasets: [{
-                            fill: true,
-                            backgroundColor: gradientStroke,
-                            hoverBackgroundColor: gradientStroke,
-                            borderColor: '#1f8ef1',
-                            borderWidth: 2,
-                            borderDash: [],
-                            borderDashOffset: 0.0,
+                            label: '',
+                            backgroundColor: 'rgb(23, 125, 255)',
+                            borderColor: 'rgb(23, 125, 255)',
                             data: chartData,
-                        }]
+                        }],
                     },
-                    options: gradientBarChartConfiguration
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        },
+                    }
                 });
             }
         })
