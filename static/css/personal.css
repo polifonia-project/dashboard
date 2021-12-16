@@ -2,10 +2,6 @@
     margin-top: 0px;
 } */
 
-.main-card {
-    box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.1);
-}
-
 .option-1 {
     background: #5e72e4;
     color: rgba(255, 255, 255, 0.8);
@@ -32,9 +28,9 @@
     color: rgba(255, 255, 255, 0.8);
     margin: 15px 15px 0 15px;
     border-radius: 5px;
-    background: #27293d;
-    box-shadow:  20px 20px 39px #1f2131,
-    -20px -20px 39px #2f3149;
+    background: #1f283e;
+    box-shadow:  20px 20px 39px #1a2235,
+    -20px -20px 39px #242e47;
 }
 
 .option-3 {
