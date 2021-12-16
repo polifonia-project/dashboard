@@ -1,0 +1,39 @@
+Let's keep it simple.
+
+What we should have:
+- app.py
+- config.json
+- personal.css
+- main.js
+
+We need to integrate these files into a new template. The structure that we want to have is:
+- static folder:
+    - css folder + personal.css
+    - img folder + anything necessary
+    - js + main.js
+    - scss
+    - any other folder necessary for the template
+- templates folder:
+    - a base.html that we rename layout.html
+    - index.html
+    - navigation.html
+    - sidebar.html
+    - footer.html
+    - alternative layout
+- app.py
+- config.json
+- requirements.txt
+
+We take every file we need from the template and place it in the right spots.
+For the HTML pages, it is important to take a few things into consideration:
+1. the paths that redirect to other files need to be correct, so check them! You can easily do this work with the function Find/Replace. 
+    An example: 'static/assets/css/<filename>.css' should be corrected to 'static/css/<filename>.css'.
+2. Anything regarding the login functionality can be ignored and deleted, we don't neet it for the purpose of this dashboard.
+    It can usually be found in the mail html files (index, navigation and sidebar).
+3. Remember to add any useful and necessary link (in particular to personal.css and main.js).
+4. Keep only the content that can be useful.
+    For this purpose, I find it useful to keep the demo open in my browser and use the developer tool to identify HTML element that I don't need and erase them from my files.
+5. Fill with your content.
+** AGGIUNGERE FORSE QUALCOSA QUI DI SPECIFICO SULLA CREAZIONE DEL LAYOUT **
+     This can be the part that requires more effort, because we need to adapt again the content based on both our needs and the new template
+     My suggestion is to not alter massively the template shape, otherwise responsiveness could suffer.

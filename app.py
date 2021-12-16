@@ -19,6 +19,7 @@ def access_data_sources(pilot_name):
         if pilot_name == source:
             return details
 
+
 @app.route("/<string:page_name>")
 def index(page_name):
     details = access_data_sources(page_name)
@@ -30,7 +31,7 @@ def index(page_name):
         desc = True
         return render_template('index.html', details=details, title=title, sub=sub, curator=curator, desc=desc)
     elif template == 'alt':
-        return render_template('ui-maps.html', details=details)
+        return render_template('charts.html', details=details)
     else:
         return render_template('page-404.html')
 
@@ -38,4 +39,3 @@ def index(page_name):
 # @app.route("/<string:page_name>")
 # def index(page_name):
 #     return render_template('index.html', title="page", jsonfile=json.dumps(access_data_sources(page_name)))
-

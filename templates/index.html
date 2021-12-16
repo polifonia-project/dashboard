@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 
 {% block title %} {{ details.title }} {% endblock %}
 
@@ -9,367 +9,67 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card main-card">
-            <div class="container" id="overview">
-                <!-- OVERVIEW -->
-                <div class="card-header mb-5">
-                    <h1 class="card-title">
-                        {% if title %}
-                        {{ details.title }}
-                        {% endif %}
-                    </h1>
-                    <h3 class="card-title">
-                        {% if sub %}
-                        {{ details.subtitle }}
-                        {% endif %}</h3>
-                    <h3 class="card-category">
-                        {% if curator %}
-                        {{ details.curator }}
-                        {% endif %}
-                    </h3>
-                    <!--                DESCRIPTION-->
-                    <p>
-                        {% if desc %}
-                        {{ details.description }}
-                        {% endif %}
-                    </p>
-                </div>
-                <!--            COUNTINGS-->
-                <div class="row" id="count_container">
-                    <!--               where countings show-->
-                </div>
-            </div>
-            <!--DATA STORY-->
-            <div class="card-body">
-                <div class="typography-line">
-                    <h2>A Random Subtitle</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet nibh nec odio commodo
-                        egestas. Donec a tortor lacus. Donec iaculis porta magna id scelerisque. Donec fringilla, mauris
-                        ut maximus porta, leo est molestie orci, in scelerisque massa metus non ligula. Donec pulvinar
-                        auctor mollis. Proin nec convallis diam. Nunc a tellus ac tellus tincidunt hendrerit.
-                        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                        egestas.</p>
-                </div>
-            </div>
-            <!--GRAPHS-->
-            <div id="vizContainer">
-            </div>
-        </div>
-    </div>
+<div class="content">
+	<div class="panel-header bg-primary-gradient">
+		<div class="page-inner py-5">
+			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+				<div>
+					<h2 class="text-white pb-2 fw-bold">
+						{% if title %}
+						{{ details.title }}
+						{% endif %}
+					</h2>
+					<h5 class="text-white op-7 mb-2">
+						{% if sub %}
+						{{ details.subtitle }}
+						{% endif %}
+					</h5>
+				</div>
+				<div class="ml-md-auto py-2 py-md-0">
+					<h4 class="text-white pb-2 fw-bold">
+						{% if curator %}
+						{{ details.curator }}
+						{% endif %}
+					</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="page-inner mt--5">
+		<div class="row row-card-no-pd">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<div class="card-head-row card-tools-still-right">
+							<h4 class="card-title">About the Project</h4>
+						</div>
+						<p class="card-category">
+							{% if desc %}
+							{{ details.description }}
+							{% endif %}
+						</p>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<!--            COUNTINGS-->
+							<div class="row" id="count_container">
+								<!--               where countings show-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
-
-<!--
-<div class="row">
-    <div class="col-lg-6 col-md-12">
-        <div class="card card-tasks">
-            <div class="card-header ">
-                <h6 class="title d-inline">Tasks(5)</h6>
-                <p class="card-category d-inline">today</p>
-                <div class="dropdown">
-                    <button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
-                        <i class="tim-icons icon-settings-gear-63"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#pablo">Action</a>
-                        <a class="dropdown-item" href="#pablo">Another action</a>
-                        <a class="dropdown-item" href="#pablo">Something else</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body ">
-                <div class="table-full-width table-responsive">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                        <span class="form-check-sign">
-                            <span class="check"></span>
-                          </span>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="title">Update the Documentation</p>
-                                <p class="text-muted">Dwuamish Head, Seattle, WA 8:47 AM</p>
-                            </td>
-                            <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" title="" class="btn btn-link"
-                                        data-original-title="Edit Task">
-                                    <i class="tim-icons icon-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="" checked="">
-                                        <span class="form-check-sign">
-                            <span class="check"></span>
-                          </span>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="title">GDPR Compliance</p>
-                                <p class="text-muted">The GDPR is a regulation that requires businesses to protect the
-                                    personal data and privacy of Europe citizens for transactions that occur within EU
-                                    member states.</p>
-                            </td>
-                            <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" title="" class="btn btn-link"
-                                        data-original-title="Edit Task">
-                                    <i class="tim-icons icon-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                        <span class="form-check-sign">
-                            <span class="check"></span>
-                          </span>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="title">Solve the issues</p>
-                                <p class="text-muted">Fifty percent of all respondents said they would be more likely to
-                                    shop at a company </p>
-                            </td>
-                            <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" title="" class="btn btn-link"
-                                        data-original-title="Edit Task">
-                                    <i class="tim-icons icon-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                        <span class="form-check-sign">
-                            <span class="check"></span>
-                          </span>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="title">Release v2.0.0</p>
-                                <p class="text-muted">Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM</p>
-                            </td>
-                            <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" title="" class="btn btn-link"
-                                        data-original-title="Edit Task">
-                                    <i class="tim-icons icon-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                        <span class="form-check-sign">
-                            <span class="check"></span>
-                          </span>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="title">Export the processed files</p>
-                                <p class="text-muted">The report also shows that consumers will not easily forgive a
-                                    company once a breach exposing their personal data occurs. </p>
-                            </td>
-                            <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" title="" class="btn btn-link"
-                                        data-original-title="Edit Task">
-                                    <i class="tim-icons icon-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                        <span class="form-check-sign">
-                            <span class="check"></span>
-                          </span>
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <p class="title">Arival at export process</p>
-                                <p class="text-muted">Capitol Hill, Seattle, WA 12:34 AM</p>
-                            </td>
-                            <td class="td-actions text-right">
-                                <button type="button" rel="tooltip" title="" class="btn btn-link"
-                                        data-original-title="Edit Task">
-                                    <i class="tim-icons icon-pencil"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-md-12">
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-title"> Simple Table</h4>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table tablesorter " id="">
-                        <thead class=" text-primary">
-                        <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Country
-                            </th>
-                            <th>
-                                City
-                            </th>
-                            <th class="text-center">
-                                Salary
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                Dakota Rice
-                            </td>
-                            <td>
-                                Niger
-                            </td>
-                            <td>
-                                Oud-Turnhout
-                            </td>
-                            <td class="text-center">
-                                $36,738
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Minerva Hooper
-                            </td>
-                            <td>
-                                Curaçao
-                            </td>
-                            <td>
-                                Sinaai-Waas
-                            </td>
-                            <td class="text-center">
-                                $23,789
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Sage Rodriguez
-                            </td>
-                            <td>
-                                Netherlands
-                            </td>
-                            <td>
-                                Baileux
-                            </td>
-                            <td class="text-center">
-                                $56,142
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Philip Chaney
-                            </td>
-                            <td>
-                                Korea, South
-                            </td>
-                            <td>
-                                Overland Park
-                            </td>
-                            <td class="text-center">
-                                $38,735
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Doris Greene
-                            </td>
-                            <td>
-                                Malawi
-                            </td>
-                            <td>
-                                Feldkirchen in Kärnten
-                            </td>
-                            <td class="text-center">
-                                $63,542
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Mason Porter
-                            </td>
-                            <td>
-                                Chile
-                            </td>
-                            <td>
-                                Gloucester
-                            </td>
-                            <td class="text-center">
-                                $78,615
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Jon Porter
-                            </td>
-                            <td>
-                                Portugal
-                            </td>
-                            <td>
-                                Gloucester
-                            </td>
-                            <td class="text-center">
-                                $98,615
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
-<script>
-    $(document).ready(function () {
-        // Javascript method's body can be found in assets/js/demos.js
-        demo.initDashboardPageCharts();
-
-    });
-
-</script>
-
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<!-- <script src="/static/js/setting-demo.js"></script>
+<script src="/static/js/demo.js"></script> -->
 
 {% endblock javascripts %}
