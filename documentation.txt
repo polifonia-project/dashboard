@@ -53,3 +53,14 @@ query grafi
 SELECT DISTINCT ?g ?pp ?oo WHERE { GRAPH ?g {?s ?p ?o}. ?g ?pp ?oo } LIMIT 10
 
 http://www.w3.org/ns/prov#generatedAtTime
+
+In the file config, for the chart, I've adde a field called "axes_label": ["xlabel", "ylabel"]: these labels should be specified manually by the person that compiles the query.
+They could be uselful for visuliazation reasons: in the data I need generic x,y for implementation reasons, but in case the graph needs label in the axes, I can draw from them.
+
+#### determine the frequency of a predicate's use
+SELECT ?predicate (COUNT (?predicate) AS ?count)
+WHERE {
+  ?s ?predicate ?o .
+}
+GROUP BY ?predicate
+ORDER BY DESC(?count)

@@ -65,6 +65,8 @@ function chartViz() {
                 barchart(element, index);
             } else if (chart === "linechart") {
                 linechart(element, index);
+            } else if (chart === "doughnutchart") {
+                doughnutchart(element, index);
             }
         }
         )
@@ -300,8 +302,128 @@ function linechart(element, index) {
 
 }
 
+function doughnutchart(element, index) {
+
+    // get the data that I need
+    // now starts a piece of code that is exactly the same from function counter
+    // ********
 
 
+    var query = element.query;
+    // check if the query is an API request
+    if (query.startsWith('http')) {
+        alert('There is an API request.');
+        // $.ajax({
+        //     type: 'GET',
+        //     url: query,
+        //     headers: {Accept: 'application/json'},
+        //     success: function (returnedJson) {
+        //         do things
+        //     }
+        // }
+    } else {
+        // if it is a sparql query
+        var encoded = encodeURIComponent(query);
+        var sparqlEndpoint = data.sparql_endpoint;
+        // var label = element.label;
+        $.ajax({
+            type: 'GET',
+            url: sparqlEndpoint + '?query=' + encoded,
+            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+            success: function (returnedJson) {
+
+                // first create the HTML structure that'll receive the data
+
+                // create canva for bar chart
+                var chartCanva = document.createElement("canvas");
+                var chartId = "chart" + (index + 1);
+                chartCanva.setAttribute("id", chartId);
+
+                // create div that contains canva
+                var chartArea = document.createElement("div");
+                chartArea.className = "chart-container";
+                chartArea.appendChild(chartCanva);
+
+                // create card body div
+                var cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+                cardBody.appendChild(chartArea);
+
+                // create chart title h3 and add data.label as text
+                var chartTitle = document.createElement("h3");
+                chartTitle.className = "card-title";
+                chartTitle.appendChild(document.createTextNode(element.label));
+
+                // create card header
+                var cardHeader = document.createElement("div");
+                // cardHeader.className = "card-header";
+                cardHeader.appendChild(chartTitle);
+
+                // get general container and append elements
+                var container = document.getElementById("vizContainer");
+                container.appendChild(cardHeader);
+                container.appendChild(cardBody);
+
+                const dataElements = [];
+                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                    dataElements[i] = returnedJson.results.bindings[i].label.value;
+                }
+                const elCount = {};
+                if (element.operations == 'count') {
+                    for (const item of dataElements) {
+                        if (elCount[item]) {
+                            elCount[item] += 1;
+                        } else {
+                            elCount[item] = 1;
+                        }
+                    }
+                    // where I'll store the data necessary fo the bar chart
+                    var chartData = Object.values(elCount);
+                    var chartLabels = Object.keys(elCount);
+
+
+                    var colors = [];
+                    for (i = 0; i < chartLabels.length; i++) {
+                        var randomColor = Math.floor(Math.random() * 16777215).toString(16);
+                        colors.push("#" + randomColor);
+                    }
+                }
+
+
+
+
+                // chart plotting
+                var myDoughnutChart = new Chart(chartId, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: chartData,
+                            backgroundColor: colors
+                        }],
+
+                        labels: chartLabels
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        },
+                        layout: {
+                            padding: {
+                                left: 20,
+                                right: 20,
+                                top: 20,
+                                bottom: 20
+                            }
+                        }
+                    }
+                });
+            }
+        })
+    }
+
+}
 // function sidebarContent() {
 //     // general container
 //     var container = document.getElementById("sidebarWrapper");
