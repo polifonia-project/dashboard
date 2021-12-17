@@ -41,3 +41,15 @@ For the HTML pages, it is important to take a few things into consideration:
 ** AGGIUNGERE FORSE QUALCOSA QUI DI SPECIFICO SULLA CREAZIONE DEL LAYOUT **
      This can be the part that requires more effort, because we need to adapt again the content based on both our needs and the new template
      My suggestion is to not alter massively the template shape, otherwise responsiveness could suffer.
+
+
+For both css and js content, it is important to add custum id and classes wherever necessary.
+
+
+
+
+query grafi
+
+SELECT DISTINCT ?g ?pp ?oo WHERE { GRAPH ?g {?s ?p ?o}. ?g ?pp ?oo } LIMIT 10
+
+http://www.w3.org/ns/prov#generatedAtTime

@@ -45,7 +45,13 @@
           "chart_type": "barchart",
           "query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
           "label": "Content Overview",
-          "instructions": ""
+          "operations": ""
+        },
+        {
+          "chart_type": "linechart",
+          "query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (MONTH(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY DESC(?y)",
+          "label": "New Entries",
+          "operations": ""
         }
       ]
     },
