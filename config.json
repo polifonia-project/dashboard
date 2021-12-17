@@ -49,7 +49,7 @@
         },
         {
           "chart_type": "linechart",
-          "query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (MONTH(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY DESC(?y)",
+          "query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
           "label": "New Entries",
           "operations": ""
         }
