@@ -173,7 +173,6 @@ function barchart(element, index) {
 
 }
 
-
 function linechart(element, index) {
     // get the data that I need
     // now starts a piece of code that is exactly the same from function counter
@@ -424,6 +423,9 @@ function doughnutchart(element, index) {
     }
 
 }
+
+
+
 // function sidebarContent() {
 //     // general container
 //     var container = document.getElementById("sidebarWrapper");

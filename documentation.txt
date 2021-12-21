@@ -1,3 +1,4 @@
+//////// USE OR MIGRATE TEMPLATE ////////
 Let's keep it simple.
 
 What we should have:
@@ -44,6 +45,18 @@ For the HTML pages, it is important to take a few things into consideration:
 
 
 For both css and js content, it is important to add custum id and classes wherever necessary.
+
+//////// CHARTS ////////
+****** words ******
+
+//////// BAR CHART ////////
+
+Requirements:
+- chart label: a few words that will be displayed on top of the chart; they should be 
+representative
+- query: The query must be structured in such a way as to have as results two columns 
+with label x and y for the values ​​that will go on the respective axes of the Cartesian plane.
+- axes labels: provide actual labels for each axis (max 2 words)
 
 
 
