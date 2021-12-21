@@ -16,22 +16,17 @@
 properly installed, please open a terminal and type python --version.
 2. Enter the project folder using the terminal/powershel/bash.
 3. Install modules using a [Virtual Environment](https://docs.python.org/3/library/venv.html)
-
-*MacOS/Linux*
-
+```bash
+#MacOS/Linux
 $ cd myproject
-
 $ python3 -m venv venv
-
 $ . venv/bin/activate
 
-*Windows*
-
-\> cd myproject
-
-\> py -3 -m venv venv
-
-\> venv\Scripts\activate
+#Windows
+> cd myproject
+> py -3 -m venv venv
+> venv\Scripts\activate
+```
 
 
 > **Step #3 - Install requirements**
@@ -43,27 +38,19 @@ $ . venv/bin/activate
 
 
 > **Step #4 - Run the application**
-
-*bash*
-
+```bash
+#bash
 $ export FLASK_APP=hello
-
 $ flask run
+* Running on http://127.0.0.1:5000/
 
-\* Running on http://127.0.0.1:5000/
+#CMD
+> set FLASK_APP=hello
+> flask run
+* Running on http://127.0.0.1:5000/
 
-*CMD*
-
-\> set FLASK_APP=hello
-
-\> flask run
-
-\* Running on http://127.0.0.1:5000/
-
-*Powershell*
-
-\> $env:FLASK_APP = "hello"
-
-\> flask run
-
-\* Running on http://127.0.0.1:5000/
+#Powershell
+> $env:FLASK_APP = "hello"
+> flask run
+* Running on http://127.0.0.1:5000/
+```
