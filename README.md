@@ -43,14 +43,17 @@ $ . venv/bin/activate
 $ export FLASK_APP=hello
 $ flask run
 * Running on http://127.0.0.1:5000/
+** To see something, visit http://127.0.0.1:5000/musow
 
 #CMD
 > set FLASK_APP=hello
 > flask run
 * Running on http://127.0.0.1:5000/
+** To see something, visit http://127.0.0.1:5000/musow
 
 #Powershell
 > $env:FLASK_APP = "hello"
 > flask run
 * Running on http://127.0.0.1:5000/
+** To see something, visit http://127.0.0.1:5000/musow
 ```
