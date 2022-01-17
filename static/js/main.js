@@ -73,6 +73,7 @@ function chartViz() {
     }
 }
 
+// function that applies the operation 'count'
 function count(dataElements, elCount) {
     for (const item of dataElements) {
         if (elCount[item]) {
@@ -81,6 +82,38 @@ function count(dataElements, elCount) {
             elCount[item] = 1;
         }
     } return elCount;
+}
+
+function chartHTMLElements(element, index) {
+    // create canva for bar chart
+    var chartCanva = document.createElement("canvas");
+    var chartId = "chart" + (index + 1);
+    chartCanva.setAttribute("id", chartId);
+
+    // create div that contains canva
+    var chartArea = document.createElement("div");
+    chartArea.className = "chart-container";
+    chartArea.appendChild(chartCanva);
+
+    // create card body div
+    var cardBody = document.createElement("div");
+    cardBody.className = "card-body";
+    cardBody.appendChild(chartArea);
+
+    // create chart title h3 and add data.label as text
+    var chartTitle = document.createElement("h3");
+    chartTitle.className = "card-title";
+    chartTitle.appendChild(document.createTextNode(element.label));
+
+    // create card header
+    var cardHeader = document.createElement("div");
+    // cardHeader.className = "card-header";
+    cardHeader.appendChild(chartTitle);
+
+    // get general container and append elements
+    var container = document.getElementById("vizContainer");
+    container.appendChild(cardHeader);
+    container.appendChild(cardBody);
 }
 
 function barchart(element, index) {
@@ -116,43 +149,16 @@ function barchart(element, index) {
             url: sparqlEndpoint + '?query=' + encoded,
             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
             success: function (returnedJson) {
-                // first create the HTML structure that'll receive the data
-
-                // create canva for bar chart
-                var chartCanva = document.createElement("canvas");
-                var chartId = "chart" + (index + 1);
-                chartCanva.setAttribute("id", chartId);
-
-                // create div that contains canva
-                var chartArea = document.createElement("div");
-                chartArea.className = "chart-container";
-                chartArea.appendChild(chartCanva);
-
-                // create card body div
-                var cardBody = document.createElement("div");
-                cardBody.className = "card-body";
-                cardBody.appendChild(chartArea);
-
-                // create chart title h3 and add data.label as text
-                var chartTitle = document.createElement("h3");
-                chartTitle.className = "card-title";
-                chartTitle.appendChild(document.createTextNode(element.label));
-
-                // create card header
-                var cardHeader = document.createElement("div");
-                // cardHeader.className = "card-header";
-                cardHeader.appendChild(chartTitle);
-
-                // get general container and append elements
-                var container = document.getElementById("vizContainer");
-                container.appendChild(cardHeader);
-                container.appendChild(cardBody);
 
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                     chartLabels[i] = returnedJson.results.bindings[i].x.value;
                     chartData[i] = returnedJson.results.bindings[i].y.value;
                 }
 
+                //  create the HTML structure that'll receive the data
+                chartHTMLElements(element, index);
+                //  retrieve the chart id
+                var chartId = "chart" + (index + 1);
 
                 var myBarChart = new Chart(chartId, {
                     type: 'bar',
@@ -215,43 +221,16 @@ function linechart(element, index) {
             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
             success: function (returnedJson) {
 
-                // first create the HTML structure that'll receive the data
-
-                // create canva for bar chart
-                var chartCanva = document.createElement("canvas");
-                var chartId = "chart" + (index + 1);
-                chartCanva.setAttribute("id", chartId);
-
-                // create div that contains canva
-                var chartArea = document.createElement("div");
-                chartArea.className = "chart-container";
-                chartArea.appendChild(chartCanva);
-
-                // create card body div
-                var cardBody = document.createElement("div");
-                cardBody.className = "card-body";
-                cardBody.appendChild(chartArea);
-
-                // create chart title h3 and add data.label as text
-                var chartTitle = document.createElement("h3");
-                chartTitle.className = "card-title";
-                chartTitle.appendChild(document.createTextNode(element.label));
-
-                // create card header
-                var cardHeader = document.createElement("div");
-                // cardHeader.className = "card-header";
-                cardHeader.appendChild(chartTitle);
-
-                // get general container and append elements
-                var container = document.getElementById("vizContainer");
-                container.appendChild(cardHeader);
-                container.appendChild(cardBody);
-
                 // what I do: check the number of the month and for any missing month assign null as value
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                     chartLabels[i] = returnedJson.results.bindings[i].x.value;
                     chartData[i] = returnedJson.results.bindings[i].y.value;
                 }
+
+                //  create the HTML structure that'll receive the data
+                chartHTMLElements(element, index);
+                //  retrieve the chart id
+                var chartId = "chart" + (index + 1);
 
                 // graph plotting
                 var myLineChart = new Chart(chartId, {
@@ -341,38 +320,6 @@ function doughnutchart(element, index) {
             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
             success: function (returnedJson) {
 
-                // first create the HTML structure that'll receive the data
-
-                // create canva for bar chart
-                var chartCanva = document.createElement("canvas");
-                var chartId = "chart" + (index + 1);
-                chartCanva.setAttribute("id", chartId);
-
-                // create div that contains canva
-                var chartArea = document.createElement("div");
-                chartArea.className = "chart-container";
-                chartArea.appendChild(chartCanva);
-
-                // create card body div
-                var cardBody = document.createElement("div");
-                cardBody.className = "card-body";
-                cardBody.appendChild(chartArea);
-
-                // create chart title h3 and add data.label as text
-                var chartTitle = document.createElement("h3");
-                chartTitle.className = "card-title";
-                chartTitle.appendChild(document.createTextNode(element.label));
-
-                // create card header
-                var cardHeader = document.createElement("div");
-                // cardHeader.className = "card-header";
-                cardHeader.appendChild(chartTitle);
-
-                // get general container and append elements
-                var container = document.getElementById("vizContainer");
-                container.appendChild(cardHeader);
-                container.appendChild(cardBody);
-
                 const dataElements = [];
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                     dataElements[i] = returnedJson.results.bindings[i].label.value;
@@ -380,13 +327,6 @@ function doughnutchart(element, index) {
                 const elCount = {};
                 if (element.operations == 'count') {
                     count(dataElements, elCount);
-                    // for (const item of dataElements) {
-                    //     if (elCount[item]) {
-                    //         elCount[item] += 1;
-                    //     } else {
-                    //         elCount[item] = 1;
-                    //     }
-                    // }
                     // where I'll store the data necessary fo the bar chart
                     var chartData = Object.values(elCount);
                     var chartLabels = Object.keys(elCount);
@@ -399,9 +339,10 @@ function doughnutchart(element, index) {
                     }
                 }
 
-
-
-
+                //  create the HTML structure that'll receive the data
+                chartHTMLElements(element, index);
+                //  retrieve the chart id
+                var chartId = "chart" + (index + 1);
                 // chart plotting
                 var myDoughnutChart = new Chart(chartId, {
                     type: 'doughnut',
