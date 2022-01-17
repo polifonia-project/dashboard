@@ -11,7 +11,10 @@
       "github": "",
       "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
       "rest_api": "http://127.0.0.1:8081/musow/v1",
-      "color_code": "",
+      "color_code": [
+        "#e8b67f",
+        "#0621e0"
+      ],
       "logo_path": "",
       "template_mode": "standard",
       "title": "musoW",

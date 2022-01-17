@@ -116,6 +116,10 @@ function chartHTMLElements(element, index) {
     container.appendChild(cardBody);
 }
 
+function chartColor(colorStart, colorEnd, dataLength) {
+    return d3.quantize(d3.interpolateHcl(colorStart, colorEnd), dataLength);
+}
+
 function barchart(element, index) {
 
 
@@ -330,19 +334,16 @@ function doughnutchart(element, index) {
                     // where I'll store the data necessary fo the bar chart
                     var chartData = Object.values(elCount);
                     var chartLabels = Object.keys(elCount);
-
-
-                    var colors = [];
-                    for (i = 0; i < chartLabels.length; i++) {
-                        var randomColor = Math.floor(Math.random() * 16777215).toString(16);
-                        colors.push("#" + randomColor);
-                    }
                 }
 
                 //  create the HTML structure that'll receive the data
                 chartHTMLElements(element, index);
                 //  retrieve the chart id
                 var chartId = "chart" + (index + 1);
+
+                // chart colors
+                var colors = chartColor(data.color_code[0], data.color_code[1], chartLabels.length);
+
                 // chart plotting
                 var myDoughnutChart = new Chart(chartId, {
                     type: 'doughnut',
