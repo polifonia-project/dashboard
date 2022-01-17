@@ -73,6 +73,16 @@ function chartViz() {
     }
 }
 
+function count(dataElements, elCount) {
+    for (const item of dataElements) {
+        if (elCount[item]) {
+            elCount[item] += 1;
+        } else {
+            elCount[item] = 1;
+        }
+    } return elCount;
+}
+
 function barchart(element, index) {
 
 
@@ -369,13 +379,14 @@ function doughnutchart(element, index) {
                 }
                 const elCount = {};
                 if (element.operations == 'count') {
-                    for (const item of dataElements) {
-                        if (elCount[item]) {
-                            elCount[item] += 1;
-                        } else {
-                            elCount[item] = 1;
-                        }
-                    }
+                    count(dataElements, elCount);
+                    // for (const item of dataElements) {
+                    //     if (elCount[item]) {
+                    //         elCount[item] += 1;
+                    //     } else {
+                    //         elCount[item] = 1;
+                    //     }
+                    // }
                     // where I'll store the data necessary fo the bar chart
                     var chartData = Object.values(elCount);
                     var chartLabels = Object.keys(elCount);
