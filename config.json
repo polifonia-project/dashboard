@@ -74,7 +74,10 @@
       "github": "",
       "sparql_endpoint": "https://query.wikidata.org/",
       "rest_api": "",
-      "color_code": "",
+      "color_code": [
+        "#54e8e7",
+        "#48ce48"
+      ],
       "logo_path": "",
       "template_mode": "alt",
       "title": "Wikidata",

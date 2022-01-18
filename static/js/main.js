@@ -1,7 +1,15 @@
 window.onload = function () {
+    colorSwitch();
     counter();
     chartViz();
     // sidebarContent();
+}
+
+function colorSwitch() {
+    // gradient
+    var gradientEl = document.querySelector(".panel-header");
+    gradientEl.classList.remove("bg-primary-gradient");
+    gradientEl.style.background = 'linear-gradient(-45deg,' + data.color_code[0] + ',' + data.color_code[1] + ')';
 }
 
 function counter() {
