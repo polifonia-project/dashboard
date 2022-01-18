@@ -82,7 +82,8 @@ function chartViz() {
 }
 
 // function that applies the operation 'count'
-function count(dataElements, elCount) {
+function count(dataElements) {
+    let elCount = {};
     for (const item of dataElements) {
         if (elCount[item]) {
             elCount[item] += 1;
@@ -325,7 +326,7 @@ function doughnutchart(element, index) {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
         var sparqlEndpoint = data.sparql_endpoint;
-        // var label = element.label;
+
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
@@ -336,17 +337,18 @@ function doughnutchart(element, index) {
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                     dataElements[i] = returnedJson.results.bindings[i].label.value;
                 }
-                const elCount = {};
+
                 if (element.operations == 'count') {
-                    count(dataElements, elCount);
-                    // where I'll store the data necessary fo the bar chart
-                    var chartData = Object.values(elCount);
-                    var chartLabels = Object.keys(elCount);
+                    elCount = count(dataElements);
                 }
 
-                //  create the HTML structure that'll receive the data
+                // where I'll store the data necessary fo the bar chart
+                var chartData = Object.values(elCount);
+                var chartLabels = Object.keys(elCount);
+
+                // create the HTML structure that'll receive the data
                 chartHTMLElements(element, index);
-                //  retrieve the chart id
+                // retrieve the chart id
                 var chartId = "chart" + (index + 1);
 
                 // chart colors
