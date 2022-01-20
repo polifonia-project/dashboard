@@ -64,7 +64,12 @@
           "chart_type": "doughnutchart",
           "query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
           "label": "Audiences of Repository",
-          "operations": "count"
+          "operations": [
+            {
+              "action": "count",
+              "param": "label"
+            }
+          ]
         }
       ]
     },

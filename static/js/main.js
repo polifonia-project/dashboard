@@ -82,9 +82,9 @@ function chartViz() {
 }
 
 // function that applies the operation 'count'
-function count(dataElements) {
+function count(arr) {
     let elCount = {};
-    for (const item of dataElements) {
+    for (const item of arr) {
         if (elCount[item]) {
             elCount[item] += 1;
         } else {
@@ -92,6 +92,14 @@ function count(dataElements) {
         }
     } return elCount;
 }
+
+// function that applies the operation 'order_by'
+// function order_by(numArray) {
+//     numArray.sort(function (a, b) {
+//         return a - b;
+//     });
+//     return numArray;
+// }
 
 function chartHTMLElements(element, index) {
     // create canva for bar chart
@@ -333,18 +341,27 @@ function doughnutchart(element, index) {
             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
             success: function (returnedJson) {
 
-                const dataElements = [];
+                var label = [];
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                    dataElements[i] = returnedJson.results.bindings[i].label.value;
+                    label[i] = returnedJson.results.bindings[i].label.value;
                 }
+                // alert(dataElements);
+                var op = element.operations;
 
-                if (element.operations == 'count') {
-                    elCount = count(dataElements);
-                }
+                var chartData = [];
+                var chartLabels = [];
+                op.forEach(o => {
+                    var action = o.action;
+                    var param = o.param;
+                    // activate the operations on the data
+                    if (action.includes('count')) {
+                        var elCount = eval(action + '(' + param + ')');
+                    }
+                    // where I'll store the data necessary fo the bar chart
+                    chartData = Object.values(elCount);
+                    chartLabels = Object.keys(elCount);
 
-                // where I'll store the data necessary fo the bar chart
-                var chartData = Object.values(elCount);
-                var chartLabels = Object.keys(elCount);
+                })
 
                 // create the HTML structure that'll receive the data
                 chartHTMLElements(element, index);
@@ -386,6 +403,111 @@ function doughnutchart(element, index) {
     }
 
 }
+
+function stacked_barchart(element, index) {
+
+    // get the data that I need
+    // now starts a piece of code that is exactly the same from function counter
+    // ********
+
+
+    var query = element.query;
+    // check if the query is an API request
+    if (query.startsWith('http')) {
+        alert('There is an API request.');
+        // $.ajax({
+        //     type: 'GET',
+        //     url: query,
+        //     headers: {Accept: 'application/json'},
+        //     success: function (returnedJson) {
+        //         do things
+        //     }
+        // }
+    } else {
+        // if it is a sparql query
+        var encoded = encodeURIComponent(query);
+        var sparqlEndpoint = data.sparql_endpoint;
+
+        $.ajax({
+            type: 'GET',
+            url: sparqlEndpoint + '?query=' + encoded,
+            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+            success: function (returnedJson) {
+
+                const dataElements = [];
+                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                    // dataElements[i] = returnedJson.results.bindings[i].label.value;
+                }
+
+                if (element.operations == 'count') {
+                    // elCount = count(dataElements);
+                }
+
+                // where I'll store the data necessary fo the bar chart
+                // var chartData = Object.values(elCount);
+                // var chartLabels = Object.keys(elCount);
+
+                // create the HTML structure that'll receive the data
+                chartHTMLElements(element, index);
+                // retrieve the chart id
+                var chartId = "chart" + (index + 1);
+
+                // chart colors
+                // var colors = chartColor(data.color_code[0], data.color_code[1], chartLabels.length);
+
+                // chart plotting
+                var myMultipleBarChart = new Chart(chartId, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                        datasets: [{
+                            // label: "First time visitors",
+                            // backgroundColor: '#59d05d',
+                            // borderColor: '#59d05d',
+                            // data: [95, 100, 112, 101, 144, 159, 178, 156, 188, 190, 210, 245],
+                        }, {
+                            // label: "Visitors",
+                            // backgroundColor: '#fdaf4b',
+                            // borderColor: '#fdaf4b',
+                            // data: [145, 256, 244, 233, 210, 279, 287, 253, 287, 299, 312, 356],
+                        }, {
+                            // label: "Pageview",
+                            // backgroundColor: '#177dff',
+                            // borderColor: '#177dff',
+                            // data: [185, 279, 273, 287, 234, 312, 322, 286, 301, 320, 346, 399],
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            position: 'bottom'
+                        },
+                        // title: {
+                        //     display: true,
+                        //     text: 'Traffic Stats'
+                        // },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        }
+                    }
+                });
+            }
+        })
+    }
+
+}
+
 
 
 
