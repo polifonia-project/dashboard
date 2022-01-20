@@ -31,7 +31,7 @@ function counter() {
                 // if it is a sparql query
                 var encoded = encodeURIComponent(query);
                 var sparqlEndpoint = data.sparql_endpoint;
-                var label = element.label;
+                var count_label = element.label;
                 $.ajax({
                     type: 'GET',
                     url: sparqlEndpoint + '?query=' + encoded,
@@ -49,7 +49,7 @@ function counter() {
                             generalDiv.appendChild(countDiv);
                             // create and append p for label
                             var labelP = document.createElement("p");
-                            labelP.appendChild(document.createTextNode(label));
+                            labelP.appendChild(document.createTextNode(count_label));
                             countDiv.appendChild(labelP);
 
                             // get container and append
@@ -117,10 +117,10 @@ function chartHTMLElements(element, index) {
     cardBody.className = "card-body";
     cardBody.appendChild(chartArea);
 
-    // create chart title h3 and add data.label as text
+    // create chart title h3 and add element.chart_title as text
     var chartTitle = document.createElement("h3");
     chartTitle.className = "card-title";
-    chartTitle.appendChild(document.createTextNode(element.label));
+    chartTitle.appendChild(document.createTextNode(element.chart_title));
 
     // create card header
     var cardHeader = document.createElement("div");
@@ -164,7 +164,6 @@ function barchart(element, index) {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
         var sparqlEndpoint = data.sparql_endpoint;
-        // var label = element.label;
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
