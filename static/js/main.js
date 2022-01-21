@@ -356,7 +356,7 @@ function doughnutchart(element, index) {
                     if (action.includes('count')) {
                         var elCount = eval(action + '(' + param + ')');
                     }
-                    // where I'll store the data necessary fo the bar chart
+                    // where I'll store the data necessary for the chart
                     chartData = Object.values(elCount);
                     chartLabels = Object.keys(elCount);
 

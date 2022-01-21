@@ -95,7 +95,7 @@
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 {% block javascripts %}
-
+<script type="text/javascript"> var data = {{ details | tojson }};</script>
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 <!-- <script src="/static/js/setting-demo.js"></script>
 <script src="/static/js/demo.js"></script> -->

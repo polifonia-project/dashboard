@@ -59,7 +59,7 @@
 	{% include 'scripts.html' %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-	<script type="text/javascript"> var data = {{ details | tojson }};</script>
+
 	<!-- Specific Page JS goes HERE  -->
 	{% block javascripts %}{% endblock javascripts %}
 

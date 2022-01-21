@@ -1,6 +1,9 @@
+from statistics import mode
 from flask import Flask, render_template, request, url_for
 
 import json
+
+from itsdangerous import exc
 
 # from SPARQLWrapper import SPARQLWrapper, JSON
 # import ssl
@@ -36,6 +39,24 @@ def index(page_name):
         return render_template('page-404.html')
 
 
-# @app.route("/<string:page_name>")
-# def index(page_name):
-#     return render_template('index.html', title="page", jsonfile=json.dumps(access_data_sources(page_name)))
+@app.route("/setup")
+def setup():
+    return render_template('setup.html')
+
+
+def write_to_database(data):
+    with open('database.json', 'w') as database:
+        json.dump(data, database)
+
+
+@app.route('/submit_form', methods=['POST', 'GET'])
+def submit_form():
+    if request.method == 'POST':
+        try:
+            form_data = request.form
+            write_to_database(form_data)
+            return 'form submitted'
+        except:
+            return 'did not save to database'
+    else:
+        return 'something went wrong, try again'
