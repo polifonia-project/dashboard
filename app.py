@@ -23,7 +23,7 @@ def access_data_sources(pilot_name):
             return details
 
 
-@app.route("/<string:page_name>")
+@app.route("/pilot/<string:page_name>")
 def index(page_name):
     details = access_data_sources(page_name)
     template = details['template_mode']
@@ -39,9 +39,31 @@ def index(page_name):
         return render_template('page-404.html')
 
 
-@app.route("/setup")
+@app.route("/setup", methods=['POST', 'GET'])
 def setup():
-    return render_template('setup.html')
+    if request.method == 'POST':
+        try:
+            form_data = request.form
+            print(form_data)
+            with open('config.json') as config_form:
+                c = json.load(config_form)
+            pilot_name = form_data['pilot']
+            pilot_endpoint = form_data['endpoint']
+            c['data_sources'][pilot_name]['sparql_endpoint'] = pilot_endpoint
+            with open('config.json', 'w') as config_update:
+                json.dump(c, config_update)
+            # write_to_database(form_data)
+            # with open('database.json') as database:
+            #     data = json.load(database)
+            #     pilot_details = access_data_sources(data['pilot'])
+            #     pilot_details['chart'].append(pilot_details)
+            return 'form submitted'
+        except:
+            return 'did not save to database'
+    elif request.method == 'GET':
+        return render_template('setup.html')
+    else:
+        return 'something went wrong, try again'
 
 
 def write_to_database(data):
@@ -49,14 +71,11 @@ def write_to_database(data):
         json.dump(data, database)
 
 
-@app.route('/submit_form', methods=['POST', 'GET'])
-def submit_form():
-    if request.method == 'POST':
-        try:
-            form_data = request.form
-            write_to_database(form_data)
-            return 'form submitted'
-        except:
-            return 'did not save to database'
-    else:
-        return 'something went wrong, try again'
+# @app.route('/submit_form', )
+# def submit_form():
+
+
+# with open('database.json') as database:
+#     data = json.load(database)
+#     pilot_details = access_data_sources(data['pilot'])
+#     print(type(pilot_details['chart']))
