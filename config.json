@@ -4,6 +4,40 @@
   "index_host": "localhost",
   "index_channel": 1491,
   "index_pw": "SecretPassword",
+  "templates": {
+    "template_01": {
+      "name": "statistics",
+      "img_path": "/static/img/template_01.jpg",
+      "default_color": [
+        "#39c6b4",
+        "#17cf31"
+      ]
+    },
+    "template_02": {
+      "name": "maps",
+      "img_path": "/static/img/template_02.jpg",
+      "default_color": [
+        "#6e7e3a",
+        "#79f1e9"
+      ]
+    },
+    "template_03": {
+      "name": "networks",
+      "img_path": "/static/img/template_03.jpg",
+      "default_color": [
+        "#0f64b9",
+        "#e2df1c"
+      ]
+    },
+    "template_04": {
+      "name": "random",
+      "img_path": "/static/img/template_04.jpg",
+      "default_color": [
+        "#77bbc7",
+        "#1d193e"
+      ]
+    }
+  },
   "data_sources": {
     "musow": {
       "iri_base": "https://w3id.org/musow/",

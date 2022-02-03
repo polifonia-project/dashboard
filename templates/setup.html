@@ -17,22 +17,91 @@
 				<form action="setup" method="post" class="card">
 					<div class="card-body">
 						<div class="row">
-							<div class="col-md-6 col-lg-4">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-label">Choose the template</label>
+									<div class="row">
+										<div class="col-sm-6 col-md-3">
+											<select name="template_mode" class="form-control"
+												id="exampleFormControlSelect1" required>
+												{% for item in template_data %}
+												<option>{{item.name}}</option>
+												{% endfor %}
+											</select>
+										</div>
+										<div class="col-12 col-md-8">
+											<div class="row">
+												{% for item in template_data %}
+												<div class="col-sm-6 col-md-3">
+													<figure>
+														<a data-target="#{{item.name}}Modal" role="button"
+															data-toggle="modal">
+															<img src="{{item.img_path}}" alt="{{item.name}}"
+																class="imagecheck-image">
+														</a>
+														<figcaption>{{item.name}}</figcaption>
+													</figure>
+												</div>
+
+												<!-- start modals for templates -->
+												<div class="modal fade" id="{{item.name}}Modal"
+													data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+													aria-labelledby="staticBackdropLabel" aria-hidden="true">
+													<div class="modal-dialog">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title" id="{{item.name}}Label">
+																	{{item.name}} Template</h5>
+																<button type="button" class="btn-close"
+																	data-bs-dismiss="modal" aria-label="Close"></button>
+															</div>
+															<div class="modal-body">
+																<div class="card card-profile">
+																	<!-- <div class="card-header"
+																		style="background-image: url('{{item.img_path}}')">
+																	</div> -->
+																	<div class="card-body" style="background-image: url('{{item.img_path}}'); background-repeat: no-repeat;
+																		background-size: auto;">
+																	</div>
+																	<div class="card-footer">
+																		<div class="row user-stats text-center">
+																			<div class="col">
+																				<div class="title">Default Colors</div>
+																				<div class="number">
+																					{{item.default_color[0]}}<br>{{item.default_color[1]}}
+																				</div>
+																			</div>
+																			<div class="col">
+																				<div class="title">Main Features</div>
+																				<div class="number">...</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- end -->
+
+												<!-- <div>{{item.name}}</div> -->
+												{% endfor %}
+											</div>
+										</div>
+									</div>
+								</div>
 
 								<div class="form-group">
-									<label for="exampleFormControlSelect1">Pilot Name</label>
-									<select name="pilot" class="form-control" id="exampleFormControlSelect1">
-										<option>musoW</option>
-										<option>Wikidata</option>
-										<option>DBpedia</option>
-									</select>
+									<label for="largeInput">The name of your Pilot</label>
+									<input name="title" type="text" class="form-control form-control" id=""
+										placeholder="The Pilot" required>
 								</div>
 								<div class="form-group">
 									<label for="largeInput">SPARQL Endpoint</label>
-									<input name="endpoint" type="text" class="form-control form-control" id=""
-										placeholder="URL" required>
+									<input name="sparql_endpoint" type="text" class="form-control form-control" id=""
+										placeholder="https://query.example.org/" required>
 								</div>
-								<div class="form-group">
+								<!-- <div class="form-group">
 									<label for="exampleFormControlSelect2">Chart Type</label>
 									<select name="chart" class="form-control" id="exampleFormControlSelect2">
 										<option>Line chart</option>
@@ -58,7 +127,8 @@
 										for="operation1">COUNT</label><br><br>
 									<input name="operation2" type="checkbox"><br>
 									<input name="operation3" type="checkbox">
-								</div>
+								</div> -->
+
 								<!-- <div class="form-group has-success">
 									<label for="successInput">Success Input</label>
 									<input type="text" id="successInput" value="Success" class="form-control">
@@ -86,6 +156,7 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script type="text/javascript"> var template_data = {{ template_data | tojson }};</script>
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 <script src="/static/js/setting-demo2.js"></script>

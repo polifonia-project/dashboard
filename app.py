@@ -41,27 +41,33 @@ def index(page_name):
 
 @app.route("/setup", methods=['POST', 'GET'])
 def setup():
-    if request.method == 'POST':
+    with open('config.json') as config_form:
+        c = json.load(config_form)
+    if request.method == 'GET':
+        template_data = []
+        for item in c['templates']:
+            template_data.append(c['templates'][item])
+        return render_template('setup.html', template_data=template_data)
+    elif request.method == 'POST':
         try:
+            # get data
             form_data = request.form
-            print(form_data)
-            with open('config.json') as config_form:
-                c = json.load(config_form)
-            pilot_name = form_data['pilot']
-            pilot_endpoint = form_data['endpoint']
-            c['data_sources'][pilot_name]['sparql_endpoint'] = pilot_endpoint
+            template_mode = form_data['template_mode']
+            pilot_title = form_data['title']
+            pilot_endpoint = form_data['sparql_endpoint']
+            # create new pilot instance
+            new_pilot = {}
+            new_pilot['sparql_endpoint'] = pilot_endpoint
+            new_pilot['template_mode'] = template_mode
+            new_pilot['title'] = pilot_title
+            # add to config file
+            c['data_sources'][pilot_title.lower().replace(" ", "_")] = new_pilot
+            print(c['data_sources'])
             with open('config.json', 'w') as config_update:
                 json.dump(c, config_update)
-            # write_to_database(form_data)
-            # with open('database.json') as database:
-            #     data = json.load(database)
-            #     pilot_details = access_data_sources(data['pilot'])
-            #     pilot_details['chart'].append(pilot_details)
             return 'form submitted'
         except:
             return 'did not save to database'
-    elif request.method == 'GET':
-        return render_template('setup.html')
     else:
         return 'something went wrong, try again'
 
@@ -69,13 +75,3 @@ def setup():
 def write_to_database(data):
     with open('database.json', 'w') as database:
         json.dump(data, database)
-
-
-# @app.route('/submit_form', )
-# def submit_form():
-
-
-# with open('database.json') as database:
-#     data = json.load(database)
-#     pilot_details = access_data_sources(data['pilot'])
-#     print(type(pilot_details['chart']))

@@ -29,6 +29,9 @@ properly installed, please open a terminal and type python --version.
     > py -3 -m venv venv
     > venv\Scripts\activate
 
+N.B: in Windows, a restriction error can occur. In this case, write down the command "Set-ExecutionPolicy Unrestricted -Scope Process". This will allow running virtualenv in the current PowerShell session.
+https://stackoverflow.com/questions/18713086/virtualenv-wont-activate-on-windows
+
 Step #3 - Install requirements
 pip install -r requirements.txt
 
@@ -58,6 +61,7 @@ What we should have:
 - config.json
 - personal.css
 - main.js
+- requirements.txt
 
 We need to integrate these files into a new template. The structure that we want to have is:
 - static folder:
@@ -129,3 +133,28 @@ WHERE {
 }
 GROUP BY ?predicate
 ORDER BY DESC(?count)
+
+
+/////// COLORS
+//// generate color for chart starting from pilot ones
+https://codenebula.io/javascript/frontend/dataviz/2019/04/18/automatically-generate-chart-colors-with-chart-js-d3s-color-scales/
+https://observablehq.com/@d3/working-with-color
+
+
+////// COUNT function
+ho provato:
+- "operations": "count(label)"
+- "operations": ["count", "label"]
+
+
+/////// STACKED BARCHART da aggiungere dopo
+{
+          "chart_type": "stacked_barchart",
+          "query": "SELECT ?y_value ?x_label WHERE { ?entry <https://schema.org/additionalType> ?type . ?type rdfs:label ?x_label . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?y_value . }",
+          "chart_title": "Audience per Collection Type",
+          "axes_label": [
+            "xlabel",
+            "ylabel"
+          ],
+          "operations": "count"
+        }
