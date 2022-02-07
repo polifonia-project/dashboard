@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %} {{ details.title }} {% endblock %}
+{% block title %} Welcome {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}">
-{% endblock stylesheets %}
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
@@ -14,67 +12,42 @@
 		<div class="page-inner py-5">
 			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
 				<div>
-					<h2 class="text-white pb-2 fw-bold">
-						{% if title %}
-						{{ details.title }}
-						{% endif %}
-					</h2>
-					<h5 class="text-white op-7 mb-2">
-						{% if sub %}
-						{{ details.subtitle }}
-						{% endif %}
-					</h5>
-				</div>
-				<div class="ml-md-auto py-2 py-md-0">
-					<h4 class="text-white pb-2 fw-bold">
-						{% if curator %}
-						{{ details.curator }}
-						{% endif %}
-					</h4>
+					<h2 class="text-white pb-2 fw-bold">Welcome</h2>
+					<h5 class="text-white op-7 mb-2">Where you can go from here</h5>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="page-inner mt--5">
-		<div class="row row-card-no-pd">
+		<div class="row mt--2">
 			<div class="col-md-12">
-				<div class="card">
-					<div class="card-header">
-						<div class="card-head-row card-tools-still-right">
-							<h4 class="card-title">About the Project</h4>
-						</div>
-						<p class="card-category">
-							{% if desc %}
-							{{ details.description }}
-							{% endif %}
-						</p>
-					</div>
+				<div class="card full-height">
 					<div class="card-body">
-						<div class="row">
-							<!--            COUNTINGS-->
-							<div class="row" id="count_container">
-								<!--               where countings show-->
+						<div class="d-flex flex-wrap pb-2 pt-4">
+							<ul>
+								<li>Visit a statistics template example for musow: <a
+										href="http://127.0.0.1:5000/pilot/musow"
+										target="_blank">http://127.0.0.1:5000/pilot/musow</a>.<br>
+									It potentially works the same for every pilot:
+									http://127.0.0.1:5000/pilot/&lt;string:page_name&gt;.
+								</li>
+								<li>The setup page allows you to choose a type of template and create a new pilot: <a
+										href="http://127.0.0.1:5000/setup"
+										target="_blank">http://127.0.0.1:5000/setup</a>. Once you submit, you are
+									redirected to the chosen template to fill it in.</li>
+							</ul>
+							<!-- <div class="px-2 pb-2 pb-md-0 text-center">
+								<div id="circles-1"></div>
+								<h6 class="fw-bold mt-3 mb-0">New Users</h6>
 							</div>
-							<!--DATA STORY-->
-							<div class="card-body">
-								<div class="typography-line">
-									<h3 class="card-title">A Random Subtitle</h3>
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet nibh nec
-										odio commodo
-										egestas. Donec a tortor lacus. Donec iaculis porta magna id scelerisque. Donec
-										fringilla, mauris
-										ut maximus porta, leo est molestie orci, in scelerisque massa metus non ligula.
-										Donec pulvinar
-										auctor mollis. Proin nec convallis diam. Nunc a tellus ac tellus tincidunt
-										hendrerit.
-										Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
-										turpis
-										egestas.</p>
-								</div>
+							<div class="px-2 pb-2 pb-md-0 text-center">
+								<div id="circles-2"></div>
+								<h6 class="fw-bold mt-3 mb-0">Sales</h6>
 							</div>
-							<!--GRAPHS-->
-							<div id="vizContainer">
-							</div>
+							<div class="px-2 pb-2 pb-md-0 text-center">
+								<div id="circles-3"></div>
+								<h6 class="fw-bold mt-3 mb-0">Subscribers</h6>
+							</div> -->
 						</div>
 					</div>
 				</div>
@@ -86,18 +59,105 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-
-
-
-<!-- Import D3 Scale Chromatic via CDN -->
-<script src="https://d3js.org/d3-color.v1.min.js"></script>
-<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
 {% block javascripts %}
-<script type="text/javascript"> var data = {{ details | tojson }};</script>
+
 <!-- Atlantis DEMO methods, don't include it in your project! -->
-<!-- <script src="/static/js/setting-demo.js"></script>
-<script src="/static/js/demo.js"></script> -->
+<script src="/static/js/setting-demo.js"></script>
+<script src="/static//js/demo.js"></script>
+
+<script>
+	Circles.create({
+		id: 'circles-1',
+		radius: 45,
+		value: 60,
+		maxValue: 100,
+		width: 7,
+		text: 5,
+		colors: ['#f1f1f1', '#FF9E27'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	Circles.create({
+		id: 'circles-2',
+		radius: 45,
+		value: 70,
+		maxValue: 100,
+		width: 7,
+		text: 36,
+		colors: ['#f1f1f1', '#2BB930'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	Circles.create({
+		id: 'circles-3',
+		radius: 45,
+		value: 40,
+		maxValue: 100,
+		width: 7,
+		text: 12,
+		colors: ['#f1f1f1', '#F25961'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+	var mytotalIncomeChart = new Chart(totalIncomeChart, {
+		type: 'bar',
+		data: {
+			labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
+			datasets: [{
+				label: "Total Income",
+				backgroundColor: '#ff9e27',
+				borderColor: 'rgb(23, 125, 255)',
+				data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+			}],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			legend: {
+				display: false,
+			},
+			scales: {
+				yAxes: [{
+					ticks: {
+						display: false //this will remove only the label
+					},
+					gridLines: {
+						drawBorder: false,
+						display: false
+					}
+				}],
+				xAxes: [{
+					gridLines: {
+						drawBorder: false,
+						display: false
+					}
+				}]
+			},
+		}
+	});
+
+	$('#lineChart').sparkline([105, 103, 123, 100, 95, 105, 115], {
+		type: 'line',
+		height: '70',
+		width: '100%',
+		lineWidth: '2',
+		lineColor: '#ffa534',
+		fillColor: 'rgba(255, 165, 52, .14)'
+	});
+</script>
 
 {% endblock javascripts %}
