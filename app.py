@@ -93,14 +93,9 @@ def setup():
         return 'something went wrong, try again'
 
 
-# def write_to_database(data):
-#     with open('database.json', 'w') as database:
-#         json.dump(data, database)
-
 @app.route("/send_data", methods=['POST', 'GET'])
 def send_data():
-    with open('config.json') as config_form:
-        c = json.load(config_form)
+    c = read_json('config.json')
     if request.method == 'POST':
         try:
             # get data
@@ -117,8 +112,7 @@ def send_data():
                     details['subtitle'] = pilot_subtitle
                     details['curator'] = pilot_curator
                     details['description'] = pilot_description
-                    with open('config.json', 'w') as config_update:
-                        json.dump(c, config_update)
+                    update_json('config.json', c)
             return 'Success!'
         except:
             return 'Something went wrong'
