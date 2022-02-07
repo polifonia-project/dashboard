@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %} Setup your page {% endblock %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/templates.css') }}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <form action="send_data" method="post" class="card">
+        <div class="panel-header bg-primary-gradient">
+            <div class="page-inner py-5">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                    <div>
+                        <h2 class="text-white pb-2 fw-bold">
+                            <input name="title" type="text" id="" value="{{ details.title }}">
+                        </h2>
+                        <h5 class="text-white op-7 mb-2">
+                            <input name="subtitle" type="text" id="" placeholder="The Subtitle">
+                        </h5>
+                    </div>
+                    <div class="ml-md-auto py-2 py-md-0">
+                        <h4 class="text-white pb-2 fw-bold">
+                            <input name="curator" type="text" id="" placeholder="The Curator">
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-inner mt--5">
+            <div class="row row-card-no-pd">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row card-tools-still-right">
+                                <h4 class="card-title">About the Project</h4>
+                            </div>
+                            <p class="card-category">
+                                <input name="description" type="text" id=""
+                                    placeholder="Write a brief introdution to the project.">
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!--            COUNTINGS-->
+                                <!-- <div class="row" id="count_container"> -->
+                                <!--               where countings show-->
+                                <!-- </div> -->
+                                <!--DATA STORY-->
+                                <div class="card-body">
+                                    <div class="typography-line">
+                                        <h3 class="card-title">A Random Subtitle</h3>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet nibh
+                                            nec
+                                            odio commodo
+                                            egestas. Donec a tortor lacus. Donec iaculis porta magna id scelerisque.
+                                            Donec
+                                            fringilla, mauris
+                                            ut maximus porta, leo est molestie orci, in scelerisque massa metus non
+                                            ligula.
+                                            Donec pulvinar
+                                            auctor mollis. Proin nec convallis diam. Nunc a tellus ac tellus tincidunt
+                                            hendrerit.
+                                            Pellentesque habitant morbi tristique senectus et netus et malesuada fames
+                                            ac
+                                            turpis
+                                            egestas.</p>
+                                    </div>
+                                </div>
+                                <!--GRAPHS-->
+                                <div id="vizContainer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript"> var data = {{ details | tojson }};</script>
+
+{% endblock javascripts %}
