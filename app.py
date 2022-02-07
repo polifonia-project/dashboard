@@ -11,41 +11,57 @@ from itsdangerous import exc
 app = Flask(__name__)
 
 
-# deal with config file
+def read_json(file_name):
+    '''
+    open and read json file
+    '''
+    with open(file_name) as config_form:
+        data = json.load(config_form)
+        return data
 
-with open('config.json') as config_form:
-    c = json.load(config_form)
+
+def update_json(file_name, json_read):
+    '''
+    update and dump json file
+    '''
+    with open(file_name, 'w') as config_update:
+        json.dump(json_read, config_update)
 
 
-def access_data_sources(pilot_name):
-    for source, details in c['data_sources'].items():
+def access_data_sources(pilot_name, file_name):
+    '''
+    this function access a specific pilot data in the config file based on its name
+    '''
+    for source, details in read_json(file_name)['data_sources'].items():
         if pilot_name == source:
             return details
+
+# access the welcome page
 
 
 @app.route("/")
 def welcome():
     return render_template('index.html')
 
+# access any pilot page
 
-@app.route("/pilot/<string:page_name>")
-def index(page_name):
-    details = access_data_sources(page_name)
-    template = details['template_mode']  # change the template_mode
-    if template:
-        title = True
-        sub = True
-        curator = True
-        desc = True
-        return render_template('pilot.html', details=details, title=title, sub=sub, curator=curator, desc=desc)
+
+@app.route("/pilot/<string:pilot_name>")
+def pilot(pilot_name):
+    '''
+    opens the config file, checks if pilot_name is inside data_sources and returns its page with the data(details)
+    to be displayed.
+    '''
+    details = access_data_sources(pilot_name, 'config.json')
+    if details:
+        return render_template('pilot.html', details=details)
     else:
         return render_template('page-404.html')
 
 
 @app.route("/setup", methods=['POST', 'GET'])
 def setup():
-    with open('config.json') as config_form:
-        c = json.load(config_form)
+    c = read_json('config.json')
     if request.method == 'GET':
         template_data = []
         for item in c['templates']:
@@ -66,12 +82,8 @@ def setup():
             # add to config file
             clean_title = pilot_title.lower().replace(" ", "_")
             c['data_sources'][clean_title] = new_pilot
-            with open('config.json', 'w') as config_update:
-                json.dump(c, config_update)
-
-            with open('config.json') as config_form:
-                c = json.load(config_form)
-            details = access_data_sources(clean_title)
+            update_json('config.json', c)
+            details = access_data_sources(clean_title, 'config.json')
             print(details)
             # the correct template opens based on the name
             return render_template(template_mode+'.html', details=details)

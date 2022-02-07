@@ -15,21 +15,21 @@
 			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
 				<div>
 					<h2 class="text-white pb-2 fw-bold">
-						{% if title %}
+
 						{{ details.title }}
-						{% endif %}
+
 					</h2>
 					<h5 class="text-white op-7 mb-2">
-						{% if sub %}
+
 						{{ details.subtitle }}
-						{% endif %}
+
 					</h5>
 				</div>
 				<div class="ml-md-auto py-2 py-md-0">
 					<h4 class="text-white pb-2 fw-bold">
-						{% if curator %}
+
 						{{ details.curator }}
-						{% endif %}
+
 					</h4>
 				</div>
 			</div>
@@ -44,9 +44,9 @@
 							<h4 class="card-title">About the Project</h4>
 						</div>
 						<p class="card-category">
-							{% if desc %}
+
 							{{ details.description }}
-							{% endif %}
+
 						</p>
 					</div>
 					<div class="card-body">
