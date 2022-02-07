@@ -1,128 +1,128 @@
 {
-  "app_port": "8080",
-  "app_host": "0.0.0.0",
-  "index_host": "localhost",
-  "index_channel": 1491,
-  "index_pw": "SecretPassword",
-  "templates": {
-    "template_01": {
-      "name": "statistics",
-      "img_path": "/static/img/template_01.jpg",
-      "default_color": [
-        "#39c6b4",
-        "#17cf31"
-      ]
-    },
-    "template_02": {
-      "name": "maps",
-      "img_path": "/static/img/template_02.jpg",
-      "default_color": [
-        "#6e7e3a",
-        "#79f1e9"
-      ]
-    },
-    "template_03": {
-      "name": "networks",
-      "img_path": "/static/img/template_03.jpg",
-      "default_color": [
-        "#0f64b9",
-        "#e2df1c"
-      ]
-    },
-    "template_04": {
-      "name": "random",
-      "img_path": "/static/img/template_04.jpg",
-      "default_color": [
-        "#77bbc7",
-        "#1d193e"
-      ]
-    }
-  },
-  "data_sources": {
-    "musow": {
-      "iri_base": "https://w3id.org/musow/",
-      "query_method": "sparql_endpoint",
-      "github": "",
-      "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
-      "rest_api": "http://127.0.0.1:8081/musow/v1",
-      "color_code": [
-        "#e8b67f",
-        "#0621e0"
-      ],
-      "logo_path": "",
-      "template_mode": "standard",
-      "title": "musoW",
-      "subtitle": "Discover music data on the Web",
-      "curator": "Marilena Daquino",
-      "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
-      "count": [
-        {
-          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
-          "label": "Repositories"
+    "app_port": "8080",
+    "app_host": "0.0.0.0",
+    "index_host": "localhost",
+    "index_channel": 1491,
+    "index_pw": "SecretPassword",
+    "templates": {
+        "template_01": {
+            "name": "statistics",
+            "img_path": "/static/img/template_01.jpg",
+            "default_color": [
+                "#39c6b4",
+                "#17cf31"
+            ]
         },
-        {
-          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
-          "label": "Catalogues"
+        "template_02": {
+            "name": "maps",
+            "img_path": "/static/img/template_02.jpg",
+            "default_color": [
+                "#6e7e3a",
+                "#79f1e9"
+            ]
         },
-        {
-          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
-          "label": "Datasets"
+        "template_03": {
+            "name": "networks",
+            "img_path": "/static/img/template_03.jpg",
+            "default_color": [
+                "#0f64b9",
+                "#e2df1c"
+            ]
         },
-        {
-          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
-          "label": "Digital Libraries"
-        },
-        {
-          "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
-          "label": "Softwares"
+        "template_04": {
+            "name": "random",
+            "img_path": "/static/img/template_04.jpg",
+            "default_color": [
+                "#77bbc7",
+                "#1d193e"
+            ]
         }
-      ],
-      "chart": [
-        {
-          "chart_type": "barchart",
-          "query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
-          "chart_title": "Content Overview",
-          "axes_label": [
-            "xlabel",
-            "ylabel"
-          ],
-          "operations": ""
-        },
-        {
-          "chart_type": "linechart",
-          "query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
-          "chart_title": "New Entries",
-          "operations": ""
-        },
-        {
-          "chart_type": "doughnutchart",
-          "query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
-          "chart_title": "Audiences of Repository",
-          "operations": [
-            {
-              "action": "count",
-              "param": "label"
-            }
-          ]
-        }
-      ]
     },
-    "wikidata": {
-      "iri_base": "https://www.wikidata.org/",
-      "query_method": "sparql_endpoint",
-      "github": "",
-      "sparql_endpoint": "https://query.wikidata.org/",
-      "rest_api": "",
-      "color_code": [
-        "#54e8e7",
-        "#48ce48"
-      ],
-      "logo_path": "",
-      "template_mode": "alt",
-      "title": "Wikidata",
-      "subtitle": "",
-      "curator": "Giulia Renda",
-      "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\n\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web."
+    "data_sources": {
+        "musow": {
+            "iri_base": "https://w3id.org/musow/",
+            "query_method": "sparql_endpoint",
+            "github": "",
+            "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+            "rest_api": "http://127.0.0.1:8081/musow/v1",
+            "color_code": [
+                "#e8b67f",
+                "#0621e0"
+            ],
+            "logo_path": "",
+            "template_mode": "statistics",
+            "title": "musoW",
+            "subtitle": "Discover music data on the Web",
+            "curator": "Marilena Daquino",
+            "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
+            "count": [
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
+                    "label": "Repositories"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
+                    "label": "Catalogues"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
+                    "label": "Datasets"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
+                    "label": "Digital Libraries"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
+                    "label": "Softwares"
+                }
+            ],
+            "chart": [
+                {
+                    "chart_type": "barchart",
+                    "query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                    "chart_title": "Content Overview",
+                    "axes_label": [
+                        "xlabel",
+                        "ylabel"
+                    ],
+                    "operations": ""
+                },
+                {
+                    "chart_type": "linechart",
+                    "query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
+                    "chart_title": "New Entries",
+                    "operations": ""
+                },
+                {
+                    "chart_type": "doughnutchart",
+                    "query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
+                    "chart_title": "Audiences of Repository",
+                    "operations": [
+                        {
+                            "action": "count",
+                            "param": "label"
+                        }
+                    ]
+                }
+            ]
+        },
+        "wikidata": {
+            "iri_base": "https://www.wikidata.org/",
+            "query_method": "sparql_endpoint",
+            "github": "",
+            "sparql_endpoint": "https://query.wikidata.org/",
+            "rest_api": "",
+            "color_code": [
+                "#54e8e7",
+                "#48ce48"
+            ],
+            "logo_path": "",
+            "template_mode": "maps",
+            "title": "Wikidata",
+            "subtitle": "",
+            "curator": "Giulia Renda",
+            "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\n\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web."
+        }
     }
-  }
 }
