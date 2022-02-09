@@ -37,12 +37,19 @@
                                 <h4 class="card-title">About the Project</h4>
                             </div>
                             <p class="card-category">
+                                <!-- <span class="input" role="textbox" contenteditable name="description">
+                                    Type here
+                                </span> -->
                                 <input name="description" type="text" id=""
                                     placeholder="Write a brief introdution to the project.">
                             </p>
                         </div>
                         <div class="card-body">
                             <div class="row">
+                                <section class="col-md-12 col-lg-12 col-sm-12">
+                                    <a class="btn btn-primary btn-border" onclick="add_field()" name="add_textbox">Add
+                                        Textbox</a>
+                                </section>
                                 <!--            COUNTINGS-->
                                 <!-- <div class="row" id="count_container"> -->
                                 <!--               where countings show-->
@@ -50,22 +57,14 @@
                                 <!--DATA STORY-->
                                 <div class="card-body">
                                     <div class="typography-line">
-                                        <h3 class="card-title">A Random Subtitle</h3>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet nibh
-                                            nec
-                                            odio commodo
-                                            egestas. Donec a tortor lacus. Donec iaculis porta magna id scelerisque.
-                                            Donec
-                                            fringilla, mauris
-                                            ut maximus porta, leo est molestie orci, in scelerisque massa metus non
-                                            ligula.
-                                            Donec pulvinar
-                                            auctor mollis. Proin nec convallis diam. Nunc a tellus ac tellus tincidunt
-                                            hendrerit.
-                                            Pellentesque habitant morbi tristique senectus et netus et malesuada fames
-                                            ac
-                                            turpis
-                                            egestas.</p>
+                                        <span id="add_after_me"></span>
+                                        <h3 class="card-title">
+                                            <input name="para_title" type="text" id=""
+                                                placeholder="The Title of This Paragraph">
+                                        </h3>
+                                        <p><a href="#" class="trash"><i class="far fa-trash-alt"></i></a><input
+                                                name="text" type="text" id=""
+                                                placeholder="Write the text for this paragraph."></p>
                                     </div>
                                 </div>
                                 <!--GRAPHS-->

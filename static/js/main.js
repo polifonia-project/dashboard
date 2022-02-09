@@ -5,6 +5,22 @@ window.onload = function () {
     // sidebarContent();
 }
 
+//// WYSIWYG FORM FUNCTIONS ////
+
+// add textbox
+function add_field() {
+    document.getElementById("add_after_me").insertAdjacentHTML("afterend",
+        '<p><a href="#" class="trash"><i class="far fa-trash-alt"></i></a><input name="text" type="text" id="" placeholder="Write the text for this paragraph."></p>');
+}
+
+// remove field
+$(document).on('click', '.trash', function (e) {
+    e.currentTarget.parentNode.remove();
+    return false;
+})
+
+//// STATISTICS TEMPLATE FUNCTIONS ////
+
 function colorSwitch() {
     // gradient
     var gradientEl = document.querySelector(".panel-header");
