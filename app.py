@@ -101,11 +101,16 @@ def send_data():
             # transform ImmutableMultiDict into regular dict
             form_data = request.form.to_dict(flat=True)
             pilot_title = form_data['title']
-            for k, v in form_data.items():
-                for source, details in c['data_sources'].items():
-                    # with the title we check where to insert data
-                    if details['title'] == pilot_title:
-                        details[k] = v
+            text_dict = {}
+            for source, details in c['data_sources'].items():
+                # with the title we check where to insert data
+                if details['title'] == pilot_title:
+                    for k, v in form_data.items():
+                        if "text" in k:
+                            text_dict[k] = v
+                        else:
+                            details[k] = v
+                    details['text'] = text_dict
             update_json('config.json', c)
             return 'Success!'
         except:
