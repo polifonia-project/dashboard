@@ -7,17 +7,81 @@ window.onload = function () {
 
 //// WYSIWYG FORM FUNCTIONS ////
 
+// update index of fields in template page (to store the final order)
+function updateindex() {
+    $('.sortable .block_field').each(function () {
+        var idx = $(".block_field").index(this);
+        $(this).attr("data-index", idx);
+        var everyChild = this.getElementsByTagName("input");
+        for (var i = 0; i < everyChild.length; i++) {
+            var childid = everyChild[i].id;
+            var childname = everyChild[i].name;
+            if (childid != undefined) {
+                if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
+                else { everyChild[i].id = idx + '__' + childid; }
+            };
+            if (childname != undefined) {
+                if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
+                else { everyChild[i].name = idx + '__' + childname; }
+            };
+        };
+    });
+};
+
+// move blocks up/down when clicking on arrow
+function moveUpAndDown() {
+    var selected = 0;
+    var itemlist = $('.sortable');
+    var nodes = $(itemlist).children();
+    var len = $(itemlist).children().length;
+    // initialize index
+    updateindex();
+
+    $(".sortable .block_field").click(function () {
+        selected = $(this).index();
+    });
+
+    $(".up").click(function (e) {
+        e.preventDefault();
+        if (selected > 0) {
+            jQuery($(itemlist).children().eq(selected - 1)).before(jQuery($(itemlist).children().eq(selected)));
+            selected = selected - 1;
+            updateindex();
+        };
+
+    });
+    $(".down").click(function (e) {
+        e.preventDefault();
+        if (selected < len) {
+            jQuery($(itemlist).children().eq(selected + 1)).after(jQuery($(itemlist).children().eq(selected)));
+            selected = selected + 1;
+            updateindex();
+        };
+    });
+
+
+};
+
 // add textbox
 function add_field() {
-    document.getElementById("add_after_me").insertAdjacentHTML("afterend",
-        '<p><a href="#" class="trash"><i class="far fa-trash-alt"></i></a><input name="text" type="text" id="" placeholder="Write the text for this paragraph."></p>');
-}
+    var contents = "";
+    var temp_id = Date.now().toString();
+    var field = "<input name='text_" + temp_id + "' type='text' id='text_" + temp_id + "' placeholder='Write the text for this paragraph.'>"
+    var open_addons = "<p class='block_field' id='text_" + temp_id + "'>";
+    var close_addons = "</p>";
+    var up_down = '<a href="#" class="up"><i class="fas fa-arrow-up"></i></a> <a href="#" class="down"><i class="fas fa-arrow-down"></i></a> <a href="#" class="trash"><i class="far fa-trash-alt"></i></a>';
 
-// remove field
-$(document).on('click', '.trash', function (e) {
-    e.currentTarget.parentNode.remove();
-    return false;
-})
+    contents += open_addons + up_down + field + close_addons;
+    $(".sortable").append(contents);
+    updateindex();
+    moveUpAndDown();
+
+    // remove field
+    $('.trash').click(function (e) {
+        e.preventDefault();
+        $(this).parent().remove();
+    })
+}
 
 //// STATISTICS TEMPLATE FUNCTIONS ////
 
