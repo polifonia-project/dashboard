@@ -84,7 +84,6 @@ def setup():
             c['data_sources'][clean_title] = new_pilot
             update_json('config.json', c)
             details = access_data_sources(clean_title, 'config.json')
-            print(details)
             # the correct template opens based on the name
             return render_template(template_mode+'.html', details=details)
         except:
@@ -98,21 +97,16 @@ def send_data():
     c = read_json('config.json')
     if request.method == 'POST':
         try:
-            # get data
-            form_data = request.form
-            print(form_data)
+            # get data and add to existing pilot instance in config
+            # transform ImmutableMultiDict into regular dict
+            form_data = request.form.to_dict(flat=True)
             pilot_title = form_data['title']
-            pilot_subtitle = form_data['subtitle']
-            pilot_curator = form_data['curator']
-            pilot_description = form_data['description']
-            # get existent pilot instance
-
-            for source, details in c['data_sources'].items():
-                if details['title'] == pilot_title:
-                    details['subtitle'] = pilot_subtitle
-                    details['curator'] = pilot_curator
-                    details['description'] = pilot_description
-                    update_json('config.json', c)
+            for k, v in form_data.items():
+                for source, details in c['data_sources'].items():
+                    # with the title we check where to insert data
+                    if details['title'] == pilot_title:
+                        details[k] = v
+            update_json('config.json', c)
             return 'Success!'
         except:
             return 'Something went wrong'
