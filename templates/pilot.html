@@ -37,7 +37,7 @@
 	</div>
 	<div class="page-inner mt--5">
 		<div class="row row-card-no-pd">
-			<div class="col-md-12">
+			<div class="col-md-12 col-lg-12 col-sm-12">
 				<div class="card">
 					<div class="card-header">
 						<div class="card-head-row card-tools-still-right">
@@ -59,13 +59,15 @@
 							<div class="card-body">
 								<div class="typography-line">
 									<h3 class="card-title">A Random Subtitle</h3>
+									{% if details.text %}
 									{% for key, value in details.text.items()|sort(attribute='0') %}
 									<p>{{value}}</p>
 									{% endfor %}
+									{% endif %}
 								</div>
-							</div>
-							<!--GRAPHS-->
-							<div id="vizContainer">
+								<!--GRAPHS-->
+								<div id="vizContainer">
+								</div>
 							</div>
 						</div>
 					</div>
