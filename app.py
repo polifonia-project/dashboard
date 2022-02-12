@@ -41,7 +41,8 @@ def access_data_sources(pilot_name, file_name):
 
 @app.route("/")
 def welcome():
-    return render_template('index.html')
+    data = read_json('config.json')
+    return render_template('index.html', data=data)
 
 # access any pilot page
 
