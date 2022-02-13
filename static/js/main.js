@@ -89,12 +89,12 @@ function colorSwitch() {
     // gradient
     var gradientEl = document.querySelector(".panel-header");
     gradientEl.classList.remove("bg-primary-gradient");
-    gradientEl.style.background = 'linear-gradient(-45deg,' + data.color_code[0] + ',' + data.color_code[1] + ')';
+    gradientEl.style.background = 'linear-gradient(-45deg,' + pilot_data.color_code[0] + ',' + pilot_data.color_code[1] + ')';
 }
 
 function counter() {
-    if (data.count) {
-        data.count.forEach(element => {
+    if (pilot_data.count) {
+        pilot_data.count.forEach(element => {
             var query = element.query;
             // check if the query is an API request
             if (query.startsWith('http')) {
@@ -110,7 +110,7 @@ function counter() {
             } else {
                 // if it is a sparql query
                 var encoded = encodeURIComponent(query);
-                var sparqlEndpoint = data.sparql_endpoint;
+                var sparqlEndpoint = pilot_data.sparql_endpoint;
                 var count_label = element.label;
                 $.ajax({
                     type: 'GET',
@@ -146,8 +146,8 @@ function counter() {
 }
 
 function chartViz() {
-    if (data.chart) {
-        data.chart.forEach((element, index) => {
+    if (pilot_data.chart) {
+        pilot_data.chart.forEach((element, index) => {
             var chart = element.chart_type;
             if (chart === "barchart") {
                 barchart(element, index);
@@ -243,7 +243,7 @@ function barchart(element, index) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = data.sparql_endpoint;
+        var sparqlEndpoint = pilot_data.sparql_endpoint;
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
@@ -313,7 +313,7 @@ function linechart(element, index) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = data.sparql_endpoint;
+        var sparqlEndpoint = pilot_data.sparql_endpoint;
         // var label = element.label;
         $.ajax({
             type: 'GET',
@@ -412,7 +412,7 @@ function doughnutchart(element, index) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = data.sparql_endpoint;
+        var sparqlEndpoint = pilot_data.sparql_endpoint;
 
         $.ajax({
             type: 'GET',
@@ -448,7 +448,7 @@ function doughnutchart(element, index) {
                 var chartId = "chart" + (index + 1);
 
                 // chart colors
-                var colors = chartColor(data.color_code[0], data.color_code[1], chartLabels.length);
+                var colors = chartColor(pilot_data.color_code[0], pilot_data.color_code[1], chartLabels.length);
 
                 // chart plotting
                 var myDoughnutChart = new Chart(chartId, {
@@ -505,7 +505,7 @@ function stacked_barchart(element, index) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = data.sparql_endpoint;
+        var sparqlEndpoint = pilot_data.sparql_endpoint;
 
         $.ajax({
             type: 'GET',

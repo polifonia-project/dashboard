@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} {{ details.title }} {% endblock %}
+{% block title %} {{ pilot_data.title }} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -16,19 +16,19 @@
 				<div>
 					<h2 class="text-white pb-2 fw-bold">
 
-						{{ details.title }}
+						{{ pilot_data.title }}
 
 					</h2>
 					<h5 class="text-white op-7 mb-2">
 
-						{{ details.subtitle }}
+						{{ pilot_data.subtitle }}
 
 					</h5>
 				</div>
 				<div class="ml-md-auto py-2 py-md-0">
 					<h4 class="text-white pb-2 fw-bold">
 
-						{{ details.curator }}
+						{{ pilot_data.curator }}
 
 					</h4>
 				</div>
@@ -45,7 +45,7 @@
 						</div>
 						<p class="card-category">
 
-							{{ details.description }}
+							{{ pilot_data.description }}
 
 						</p>
 					</div>
@@ -59,8 +59,8 @@
 							<div class="card-body">
 								<div class="typography-line">
 									<h3 class="card-title">A Random Subtitle</h3>
-									{% if details.text %}
-									{% for key, value in details.text.items()|sort(attribute='0') %}
+									{% if pilot_data.text %}
+									{% for key, value in pilot_data.text.items()|sort(attribute='0') %}
 									<p>{{value}}</p>
 									{% endfor %}
 									{% endif %}
@@ -89,7 +89,7 @@
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 {% block javascripts %}
-<script type="text/javascript"> var data = {{ details | tojson }};</script>
+<script type="text/javascript"> var pilot_data = {{ pilot_data | tojson }};</script>
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 <!-- <script src="/static/js/setting-demo.js"></script>
 <script src="/static/js/demo.js"></script> -->

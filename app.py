@@ -40,9 +40,9 @@ def access_data_sources(pilot_name, file_name):
 
 
 @app.route("/")
+@app.route("/index.html")
 def welcome():
-    data = read_json('config.json')
-    return render_template('index.html', data=data)
+    return render_template('index.html')
 
 # access any pilot page
 
@@ -50,12 +50,12 @@ def welcome():
 @app.route("/pilot/<string:pilot_name>")
 def pilot(pilot_name):
     '''
-    opens the config file, checks if pilot_name is inside data_sources and returns its page with the data(details)
+    opens the config file, checks if pilot_name is inside data_sources and returns its page with the data(pilot_data)
     to be displayed.
     '''
-    details = access_data_sources(pilot_name, 'config.json')
-    if details:
-        return render_template('pilot.html', details=details)
+    pilot_data = access_data_sources(pilot_name, 'config.json')
+    if pilot_data:
+        return render_template('pilot.html', pilot_data=pilot_data)
     else:
         return render_template('page-404.html')
 
@@ -84,9 +84,9 @@ def setup():
             clean_title = pilot_title.lower().replace(" ", "_")
             c['data_sources'][clean_title] = new_pilot
             update_json('config.json', c)
-            details = access_data_sources(clean_title, 'config.json')
+            pilot_data = access_data_sources(clean_title, 'config.json')
             # the correct template opens based on the name
-            return render_template(template_mode+'.html', details=details)
+            return render_template(template_mode+'.html', pilot_data=pilot_data)
         except:
             return 'did not save to database'
     else:
@@ -103,15 +103,15 @@ def send_data():
             form_data = request.form.to_dict(flat=True)
             pilot_title = form_data['title']
             text_dict = {}
-            for source, details in c['data_sources'].items():
+            for source, pilot_data in c['data_sources'].items():
                 # with the title we check where to insert data
-                if details['title'] == pilot_title:
+                if pilot_data['title'] == pilot_title:
                     for k, v in form_data.items():
                         if "text" in k:
                             text_dict[k] = v
                         else:
-                            details[k] = v
-                    details['text'] = text_dict
+                            pilot_data[k] = v
+                    pilot_data['text'] = text_dict
             update_json('config.json', c)
             return 'Success!'
         except:

@@ -14,7 +14,7 @@
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
                         <h2 class="text-white pb-2 fw-bold">
-                            <input name="title" type="text" id="" value="{{ details.title }}">
+                            <input name="title" type="text" id="" value="{{ pilot_data.title }}">
                         </h2>
                         <h5 class="text-white op-7 mb-2">
                             <input name="subtitle" type="text" id="" placeholder="The Subtitle">
@@ -88,6 +88,6 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script type="text/javascript"> var data = {{ details | tojson }};</script>
+<script type="text/javascript"> var pilot_data = {{ pilot_data | tojson }};</script>
 
 {% endblock javascripts %}
