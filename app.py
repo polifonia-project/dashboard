@@ -1,5 +1,5 @@
 from statistics import mode
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, redirect
 
 import json
 
@@ -75,11 +75,16 @@ def setup():
             template_mode = form_data['template_mode']
             pilot_title = form_data['title']
             pilot_endpoint = form_data['sparql_endpoint']
+            color_code = ''
+            for item in c['templates']:
+                if c['templates'][item]['name'] == template_mode:
+                    color_code = c['templates'][item]['default_color']
             # create new pilot instance
             new_pilot = {}
             new_pilot['sparql_endpoint'] = pilot_endpoint
             new_pilot['template_mode'] = template_mode
             new_pilot['title'] = pilot_title
+            new_pilot['color_code'] = color_code
             # add to config file
             clean_title = pilot_title.lower().replace(" ", "_")
             c['data_sources'][clean_title] = new_pilot
@@ -113,6 +118,7 @@ def send_data():
                             pilot_data[k] = v
                     pilot_data['text'] = text_dict
             update_json('config.json', c)
-            return 'Success!'
+            pilot_name = pilot_title.lower().replace(" ", "_")
+            return redirect(url_for('pilot', pilot_name=pilot_name))
         except:
             return 'Something went wrong'
