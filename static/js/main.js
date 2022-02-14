@@ -63,15 +63,26 @@ function moveUpAndDown() {
 };
 
 // add textbox
-function add_field() {
+function add_field(name) {
     var contents = "";
     var temp_id = Date.now().toString();
-    var field = "<input name='text_" + temp_id + "' type='text' id='text_" + temp_id + "' placeholder='Write the text for this paragraph.'>"
-    var open_addons = "<p class='block_field' id='text_" + temp_id + "'>";
-    var close_addons = "</p>";
+
+    var text_field = "<input name='text_" + temp_id + "' type='text' id='text_" + temp_id + "' placeholder='Write the text for this paragraph.'>"
+
+    var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='num'></p><p id='lab'></p></div><input name='query' type='text' id='query'placeholder='Write the SPARQL query for the count.' required><input name='label' type='text' id='label'placeholder='The label you want to show.' required>";
+
+
     var up_down = '<a href="#" class="up"><i class="fas fa-arrow-up"></i></a> <a href="#" class="down"><i class="fas fa-arrow-down"></i></a> <a href="#" class="trash"><i class="far fa-trash-alt"></i></a>';
 
-    contents += open_addons + up_down + field + close_addons;
+    if (name == 'textbox') {
+        var open_addons = "<p class='block_field' id='text_" + temp_id + "'>";
+        var close_addons = "</p>";
+        contents += open_addons + up_down + text_field + close_addons;
+    } else if (name == 'countbox') {
+        var open_addons = "<div class='col-lg-4 block_field' id='count_" + temp_id + "'>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + count_field + close_addons;
+    }
     $(".sortable").append(contents);
     updateindex();
     moveUpAndDown();
@@ -82,6 +93,40 @@ function add_field() {
         $(this).parent().remove();
     })
 }
+
+// preview content
+$(function () {
+    var update = function () {
+        var fields = $('form').serializeArray();
+        var query = '';
+        var count_label = '';
+        $.each(fields, function () {
+            var name = this.name;
+            if (name.includes('query')) {
+                query = this.value;
+            } else if (name.includes('label')) {
+                count_label = this.value;
+            }
+        });
+        var encoded = encodeURIComponent(query);
+        var sparqlEndpoint = pilot_data.sparql_endpoint;
+        $.ajax({
+            type: 'GET',
+            url: sparqlEndpoint + '?query=' + encoded,
+            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+            success: function (returnedJson) {
+                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                    var count = returnedJson.results.bindings[i].count.value;
+                    $("#num").text(count);
+                    $("#lab").text(count_label);
+                }
+            }
+        })
+
+    };
+    update();
+    $('form').change(update);
+})
 
 //// STATISTICS TEMPLATE FUNCTIONS ////
 
@@ -140,8 +185,6 @@ function counter() {
                 })
             }
         })
-    } else {
-        alert("No COUNT found.");
     }
 }
 
@@ -586,7 +629,6 @@ function stacked_barchart(element, index) {
     }
 
 }
-
 
 
 

@@ -1,3 +1,4 @@
+from itertools import count
 from statistics import mode
 from flask import Flask, render_template, request, url_for, redirect
 
@@ -106,17 +107,34 @@ def send_data():
             # get data and add to existing pilot instance in config
             # transform ImmutableMultiDict into regular dict
             form_data = request.form.to_dict(flat=True)
+            print(form_data)
             pilot_title = form_data['title']
             text_dict = {}
+            query_list = []
+            label_list = []
+            count_list = []
             for source, pilot_data in c['data_sources'].items():
                 # with the title we check where to insert data
                 if pilot_data['title'] == pilot_title:
                     for k, v in form_data.items():
                         if "text" in k:
                             text_dict[k] = v
+                        elif "query" in k:
+                            query_list.append((k, v))
+                        elif "label" in k:
+                            label_list.append((k, v))
                         else:
                             pilot_data[k] = v
+
+                    for q in query_list:
+                        count_dict = {}
+                        for l in label_list:
+                            if q[0][:2] == l[0][:2]:
+                                count_dict['query'] = q[1]
+                                count_dict['label'] = l[1]
+                                count_list.append(count_dict)
                     pilot_data['text'] = text_dict
+                    pilot_data['count'] = count_list
             update_json('config.json', c)
             pilot_name = pilot_title.lower().replace(" ", "_")
             return redirect(url_for('pilot', pilot_name=pilot_name))

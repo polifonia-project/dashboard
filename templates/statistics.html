@@ -2,6 +2,7 @@
 {% block title %} Setup your page {% endblock %}
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/templates.css') }}">
 {% endblock stylesheets %}
 
@@ -47,28 +48,21 @@
                         <div class="card-body">
                             <div class="row">
                                 <section class="col-md-12 col-lg-12 col-sm-12">
-                                    <a class="btn btn-primary btn-border" onclick="add_field()" name="add_textbox">Add
+                                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
                                         Textbox</a>
+                                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
+                                        Count</a>
+                                    <a class="btn btn-primary btn-border" name="barchart_box">Add
+                                        Barchart</a>
                                 </section>
-                                <!--            COUNTINGS-->
-                                <!-- <div class="row" id="count_container"> -->
-                                <!--               where countings show-->
-                                <!-- </div> -->
-                                <!--DATA STORY-->
+
                                 <div class="card-body">
                                     <div class="sortable typography-line">
-                                        <!-- <span id="add_after_me"></span> -->
-                                        <!-- <h3 class="card-title">
-                                            <input name="para_title" type="text" id=""
-                                                placeholder="The Title of This Paragraph">
-                                        </h3>
-                                        <p>
-                                            <a href="#" class="up"><i class="fas fa-arrow-up"></i></a>
-                                            <a href="#" class="down"><i class="fas fa-arrow-down"></i></a>
-                                            <a href="#" class="trash"><i class="far fa-trash-alt"></i></a>
-                                            <input name="text" type="text" id=""
-                                                placeholder="Write the text for this paragraph.">
-                                        </p> -->
+
+
+
+
+
                                     </div>
                                 </div>
                                 <!--GRAPHS-->
@@ -89,5 +83,6 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script type="text/javascript"> var pilot_data = {{ pilot_data | tojson }};</script>
+
 
 {% endblock javascripts %}
