@@ -52,13 +52,14 @@
 					<div class="card-body">
 						<div class="row">
 							<!--            COUNTINGS-->
-							<div class="row" id="count_container">
+							<div class="d-flex flex-wrap justify-content-around pb-2 pt-4" id="count_container">
 								<!--               where countings show-->
 							</div>
+							<br />
 							<!--DATA STORY-->
-							<div class="card-body">
+							<div class="col">
 								<div class="typography-line">
-									<h3 class="card-title">A Random Subtitle</h3>
+
 									{% if pilot_data.text %}
 									{% for key, value in pilot_data.text.items()|sort(attribute='0') %}
 									<p>{{value}}</p>

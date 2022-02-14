@@ -12,7 +12,7 @@ function updateindex() {
     $('.sortable .block_field').each(function () {
         var idx = $(".block_field").index(this);
         $(this).attr("data-index", idx);
-        var everyChild = this.getElementsByTagName("input");
+        var everyChild = this.getElementsByTagName("*");
         for (var i = 0; i < everyChild.length; i++) {
             var childid = everyChild[i].id;
             var childname = everyChild[i].name;
@@ -79,7 +79,7 @@ function add_field(name) {
         var close_addons = "</p>";
         contents += open_addons + up_down + text_field + close_addons;
     } else if (name == 'countbox') {
-        var open_addons = "<div class='col-lg-4 block_field' id='count_" + temp_id + "'>";
+        var open_addons = "<div class='col block_field' id='count_" + temp_id + "'>";
         var close_addons = "</div>";
         contents += open_addons + up_down + count_field + close_addons;
     }
@@ -95,33 +95,39 @@ function add_field(name) {
 }
 
 // preview content
+
 $(function () {
     var update = function () {
         var fields = $('form').serializeArray();
-        var query = '';
-        var count_label = '';
-        $.each(fields, function () {
-            var name = this.name;
-            if (name.includes('query')) {
-                query = this.value;
-            } else if (name.includes('label')) {
-                count_label = this.value;
-            }
-        });
-        var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = pilot_data.sparql_endpoint;
-        $.ajax({
-            type: 'GET',
-            url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-            success: function (returnedJson) {
-                for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                    var count = returnedJson.results.bindings[i].count.value;
-                    $("#num").text(count);
-                    $("#lab").text(count_label);
+        $('.sortable .block_field').each(function (idx) {
+            fields.forEach(element => {
+                var query = '';
+                var count_label = '';
+                if (element.name == idx + '__query') {
+                    query = element.value;
+                } else if (element.name == idx + '__label') {
+                    count_label = element.value;
+                    $("#" + idx + "__lab").text(count_label);
                 }
+                var encoded = encodeURIComponent(query);
+                var sparqlEndpoint = pilot_data.sparql_endpoint;
+                $.ajax({
+                    type: 'GET',
+                    url: sparqlEndpoint + '?query=' + encoded,
+                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                    success: function (returnedJson) {
+                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                            var count = returnedJson.results.bindings[i].count.value;
+                            // console.log(count_label);
+                            $("#" + idx + "__num").text(count);
+
+                        }
+                    }
+                })
             }
-        })
+
+            );
+        });
 
     };
     update();
@@ -166,7 +172,7 @@ function counter() {
                             var count = returnedJson.results.bindings[i].count.value;
                             // create div to set the column
                             var generalDiv = document.createElement("div");
-                            generalDiv.className = "col-lg-4";
+                            generalDiv.className = "px-2 pb-2 pb-md-0 text-center";
                             // create div to contain number and label
                             var countDiv = document.createElement("div");
                             countDiv.className = "card-body option-2b";
