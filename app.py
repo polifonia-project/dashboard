@@ -43,7 +43,9 @@ def access_data_sources(pilot_name, file_name):
 @app.route("/")
 @app.route("/index.html")
 def welcome():
-    return render_template('index.html')
+    general_data = read_json('config.json')
+    return render_template('index.html', general_data=general_data)
+
 
 # access any pilot page
 
@@ -54,21 +56,22 @@ def pilot(pilot_name):
     opens the config file, checks if pilot_name is inside data_sources and returns its page with the data(pilot_data)
     to be displayed.
     '''
+    general_data = read_json('config.json')
     pilot_data = access_data_sources(pilot_name, 'config.json')
     if pilot_data:
-        return render_template('pilot.html', pilot_data=pilot_data)
+        return render_template('pilot.html', pilot_data=pilot_data, general_data=general_data)
     else:
         return render_template('page-404.html')
 
 
 @app.route("/setup", methods=['POST', 'GET'])
 def setup():
-    c = read_json('config.json')
+    general_data = read_json('config.json')
     if request.method == 'GET':
         template_data = []
-        for item in c['templates']:
-            template_data.append(c['templates'][item])
-        return render_template('setup.html', template_data=template_data)
+        for item in general_data['templates']:
+            template_data.append(general_data['templates'][item])
+        return render_template('setup.html', template_data=template_data, general_data=general_data)
     elif request.method == 'POST':
         try:
             # get data
@@ -77,9 +80,9 @@ def setup():
             pilot_title = form_data['title']
             pilot_endpoint = form_data['sparql_endpoint']
             color_code = ''
-            for item in c['templates']:
-                if c['templates'][item]['name'] == template_mode:
-                    color_code = c['templates'][item]['default_color']
+            for item in general_data['templates']:
+                if general_data['templates'][item]['name'] == template_mode:
+                    color_code = general_data['templates'][item]['default_color']
             # create new pilot instance
             new_pilot = {}
             new_pilot['sparql_endpoint'] = pilot_endpoint
@@ -88,11 +91,12 @@ def setup():
             new_pilot['color_code'] = color_code
             # add to config file
             clean_title = pilot_title.lower().replace(" ", "_")
-            c['data_sources'][clean_title] = new_pilot
-            update_json('config.json', c)
+            general_data['data_sources'][clean_title] = new_pilot
+            update_json('config.json', general_data)
+            general_data = read_json('config.json')
             pilot_data = access_data_sources(clean_title, 'config.json')
             # the correct template opens based on the name
-            return render_template(template_mode+'.html', pilot_data=pilot_data)
+            return render_template(template_mode+'.html', pilot_data=pilot_data, general_data=general_data)
         except:
             return 'did not save to database'
     else:
@@ -101,7 +105,7 @@ def setup():
 
 @app.route("/send_data", methods=['POST', 'GET'])
 def send_data():
-    c = read_json('config.json')
+    general_data = read_json('config.json')
     if request.method == 'POST':
         try:
             # get data and add to existing pilot instance in config
@@ -117,7 +121,7 @@ def send_data():
 
             chart_dict = {}
             chart_list = []
-            for source, pilot_data in c['data_sources'].items():
+            for source, pilot_data in general_data['data_sources'].items():
                 # with the title we check where to insert data
                 if pilot_data['title'] == pilot_title:
                     for k, v in form_data.items():
@@ -159,7 +163,7 @@ def send_data():
                     #             chart_dict['chart_title'] = t[1]
                     #             chart_list.append(chart_dict)
                     # pilot_data['count'] = count_list
-            update_json('config.json', c)
+            update_json('config.json', general_data)
             pilot_name = pilot_title.lower().replace(" ", "_")
             return redirect(url_for('pilot', pilot_name=pilot_name))
         except:
