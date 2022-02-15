@@ -47,15 +47,6 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <section class="col-md-12 col-lg-12 col-sm-12">
-                                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
-                                        Textbox</a>
-                                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
-                                        Count</a>
-                                    <a class="btn btn-primary btn-border" name="barchart_box">Add
-                                        Barchart</a>
-                                </section>
-
                                 <div class="col">
                                     <div class="sortable typography-line">
 
@@ -66,15 +57,49 @@
                                     </div>
                                 </div>
                                 <!--GRAPHS-->
-                                <div id="vizContainer">
-                                </div>
+                                <!-- <div class="col-12">
+                                    <div id='vizContainer'>
+                                    </div>
+                                    <div class='form-group'>
+                                        <label for='exampleFormControlSelect2'>Chart Type</label>
+                                        <select name='chart_type' class='form-control' id='chart_type'>
+                                            <option>Line chart</option>
+                                            <option>Bar chart</option>
+                                            <option>Stacked Bar chart</option>
+                                            <option name='bubble_chart'>Bubble chart</option>
+                                            <option>Scatter chart</option>
+                                        </select>
+                                        <label for='largeInput'>SPARQL query</label>
+                                        <input name='chart_query' type='text' class='form-control form-control'
+                                            id='chart_query' placeholder='Type your query' required>
+                                        <label for='largeInput'>Chart Title</label>
+                                        <input name='chart_title' type='text' class='form-control form-control'
+                                            id='chart_title' placeholder='Title' required>
+                                        <label class='form-label'>Operations (to be addedd)</label><br>
+                                    </div>
+                                </div> -->
+
+
+                                <section class="col-md-12 col-lg-12 col-sm-12">
+                                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
+                                        Textbox</a>
+                                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
+                                        Count</a>
+                                    <a class="btn btn-primary btn-border" onclick="add_field(name)"
+                                        name="barchart_box">Add
+                                        Barchart</a>
+                                </section>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-success">Submit</button>
+        <div class="card-action" style="margin:auto;">
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="reset" class="btn btn-danger">Cancel</button>
+
+        </div>
     </form>
 </div>
 
