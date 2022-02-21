@@ -67,16 +67,16 @@ function add_field(name) {
     var contents = "";
     var temp_id = Date.now().toString();
 
-    var text_field = "<input name='text_" + temp_id + "' type='text' id='text_" + temp_id + "' placeholder='Write the text for this paragraph.'>"
+    var text_field = "<input name='text' type='text' id='text' placeholder='Write the text for this paragraph.'>"
 
-    var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='num'></p><p id='lab'></p></div><input name='query' type='text' id='query'placeholder='Write the SPARQL query for the count.' required><input name='label' type='text' id='label'placeholder='The label you want to show.' required>";
+    var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='num'></p><p id='lab'></p></div><input name='count_query' type='text' id='count_query' placeholder='Write the SPARQL query for the count.' required><input name='count_label' type='text' id='count_label' placeholder='The label you want to show.' required>";
 
     var chart_field = "<div class='chart-container'><canvas id='chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='chart_type' class='form-control' id='chart_type'><option name='linechart' id='linechart'>Line chart</option><option name='barchart' id='barchart'>barchart</option><option>Stacked Bar chart</option><option name='bubble_chart'>Bubble chart</option><option>Scatter chart</option></select><label for='largeInput'>SPARQL query</label><input name='chart_query' type='text' class='form-control form-control' id='chart_query' placeholder='Type your query' required><label for='largeInput'>Chart Title</label><input name='chart_title' type='text' class='form-control form-control' id='chart_title' placeholder='Title' required><label class='form-label'>Operations (to be addedd)</label><br></div>"
 
     var up_down = '<a href="#" class="up"><i class="fas fa-arrow-up"></i></a> <a href="#" class="down"><i class="fas fa-arrow-down"></i></a> <a href="#" class="trash"><i class="far fa-trash-alt"></i></a>';
 
     if (name == 'textbox') {
-        var open_addons = "<p class='block_field' id='text_" + temp_id + "'>";
+        var open_addons = "<p class='block_field' id='text'>";
         var close_addons = "</p>";
         contents += open_addons + up_down + text_field + close_addons;
     } else if (name == 'countbox') {
@@ -107,18 +107,18 @@ $(function () {
         console.log(fields);
         $('.sortable .block_field').each(function (idx) {
             fields.forEach(element => {
-                var query = '';
+                var count_query = '';
                 var count_label = '';
                 var chart_query = '';
                 var chart_title = '';
                 var chart_type = '';
-                if (element.name == idx + '__query') {
-                    query = element.value;
-                } else if (element.name == idx + '__label') {
+                if (element.name == idx + '__count_query') {
+                    count_query = element.value;
+                } else if (element.name == idx + '__count_label') {
                     count_label = element.value;
                     $("#" + idx + "__lab").text(count_label);
                 }
-                var encoded = encodeURIComponent(query);
+                var encoded = encodeURIComponent(count_query);
                 var sparqlEndpoint = pilot_data.sparql_endpoint;
                 $.ajax({
                     type: 'GET',
@@ -204,66 +204,70 @@ function colorSwitch() {
 }
 
 function counter() {
-    if (pilot_data.count) {
-        pilot_data.count.forEach(element => {
-            var query = element.query;
-            // check if the query is an API request
-            if (query.startsWith('http')) {
-                alert('There is an API request.');
-                // $.ajax({
-                //     type: 'GET',
-                //     url: query,
-                //     headers: {Accept: 'application/json'},
-                //     success: function (returnedJson) {
-                //         do things
-                //     }
-                // }
-            } else {
-                // if it is a sparql query
-                var encoded = encodeURIComponent(query);
-                var sparqlEndpoint = pilot_data.sparql_endpoint;
-                var count_label = element.label;
-                $.ajax({
-                    type: 'GET',
-                    url: sparqlEndpoint + '?query=' + encoded,
-                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-                    success: function (returnedJson) {
-                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                            var count = returnedJson.results.bindings[i].count.value;
-                            // create div to set the column
-                            var generalDiv = document.createElement("div");
-                            generalDiv.className = "px-2 pb-2 pb-md-0 text-center";
-                            // create div to contain number and label
-                            var countDiv = document.createElement("div");
-                            countDiv.className = "card-body option-2b";
-                            countDiv.appendChild(document.createTextNode(count));
-                            generalDiv.appendChild(countDiv);
-                            // create and append p for label
-                            var labelP = document.createElement("p");
-                            labelP.appendChild(document.createTextNode(count_label));
-                            countDiv.appendChild(labelP);
+    if (pilot_data.dynamic_elements) {
+        pilot_data.dynamic_elements.forEach(element => {
+            if (element.type == 'count') {
+                var query = element.count_query;
+                // check if the query is an API request
+                if (query.startsWith('http')) {
+                    alert('There is an API request.');
+                    // $.ajax({
+                    //     type: 'GET',
+                    //     url: query,
+                    //     headers: {Accept: 'application/json'},
+                    //     success: function (returnedJson) {
+                    //         do things
+                    //     }
+                    // }
+                } else {
+                    // if it is a sparql query
+                    var encoded = encodeURIComponent(query);
+                    var sparqlEndpoint = pilot_data.sparql_endpoint;
+                    var count_label = element.count_label;
+                    $.ajax({
+                        type: 'GET',
+                        url: sparqlEndpoint + '?query=' + encoded,
+                        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                        success: function (returnedJson) {
+                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                var count = returnedJson.results.bindings[i].count.value;
+                                // create div to set the column
+                                var generalDiv = document.createElement("div");
+                                generalDiv.className = "px-2 pb-2 pb-md-0 text-center";
+                                // create div to contain number and label
+                                var countDiv = document.createElement("div");
+                                countDiv.className = "card-body option-2b";
+                                countDiv.appendChild(document.createTextNode(count));
+                                generalDiv.appendChild(countDiv);
+                                // create and append p for label
+                                var labelP = document.createElement("p");
+                                labelP.appendChild(document.createTextNode(count_label));
+                                countDiv.appendChild(labelP);
 
-                            // get container and append
-                            var container = document.getElementById("count_container");
-                            container.appendChild(generalDiv);
+                                // get container and append
+                                var container = document.getElementById(element.position);
+                                container.appendChild(generalDiv);
+                            }
                         }
-                    }
-                })
+                    })
+                }
             }
         })
     }
 }
 
 function chartViz() {
-    if (pilot_data.chart) {
-        pilot_data.chart.forEach((element, index) => {
-            var chart = element.chart_type;
-            if (chart === "barchart") {
-                barchart(element, index);
-            } else if (chart === "linechart") {
-                linechart(element, index);
-            } else if (chart === "doughnutchart") {
-                doughnutchart(element, index);
+    if (pilot_data.dynamic_elements) {
+        pilot_data.dynamic_elements.forEach(element => {
+            if (element.type == 'chart') {
+                var chart = element.chart_type;
+                if (chart === "barchart") {
+                    barchart(element);
+                } else if (chart === "linechart") {
+                    linechart(element);
+                } else if (chart === "doughnutchart") {
+                    doughnutchart(element);
+                }
             }
         }
         )
@@ -290,10 +294,10 @@ function count(arr) {
 //     return numArray;
 // }
 
-function chartHTMLElements(element, index) {
+function chartHTMLElements(element) {
     // create canva for bar chart
     var chartCanva = document.createElement("canvas");
-    var chartId = "chart" + (index + 1);
+    var chartId = "chart_" + element.position;
     chartCanva.setAttribute("id", chartId);
 
     // create div that contains canva
@@ -317,16 +321,17 @@ function chartHTMLElements(element, index) {
     cardHeader.appendChild(chartTitle);
 
     // get general container and append elements
-    var container = document.getElementById("vizContainer");
+    var container = document.getElementById(element.position);
     container.appendChild(cardHeader);
     container.appendChild(cardBody);
 }
 
+// colors for charts
 function chartColor(colorStart, colorEnd, dataLength) {
     return d3.quantize(d3.interpolateHcl(colorStart, colorEnd), dataLength);
 }
 
-function barchart(element, index) {
+function barchart(element) {
 
 
     // get the data that I need
@@ -337,7 +342,7 @@ function barchart(element, index) {
     var chartData = [];
     var chartLabels = [];
 
-    var query = element.query;
+    var query = element.chart_query;
     // check if the query is an API request
     if (query.startsWith('http')) {
         alert('There is an API request.');
@@ -365,9 +370,9 @@ function barchart(element, index) {
                 }
 
                 //  create the HTML structure that'll receive the data
-                chartHTMLElements(element, index);
+                chartHTMLElements(element);
                 //  retrieve the chart id
-                var chartId = "chart" + (index + 1);
+                var chartId = "chart_" + element.position;
                 var chartColor = pilot_data.color_code[0];
                 var myBarChart = new Chart(chartId, {
                     type: 'bar',
@@ -398,7 +403,7 @@ function barchart(element, index) {
 
 }
 
-function linechart(element, index) {
+function linechart(element) {
     // get the data that I need
     // now starts a piece of code that is exactly the same from function counter
     // ********
@@ -407,7 +412,7 @@ function linechart(element, index) {
     var chartData = [];
     var chartLabels = [];
 
-    var query = element.query;
+    var query = element.chart_query;
     // check if the query is an API request
     if (query.startsWith('http')) {
         alert('There is an API request.');
@@ -437,9 +442,9 @@ function linechart(element, index) {
                 }
 
                 //  create the HTML structure that'll receive the data
-                chartHTMLElements(element, index);
+                chartHTMLElements(element);
                 //  retrieve the chart id
-                var chartId = "chart" + (index + 1);
+                var chartId = "chart_" + element.position;
                 var chartColor = pilot_data.color_code[0];
                 // graph plotting
                 var myLineChart = new Chart(chartId, {
@@ -499,14 +504,14 @@ function linechart(element, index) {
 
 }
 
-function doughnutchart(element, index) {
+function doughnutchart(element) {
 
     // get the data that I need
     // now starts a piece of code that is exactly the same from function counter
     // ********
 
 
-    var query = element.query;
+    var query = element.chart_query;
     // check if the query is an API request
     if (query.startsWith('http')) {
         alert('There is an API request.');
@@ -531,7 +536,12 @@ function doughnutchart(element, index) {
 
                 var label = [];
                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                    label[i] = returnedJson.results.bindings[i].label.value;
+                    if (returnedJson.results.bindings[i].label.value == '') {
+                        label[i] = 'other'
+                    } else {
+                        label[i] = returnedJson.results.bindings[i].label.value;
+                    }
+
                 }
                 // alert(dataElements);
                 var op = element.operations;
@@ -552,9 +562,9 @@ function doughnutchart(element, index) {
                 })
 
                 // create the HTML structure that'll receive the data
-                chartHTMLElements(element, index);
+                chartHTMLElements(element);
                 // retrieve the chart id
-                var chartId = "chart" + (index + 1);
+                var chartId = "chart_" + element.position;
 
                 // chart colors
                 var colors = chartColor(pilot_data.color_code[0], pilot_data.color_code[1], chartLabels.length);
@@ -592,14 +602,14 @@ function doughnutchart(element, index) {
 
 }
 
-function stacked_barchart(element, index) {
+function stacked_barchart(elemen) {
 
     // get the data that I need
     // now starts a piece of code that is exactly the same from function counter
     // ********
 
 
-    var query = element.query;
+    var query = element.chart_query;
     // check if the query is an API request
     if (query.startsWith('http')) {
         alert('There is an API request.');
@@ -636,9 +646,9 @@ function stacked_barchart(element, index) {
                 // var chartLabels = Object.keys(elCount);
 
                 // create the HTML structure that'll receive the data
-                chartHTMLElements(element, index);
+                chartHTMLElements(element);
                 // retrieve the chart id
-                var chartId = "chart" + (index + 1);
+                var chartId = "chart_" + element.position;
 
                 // chart colors
                 // var colors = chartColor(data.color_code[0], data.color_code[1], chartLabels.length);

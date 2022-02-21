@@ -50,33 +50,31 @@
 						</p>
 					</div>
 					<div class="card-body">
-						<div class="row">
-							<!--            COUNTINGS-->
-							<div class="d-flex flex-wrap justify-content-around pb-2 pt-4" id="count_container"
-								style="margin-bottom: 1em;">
-								<!--               where countings show-->
-							</div>
-							<br />
-							<!--DATA STORY-->
-							<div class="col">
-								<div class="typography-line col">
 
-									{% if pilot_data.text %}
-									{% for key, value in pilot_data.text.items()|sort(attribute='0') %}
-									<p>{{value}}</p>
-									{% endfor %}
-									{% endif %}
-								</div>
-								<!--GRAPHS-->
-								<div id="vizContainer">
-								</div>
-							</div>
+						{% for dict in pilot_data.dynamic_elements %}
+						<!-- text -->
+						{% if dict.type == 'text' %}
+						<div class="typography-line" id="{{dict.position}}">
+							<p>{{dict.text}}</p>
 						</div>
+
+						<!-- count -->
+						{% elif dict.type == 'count' %}
+						<div id="{{dict.position}}"></div>
+
+						<!-- chart -->
+						{% elif dict.type == 'chart' %}
+						<div id="{{dict.position}}"></div>
+						{% endif %}
+
+						{% endfor %}
+
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 {% endblock content %}

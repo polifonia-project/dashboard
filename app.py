@@ -113,56 +113,39 @@ def send_data():
             form_data = request.form.to_dict(flat=True)
             print(form_data)
             pilot_title = form_data['title']
-            text_dict = {}
 
-            count_query_list = []
-            count_label_list = []
-            count_list = []
+            dynamic_elements = []
+            position_set = set()
 
-            chart_dict = {}
-            chart_list = []
             for source, pilot_data in general_data['data_sources'].items():
                 # with the title we check where to insert data
                 if pilot_data['title'] == pilot_title:
+                    # we create a set with the positions of the elements' type
                     for k, v in form_data.items():
-                        if "text" in k:
-                            text_dict[k] = v
-                        elif "query" in k and not 'chart' in k:
-                            count_query_list.append((k, v))
-                        elif "label" in k:
-                            count_label_list.append((k, v))
-                        elif 'chart_type' in k:
-                            chart_dict['chart_type'] = v
-                        elif 'chart_query' in k:
-                            chart_dict['query'] = v
-                        elif 'chart_title' in k:
-                            chart_dict['chart_title'] = v
+                        if '__' in k:
+                            position_set.add(int(k.split('__')[0]))
                         else:
                             pilot_data[k] = v
-                    pilot_data['text'] = text_dict
-                    chart_list.append(chart_dict)
-                    pilot_data['chart'] = chart_list
+                    # we create as many dicts as there are positions, to store each type of element and appent to
+                    # dynamic_elements list
+                    for position in position_set:
+                        elements_dict = {}
+                        elements_dict['position'] = position
+                        for k, v in form_data.items():
+                            if '__' in k:
+                                if position == int(k.split('__')[0]):
+                                    if 'text' in k:
+                                        elements_dict['type'] = 'text'
+                                        elements_dict[k.split('__')[1]] = v
+                                    elif 'count' in k:
+                                        elements_dict['type'] = 'count'
+                                        elements_dict[k.split('__')[1]] = v
+                                    elif 'chart' in k:
+                                        elements_dict['type'] = 'chart'
+                                        elements_dict[k.split('__')[1]] = v
+                        dynamic_elements.append(elements_dict)
 
-                    # deal with counts
-                    for q in count_query_list:
-                        count_dict = {}
-                        for l in count_label_list:
-                            if q[0][:2] == l[0][:2]:
-                                count_dict['query'] = q[1]
-                                count_dict['label'] = l[1]
-                                count_list.append(count_dict)
-                    pilot_data['count'] = count_list
-
-                    # deal with charts
-                    # for c in chart_title_list:
-                    #     chart_dict = {}
-                    #     for t in chart_title_list:
-                    #         if c[0][:2] == t[0][:2]:
-                    #             print(c)
-                    #             chart_dict['chart_type'] = c[1]
-                    #             chart_dict['chart_title'] = t[1]
-                    #             chart_list.append(chart_dict)
-                    # pilot_data['count'] = count_list
+                    pilot_data['dynamic_elements'] = dynamic_elements
             update_json('config.json', general_data)
             pilot_name = pilot_title.lower().replace(" ", "_")
             return redirect(url_for('pilot', pilot_name=pilot_name))

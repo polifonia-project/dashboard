@@ -55,35 +55,47 @@
             "subtitle": "Discover music data on the Web",
             "curator": "Marilena Daquino",
             "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
-            "text": {
-                "0__text": "Let's explore some data through the use of several charts."
-            },
-            "count": [
+            "dynamic_elements": [
                 {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
-                    "label": "Repositories"
+                    "type": "text",
+                    "position": 0,
+                    "text": "Let's explore some data through the use of several charts."
                 },
                 {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
-                    "label": "Catalogues"
+                    "type": "count",
+                    "position": 1,
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
+                    "count_label": "Repositories"
                 },
                 {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
-                    "label": "Datasets"
+                    "type": "count",
+                    "position": 2,
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
+                    "count_label": "Catalogues"
                 },
                 {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
-                    "label": "Digital Libraries"
+                    "type": "count",
+                    "position": 3,
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
+                    "count_label": "Datasets"
                 },
                 {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
-                    "label": "Softwares"
-                }
-            ],
-            "chart": [
+                    "type": "count",
+                    "position": 4,
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
+                    "count_label": "Digital Libraries"
+                },
                 {
+                    "type": "count",
+                    "position": 5,
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
+                    "count_label": "Softwares"
+                },
+                {
+                    "type": "chart",
+                    "position": 6,
                     "chart_type": "barchart",
-                    "query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                    "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
                     "chart_title": "Content Overview",
                     "axes_label": [
                         "xlabel",
@@ -92,14 +104,18 @@
                     "operations": ""
                 },
                 {
+                    "type": "chart",
+                    "position": 7,
                     "chart_type": "linechart",
-                    "query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
+                    "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
                     "chart_title": "New Entries",
                     "operations": ""
                 },
                 {
+                    "type": "chart",
+                    "position": 8,
                     "chart_type": "doughnutchart",
-                    "query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
+                    "chart_query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
                     "chart_title": "Audiences of Repository",
                     "operations": [
                         {
@@ -164,6 +180,48 @@
                 {
                     "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
                     "label": "Digital Libraries"
+                }
+            ]
+        },
+        "musow_3": {
+            "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+            "template_mode": "statistics",
+            "title": "musoW 3",
+            "color_code": [
+                "#39c6b4",
+                "#17cf31"
+            ],
+            "subtitle": "Fingers crossed",
+            "curator": "Giulia Renda",
+            "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
+            "dynamic_elements": [
+                {
+                    "position": 0,
+                    "type": "text",
+                    "text": "yyyyyyyyyyyyyyyyy"
+                },
+                {
+                    "position": 1,
+                    "type": "text",
+                    "text": "wwwwwwwwwwwwwww"
+                },
+                {
+                    "position": 2,
+                    "type": "count",
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
+                    "count_label": "Digital Libraries"
+                },
+                {
+                    "position": 3,
+                    "type": "chart",
+                    "chart_type": "barchart",
+                    "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                    "chart_title": "Content Overview"
+                },
+                {
+                    "position": 4,
+                    "type": "text",
+                    "text": "oooooooooooooooo"
                 }
             ]
         }
