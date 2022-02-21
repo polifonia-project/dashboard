@@ -55,6 +55,9 @@
             "subtitle": "Discover music data on the Web",
             "curator": "Marilena Daquino",
             "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
+            "text": {
+                "0__text": "Let's explore some data through the use of several charts."
+            },
             "count": [
                 {
                     "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
@@ -123,6 +126,46 @@
             "subtitle": "",
             "curator": "Giulia Renda",
             "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\n\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web."
+        },
+        "musow_2": {
+            "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+            "template_mode": "statistics",
+            "title": "musoW 2",
+            "color_code": [
+                "#39c6b4",
+                "#17cf31"
+            ],
+            "subtitle": "A Demonstration Pilot",
+            "curator": "Giulia Renda",
+            "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
+            "text": {
+                "4__text_1644934316036": "We collected information about several kind of resources. And now let's see what we could add with a barchart."
+            },
+            "chart": [
+                {
+                    "chart_type": "barchart",
+                    "query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                    "chart_title": "Content Overview"
+                }
+            ],
+            "count": [
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
+                    "label": "REpositories"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
+                    "label": "Catolgues"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
+                    "label": "Datasets"
+                },
+                {
+                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
+                    "label": "Digital Libraries"
+                }
+            ]
         }
     }
 }
