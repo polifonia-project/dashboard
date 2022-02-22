@@ -71,7 +71,7 @@ function add_field(name) {
 
     var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='num'></p><p id='lab'></p></div><input name='count_query' type='text' id='count_query' placeholder='Write the SPARQL query for the count.' required><input name='count_label' type='text' id='count_label' placeholder='The label you want to show.' required>";
 
-    var chart_field = "<div class='chart-container'><canvas id='chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='chart_type' class='form-control' id='chart_type'><option name='linechart' id='linechart'>Line chart</option><option name='barchart' id='barchart'>barchart</option><option>Stacked Bar chart</option><option name='bubble_chart'>Bubble chart</option><option>Scatter chart</option></select><label for='largeInput'>SPARQL query</label><input name='chart_query' type='text' class='form-control form-control' id='chart_query' placeholder='Type your query' required><label for='largeInput'>Chart Title</label><input name='chart_title' type='text' class='form-control form-control' id='chart_title' placeholder='Title' required><label class='form-label'>Operations (to be addedd)</label><br></div>"
+    var chart_field = "<div class='chart-container'><canvas id='chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='chart_type' class='form-control' id='chart_type'><option name='linechart' id='linechart'>linechart</option><option name='barchart' id='barchart'>barchart</option><option>Stacked Bar chart</option><option name='bubble_chart'>Bubble chart</option><option>Scatter chart</option></select><label for='largeInput'>SPARQL query</label><input name='chart_query' type='text' class='form-control form-control' id='chart_query' placeholder='Type your query' required><label for='largeInput'>Chart Title</label><input name='chart_title' type='text' class='form-control form-control' id='chart_title' placeholder='Title' required><label class='form-label'>Operations (to be addedd)</label><br></div>"
 
     var up_down = '<a href="#" class="up"><i class="fas fa-arrow-up"></i></a> <a href="#" class="down"><i class="fas fa-arrow-down"></i></a> <a href="#" class="trash"><i class="far fa-trash-alt"></i></a>';
 
@@ -102,55 +102,67 @@ function add_field(name) {
 // preview content
 
 $(function () {
-    var update = function () {
+    const update = function () {
         var fields = $('form').serializeArray();
         console.log(fields);
         $('.sortable .block_field').each(function (idx) {
+            var count_query = '';
+            var count_label = '';
+            var chart_query = '';
+            var chart_title = '';
+            var chart_type = '';
             fields.forEach(element => {
-                var count_query = '';
-                var count_label = '';
-                var chart_query = '';
-                var chart_title = '';
-                var chart_type = '';
+
                 if (element.name == idx + '__count_query') {
                     count_query = element.value;
                 } else if (element.name == idx + '__count_label') {
                     count_label = element.value;
                     $("#" + idx + "__lab").text(count_label);
-                }
-                var encoded = encodeURIComponent(count_query);
-                var sparqlEndpoint = pilot_data.sparql_endpoint;
-                $.ajax({
-                    type: 'GET',
-                    url: sparqlEndpoint + '?query=' + encoded,
-                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-                    success: function (returnedJson) {
-                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                            var count = returnedJson.results.bindings[i].count.value;
-                            // console.log(count_label);
-                            $("#" + idx + "__num").text(count);
-
-                        }
-                    }
-                });
-                if (element.name == idx + '__chart_query') {
+                } else if (element.name == idx + '__chart_query') {
                     chart_query = element.value;
                 } else if (element.name == idx + '__chart_title') {
                     chart_title = element.value;
                 } else if (element.name == idx + '__chart_type') {
                     chart_type = element.value
                 }
-                var chartData = [];
-                var chartLabels = [];
-                var chart_encoded = encodeURIComponent(chart_query);
-                var sparqlEndpoint = pilot_data.sparql_endpoint;
-                // var label = element.label;
-                $.ajax({
-                    type: 'GET',
-                    url: sparqlEndpoint + '?query=' + chart_encoded,
-                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-                    success: function (returnedJson) {
 
+
+            }
+
+            );
+
+            var sparqlEndpoint = pilot_data.sparql_endpoint;
+
+            var encoded_count = encodeURIComponent(count_query);
+            var encoded_chart = encodeURIComponent(chart_query);
+
+            // call for the count
+            $.ajax({
+                type: 'GET',
+                url: sparqlEndpoint + '?query=' + encoded_count,
+                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                success: function (returnedJson) {
+                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                        var count = returnedJson.results.bindings[i].count.value;
+                        // console.log(count_label);
+                        $("#" + idx + "__num").text(count);
+
+                    }
+                }
+            });
+
+            // call for the charts
+
+
+
+            $.ajax({
+                type: 'GET',
+                url: sparqlEndpoint + '?query=' + encoded_chart,
+                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                success: function (returnedJson) {
+                    if (chart_type == 'barchart') {
+                        var chartData = [];
+                        var chartLabels = [];
                         for (i = 0; i < returnedJson.results.bindings.length; i++) {
                             chartLabels[i] = returnedJson.results.bindings[i].x.value;
                             chartData[i] = returnedJson.results.bindings[i].y.value;
@@ -182,11 +194,74 @@ $(function () {
                                 },
                             }
                         });
-                    }
-                })
-            }
+                    } else if (chart_type == 'linechart') {
+                        var chartData = [];
+                        var chartLabels = [];
+                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                            chartLabels[i] = returnedJson.results.bindings[i].x.value;
+                            chartData[i] = returnedJson.results.bindings[i].y.value;
+                        }
 
-            );
+
+                        //  retrieve the chart id
+                        var chartId = $("#" + idx + "__chartid");
+                        var chartColor = pilot_data.color_code[0];
+                        // graph plotting
+                        var myLineChart = new Chart(chartId, {
+                            type: 'line',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    label: "New Entries",
+                                    borderColor: chartColor,
+                                    pointBorderColor: "#FFF",
+                                    pointBackgroundColor: chartColor,
+                                    pointBorderWidth: 2,
+                                    pointHoverRadius: 4,
+                                    pointHoverBorderWidth: 1,
+                                    pointRadius: 4,
+                                    backgroundColor: 'transparent',
+                                    fill: true,
+                                    borderWidth: 2,
+                                    data: chartData
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                spanGaps: true,
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 10,
+                                        fontColor: chartColor,
+                                    }
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                },
+                                tooltips: {
+                                    bodySpacing: 4,
+                                    mode: "nearest",
+                                    intersect: 0,
+                                    position: "nearest",
+                                    xPadding: 10,
+                                    yPadding: 10,
+                                    caretPadding: 10
+                                },
+                                layout: {
+                                    padding: { left: 15, right: 15, top: 15, bottom: 15 }
+                                }
+                            }
+                        });
+                    }
+
+                }
+            });
         });
 
     };
@@ -602,7 +677,7 @@ function doughnutchart(element) {
 
 }
 
-function stacked_barchart(elemen) {
+function stacked_barchart(element) {
 
     // get the data that I need
     // now starts a piece of code that is exactly the same from function counter
