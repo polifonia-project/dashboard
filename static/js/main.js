@@ -104,7 +104,6 @@ function add_field(name) {
 $(function () {
     const update = function () {
         var fields = $('form').serializeArray();
-        console.log(fields);
         $('.sortable .block_field').each(function (idx) {
             var count_query = '';
             var count_label = '';
@@ -123,7 +122,7 @@ $(function () {
                 } else if (element.name == idx + '__chart_title') {
                     chart_title = element.value;
                 } else if (element.name == idx + '__chart_type') {
-                    chart_type = element.value
+                    chart_type = element.value;
                 }
 
 
@@ -152,9 +151,6 @@ $(function () {
             });
 
             // call for the charts
-
-
-
             $.ajax({
                 type: 'GET',
                 url: sparqlEndpoint + '?query=' + encoded_chart,
@@ -268,6 +264,7 @@ $(function () {
     update();
     $('form').change(update);
 })
+
 
 //// STATISTICS TEMPLATE FUNCTIONS ////
 

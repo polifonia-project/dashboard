@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %} Modify {{ pilot_data.title }} {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/templates.css') }}">
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+    <form action="send_data" method="post" class="card">
+        <div class="panel-header bg-primary-gradient">
+            <div class="page-inner py-5">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                    <div>
+                        <h2 class="text-white pb-2 fw-bold">
+                            <input name="title" type="text" id="" value="{{ pilot_data.title }}">
+                        </h2>
+                        <h5 class="text-white op-7 mb-2">
+                            {% if pilot_data.subtitle %}
+                            <input name="subtitle" type="text" id="" value="{{ pilot_data.subtitle }}">
+                            {% else %}
+                            <input name="subtitle" type="text" id="" placeholder="The Subtitle">
+                            {%endif%}
+                        </h5>
+                    </div>
+                    <div class="ml-md-auto py-2 py-md-0">
+                        <h4 class="text-white pb-2 fw-bold">
+                            {% if pilot_data.curator %}
+                            <input name="curator" type="text" id="" value="{{ pilot_data.curator }}">
+                            {% else %}
+                            <input name="curator" type="text" id="" placeholder="The Curator">
+                            {%endif%}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-inner mt--5">
+            <div class="row row-card-no-pd">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row card-tools-still-right">
+                                <h4 class="card-title">About the Project</h4>
+                            </div>
+                            <p class="card-category">
+                                {% if pilot_data.description %}
+                                <input name="decription" type="text" id="" value="{{ pilot_data.description }}">
+                                {% else %}
+                                <input name="description" type="text" id="description"
+                                    placeholder="Write a brief introdution to the project.">
+                                {%endif%}
+                            </p>
+                        </div>
+                        <div class="card-body sortable">
+
+                            {% for dict in pilot_data.dynamic_elements %}
+                            <!-- TEXT -->
+                            {% if dict.type == 'text' %}
+                            <div class="typography-line" id="{{dict.position}}">
+                                <!-- buttons -->
+                                <p class="block_field" id="text" data-index="{{dict.position}}">
+                                    <a href="#" class="up" id="{{dict.position}}__undefined"
+                                        name="{{dict.position}}__undefined">
+                                        <i class="fas fa-arrow-up" id="{{dict.position}}__undefined"></i>
+                                    </a>
+                                    <a href="#" class="down" id="{{dict.position}}__undefined"
+                                        name="{{dict.position}}__undefined">
+                                        <i class="fas fa-arrow-down" id="{{dict.position}}__undefined"></i>
+                                    </a>
+                                    <a href="#" class="trash" id="{{dict.position}}__undefined"
+                                        name="{{dict.position}}__undefined">
+                                        <i class="far fa-trash-alt" id="{{dict.position}}__undefined"></i>
+                                    </a>
+                                    <input type="text" name="{{dict.position}}__{{dict.type}}"
+                                        id="{{dict.position}}__{{dict.type}}" placeholder="{{dict.text}}">
+                                </p>
+                            </div>
+
+                            <!-- COUNT -->
+                            {% elif dict.type == 'count' %}
+                            <div class="block_field" id="count" data-index="{{dict.position}}">
+                                <!-- buttons -->
+                                <a href="#" class="up" id="{{dict.position}}__undefined"
+                                    name="{{dict.position}}__undefined">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__undefined"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__undefined"
+                                    name="{{dict.position}}__undefined">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__undefined"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__undefined"
+                                    name="{{dict.position}}__undefined">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__undefined"></i>
+                                </a>
+
+                                <!-- preview -->
+                                <div class='card-body option-2b' style='max-width: 200%;' id="{{dict.position}}__count">
+                                    <p id='{{dict.position}}__num'></p>
+                                    <p id='{{dict.position}}__lab'></p>
+                                </div>
+
+                                <!-- input -->
+                                <input name='{{dict.position}}__count_query' type='text'
+                                    id='{{dict.position}}__count_query' value="{{dict.count_query}}" required>
+                                <input name='{{dict.position}}__count_label' type='text'
+                                    id='{{dict.position}}__count_label' value="{{dict.count_label}}" required>
+                            </div>
+
+                            <!-- CHART -->
+                            {% elif dict.type == 'chart' %}
+                            <div class="col-12 block_field" id="chart" data-index="{{dict.position}}">
+                                <!-- buttons -->
+                                <a href="#" class="up" id="{{dict.position}}__undefined"
+                                    name="{{dict.position}}__undefined">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__undefined"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__undefined"
+                                    name="{{dict.position}}__undefined">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__undefined"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__undefined"
+                                    name="{{dict.position}}__undefined">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__undefined"></i>
+                                </a>
+
+                                <!-- preview -->
+                                <div class="chart-container">
+                                    <canvas id="{{dict.position}}__chartid"></canvas>
+                                </div>
+
+                                <!-- input -->
+                                <div class="form-group" id="{{dict.position}}_undefined">
+                                    <label>Chart Type</label>
+                                    <select class="form-control" name="{{dict.position}}__chart_type"
+                                        id="{{dict.position}}__chart_type">
+                                        {% for chart in general_data.chart_types %}
+                                        {% if chart == dict.chart_type %}
+                                        <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}"
+                                            selected>{{chart}}
+                                        </option>
+                                        {% else %}
+                                        <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}">
+                                            {{chart}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <label>SPARQL query</label>
+                                    <input name='{{dict.position}}__chart_query' type='text'
+                                        id='{{dict.position}}__chart_query' value="{{dict.chart_query}}" required>
+                                    <label>Chart Title</label>
+                                    <input name='{{dict.position}}__chart_title' type='text'
+                                        id='{{dict.position}}__chart_title' value="{{dict.chart_title}}" required>
+                                    <label>Operations (to be addedd)</label>
+
+                                </div>
+                            </div>
+
+                            {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+                        <section class="col-md-12 col-lg-12 col-sm-12">
+                            <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
+                                Textbox</a>
+                            <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
+                                Count</a>
+                            <a class="btn btn-primary btn-border" onclick="add_field(name)" name="barchart_box">Add
+                                Chart</a>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-action" style="margin:auto;">
+            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="reset" class="btn btn-danger">Cancel</button>
+
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript"> var pilot_data = {{ pilot_data | tojson }};</script>
+<script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+
+
+{% endblock javascripts %}

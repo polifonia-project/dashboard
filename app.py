@@ -26,7 +26,7 @@ def update_json(file_name, json_read):
     update and dump json file
     '''
     with open(file_name, 'w') as config_update:
-        json.dump(json_read, config_update)
+        json.dump(json_read, config_update, indent=4)
 
 
 def access_data_sources(pilot_name, file_name):
@@ -36,6 +36,52 @@ def access_data_sources(pilot_name, file_name):
     for source, details in read_json(file_name)['data_sources'].items():
         if pilot_name == source:
             return details
+
+
+def manage_pilot_data(general_data, file):
+    '''
+    This function deals with pilot data after the submission of the form
+    '''
+    # get data and add to existing pilot instance in config
+    # transform ImmutableMultiDict into regular dict
+    form_data = request.form.to_dict(flat=True)
+    pilot_title = form_data['title']
+
+    dynamic_elements = []
+    position_set = set()
+
+    for source, pilot_data in general_data['data_sources'].items():
+        # with the title we check where to insert data
+        if pilot_data['title'] == pilot_title:
+            # we create a set with the positions of the elements' type
+            for k, v in form_data.items():
+                if '__' in k:
+                    position_set.add(int(k.split('__')[0]))
+                else:
+                    pilot_data[k] = v
+            # we create as many dicts as there are positions, to store each type of element and append to
+            # dynamic_elements list
+            for position in position_set:
+                elements_dict = {}
+                elements_dict['position'] = position
+                for k, v in form_data.items():
+                    if '__' in k:
+                        if position == int(k.split('__')[0]):
+                            if 'text' in k:
+                                elements_dict['type'] = 'text'
+                                elements_dict[k.split('__')[1]] = v
+                            elif 'count' in k:
+                                elements_dict['type'] = 'count'
+                                elements_dict[k.split('__')[1]] = v
+                            elif 'chart' in k:
+                                elements_dict['type'] = 'chart'
+                                elements_dict[k.split('__')[1]] = v
+                dynamic_elements.append(elements_dict)
+
+            pilot_data['dynamic_elements'] = dynamic_elements
+    update_json(file, general_data)
+    pilot_name = pilot_title.lower().replace(" ", "_")
+    return pilot_name
 
 # access the welcome page
 
@@ -108,46 +154,21 @@ def send_data():
     general_data = read_json('config.json')
     if request.method == 'POST':
         try:
-            # get data and add to existing pilot instance in config
-            # transform ImmutableMultiDict into regular dict
-            form_data = request.form.to_dict(flat=True)
-            print(form_data)
-            pilot_title = form_data['title']
+            pilot_name = manage_pilot_data(general_data, 'config.json')
+            return redirect(url_for('pilot', pilot_name=pilot_name))
+        except:
+            return 'Something went wrong'
 
-            dynamic_elements = []
-            position_set = set()
 
-            for source, pilot_data in general_data['data_sources'].items():
-                # with the title we check where to insert data
-                if pilot_data['title'] == pilot_title:
-                    # we create a set with the positions of the elements' type
-                    for k, v in form_data.items():
-                        if '__' in k:
-                            position_set.add(int(k.split('__')[0]))
-                        else:
-                            pilot_data[k] = v
-                    # we create as many dicts as there are positions, to store each type of element and appent to
-                    # dynamic_elements list
-                    for position in position_set:
-                        elements_dict = {}
-                        elements_dict['position'] = position
-                        for k, v in form_data.items():
-                            if '__' in k:
-                                if position == int(k.split('__')[0]):
-                                    if 'text' in k:
-                                        elements_dict['type'] = 'text'
-                                        elements_dict[k.split('__')[1]] = v
-                                    elif 'count' in k:
-                                        elements_dict['type'] = 'count'
-                                        elements_dict[k.split('__')[1]] = v
-                                    elif 'chart' in k:
-                                        elements_dict['type'] = 'chart'
-                                        elements_dict[k.split('__')[1]] = v
-                        dynamic_elements.append(elements_dict)
-
-                    pilot_data['dynamic_elements'] = dynamic_elements
-            update_json('config.json', general_data)
-            pilot_name = pilot_title.lower().replace(" ", "_")
+@app.route("/modify/<string:pilot_name>", methods=['POST', 'GET'])
+def modify_pilot(pilot_name):
+    pilot_data = access_data_sources(pilot_name, 'config.json')
+    general_data = read_json('config.json')
+    if request.method == 'GET':
+        return render_template('modify_pilot.html', pilot_data=pilot_data, general_data=general_data)
+    elif request.method == 'POST':
+        try:
+            pilot_name = manage_pilot_data(general_data, 'config.json')
             return redirect(url_for('pilot', pilot_name=pilot_name))
         except:
             return 'Something went wrong'
