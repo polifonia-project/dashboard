@@ -136,135 +136,149 @@ $(function () {
             var encoded_chart = encodeURIComponent(chart_query);
 
             // call for the count
-            $.ajax({
-                type: 'GET',
-                url: sparqlEndpoint + '?query=' + encoded_count,
-                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-                success: function (returnedJson) {
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        var count = returnedJson.results.bindings[i].count.value;
-                        // console.log(count_label);
-                        $("#" + idx + "__num").text(count);
+            if (count_query) {
+                $.ajax({
+                    type: 'GET',
+                    url: sparqlEndpoint + '?query=' + encoded_count,
+                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                    success: function (returnedJson) {
+                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                            var count = returnedJson.results.bindings[i].count.value;
+                            // console.log(count_label);
+                            $("#" + idx + "__num").text(count);
 
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $("#" + idx + "__num").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
                     }
-                }
-            });
+                });
+            }
 
             // call for the charts
-            $.ajax({
-                type: 'GET',
-                url: sparqlEndpoint + '?query=' + encoded_chart,
-                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-                success: function (returnedJson) {
-                    if (chart_type == 'barchart') {
-                        var chartData = [];
-                        var chartLabels = [];
-                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                            chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                            chartData[i] = returnedJson.results.bindings[i].y.value;
-                        }
-
-                        //  retrieve the chart id
-                        var chartId = $("#" + idx + "__chartid");
-                        var chartColor = pilot_data.color_code[0];
-                        var myBarChart = new Chart(chartId, {
-                            type: 'bar',
-                            data: {
-                                labels: chartLabels,
-                                datasets: [{
-                                    label: 'Quantity',
-                                    backgroundColor: chartColor,
-                                    borderColor: chartColor,
-                                    data: chartData,
-                                }],
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero: true
-                                        }
-                                    }]
-                                },
+            else if (chart_query) {
+                $.ajax({
+                    type: 'GET',
+                    url: sparqlEndpoint + '?query=' + encoded_chart,
+                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                    success: function (returnedJson) {
+                        if (chart_type == 'barchart') {
+                            var chartData = [];
+                            var chartLabels = [];
+                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                chartLabels[i] = returnedJson.results.bindings[i].x.value;
+                                chartData[i] = returnedJson.results.bindings[i].y.value;
                             }
-                        });
-                    } else if (chart_type == 'linechart') {
-                        var chartData = [];
-                        var chartLabels = [];
-                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                            chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                            chartData[i] = returnedJson.results.bindings[i].y.value;
-                        }
 
-
-                        //  retrieve the chart id
-                        var chartId = $("#" + idx + "__chartid");
-                        var chartColor = pilot_data.color_code[0];
-                        // graph plotting
-                        var myLineChart = new Chart(chartId, {
-                            type: 'line',
-                            data: {
-                                labels: chartLabels,
-                                datasets: [{
-                                    label: "New Entries",
-                                    borderColor: chartColor,
-                                    pointBorderColor: "#FFF",
-                                    pointBackgroundColor: chartColor,
-                                    pointBorderWidth: 2,
-                                    pointHoverRadius: 4,
-                                    pointHoverBorderWidth: 1,
-                                    pointRadius: 4,
-                                    backgroundColor: 'transparent',
-                                    fill: true,
-                                    borderWidth: 2,
-                                    data: chartData
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                spanGaps: true,
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        padding: 10,
-                                        fontColor: chartColor,
-                                    }
+                            //  retrieve the chart id
+                            var chartId = $("#" + idx + "__chartid");
+                            var chartColor = pilot_data.color_code[0];
+                            var myBarChart = new Chart(chartId, {
+                                type: 'bar',
+                                data: {
+                                    labels: chartLabels,
+                                    datasets: [{
+                                        label: 'Quantity',
+                                        backgroundColor: chartColor,
+                                        borderColor: chartColor,
+                                        data: chartData,
+                                    }],
                                 },
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero: true
-                                        }
-                                    }]
-                                },
-                                tooltips: {
-                                    bodySpacing: 4,
-                                    mode: "nearest",
-                                    intersect: 0,
-                                    position: "nearest",
-                                    xPadding: 10,
-                                    yPadding: 10,
-                                    caretPadding: 10
-                                },
-                                layout: {
-                                    padding: { left: 15, right: 15, top: 15, bottom: 15 }
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    },
                                 }
+                            });
+                        } else if (chart_type == 'linechart') {
+                            var chartData = [];
+                            var chartLabels = [];
+                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                chartLabels[i] = returnedJson.results.bindings[i].x.value;
+                                chartData[i] = returnedJson.results.bindings[i].y.value;
                             }
-                        });
-                    }
 
-                }
-            });
+
+                            //  retrieve the chart id
+                            var chartId = $("#" + idx + "__chartid");
+                            var chartColor = pilot_data.color_code[0];
+                            // graph plotting
+                            var myLineChart = new Chart(chartId, {
+                                type: 'line',
+                                data: {
+                                    labels: chartLabels,
+                                    datasets: [{
+                                        label: "New Entries",
+                                        borderColor: chartColor,
+                                        pointBorderColor: "#FFF",
+                                        pointBackgroundColor: chartColor,
+                                        pointBorderWidth: 2,
+                                        pointHoverRadius: 4,
+                                        pointHoverBorderWidth: 1,
+                                        pointRadius: 4,
+                                        backgroundColor: 'transparent',
+                                        fill: true,
+                                        borderWidth: 2,
+                                        data: chartData
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    spanGaps: true,
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            padding: 10,
+                                            fontColor: chartColor,
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    },
+                                    tooltips: {
+                                        bodySpacing: 4,
+                                        mode: "nearest",
+                                        intersect: 0,
+                                        position: "nearest",
+                                        xPadding: 10,
+                                        yPadding: 10,
+                                        caretPadding: 10
+                                    },
+                                    layout: {
+                                        padding: { left: 15, right: 15, top: 15, bottom: 15 }
+                                    }
+                                }
+                            });
+                        }
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        // $("#" + idx + "__chartid").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+                        var c = document.getElementById(idx + "__chartid");
+                        var p = document.createElement("p");
+                        var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+                        p.appendChild(error_text)
+                        c.after(p);
+                    }
+                });
+            }
         });
 
     };
     update();
     $('form').change(update);
 })
-
 
 //// STATISTICS TEMPLATE FUNCTIONS ////
 
