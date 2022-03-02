@@ -1,6 +1,6 @@
 window.onload = function () {
     colorSwitch();
-    counter();
+    queryCounter();
     chartViz();
     // sidebarContent();
 }
@@ -9,9 +9,9 @@ window.onload = function () {
 
 // update index of fields in template page (to store the final order)
 function updateindex() {
-    $('.sortable .block_field').each(function () {
-        var idx = $(".block_field").index(this);
-        $(this).attr("data-index", idx);
+    $('#sortable [id$="block_field"]').each(function () {
+        var idx = $('[id$="block_field"]').index(this) + 1;
+        $(this).attr("id", idx + '__block_field');
         var everyChild = this.getElementsByTagName("*");
         for (var i = 0; i < everyChild.length; i++) {
             var childid = everyChild[i].id;
@@ -28,75 +28,70 @@ function updateindex() {
     });
 };
 
-// move blocks up/down when clicking on arrow
-function moveUpAndDown() {
-    var selected = 0;
-    var itemlist = $('.sortable');
-    var nodes = $(itemlist).children();
-    var len = $(itemlist).children().length;
-    // initialize index
+// move blocks up/down when clicking on arrow and delete with trash
+// down function
+$("#sortable").on('click', "a[id$='down']", function (e) {
+    e.preventDefault();
+    var numrow = parseInt(this.id.split('__')[0], 10),
+        nr = 1,
+        current = $("#" + numrow + "__block_field"),
+        next = current.next();
+
+    if (next.length) {// if there's row after one that was clicked
+        current.insertAfter(next);
+    }
     updateindex();
 
-    $(".sortable .block_field").click(function () {
-        selected = $(this).index();
-    });
+    // up function
+}).on('click', "a[id$='up']", function (e) {
+    e.preventDefault();
 
-    $(".up").click(function (e) {
-        e.preventDefault();
-        if (selected > 0) {
-            jQuery($(itemlist).children().eq(selected - 1)).before(jQuery($(itemlist).children().eq(selected)));
-            selected = selected - 1;
-            updateindex();
-        };
+    var numrow = parseInt(this.id.split('__')[0], 10),
+        nr = 1,
+        current = $("#" + numrow + "__block_field"),
+        prev = current.prev();
 
-    });
-    $(".down").click(function (e) {
-        e.preventDefault();
-        if (selected < len) {
-            jQuery($(itemlist).children().eq(selected + 1)).after(jQuery($(itemlist).children().eq(selected)));
-            selected = selected + 1;
-            updateindex();
-        };
-    });
+    if (prev.length) {
+        current.insertBefore(prev);
+    }
+    updateindex();
 
-
-};
+    // delete function
+}).on('click', "a[id$='trash']", function (e) {
+    e.preventDefault();
+    $(this).parent().remove();
+    updateindex();
+});
 
 // add box
+var counter = 0;
 function add_field(name) {
     var contents = "";
-    var temp_id = Date.now().toString();
 
-    var text_field = "<input name='text' type='text' id='text' placeholder='Write the text for this paragraph.'>"
+    var text_field = "<input name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'>"
 
-    var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='num'></p><p id='lab'></p></div><input name='count_query' type='text' id='count_query' placeholder='Write the SPARQL query for the count.' required><input name='count_label' type='text' id='count_label' placeholder='The label you want to show.' required>";
+    var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='" + (counter + 1) + "__num'></p><p id='" + (counter + 1) + "__lab'></p></div><input name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' required><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 
-    var chart_field = "<div class='chart-container'><canvas id='chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='chart_type' class='form-control' id='chart_type'><option name='linechart' id='linechart'>linechart</option><option name='barchart' id='barchart'>barchart</option><option>Stacked Bar chart</option><option name='bubble_chart'>Bubble chart</option><option>Scatter chart</option></select><label for='largeInput'>SPARQL query</label><input name='chart_query' type='text' class='form-control form-control' id='chart_query' placeholder='Type your query' required><label for='largeInput'>Chart Title</label><input name='chart_title' type='text' class='form-control form-control' id='chart_title' placeholder='Title' required><label class='form-label'>Operations (to be addedd)</label><br></div>"
+    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option>Stacked Bar chart</option><option name='" + (counter + 1) + "__bubble_chart'>Bubble chart</option><option>Scatter chart</option></select><label for='largeInput'>SPARQL query</label><input name='" + (counter + 1) + "__chart_query' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' required><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label class='form-label'>Operations (to be addedd)</label><br></div>"
 
-    var up_down = '<a href="#" class="up"><i class="fas fa-arrow-up"></i></a> <a href="#" class="down"><i class="fas fa-arrow-down"></i></a> <a href="#" class="trash"><i class="far fa-trash-alt"></i></a>';
+    var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a>';
 
     if (name == 'textbox') {
-        var open_addons = "<p class='block_field' id='text'>";
-        var close_addons = "</p>";
+        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'>";
+        var close_addons = "</div>";
         contents += open_addons + up_down + text_field + close_addons;
     } else if (name == 'countbox') {
-        var open_addons = "<div class='col block_field' id='count_" + temp_id + "'>";
+        var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'>";
         var close_addons = "</div>";
         contents += open_addons + up_down + count_field + close_addons;
     } else if (name == 'barchart_box') {
-        var open_addons = "<div class='col-12 block_field' id='chart_" + temp_id + "'>";
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>";
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
     }
-    $(".sortable").append(contents);
+    $("#sortable").append(contents);
+    counter = $('#sortable [id$="block_field"]').length;
     updateindex();
-    moveUpAndDown();
-
-    // remove field
-    $('.trash').click(function (e) {
-        e.preventDefault();
-        $(this).parent().remove();
-    })
 }
 
 // preview content
@@ -104,24 +99,24 @@ function add_field(name) {
 $(function () {
     const update = function () {
         var fields = $('form').serializeArray();
-        $('.sortable .block_field').each(function (idx) {
+        console.log(fields);
+        $('#sortable [id$="block_field"]').each(function (idx) {
             var count_query = '';
             var count_label = '';
             var chart_query = '';
             var chart_title = '';
             var chart_type = '';
             fields.forEach(element => {
-
-                if (element.name == idx + '__count_query') {
+                if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
-                } else if (element.name == idx + '__count_label') {
+                } else if (element.name == (idx + 1) + '__count_label') {
                     count_label = element.value;
-                    $("#" + idx + "__lab").text(count_label);
-                } else if (element.name == idx + '__chart_query') {
+                    $("#" + (idx + 1) + "__lab").text(count_label);
+                } else if (element.name == (idx + 1) + '__chart_query') {
                     chart_query = element.value;
-                } else if (element.name == idx + '__chart_title') {
+                } else if (element.name == (idx + 1) + '__chart_title') {
                     chart_title = element.value;
-                } else if (element.name == idx + '__chart_type') {
+                } else if (element.name == (idx + 1) + '__chart_type') {
                     chart_type = element.value;
                 }
 
@@ -145,12 +140,12 @@ $(function () {
                         for (i = 0; i < returnedJson.results.bindings.length; i++) {
                             var count = returnedJson.results.bindings[i].count.value;
                             // console.log(count_label);
-                            $("#" + idx + "__num").text(count);
+                            $("#" + (idx + 1) + "__num").text(count);
 
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
-                        $("#" + idx + "__num").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+                        $("#" + (idx + 1) + "__num").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
                     }
                 });
             }
@@ -171,7 +166,7 @@ $(function () {
                             }
 
                             //  retrieve the chart id
-                            var chartId = $("#" + idx + "__chartid");
+                            var chartId = $("#" + (idx + 1) + "__chartid");
                             var chartColor = pilot_data.color_code[0];
                             var myBarChart = new Chart(chartId, {
                                 type: 'bar',
@@ -206,7 +201,7 @@ $(function () {
 
 
                             //  retrieve the chart id
-                            var chartId = $("#" + idx + "__chartid");
+                            var chartId = $("#" + (idx + 1) + "__chartid");
                             var chartColor = pilot_data.color_code[0];
                             // graph plotting
                             var myLineChart = new Chart(chartId, {
@@ -265,7 +260,7 @@ $(function () {
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         // $("#" + idx + "__chartid").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-                        var c = document.getElementById(idx + "__chartid");
+                        var c = document.getElementById((idx + 1) + "__chartid");
                         var p = document.createElement("p");
                         var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
                         p.appendChild(error_text)
@@ -289,7 +284,7 @@ function colorSwitch() {
     gradientEl.style.background = 'linear-gradient(-45deg,' + pilot_data.color_code[0] + ',' + pilot_data.color_code[1] + ')';
 }
 
-function counter() {
+function queryCounter() {
     if (pilot_data.dynamic_elements) {
         pilot_data.dynamic_elements.forEach(element => {
             if (element.type == 'count') {

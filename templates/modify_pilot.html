@@ -54,46 +54,40 @@
                                 {%endif%}
                             </p>
                         </div>
-                        <div class="card-body sortable">
+                        <div class="card-body" id="sortable">
 
                             {% for dict in pilot_data.dynamic_elements %}
                             <!-- TEXT -->
                             {% if dict.type == 'text' %}
-                            <div class="typography-line" id="{{dict.position}}">
-                                <!-- buttons -->
-                                <p class="block_field" id="text" data-index="{{dict.position}}">
-                                    <a href="#" class="up" id="{{dict.position}}__undefined"
-                                        name="{{dict.position}}__undefined">
-                                        <i class="fas fa-arrow-up" id="{{dict.position}}__undefined"></i>
-                                    </a>
-                                    <a href="#" class="down" id="{{dict.position}}__undefined"
-                                        name="{{dict.position}}__undefined">
-                                        <i class="fas fa-arrow-down" id="{{dict.position}}__undefined"></i>
-                                    </a>
-                                    <a href="#" class="trash" id="{{dict.position}}__undefined"
-                                        name="{{dict.position}}__undefined">
-                                        <i class="far fa-trash-alt" id="{{dict.position}}__undefined"></i>
-                                    </a>
-                                    <input type="text" name="{{dict.position}}__{{dict.type}}"
-                                        id="{{dict.position}}__{{dict.type}}" placeholder="{{dict.text}}">
-                                </p>
+                            <!-- buttons -->
+                            <div id="{{dict.position}}__block_field">
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                                </a>
+
+                                <!-- preview -->
+                                <input type="text" name="{{dict.position}}__{{dict.type}}"
+                                    id="{{dict.position}}__{{dict.type}}" placeholder="{{dict.text}}">
                             </div>
 
                             <!-- COUNT -->
                             {% elif dict.type == 'count' %}
-                            <div class="block_field" id="count" data-index="{{dict.position}}">
+                            <div id="{{dict.position}}__block_field" id="count">
                                 <!-- buttons -->
-                                <a href="#" class="up" id="{{dict.position}}__undefined"
-                                    name="{{dict.position}}__undefined">
-                                    <i class="fas fa-arrow-up" id="{{dict.position}}__undefined"></i>
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
                                 </a>
-                                <a href="#" class="down" id="{{dict.position}}__undefined"
-                                    name="{{dict.position}}__undefined">
-                                    <i class="fas fa-arrow-down" id="{{dict.position}}__undefined"></i>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
                                 </a>
-                                <a href="#" class="trash" id="{{dict.position}}__undefined"
-                                    name="{{dict.position}}__undefined">
-                                    <i class="far fa-trash-alt" id="{{dict.position}}__undefined"></i>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
                                 </a>
 
                                 <!-- preview -->
@@ -111,19 +105,16 @@
 
                             <!-- CHART -->
                             {% elif dict.type == 'chart' %}
-                            <div class="col-12 block_field" id="chart" data-index="{{dict.position}}">
+                            <div class="col-12" id="{{dict.position}}__block_field">
                                 <!-- buttons -->
-                                <a href="#" class="up" id="{{dict.position}}__undefined"
-                                    name="{{dict.position}}__undefined">
-                                    <i class="fas fa-arrow-up" id="{{dict.position}}__undefined"></i>
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
                                 </a>
-                                <a href="#" class="down" id="{{dict.position}}__undefined"
-                                    name="{{dict.position}}__undefined">
-                                    <i class="fas fa-arrow-down" id="{{dict.position}}__undefined"></i>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
                                 </a>
-                                <a href="#" class="trash" id="{{dict.position}}__undefined"
-                                    name="{{dict.position}}__undefined">
-                                    <i class="far fa-trash-alt" id="{{dict.position}}__undefined"></i>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
                                 </a>
 
                                 <!-- preview -->
