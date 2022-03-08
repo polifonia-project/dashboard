@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Modify {{ pilot_data.title }} {% endblock %}
+{% block title %} Modify {{ datastory_data.title }} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -15,11 +15,11 @@
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
                         <h2 class="text-white pb-2 fw-bold">
-                            <input name="title" type="text" id="" value="{{ pilot_data.title }}">
+                            <input name="title" type="text" id="" value="{{ datastory_data.title }}">
                         </h2>
                         <h5 class="text-white op-7 mb-2">
-                            {% if pilot_data.subtitle %}
-                            <input name="subtitle" type="text" id="" value="{{ pilot_data.subtitle }}">
+                            {% if datastory_data.subtitle %}
+                            <input name="subtitle" type="text" id="" value="{{ datastory_data.subtitle }}">
                             {% else %}
                             <input name="subtitle" type="text" id="" placeholder="The Subtitle">
                             {%endif%}
@@ -27,8 +27,8 @@
                     </div>
                     <div class="ml-md-auto py-2 py-md-0">
                         <h4 class="text-white pb-2 fw-bold">
-                            {% if pilot_data.curator %}
-                            <input name="curator" type="text" id="" value="{{ pilot_data.curator }}">
+                            {% if datastory_data.curator %}
+                            <input name="curator" type="text" id="" value="{{ datastory_data.curator }}">
                             {% else %}
                             <input name="curator" type="text" id="" placeholder="The Curator">
                             {%endif%}
@@ -46,8 +46,8 @@
                                 <h4 class="card-title">About the Project</h4>
                             </div>
                             <p class="card-category">
-                                {% if pilot_data.description %}
-                                <input name="decription" type="text" id="" value="{{ pilot_data.description }}">
+                                {% if datastory_data.description %}
+                                <input name="decription" type="text" id="" value="{{ datastory_data.description }}">
                                 {% else %}
                                 <input name="description" type="text" id="description"
                                     placeholder="Write a brief introdution to the project.">
@@ -56,7 +56,7 @@
                         </div>
                         <div class="card-body" id="sortable">
 
-                            {% for dict in pilot_data.dynamic_elements %}
+                            {% for dict in datastory_data.dynamic_elements %}
                             <!-- TEXT -->
                             {% if dict.type == 'text' %}
                             <!-- buttons -->
@@ -177,7 +177,7 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script type="text/javascript"> var pilot_data = {{ pilot_data | tojson }};</script>
+<script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
 
 

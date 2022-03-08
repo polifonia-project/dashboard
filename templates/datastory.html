@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} {{ pilot_data.title }} {% endblock %}
+{% block title %} {{ datastory_data.title }} {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -16,20 +16,21 @@
 				<div>
 					<h2 class="text-white pb-2 fw-bold">
 
-						{{ pilot_data.title }}
+						{{ datastory_data.title }}
 
 					</h2>
 					<h5 class="text-white op-7 mb-2">
-
-						{{ pilot_data.subtitle }}
+						{% if datastory_data.subtitle %}
+						{{ datastory_data.subtitle }}
+						{%endif%}
 
 					</h5>
 				</div>
 				<div class="ml-md-auto py-2 py-md-0">
 					<h4 class="text-white pb-2 fw-bold">
-
-						{{ pilot_data.curator }}
-
+						{% if datastory_data.subtitle %}
+						{{ datastory_data.curator }}
+						{%endif%}
 					</h4>
 				</div>
 			</div>
@@ -44,14 +45,14 @@
 							<h4 class="card-title">About the Project</h4>
 						</div>
 						<p class="card-category">
-
-							{{ pilot_data.description }}
-
+							{% if datastory_data.subtitle %}
+							{{ datastory_data.description }}
+							{%endif%}
 						</p>
 					</div>
 					<div class="card-body">
 
-						{% for dict in pilot_data.dynamic_elements %}
+						{% for dict in datastory_data.dynamic_elements %}
 						<!-- text -->
 						{% if dict.type == 'text' %}
 						<div class="typography-line" id="{{dict.position}}">
@@ -89,7 +90,7 @@
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 {% block javascripts %}
-<script type="text/javascript"> var pilot_data = {{ pilot_data | tojson }};</script>
+<script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 <!-- <script src="/static/js/setting-demo.js"></script>
 <script src="/static/js/demo.js"></script> -->

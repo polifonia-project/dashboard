@@ -5,22 +5,36 @@
 
 			<ul class="nav nav-primary">
 				{% if general_data %}
-				{% for key, value in general_data.data_sources.items() %}
-				<li class="nav-item">
-					<div class="row">
-						<div class="col">
-							<a href="http://127.0.0.1:5000/pilot/{{key}}" target="_blank">
-								<p>{{value.title}}</p>
-							</a>
-						</div>
+				{% for pilot in general_data.macroareas|sort() %}
+				<li class="nav-item submenu">
+					<a data-toggle="collapse" href="#submenu{{loop.index}}" aria-expanded="true">
+						<p>{{pilot}}</p>
+						<span class="caret"></span>
+					</a>
+					<div class="collapse show" id="submenu{{loop.index}}">
+						<ul class="nav nav-collapse">
+							{% for key, value in general_data.data_sources.items() %}
+							{% if value.pilot_name == pilot %}
+							<li>
+								<div class="row">
+									<div class="col">
+										<a href="http://127.0.0.1:5000/{{pilot}}/{{key}}" target="_blank">
+											<p>{{value.title}}</p>
+										</a>
+									</div>
 
-						<div class="col">
-							<a href="http://127.0.0.1:5000/modify/{{key}}" target="_blank"
-								class="btn btn-primary btn-border btn-round btn-xs">
-								<p>modify</p>
-							</a>
-						</div>
+									<div class="col">
+										<a href="http://127.0.0.1:5000/modify/{{key}}" target="_blank"
+											class="btn btn-primary btn-border btn-round btn-xs">
+											<p>modify</p>
+										</a>
+									</div>
 
+								</div>
+							</li>
+							{% endif %}
+							{% endfor %}
+						</ul>
 					</div>
 				</li>
 				{% endfor %}

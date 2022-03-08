@@ -29,36 +29,36 @@ def update_json(file_name, json_read):
         json.dump(json_read, config_update, indent=4)
 
 
-def access_data_sources(pilot_name, file_name):
+def access_data_sources(datastory_name, file_name):
     '''
-    this function access a specific pilot data in the config file based on its name
+    this function access a specific datastory data in the config file based on its name
     '''
     for source, details in read_json(file_name)['data_sources'].items():
-        if pilot_name == source:
+        if datastory_name == source:
             return details
 
 
-def manage_pilot_data(general_data, file):
+def manage_datastory_data(general_data, file):
     '''
-    This function deals with pilot data after the submission of the form
+    This function deals with datastory data after the submission of the form
     '''
-    # get data and add to existing pilot instance in config
+    # get data and add to existing datastory instance in config
     # transform ImmutableMultiDict into regular dict
     form_data = request.form.to_dict(flat=True)
-    pilot_title = form_data['title']
+    datastory_title = form_data['title']
 
     dynamic_elements = []
     position_set = set()
 
-    for source, pilot_data in general_data['data_sources'].items():
+    for source, datastory_data in general_data['data_sources'].items():
         # with the title we check where to insert data
-        if pilot_data['title'] == pilot_title:
-            # we create a set with the positions of the elements' type
+        if datastory_data['title'] == datastory_title:
+            # we fill a set with the positions of the elements' type
             for k, v in form_data.items():
                 if '__' in k:
                     position_set.add(int(k.split('__')[0]))
                 else:
-                    pilot_data[k] = v
+                    datastory_data[k] = v
             # we create as many dicts as there are positions, to store each type of element and append to
             # dynamic_elements list
             for position in position_set:
@@ -78,10 +78,10 @@ def manage_pilot_data(general_data, file):
                                 elements_dict[k.split('__')[1]] = v
                 dynamic_elements.append(elements_dict)
 
-            pilot_data['dynamic_elements'] = dynamic_elements
+            datastory_data['dynamic_elements'] = dynamic_elements
     update_json(file, general_data)
-    pilot_name = pilot_title.lower().replace(" ", "_")
-    return pilot_name
+    datastory_name = datastory_title.lower().replace(" ", "_")
+    return datastory_name
 
 # access the welcome page
 
@@ -93,19 +93,26 @@ def welcome():
     return render_template('index.html', general_data=general_data)
 
 
-# access any pilot page
+@app.route("/prova.html")
+def prova():
+    general_data = read_json('config.json')
+    return render_template('prova.html', general_data=general_data)
 
 
-@app.route("/pilot/<string:pilot_name>")
-def pilot(pilot_name):
+# access any datastory page
+
+
+@app.route("/<string:pilot_name>/<string:datastory_name>")
+def datastory(pilot_name, datastory_name):
     '''
-    opens the config file, checks if pilot_name is inside data_sources and returns its page with the data(pilot_data)
+    opens the config file, checks if datastory_name is inside data_sources and returns its page with the data(datastory_data)
     to be displayed.
     '''
     general_data = read_json('config.json')
-    pilot_data = access_data_sources(pilot_name, 'config.json')
-    if pilot_data:
-        return render_template('pilot.html', pilot_data=pilot_data, general_data=general_data)
+    datastory_data = access_data_sources(datastory_name, 'config.json')
+    if datastory_data:
+        pilot_name = datastory_data['pilot_name']
+        return render_template('datastory.html', datastory_data=datastory_data, general_data=general_data, pilot_name=pilot_name)
     else:
         return render_template('page-404.html')
 
@@ -123,26 +130,39 @@ def setup():
             # get data
             form_data = request.form
             template_mode = form_data['template_mode']
-            pilot_title = form_data['title']
-            pilot_endpoint = form_data['sparql_endpoint']
+            datastory_title = form_data['title']
+            datastory_endpoint = form_data['sparql_endpoint']
+            macroarea_name = form_data['pilot_name']
             color_code = ''
             for item in general_data['templates']:
                 if general_data['templates'][item]['name'] == template_mode:
                     color_code = general_data['templates'][item]['default_color']
-            # create new pilot instance
-            new_pilot = {}
-            new_pilot['sparql_endpoint'] = pilot_endpoint
-            new_pilot['template_mode'] = template_mode
-            new_pilot['title'] = pilot_title
-            new_pilot['color_code'] = color_code
+            # create new datastory instance
+            new_datastory = {}
+            new_datastory['sparql_endpoint'] = datastory_endpoint
+            new_datastory['template_mode'] = template_mode
+            new_datastory['title'] = datastory_title
+            new_datastory['color_code'] = color_code
+            new_datastory['pilot_name'] = macroarea_name
             # add to config file
-            clean_title = pilot_title.lower().replace(" ", "_")
-            general_data['data_sources'][clean_title] = new_pilot
+            clean_title = datastory_title.lower().replace(" ", "_")
+            general_data['data_sources'][clean_title] = new_datastory
             update_json('config.json', general_data)
             general_data = read_json('config.json')
-            pilot_data = access_data_sources(clean_title, 'config.json')
+
+            # upload the macroareas list
+            macroareas = set()
+            for details in general_data['data_sources'].values():
+                macroareas.add(details['pilot_name'])
+            print(macroareas)
+            general_data['macroareas'] = list(macroareas)
+            update_json('config.json', general_data)
+            general_data = read_json('config.json')
+
+            datastory_data = access_data_sources(clean_title, 'config.json')
+
             # the correct template opens based on the name
-            return render_template(template_mode+'.html', pilot_data=pilot_data, general_data=general_data)
+            return render_template(template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
         except:
             return 'did not save to database'
     else:
@@ -154,21 +174,23 @@ def send_data():
     general_data = read_json('config.json')
     if request.method == 'POST':
         try:
-            pilot_name = manage_pilot_data(general_data, 'config.json')
-            return redirect(url_for('pilot', pilot_name=pilot_name))
+            datastory_name = manage_datastory_data(general_data, 'config.json')
+            pilot_name = general_data['data_sources'][datastory_name]['pilot_name']
+            return redirect(url_for('datastory', pilot_name=pilot_name, datastory_name=datastory_name))
         except:
             return 'Something went wrong'
 
 
-@app.route("/modify/<string:pilot_name>", methods=['POST', 'GET'])
-def modify_pilot(pilot_name):
-    pilot_data = access_data_sources(pilot_name, 'config.json')
+@app.route("/modify/<string:datastory_name>", methods=['POST', 'GET'])
+def modify_datastory(datastory_name):
+    datastory_data = access_data_sources(datastory_name, 'config.json')
     general_data = read_json('config.json')
     if request.method == 'GET':
-        return render_template('modify_pilot.html', pilot_data=pilot_data, general_data=general_data)
+        return render_template('modify_datastory.html', datastory_data=datastory_data, general_data=general_data)
     elif request.method == 'POST':
         try:
-            pilot_name = manage_pilot_data(general_data, 'config.json')
-            return redirect(url_for('pilot', pilot_name=pilot_name))
+            datastory_name = manage_datastory_data(general_data, 'config.json')
+            pilot_name = general_data['data_sources'][datastory_name]['pilot_name']
+            return redirect(url_for('datastory', pilot_name=pilot_name, datastory_name=datastory_name))
         except:
             return 'Something went wrong'

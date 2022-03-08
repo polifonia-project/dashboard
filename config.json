@@ -4,6 +4,12 @@
     "index_host": "localhost",
     "index_channel": 1491,
     "index_pw": "SecretPassword",
+    "macroareas": [
+        "Internet Explorer",
+        "musoW",
+        "Wikidata",
+        "Prova"
+    ],
     "templates": {
         "template_01": {
             "name": "statistics",
@@ -38,8 +44,13 @@
             ]
         }
     },
+    "chart_types": [
+        "barchart",
+        "linechart",
+        "doughnutchart"
+    ],
     "data_sources": {
-        "musow": {
+        "discover_music_data_on_the_web": {
             "iri_base": "https://w3id.org/musow/",
             "query_method": "sparql_endpoint",
             "github": "",
@@ -51,49 +62,50 @@
             ],
             "logo_path": "",
             "template_mode": "statistics",
-            "title": "musoW",
-            "subtitle": "Discover music data on the Web",
+            "pilot_name": "musoW",
+            "title": "Discover music data on the Web",
+            "subtitle": "",
             "curator": "Marilena Daquino",
             "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
             "dynamic_elements": [
                 {
                     "type": "text",
-                    "position": 0,
+                    "position": 1,
                     "text": "Let's explore some data through the use of several charts."
                 },
                 {
                     "type": "count",
-                    "position": 1,
+                    "position": 2,
                     "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
                     "count_label": "Repositories"
                 },
                 {
                     "type": "count",
-                    "position": 2,
+                    "position": 3,
                     "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
                     "count_label": "Catalogues"
                 },
                 {
                     "type": "count",
-                    "position": 3,
+                    "position": 4,
                     "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
                     "count_label": "Datasets"
                 },
                 {
                     "type": "count",
-                    "position": 4,
+                    "position": 5,
                     "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
                     "count_label": "Digital Libraries"
                 },
                 {
                     "type": "count",
-                    "position": 5,
+                    "position": 6,
                     "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
                     "count_label": "Softwares"
                 },
                 {
                     "type": "chart",
-                    "position": 6,
+                    "position": 7,
                     "chart_type": "barchart",
                     "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
                     "chart_title": "Content Overview",
@@ -105,7 +117,7 @@
                 },
                 {
                     "type": "chart",
-                    "position": 7,
+                    "position": 8,
                     "chart_type": "linechart",
                     "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
                     "chart_title": "New Entries",
@@ -113,7 +125,7 @@
                 },
                 {
                     "type": "chart",
-                    "position": 8,
+                    "position": 9,
                     "chart_type": "doughnutchart",
                     "chart_query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
                     "chart_title": "Audiences of Repository",
@@ -126,7 +138,7 @@
                 }
             ]
         },
-        "wikidata": {
+        "explore_another_possibility": {
             "iri_base": "https://www.wikidata.org/",
             "query_method": "sparql_endpoint",
             "github": "",
@@ -138,55 +150,25 @@
             ],
             "logo_path": "",
             "template_mode": "maps",
-            "title": "Wikidata",
+            "pilot_name": "Wikidata",
+            "title": "Explore Another Possibility",
             "subtitle": "",
             "curator": "Giulia Renda",
-            "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\n\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web."
+            "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\n\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web.",
+            "decription": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.Wikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.Wikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web.",
+            "dynamic_elements": [
+                {
+                    "position": 1,
+                    "type": "text",
+                    "text": "2. Smetti di arrestare gente a caso."
+                }
+            ]
         },
         "musow_2": {
             "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
             "template_mode": "statistics",
+            "pilot_name": "musoW",
             "title": "musoW 2",
-            "color_code": [
-                "#39c6b4",
-                "#17cf31"
-            ],
-            "subtitle": "A Demonstration Pilot",
-            "curator": "Giulia Renda",
-            "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
-            "text": {
-                "4__text_1644934316036": "We collected information about several kind of resources. And now let's see what we could add with a barchart."
-            },
-            "chart": [
-                {
-                    "chart_type": "barchart",
-                    "query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
-                    "chart_title": "Content Overview"
-                }
-            ],
-            "count": [
-                {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
-                    "label": "REpositories"
-                },
-                {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
-                    "label": "Catolgues"
-                },
-                {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
-                    "label": "Datasets"
-                },
-                {
-                    "query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
-                    "label": "Digital Libraries"
-                }
-            ]
-        },
-        "musow_3": {
-            "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
-            "template_mode": "statistics",
-            "title": "musoW 3",
             "color_code": [
                 "#39c6b4",
                 "#17cf31"
@@ -196,20 +178,15 @@
             "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
             "dynamic_elements": [
                 {
-                    "position": 0,
-                    "type": "text",
-                    "text": "yyyyyyyyyyyyyyyyy"
-                },
-                {
                     "position": 1,
-                    "type": "text",
-                    "text": "wwwwwwwwwwwwwww"
-                },
-                {
-                    "position": 2,
                     "type": "count",
                     "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
                     "count_label": "Digital Libraries"
+                },
+                {
+                    "position": 2,
+                    "type": "text",
+                    "text": "Check"
                 },
                 {
                     "position": 3,
@@ -220,10 +197,43 @@
                 },
                 {
                     "position": 4,
-                    "type": "text",
-                    "text": "oooooooooooooooo"
+                    "type": "count",
+                    "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
+                    "count_label": "Datasets"
+                },
+                {
+                    "position": 5,
+                    "type": "chart",
+                    "chart_type": "linechart",
+                    "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
+                    "chart_title": "The other chart"
                 }
-            ]
+            ],
+            "decription": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need."
+        },
+        "check": {
+            "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+            "template_mode": "statistics",
+            "title": "Check",
+            "color_code": [
+                "#39c6b4",
+                "#17cf31"
+            ],
+            "pilot_name": "Internet Explorer"
+        },
+        "new_check": {
+            "sparql_endpoint": "https://query.example.org/",
+            "template_mode": "statistics",
+            "title": "New Check",
+            "color_code": [
+                "#39c6b4",
+                "#17cf31"
+            ],
+            "pilot_name": "Prova",
+            "subtitle": "Fingers crossed",
+            "curator": "The Curator",
+            "description": "",
+            "dynamic_elements": []
         }
     }
 }

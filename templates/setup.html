@@ -92,54 +92,41 @@
 									</div>
 								</div>
 
+								<!-- the pilot as macroarea -->
+								{% if general_data %}
+								<!-- if no resaure is present -->
+								{% if general_data.data_sources|length == 0 %}
 								<div class="form-group">
-									<label for="largeInput">The name of your Pilot</label>
-									<input name="title" type="text" class="form-control form-control" id=""
-										placeholder="The Pilot" required>
+									<label for="pilot_name">Create your Macroarea</label><br />
+									<input name="pilot_name" placeholder="Your Macroarea"
+										class="form-control input-border-bottom col-6" required>
 								</div>
+								<!-- if there are pilots -->
+								{% else %}
 								<div class="form-group">
-									<label for="largeInput">SPARQL Endpoint</label>
-									<input name="sparql_endpoint" type="text" class="form-control form-control" id=""
-										placeholder="https://query.example.org/" required>
+									<label for="pilot_name">Choose or create your Macroarea</label><br />
+									<input list="pilot_name" name="pilot_name" placeholder="The Macroarea"
+										class="form-control input-border-bottom col-6" required>
+									<datalist id="pilot_name">
+										{% for pilot in general_data.macroareas|sort() %}
+										<option value="{{pilot}}"></option>
+										{% endfor %}
 								</div>
-								<!-- <div class="form-group">
-									<label for="exampleFormControlSelect2">Chart Type</label>
-									<select name="chart" class="form-control" id="exampleFormControlSelect2">
-										<option>Line chart</option>
-										<option>Bar chart</option>
-										<option>Stacked Bar chart</option>
-										<option name="bubble_chart">Bubble chart</option>
-										<option>Scatter chart</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="largeInput">SPARQL query</label>
-									<input name="query" type="text" class="form-control form-control" id=""
-										placeholder="Type your query" required>
-								</div>
-								<div class="form-group">
-									<label for="largeInput">Chart Title</label>
-									<input name="title" type="text" class="form-control form-control" id=""
-										placeholder="Title" required>
-								</div>
-								<div class="form-group">
-									<label class="form-label">Operations</label><br>
-									<input name="operation1" type="checkbox" id="operation1"><label
-										for="operation1">COUNT</label><br><br>
-									<input name="operation2" type="checkbox"><br>
-									<input name="operation3" type="checkbox">
-								</div> -->
+								{% endif %}
+								{% endif %}
 
-								<!-- <div class="form-group has-success">
-									<label for="successInput">Success Input</label>
-									<input type="text" id="successInput" value="Success" class="form-control">
+
+								<div class="form-group form-floating-label">
+									<label for="title">The title of your Data Story</label>
+									<input name="title" type="text" class="form-control form-control col-6" id="title"
+										placeholder="The Data Story" required>
 								</div>
-								<div class="form-group has-error has-feedback">
-									<label for="errorInput">Error Input</label>
-									<input type="text" id="errorInput" value="Error" class="form-control">
-									<small id="emailHelp" class="form-text text-muted">Please provide a valid
-										informations.</small>
-								</div> -->
+								<div class="form-group">
+									<label for="sparql_endpoint">SPARQL Endpoint</label>
+									<input name="sparql_endpoint" type="text" class="form-control form-control col-6"
+										id="sparql_endpoint" placeholder="https://query.example.org/" required>
+								</div>
+
 							</div>
 						</div>
 					</div>

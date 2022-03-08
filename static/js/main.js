@@ -68,7 +68,7 @@ var counter = 0;
 function add_field(name) {
     var contents = "";
 
-    var text_field = "<input name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'>"
+    var text_field = "<input name='text' type='text' id='" + (counter + 1) + "__text' oninput='this.size = this.value.length' placeholder='Write the text for this paragraph.'>"
 
     var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='" + (counter + 1) + "__num'></p><p id='" + (counter + 1) + "__lab'></p></div><input name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' required><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 
@@ -125,7 +125,7 @@ $(function () {
 
             );
 
-            var sparqlEndpoint = pilot_data.sparql_endpoint;
+            var sparqlEndpoint = datastory_data.sparql_endpoint;
 
             var encoded_count = encodeURIComponent(count_query);
             var encoded_chart = encodeURIComponent(chart_query);
@@ -167,7 +167,7 @@ $(function () {
 
                             //  retrieve the chart id
                             var chartId = $("#" + (idx + 1) + "__chartid");
-                            var chartColor = pilot_data.color_code[0];
+                            var chartColor = datastory_data.color_code[0];
                             var myBarChart = new Chart(chartId, {
                                 type: 'bar',
                                 data: {
@@ -202,7 +202,7 @@ $(function () {
 
                             //  retrieve the chart id
                             var chartId = $("#" + (idx + 1) + "__chartid");
-                            var chartColor = pilot_data.color_code[0];
+                            var chartColor = datastory_data.color_code[0];
                             // graph plotting
                             var myLineChart = new Chart(chartId, {
                                 type: 'line',
@@ -281,12 +281,12 @@ function colorSwitch() {
     // gradient
     var gradientEl = document.querySelector(".panel-header");
     gradientEl.classList.remove("bg-primary-gradient");
-    gradientEl.style.background = 'linear-gradient(-45deg,' + pilot_data.color_code[0] + ',' + pilot_data.color_code[1] + ')';
+    gradientEl.style.background = 'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ')';
 }
 
 function queryCounter() {
-    if (pilot_data.dynamic_elements) {
-        pilot_data.dynamic_elements.forEach(element => {
+    if (datastory_data.dynamic_elements) {
+        datastory_data.dynamic_elements.forEach(element => {
             if (element.type == 'count') {
                 var query = element.count_query;
                 // check if the query is an API request
@@ -303,7 +303,7 @@ function queryCounter() {
                 } else {
                     // if it is a sparql query
                     var encoded = encodeURIComponent(query);
-                    var sparqlEndpoint = pilot_data.sparql_endpoint;
+                    var sparqlEndpoint = datastory_data.sparql_endpoint;
                     var count_label = element.count_label;
                     $.ajax({
                         type: 'GET',
@@ -338,8 +338,8 @@ function queryCounter() {
 }
 
 function chartViz() {
-    if (pilot_data.dynamic_elements) {
-        pilot_data.dynamic_elements.forEach(element => {
+    if (datastory_data.dynamic_elements) {
+        datastory_data.dynamic_elements.forEach(element => {
             if (element.type == 'chart') {
                 var chart = element.chart_type;
                 if (chart === "barchart") {
@@ -438,7 +438,7 @@ function barchart(element) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = pilot_data.sparql_endpoint;
+        var sparqlEndpoint = datastory_data.sparql_endpoint;
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
@@ -454,7 +454,7 @@ function barchart(element) {
                 chartHTMLElements(element);
                 //  retrieve the chart id
                 var chartId = "chart_" + element.position;
-                var chartColor = pilot_data.color_code[0];
+                var chartColor = datastory_data.color_code[0];
                 var myBarChart = new Chart(chartId, {
                     type: 'bar',
                     data: {
@@ -508,7 +508,7 @@ function linechart(element) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = pilot_data.sparql_endpoint;
+        var sparqlEndpoint = datastory_data.sparql_endpoint;
         // var label = element.label;
         $.ajax({
             type: 'GET',
@@ -526,7 +526,7 @@ function linechart(element) {
                 chartHTMLElements(element);
                 //  retrieve the chart id
                 var chartId = "chart_" + element.position;
-                var chartColor = pilot_data.color_code[0];
+                var chartColor = datastory_data.color_code[0];
                 // graph plotting
                 var myLineChart = new Chart(chartId, {
                     type: 'line',
@@ -607,7 +607,7 @@ function doughnutchart(element) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = pilot_data.sparql_endpoint;
+        var sparqlEndpoint = datastory_data.sparql_endpoint;
 
         $.ajax({
             type: 'GET',
@@ -648,7 +648,7 @@ function doughnutchart(element) {
                 var chartId = "chart_" + element.position;
 
                 // chart colors
-                var colors = chartColor(pilot_data.color_code[0], pilot_data.color_code[1], chartLabels.length);
+                var colors = chartColor(datastory_data.color_code[0], datastory_data.color_code[1], chartLabels.length);
 
                 // chart plotting
                 var myDoughnutChart = new Chart(chartId, {
@@ -705,7 +705,7 @@ function stacked_barchart(element) {
     } else {
         // if it is a sparql query
         var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = pilot_data.sparql_endpoint;
+        var sparqlEndpoint = datastory_data.sparql_endpoint;
 
         $.ajax({
             type: 'GET',
