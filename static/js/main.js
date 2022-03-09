@@ -112,9 +112,9 @@ $(function () {
     const update = function () {
         var fields = $('form').serializeArray();
         console.log(fields);
+        var color_1 = '';
+        var color_2 = '';
         $('#colors').each(function () {
-            var color_1 = '';
-            var color_2 = '';
             fields.forEach(element => {
                 if (element.name == 1 + '_color') {
                     color_1 = element.value;
@@ -122,10 +122,10 @@ $(function () {
                     color_2 = element.value;
                 }
             })
-            console.log(color_1);
-            console.log(color_2);
-            colorSwitch(color_2, color_1);
+
+
         });
+        colorSwitch(color_2, color_1);
 
         $('#sortable [id$="block_field"]').each(function (idx) {
             var count_query = '';
@@ -194,7 +194,7 @@ $(function () {
 
                             //  retrieve the chart id
                             var chartId = $("#" + (idx + 1) + "__chartid");
-                            var chartColor = datastory_data.color_code[0];
+                            var chartColor = color_2;
                             var myBarChart = new Chart(chartId, {
                                 type: 'bar',
                                 data: {
@@ -229,7 +229,7 @@ $(function () {
 
                             //  retrieve the chart id
                             var chartId = $("#" + (idx + 1) + "__chartid");
-                            var chartColor = datastory_data.color_code[0];
+                            var chartColor = color_2;
                             // graph plotting
                             var myLineChart = new Chart(chartId, {
                                 type: 'line',
