@@ -105,10 +105,11 @@
 								{% else %}
 								<div class="form-group">
 									<label for="pilot_name">Choose or create your Section</label><br />
-									<input list="pilot_name" name="pilot_name" placeholder="The Section"
-										class="form-control input-border-bottom col-6" required>
+									<input list="pilot_name" autocomplete="off" name="pilot_name"
+										placeholder="The Section" class="form-control input-border-bottom col-6"
+										required>
 									<datalist id="pilot_name">
-										{% for pilot in general_data.macroareas|sort() %}
+										{% for pilot in general_data.sections|sort() %}
 										<option value="{{pilot}}"></option>
 										{% endfor %}
 								</div>
