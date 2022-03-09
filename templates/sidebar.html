@@ -5,7 +5,7 @@
 
 			<ul class="nav nav-primary">
 				{% if general_data %}
-				{% for pilot in general_data.macroareas|sort() %}
+				{% for pilot in general_data.sections|sort() %}
 				<li class="nav-item submenu">
 					<a data-toggle="collapse" href="#submenu{{loop.index}}" aria-expanded="true">
 						<p>{{pilot}}</p>
