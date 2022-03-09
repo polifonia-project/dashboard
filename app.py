@@ -137,7 +137,7 @@ def setup():
             template_mode = form_data['template_mode']
             datastory_title = form_data['title']
             datastory_endpoint = form_data['sparql_endpoint']
-            macroarea_name = form_data['pilot_name']
+            section_name = form_data['pilot_name']
             color_code = ''
             for item in general_data['templates']:
                 if general_data['templates'][item]['name'] == template_mode:
@@ -148,19 +148,19 @@ def setup():
             new_datastory['template_mode'] = template_mode
             new_datastory['title'] = datastory_title
             new_datastory['color_code'] = color_code
-            new_datastory['pilot_name'] = macroarea_name
+            new_datastory['pilot_name'] = section_name
             # add to config file
             clean_title = datastory_title.lower().replace(" ", "_")
             general_data['data_sources'][clean_title] = new_datastory
             update_json('config.json', general_data)
             general_data = read_json('config.json')
 
-            # upload the macroareas list
-            macroareas = set()
+            # upload the sections list
+            sections = set()
             for details in general_data['data_sources'].values():
-                macroareas.add(details['pilot_name'])
-            print(macroareas)
-            general_data['macroareas'] = list(macroareas)
+                sections.add(details['pilot_name'])
+            print(sections)
+            general_data['sections'] = list(sections)
             update_json('config.json', general_data)
             general_data = read_json('config.json')
 

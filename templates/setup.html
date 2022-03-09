@@ -92,20 +92,20 @@
 									</div>
 								</div>
 
-								<!-- the pilot as macroarea -->
+								<!-- the pilot as section -->
 								{% if general_data %}
 								<!-- if no resaure is present -->
 								{% if general_data.data_sources|length == 0 %}
 								<div class="form-group">
-									<label for="pilot_name">Create your Macroarea</label><br />
-									<input name="pilot_name" placeholder="Your Macroarea"
+									<label for="pilot_name">Create your Section</label><br />
+									<input name="pilot_name" placeholder="Your Section"
 										class="form-control input-border-bottom col-6" required>
 								</div>
 								<!-- if there are pilots -->
 								{% else %}
 								<div class="form-group">
-									<label for="pilot_name">Choose or create your Macroarea</label><br />
-									<input list="pilot_name" name="pilot_name" placeholder="The Macroarea"
+									<label for="pilot_name">Choose or create your Section</label><br />
+									<input list="pilot_name" name="pilot_name" placeholder="The Section"
 										class="form-control input-border-bottom col-6" required>
 									<datalist id="pilot_name">
 										{% for pilot in general_data.macroareas|sort() %}
