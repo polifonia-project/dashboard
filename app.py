@@ -49,6 +49,7 @@ def manage_datastory_data(general_data, file):
 
     dynamic_elements = []
     position_set = set()
+    color_code_list = []
 
     for source, datastory_data in general_data['data_sources'].items():
         # with the title we check where to insert data
@@ -57,8 +58,12 @@ def manage_datastory_data(general_data, file):
             for k, v in form_data.items():
                 if '__' in k:
                     position_set.add(int(k.split('__')[0]))
+                elif '_color' in k:
+                    color_code_list.insert(0, v)
                 else:
                     datastory_data[k] = v
+
+            datastory_data['color_code'] = color_code_list
             # we create as many dicts as there are positions, to store each type of element and append to
             # dynamic_elements list
             for position in position_set:

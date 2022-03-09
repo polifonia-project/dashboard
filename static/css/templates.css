@@ -1,4 +1,4 @@
-input {
+input[type='text'] {
     background-color: inherit;
     color: inherit;
     border-width: 0 0 2px 0;
@@ -13,4 +13,11 @@ textarea {
     font-weight: inherit;
     width: 100%;
     height: auto;
+}
+
+#colors {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+    text-align: center;
 }

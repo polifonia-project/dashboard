@@ -1,10 +1,12 @@
 window.onload = function () {
-    colorSwitch();
+    colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
     queryCounter();
     chartViz();
     disableKeypress();
     // sidebarContent();
 }
+
+//// WYSIWYG FORM FUNCTIONS ////
 
 // disable submit form when pressing return
 function disableKeypress() {
@@ -16,9 +18,6 @@ function disableKeypress() {
         }
     });
 }
-
-
-//// WYSIWYG FORM FUNCTIONS ////
 
 // update index of fields in template page (to store the final order)
 function updateindex() {
@@ -113,6 +112,21 @@ $(function () {
     const update = function () {
         var fields = $('form').serializeArray();
         console.log(fields);
+        $('#colors').each(function () {
+            var color_1 = '';
+            var color_2 = '';
+            fields.forEach(element => {
+                if (element.name == 1 + '_color') {
+                    color_1 = element.value;
+                } else if (element.name == 2 + '_color') {
+                    color_2 = element.value;
+                }
+            })
+            console.log(color_1);
+            console.log(color_2);
+            colorSwitch(color_2, color_1);
+        });
+
         $('#sortable [id$="block_field"]').each(function (idx) {
             var count_query = '';
             var count_label = '';
@@ -290,11 +304,11 @@ $(function () {
 
 //// STATISTICS TEMPLATE FUNCTIONS ////
 
-function colorSwitch() {
+function colorSwitch(color_1, color_2) {
     // gradient
     var gradientEl = document.querySelector(".panel-header");
     gradientEl.classList.remove("bg-primary-gradient");
-    gradientEl.style.background = 'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ')';
+    gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
 }
 
 function queryCounter() {
