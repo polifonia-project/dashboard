@@ -813,27 +813,3 @@ function stacked_barchart(element) {
     }
 
 }
-
-
-
-// function sidebarContent() {
-//     // general container
-//     var container = document.getElementById("sidebarWrapper");
-
-//     // project logo
-//     if (data.logo_path.length > 0) {
-//         var logoDiv = document.createElement("div");
-//         logoDiv.className("logo");
-
-//         var logoLink = document.createElement("a");
-//         logoLink.setAttribute("target", "_blank");
-//         logoLink.setAttribute("href", "data.iri_base");
-
-//         var logoImg = document.createElement("img");
-//         logoImg.setAttribute("src", data.logo_path);
-
-//         logoLink.appendChild(logoImg);
-//         logoDiv.appendChild(logoLink);
-//         container.appendChild(generalDiv);
-//     }
-// }
