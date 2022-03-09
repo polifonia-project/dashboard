@@ -112,6 +112,8 @@
 										{% for pilot in general_data.sections|sort() %}
 										<option value="{{pilot}}"></option>
 										{% endfor %}
+										<option value="Type your Section..."></option>
+									</datalist>
 								</div>
 								{% endif %}
 								{% endif %}
@@ -149,5 +151,8 @@
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 <script src="/static/js/setting-demo2.js"></script>
+<!-- <script>
+	$("#pilot_name").find("[value='Type your Section...']").prop("disabled", true);
+</script> -->
 
 {% endblock javascripts %}
