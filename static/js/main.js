@@ -2,8 +2,21 @@ window.onload = function () {
     colorSwitch();
     queryCounter();
     chartViz();
+    disableKeypress();
     // sidebarContent();
 }
+
+// disable submit form when pressing return
+function disableKeypress() {
+    $("input[type='text']").on('keyup keypress', function (e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) {
+            e.preventDefault();
+            return false;
+        }
+    });
+}
+
 
 //// WYSIWYG FORM FUNCTIONS ////
 
