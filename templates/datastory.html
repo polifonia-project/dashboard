@@ -28,7 +28,7 @@
 				</div>
 				<div class="ml-md-auto py-2 py-md-0">
 					<h4 class="text-white pb-2 fw-bold">
-						{% if datastory_data.subtitle %}
+						{% if datastory_data.curator %}
 						{{ datastory_data.curator }}
 						{%endif%}
 					</h4>
@@ -45,7 +45,7 @@
 							<h4 class="card-title">About the Project</h4>
 						</div>
 						<p class="card-category">
-							{% if datastory_data.subtitle %}
+							{% if datastory_data.description %}
 							{{ datastory_data.description }}
 							{%endif%}
 						</p>

@@ -42,6 +42,18 @@
     background: rgba(255, 255, 255, 0.8);
 }
 
-/* #overview {
-    display: flex;
-} */
+.main-panel {
+    width: calc(100% - 180px);
+}
+
+.sidebar {
+    width: 180px;
+}
+
+.logo-header {
+    width: 180px;
+}
+
+p {
+    white-space: pre-line;
+}

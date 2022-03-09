@@ -15,15 +15,16 @@
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
                         <h2 class="text-white pb-2 fw-bold">
-                            <input name="title" type="text" id="" value="{{ datastory_data.title }}">
+                            <textarea name="title" type="text" id="" cols="{{ datastory_data.title|length }}" rows="1"
+                                placeholder="Write your Title" required>{{ datastory_data.title }}</textarea>
                         </h2>
                         <h5 class="text-white op-7 mb-2">
-                            <input name="subtitle" type="text" id="" placeholder="The Subtitle">
+                            <textarea name="subtitle" type="text" id="" rows="1" placeholder="The Subtitle"></textarea>
                         </h5>
                     </div>
                     <div class="ml-md-auto py-2 py-md-0">
                         <h4 class="text-white pb-2 fw-bold">
-                            <input name="curator" type="text" id="" placeholder="The Curator">
+                            <textarea name="curator" type="text" id="" rows="1" placeholder="The Curator"></textarea>
                         </h4>
                     </div>
                 </div>
@@ -38,8 +39,8 @@
                                 <h4 class="card-title">About the Project</h4>
                             </div>
                             <p class="card-category">
-                                <input name="description" type="text" id="description"
-                                    placeholder="Write a brief introdution to the project.">
+                                <textarea name="description" type="text" id="" rows="1"
+                                    placeholder="Write a brief introdution to the project."></textarea>
                             </p>
                         </div>
                         <div class="card-body">

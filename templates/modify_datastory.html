@@ -15,22 +15,25 @@
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
                         <h2 class="text-white pb-2 fw-bold">
-                            <input name="title" type="text" id="" value="{{ datastory_data.title }}">
+                            <textarea name="title" type="text" id="" cols="{{ datastory_data.title|length }}" rows="1"
+                                placeholder="Write your Title" required>{{ datastory_data.title }}</textarea>
                         </h2>
                         <h5 class="text-white op-7 mb-2">
                             {% if datastory_data.subtitle %}
-                            <input name="subtitle" type="text" id="" value="{{ datastory_data.subtitle }}">
+                            <textarea name="subtitle" type="text" id="" cols="{{ datastory_data.subtitle|length }}"
+                                rows="1" placeholder="Write your Subtitle">{{ datastory_data.subtitle }}</textarea>
                             {% else %}
-                            <input name="subtitle" type="text" id="" placeholder="The Subtitle">
+                            <textarea name="subtitle" type="text" id="" rows="1" placeholder="The Subtitle"></textarea>
                             {%endif%}
                         </h5>
                     </div>
                     <div class="ml-md-auto py-2 py-md-0">
                         <h4 class="text-white pb-2 fw-bold">
                             {% if datastory_data.curator %}
-                            <input name="curator" type="text" id="" value="{{ datastory_data.curator }}">
+                            <textarea name="curator" type="text" id="" cols="{{ datastory_data.curator|length }}"
+                                rows="1" placeholder="The Curator">{{ datastory_data.curator }}</textarea>
                             {% else %}
-                            <input name="curator" type="text" id="" placeholder="The Curator">
+                            <textarea name="curator" type="text" id="" rows="1" placeholder="The Curator"></textarea>
                             {%endif%}
                         </h4>
                     </div>
@@ -47,10 +50,11 @@
                             </div>
                             <p class="card-category">
                                 {% if datastory_data.description %}
-                                <input name="decription" type="text" id="" value="{{ datastory_data.description }}">
+                                <textarea name="description" type="text" id=""
+                                    placeholder="Write a brief introdution to the project.">{{ datastory_data.description }}</textarea>
                                 {% else %}
-                                <input name="description" type="text" id="description"
-                                    placeholder="Write a brief introdution to the project.">
+                                <textarea name="description" type="text" id="" rows="1"
+                                    placeholder="Write a brief introdution to the project."></textarea>
                                 {%endif%}
                             </p>
                         </div>
@@ -70,10 +74,11 @@
                                 <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
                                     <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
                                 </a>
-
+                                <br>
                                 <!-- preview -->
-                                <input type="text" name="{{dict.position}}__{{dict.type}}"
-                                    id="{{dict.position}}__{{dict.type}}" placeholder="{{dict.text}}">
+                                <textarea type="text" name="{{dict.position}}__{{dict.type}}"
+                                    id="{{dict.position}}__{{dict.type}}"
+                                    placeholder="{{dict.text}}">{{dict.text}}</textarea>
                             </div>
 
                             <!-- COUNT -->
@@ -89,7 +94,7 @@
                                 <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
                                     <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
                                 </a>
-
+                                <br>
                                 <!-- preview -->
                                 <div class='card-body option-2b' style='max-width: 200%;' id="{{dict.position}}__count">
                                     <p id='{{dict.position}}__num'></p>
@@ -97,8 +102,10 @@
                                 </div>
 
                                 <!-- input -->
-                                <input name='{{dict.position}}__count_query' type='text'
-                                    id='{{dict.position}}__count_query' value="{{dict.count_query}}" required>
+                                <textarea name='{{dict.position}}__count_query' type='text'
+                                    id='{{dict.position}}__count_query' value="{{dict.count_query}}"
+                                    placeholder="Write the SPARQL query for the count." rows="1"
+                                    required>{{dict.count_query}}</textarea>
                                 <input name='{{dict.position}}__count_label' type='text'
                                     id='{{dict.position}}__count_label' value="{{dict.count_label}}" required>
                             </div>
@@ -139,8 +146,9 @@
                                         {% endfor %}
                                     </select>
                                     <label>SPARQL query</label>
-                                    <input name='{{dict.position}}__chart_query' type='text'
-                                        id='{{dict.position}}__chart_query' value="{{dict.chart_query}}" required>
+                                    <textarea name='{{dict.position}}__chart_query' type='text'
+                                        id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
+                                        required></textarea>
                                     <label>Chart Title</label>
                                     <input name='{{dict.position}}__chart_title' type='text'
                                         id='{{dict.position}}__chart_title' value="{{dict.chart_title}}" required>
