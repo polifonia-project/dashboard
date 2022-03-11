@@ -439,6 +439,15 @@ function chartColor(colorStart, colorEnd, dataLength) {
     return d3.quantize(d3.interpolateHcl(colorStart, colorEnd), dataLength);
 }
 
+// print chart
+function printChart(image, position) {
+    var print_btn = document.getElementById('check_' + position);
+    print_btn.onclick = function () {
+        print_btn.href = image;
+        print_btn.download = 'my_chart.png';
+    }
+}
+
 function barchart(element) {
 
 
@@ -481,7 +490,10 @@ function barchart(element) {
                 chartHTMLElements(element);
                 //  retrieve the chart id
                 var chartId = "chart_" + element.position;
+                // set colors
                 var chartColor = datastory_data.color_code[0];
+                // create image string
+                var image = '';
                 var myBarChart = new Chart(chartId, {
                     type: 'bar',
                     data: {
@@ -503,6 +515,12 @@ function barchart(element) {
                                 }
                             }]
                         },
+                        animation: {
+                            onComplete: function () {
+                                image = myBarChart.toBase64Image();
+                                printChart(image, element.position);
+                            }
+                        }
                     }
                 });
             }
@@ -603,6 +621,12 @@ function linechart(element) {
                         },
                         layout: {
                             padding: { left: 15, right: 15, top: 15, bottom: 15 }
+                        },
+                        animation: {
+                            onComplete: function () {
+                                image = myLineChart.toBase64Image();
+                                printChart(image, element.position);
+                            }
                         }
                     }
                 });
@@ -700,6 +724,12 @@ function doughnutchart(element) {
                                 right: 20,
                                 top: 20,
                                 bottom: 20
+                            }
+                        },
+                        animation: {
+                            onComplete: function () {
+                                image = myDoughnutChart.toBase64Image();
+                                printChart(image, element.position);
                             }
                         }
                     }

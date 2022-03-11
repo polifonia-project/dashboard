@@ -65,7 +65,22 @@
 
 						<!-- chart -->
 						{% elif dict.type == 'chart' %}
-						<div id="{{dict.position}}"></div>
+						<div id="{{dict.position}}">
+							<div class="card-tools">
+								<a href="#" class="btn btn-info btn-border btn-round btn-sm mr-2">
+									<span class="btn-label">
+										<i class="fa fa-pencil"></i>
+									</span>
+									Export
+								</a>
+								<a id="check_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+									<span class="btn-label">
+										<i class="fa fa-print"></i>
+									</span>
+									Print
+								</a>
+							</div>
+						</div>
 						{% endif %}
 
 						{% endfor %}
