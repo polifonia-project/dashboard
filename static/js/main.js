@@ -441,12 +441,21 @@ function chartColor(colorStart, colorEnd, dataLength) {
 
 // print chart
 function printChart(image, position) {
-    var print_btn = document.getElementById('check_' + position);
+    var print_btn = document.getElementById('print_' + position);
     print_btn.onclick = function () {
         print_btn.href = image;
         print_btn.download = 'my_chart.png';
     }
 }
+
+// export datastory
+// function exportDatastory(section, datastory) {
+//     var Inliner = require('inliner');
+//     new Inliner('http://127.0.0.1:5000/' + section + '/' + datastory + '/#btw', function (error, html) {
+//         // compressed and inlined HTML page
+//         console.log(html);
+//     });
+// }
 
 function barchart(element) {
 
