@@ -457,6 +457,25 @@ function printChart(image, position) {
 //     });
 // }
 
+// array to string with quotes
+function arrayToString(labelsArray) {
+    var labelsString = '';
+    labelsArray.forEach(el => {
+        var newString = '"' + el + '",';
+        labelsString = labelsString + newString;
+    }); return labelsString
+}
+
+// create embed tag with image source
+function exportChart(position, type, labels, data, label) {
+    var export_btn = document.getElementById('export_' + position);
+    export_btn.onclick = function () {
+        var chartURL = 'https://quickchart.io/chart?c={type:"' + type + '",data:{labels:[' + labels + '],datasets:[{label:"' + label + '",data:[' + data + ']}]}}'
+        // window.open(chartURL);
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<embed type="image/jpg" src="' + encodeURI(chartURL) + '"');
+    }
+}
+
 function barchart(element) {
 
 
@@ -528,12 +547,16 @@ function barchart(element) {
                             onComplete: function () {
                                 image = myBarChart.toBase64Image();
                                 printChart(image, element.position);
+                                labels = arrayToString(chartLabels);
+                                exportChart(element.position, 'bar', labels, chartData, 'Quantity');
                             }
                         }
                     }
                 });
+
             }
         })
+
     }
 
 }
@@ -635,6 +658,8 @@ function linechart(element) {
                             onComplete: function () {
                                 image = myLineChart.toBase64Image();
                                 printChart(image, element.position);
+                                labels = arrayToString(chartLabels);
+                                exportChart(element.position, 'line', labels, chartData, 'New Entries');
                             }
                         }
                     }
@@ -739,6 +764,8 @@ function doughnutchart(element) {
                             onComplete: function () {
                                 image = myDoughnutChart.toBase64Image();
                                 printChart(image, element.position);
+                                labels = arrayToString(chartLabels);
+                                exportChart(element.position, 'doughnut', labels, chartData);
                             }
                         }
                     }
