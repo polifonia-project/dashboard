@@ -1,4 +1,4 @@
-# Polifonis Dashboard
+# Polifonia Dashboard
 
 ## Quickstart
 
