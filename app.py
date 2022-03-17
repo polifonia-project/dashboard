@@ -4,11 +4,6 @@ from flask import Flask, render_template, request, url_for, redirect
 
 import json
 
-from itsdangerous import exc
-
-# from SPARQLWrapper import SPARQLWrapper, JSON
-# import ssl
-
 app = Flask(__name__)
 
 
