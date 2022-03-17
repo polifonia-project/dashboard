@@ -1,5 +1,3 @@
-from itertools import count
-from statistics import mode
 from flask import Flask, render_template, request, url_for, redirect
 
 import json
