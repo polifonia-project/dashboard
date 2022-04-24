@@ -448,14 +448,6 @@ function printChart(image, position) {
     }
 }
 
-// export datastory
-// function exportDatastory(section, datastory) {
-//     var Inliner = require('inliner');
-//     new Inliner('http://127.0.0.1:5000/' + section + '/' + datastory + '/#btw', function (error, html) {
-//         // compressed and inlined HTML page
-//         console.log(html);
-//     });
-// }
 
 // array to string with quotes
 function arrayToString(labelsArray) {
@@ -472,7 +464,7 @@ function exportChart(position, type, labels, data, label) {
     export_btn.onclick = function () {
         var chartURL = 'https://quickchart.io/chart?c={type:"' + type + '",data:{labels:[' + labels + '],datasets:[{label:"' + label + '",data:[' + data + ']}]}}'
         // window.open(chartURL);
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<embed type="image/jpg" src="' + encodeURI(chartURL) + '"');
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<embed type="image/jpg" src="' + encodeURI(chartURL) + '">');
     }
 }
 
