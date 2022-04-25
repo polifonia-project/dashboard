@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="content">
-    <form action="send_data" method="post" class="card">
+    <form action="send_data/{{datastory_data.section_name|replace(' ', '_')|lower}}" method="post" class="card">
         <div class="panel-header bg-primary-gradient">
             <div class="page-inner">
                 <!-- color picker -->

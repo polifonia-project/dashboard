@@ -25,7 +25,7 @@
 											<select name="template_mode" class="form-control"
 												id="exampleFormControlSelect1" required>
 												{% for item in template_data %}
-												<option>{{item.name}}</option>
+												<option>{{item.name|capitalize}}</option>
 												{% endfor %}
 											</select>
 										</div>
@@ -39,7 +39,7 @@
 															<img src="{{item.img_path}}" alt="{{item.name}}"
 																class="imagecheck-image">
 														</a>
-														<figcaption>{{item.name}}</figcaption>
+														<figcaption>{{item.name|capitalize}}</figcaption>
 													</figure>
 												</div>
 
@@ -51,7 +51,7 @@
 														<div class="modal-content">
 															<div class="modal-header">
 																<h5 class="modal-title" id="{{item.name}}Label">
-																	{{item.name}} Template</h5>
+																	{{item.name|capitalize}} Template</h5>
 																<button type="button" class="btn-close"
 																	data-bs-dismiss="modal" aria-label="Close"></button>
 															</div>
@@ -83,9 +83,6 @@
 														</div>
 													</div>
 												</div>
-												<!-- end -->
-
-												<!-- <div>{{item.name}}</div> -->
 												{% endfor %}
 											</div>
 										</div>
@@ -97,20 +94,20 @@
 								<!-- if no resaure is present -->
 								{% if general_data.data_sources|length == 0 %}
 								<div class="form-group">
-									<label for="pilot_name">Create your Section</label><br />
-									<input name="pilot_name" placeholder="Your Section"
+									<label for="section_name">Create your Section</label><br />
+									<input name="section_name" placeholder="Your Section"
 										class="form-control input-border-bottom col-6" required>
 								</div>
 								<!-- if there are pilots -->
 								{% else %}
 								<div class="form-group">
-									<label for="pilot_name">Choose or create your Section</label><br />
-									<input list="pilot_name" autocomplete="off" name="pilot_name"
+									<label for="section_name">Choose or create your Section</label><br />
+									<input list="section_name" autocomplete="off" name="section_name"
 										placeholder="The Section" class="form-control input-border-bottom col-6"
 										required>
-									<datalist id="pilot_name">
-										{% for pilot in general_data.sections|sort() %}
-										<option value="{{pilot}}"></option>
+									<datalist id="section_name">
+										{% for section in general_data.sections|sort() %}
+										<option value="{{section}}"></option>
 										{% endfor %}
 										<option value="Type your Section..."></option>
 									</datalist>
@@ -152,7 +149,7 @@
 <!-- Atlantis DEMO methods, don't include it in your project! -->
 <script src="/static/js/setting-demo2.js"></script>
 <!-- <script>
-	$("#pilot_name").find("[value='Type your Section...']").prop("disabled", true);
+	$("#section_name").find("[value='Type your Section...']").prop("disabled", true);
 </script> -->
 
 {% endblock javascripts %}
