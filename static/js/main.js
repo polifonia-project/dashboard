@@ -122,8 +122,6 @@ $(function () {
                     color_2 = element.value;
                 }
             })
-
-
         });
         colorSwitch(color_2, color_1);
 
@@ -692,32 +690,39 @@ function doughnutchart(element) {
             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
             success: function (returnedJson) {
 
-                var label = [];
-                for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                    if (returnedJson.results.bindings[i].label.value == '') {
-                        label[i] = 'other'
-                    } else {
-                        label[i] = returnedJson.results.bindings[i].label.value;
-                    }
-
-                }
-
-                var op = element.operations;
-
                 var chartData = [];
                 var chartLabels = [];
-                op.forEach(o => {
-                    var action = o.action;
-                    var param = o.param;
-                    // activate the operations on the data
-                    if (action.includes('count')) {
-                        var elCount = eval(action + '(' + param + ')');
-                    }
-                    // where I'll store the data necessary for the chart
-                    chartData = Object.values(elCount);
-                    chartLabels = Object.keys(elCount);
 
-                })
+                // check if query requires operations
+                var op = element.operations;
+                if (op.length > 0) {
+                    var label = [];
+                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                        if (returnedJson.results.bindings[i].label.value == '') {
+                            label[i] = 'other'
+                        } else {
+                            label[i] = returnedJson.results.bindings[i].label.value;
+                        }
+
+                    }
+
+                    op.forEach(o => {
+                        var action = o.action;
+                        var param = o.param;
+                        // activate the operations on the data
+                        if (action.includes('count')) {
+                            var elCount = eval(action + '(' + param + ')');
+                            // where I'll store the data necessary for the chart
+                            chartData = Object.values(elCount);
+                            chartLabels = Object.keys(elCount);
+                        }
+                    })
+                } else if (op.length == 0) {
+                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
+                    }
+                }
 
                 // create the HTML structure that'll receive the data
                 chartHTMLElements(element);
