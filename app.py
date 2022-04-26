@@ -63,6 +63,8 @@ def manage_datastory_data(general_data, file, section_name):
                     # we create as many dicts as there are positions, to store each type of element and append to
                     # dynamic_elements list
                     for position in position_set:
+                        operations = []
+                        op_list = []
                         elements_dict = {}
                         elements_dict['position'] = position
                         for k, v in form_data.items():
@@ -77,6 +79,18 @@ def manage_datastory_data(general_data, file, section_name):
                                     elif 'chart' in k:
                                         elements_dict['type'] = 'chart'
                                         elements_dict[k.split('__')[1]] = v
+                                    elif 'action' in k:
+                                        op_list.append(v)
+                        # create dicts with operations info
+                        for op in op_list:
+                            op_dict = {}
+                            op_dict['action'] = op
+                            if op == 'count':
+                                op_dict['param'] = 'label'
+                            elif op == 'sort':
+                                op_dict['param'] = 'another'
+                            operations.append(op_dict)
+                        elements_dict['operations'] = operations
                         dynamic_elements.append(elements_dict)
 
                     datastory_data['dynamic_elements'] = dynamic_elements

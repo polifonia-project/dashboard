@@ -84,7 +84,7 @@ function add_field(name) {
 
     var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='" + (counter + 1) + "__num'></p><p id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' rows='1' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 
-    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label class='form-label'>Operations (to be addedd)</label><br></div>"
+    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='" + (counter + 1) + "__count' name='action1' value='count'><label for='" + (counter + 1) + "__count'>Count</label><br><input type='checkbox' id='" + (counter + 1) + "__sort' name='action2' value='sort'><label for='" + (counter + 1) + "__count'>Sort</label><br></div>"
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a>';
 
@@ -131,6 +131,7 @@ $(function () {
             var chart_query = '';
             var chart_title = '';
             var chart_type = '';
+            var operations = [];
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -143,10 +144,12 @@ $(function () {
                     chart_title = element.value;
                 } else if (element.name == (idx + 1) + '__chart_type') {
                     chart_type = element.value;
+                } else if (element.name.includes((idx + 1) + '__action')) {
+                    operations.push(element.value);
                 }
             }
 
-            );
+            ); console.log(operations)
 
             var sparqlEndpoint = datastory_data.sparql_endpoint;
 
@@ -279,13 +282,39 @@ $(function () {
                         } else if (chart_type == 'doughnutchart') {
                             var chartData = [];
                             var chartLabels = [];
-                            // without operations
-                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                chartData[i] = returnedJson.results.bindings[i].count.value;
-                                if (returnedJson.results.bindings[i].label.value == '') {
-                                    chartLabels[i] = 'other'
-                                } else {
-                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+
+                            // with operations
+                            if (operations.length > 0) {
+                                var label = [];
+                                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                    if (returnedJson.results.bindings[i].label.value == '') {
+                                        label[i] = 'other'
+                                    } else {
+                                        label[i] = returnedJson.results.bindings[i].label.value;
+                                    }
+
+                                }
+
+                                operations.forEach(o => {
+                                    var action = o
+                                    if (action == 'count') {
+                                        var param = 'label';
+                                        // activate the operations on the data
+                                        var elCount = eval(action + '(' + param + ')');
+                                        // where I'll store the data necessary for the chart
+                                        chartData = Object.values(elCount);
+                                        chartLabels = Object.keys(elCount);
+                                    }
+                                })
+                            } else if (operations.length == 0) {
+                                // without operations
+                                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
+                                    if (returnedJson.results.bindings[i].label.value == '') {
+                                        chartLabels[i] = 'other'
+                                    } else {
+                                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    }
                                 }
                             }
 
