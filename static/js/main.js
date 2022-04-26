@@ -84,7 +84,7 @@ function add_field(name) {
 
     var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='" + (counter + 1) + "__num'></p><p id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' rows='1' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 
-    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='" + (counter + 1) + "__count' name='action1' value='count'><label for='" + (counter + 1) + "__count'>Count</label><br><input type='checkbox' id='" + (counter + 1) + "__sort' name='action2' value='sort'><label for='" + (counter + 1) + "__count'>Sort</label><br></div>"
+    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='count' name='action1' value='count'><label for='count'>Count</label><br><input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label><br></div>"
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a>';
 
@@ -149,7 +149,7 @@ $(function () {
                 }
             }
 
-            ); console.log(operations)
+            );
 
             var sparqlEndpoint = datastory_data.sparql_endpoint;
 
@@ -165,7 +165,6 @@ $(function () {
                     success: function (returnedJson) {
                         for (i = 0; i < returnedJson.results.bindings.length; i++) {
                             var count = returnedJson.results.bindings[i].count.value;
-                            // console.log(count_label);
                             $("#" + (idx + 1) + "__num").text(count);
 
                         }
@@ -323,7 +322,7 @@ $(function () {
                             // chart colors
                             // Don't understand why, function chartColors can't be read. So I extracted the content and applied directly
                             // var chartColors = chartColor(color_1, color_2, chartLabels.length);
-                            var chartColors = d3.quantize(d3.interpolateHcl(color_1, color_2), chartLabels.length);
+                            var chartColors = d3.quantize(d3.interpolateHcl(color_2, color_1), chartLabels.length);
 
 
                             // chart plotting

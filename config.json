@@ -5,10 +5,12 @@
     "index_channel": 1491,
     "index_pw": "SecretPassword",
     "sections": [
-        "New Section",
         "Wikidata",
-        "musoW",
-        "Prova"
+        "musoW"
+    ],
+    "operations": [
+        "Count",
+        "Sort"
     ],
     "templates": {
         "template_01": {
@@ -208,24 +210,13 @@
                     },
                     {
                         "position": 2,
-                        "type": "text",
-                        "text": ""
+                        "type": "chart",
+                        "chart_type": "doughnutchart",
+                        "chart_query": "SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label",
+                        "chart_title": "Audiences of Repository",
+                        "operations": []
                     }
                 ]
-            },
-            "the_musow_to_try": {
-                "sparql_endpoint": "https://query.example.org/",
-                "template_mode": "Statistics",
-                "title": "The musoW to Try",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "musoW",
-                "subtitle": "Sub",
-                "curator": "Cur",
-                "description": "edfghjkm,",
-                "dynamic_elements": []
             }
         },
         "wikidata": {
@@ -251,51 +242,6 @@
                         "position": 1,
                         "type": "text",
                         "text": "akjbbbbbbbbbb hjbbbbbbbbbb yyyyyyyyyyyyyyyyyyyyyy"
-                    }
-                ]
-            }
-        },
-        "prova": {
-            "new_check": {
-                "sparql_endpoint": "https://query.example.org/",
-                "template_mode": "statistics",
-                "title": "New Check",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "Prova",
-                "subtitle": "Fingers crossed",
-                "curator": "The Curator",
-                "description": "jjjjjjjj\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "count",
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
-                        "count_label": "ggggggggggg"
-                    }
-                ]
-            }
-        },
-        "check_section": {
-            "the_musow_to_try": {
-                "sparql_endpoint": "https://query.example.org/",
-                "template_mode": "Statistics",
-                "title": "The musoW to Try",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "Check Section",
-                "subtitle": "Sub",
-                "curator": "Cu",
-                "description": "sdfghjkl\u00f2lkjhgfd",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "text",
-                        "text": "dfghjhgfdsfghjgfhjk"
                     }
                 ]
             }
