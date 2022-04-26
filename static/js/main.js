@@ -144,8 +144,6 @@ $(function () {
                 } else if (element.name == (idx + 1) + '__chart_type') {
                     chart_type = element.value;
                 }
-
-
             }
 
             );
@@ -223,8 +221,6 @@ $(function () {
                                 chartLabels[i] = returnedJson.results.bindings[i].x.value;
                                 chartData[i] = returnedJson.results.bindings[i].y.value;
                             }
-
-
                             //  retrieve the chart id
                             var chartId = $("#" + (idx + 1) + "__chartid");
                             var chartColor = color_2;
@@ -277,6 +273,54 @@ $(function () {
                                     },
                                     layout: {
                                         padding: { left: 15, right: 15, top: 15, bottom: 15 }
+                                    }
+                                }
+                            });
+                        } else if (chart_type == 'doughnutchart') {
+                            var chartData = [];
+                            var chartLabels = [];
+                            // without operations
+                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                chartData[i] = returnedJson.results.bindings[i].count.value;
+                                if (returnedJson.results.bindings[i].label.value == '') {
+                                    chartLabels[i] = 'other'
+                                } else {
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                }
+                            }
+
+                            // retrieve the chart id
+                            var chartId = $("#" + (idx + 1) + "__chartid");
+                            // chart colors
+                            // Don't understand why, function chartColors can't be read. So I extracted the content and applied directly
+                            // var chartColors = chartColor(color_1, color_2, chartLabels.length);
+                            var chartColors = d3.quantize(d3.interpolateHcl(color_1, color_2), chartLabels.length);
+
+
+                            // chart plotting
+                            var myDoughnutChart = new Chart(chartId, {
+                                type: 'doughnut',
+                                data: {
+                                    datasets: [{
+                                        data: chartData,
+                                        backgroundColor: chartColors
+                                    }],
+
+                                    labels: chartLabels
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    legend: {
+                                        position: 'bottom'
+                                    },
+                                    layout: {
+                                        padding: {
+                                            left: 20,
+                                            right: 20,
+                                            top: 20,
+                                            bottom: 20
+                                        }
                                     }
                                 }
                             });
@@ -719,8 +763,12 @@ function doughnutchart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
                         chartData[i] = returnedJson.results.bindings[i].count.value;
+                        if (returnedJson.results.bindings[i].label.value == '') {
+                            chartLabels[i] = 'other'
+                        } else {
+                            chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        }
                     }
                 }
 
@@ -755,14 +803,6 @@ function doughnutchart(element) {
                                 right: 20,
                                 top: 20,
                                 bottom: 20
-                            }
-                        },
-                        animation: {
-                            onComplete: function () {
-                                image = myDoughnutChart.toBase64Image();
-                                printChart(image, element.position);
-                                labels = arrayToString(chartLabels);
-                                exportChart(element.position, 'doughnut', labels, chartData);
                             }
                         }
                     }
