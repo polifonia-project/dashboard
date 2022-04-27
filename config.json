@@ -1,9 +1,4 @@
 {
-    "app_port": "8080",
-    "app_host": "0.0.0.0",
-    "index_host": "localhost",
-    "index_channel": 1491,
-    "index_pw": "SecretPassword",
     "sections": [
         "Wikidata",
         "musoW"
@@ -116,7 +111,7 @@
                             "xlabel",
                             "ylabel"
                         ],
-                        "operations": ""
+                        "operations": []
                     },
                     {
                         "type": "chart",
@@ -124,7 +119,7 @@
                         "chart_type": "linechart",
                         "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
                         "chart_title": "New Entries",
-                        "operations": ""
+                        "operations": []
                     },
                     {
                         "type": "chart",
@@ -215,6 +210,34 @@
                         "chart_query": "SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label",
                         "chart_title": "Audiences of Repository",
                         "operations": []
+                    }
+                ]
+            },
+            "check_barchart": {
+                "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+                "template_mode": "Statistics",
+                "title": "Check Barchart",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "musoW",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . }",
+                        "chart_title": "Barchart With Count",
+                        "operations": [
+                            {
+                                "action": "count",
+                                "param": "label"
+                            }
+                        ]
                     }
                 ]
             }

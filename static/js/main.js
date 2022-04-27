@@ -185,9 +185,35 @@ $(function () {
                         if (chart_type == 'barchart') {
                             var chartData = [];
                             var chartLabels = [];
-                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                chartData[i] = returnedJson.results.bindings[i].y.value;
+                            // with operations
+                            if (operations.length > 0) {
+                                var label = [];
+                                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                    if (returnedJson.results.bindings[i].label.value == '') {
+                                        label[i] = 'Unknown'
+                                    } else {
+                                        label[i] = returnedJson.results.bindings[i].label.value;
+                                    }
+
+                                }
+
+                                operations.forEach(o => {
+                                    var action = o
+                                    if (action == 'count') {
+                                        var param = 'label';
+                                        // activate the operations on the data
+                                        var elCount = eval(action + '(' + param + ')');
+                                        // where I'll store the data necessary for the chart
+                                        chartData = Object.values(elCount);
+                                        chartLabels = Object.keys(elCount);
+                                    }
+                                })
+                            } else if (operations.length == 0) {
+                                // without operations
+                                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
+                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                }
                             }
 
                             //  retrieve the chart id
@@ -287,7 +313,7 @@ $(function () {
                                 var label = [];
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                                     if (returnedJson.results.bindings[i].label.value == '') {
-                                        label[i] = 'other'
+                                        label[i] = 'Unknown'
                                     } else {
                                         label[i] = returnedJson.results.bindings[i].label.value;
                                     }
@@ -310,7 +336,7 @@ $(function () {
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
                                     chartData[i] = returnedJson.results.bindings[i].count.value;
                                     if (returnedJson.results.bindings[i].label.value == '') {
-                                        chartLabels[i] = 'other'
+                                        chartLabels[i] = 'Unknown'
                                     } else {
                                         chartLabels[i] = returnedJson.results.bindings[i].label.value;
                                     }
@@ -571,9 +597,35 @@ function barchart(element) {
             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
             success: function (returnedJson) {
 
-                for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                // check if query requires operations
+                var op = element.operations;
+                if (op.length > 0) {
+                    var label = [];
+                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                        if (returnedJson.results.bindings[i].label.value == '') {
+                            label[i] = 'Unknown'
+                        } else {
+                            label[i] = returnedJson.results.bindings[i].label.value;
+                        }
+
+                    }
+
+                    op.forEach(o => {
+                        var action = o.action;
+                        var param = o.param;
+                        // activate the operations on the data
+                        if (action.includes('count')) {
+                            var elCount = eval(action + '(' + param + ')');
+                            // where I'll store the data necessary for the chart
+                            chartData = Object.values(elCount);
+                            chartLabels = Object.keys(elCount);
+                        }
+                    })
+                } else if (op.length == 0) {
+                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
+                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                    }
                 }
 
                 //  create the HTML structure that'll receive the data
@@ -771,7 +823,7 @@ function doughnutchart(element) {
                     var label = [];
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
                         if (returnedJson.results.bindings[i].label.value == '') {
-                            label[i] = 'other'
+                            label[i] = 'Unknown'
                         } else {
                             label[i] = returnedJson.results.bindings[i].label.value;
                         }
@@ -793,7 +845,7 @@ function doughnutchart(element) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
                         chartData[i] = returnedJson.results.bindings[i].count.value;
                         if (returnedJson.results.bindings[i].label.value == '') {
-                            chartLabels[i] = 'other'
+                            chartLabels[i] = 'Unknown'
                         } else {
                             chartLabels[i] = returnedJson.results.bindings[i].label.value;
                         }
