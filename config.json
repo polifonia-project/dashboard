@@ -238,6 +238,19 @@
                                 "param": "label"
                             }
                         ]
+                    },
+                    {
+                        "position": 2,
+                        "type": "chart",
+                        "chart_type": "linechart",
+                        "chart_query": "SELECT ?label WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } }",
+                        "chart_title": "Content Overview",
+                        "operations": [
+                            {
+                                "action": "count",
+                                "param": "label"
+                            }
+                        ]
                     }
                 ]
             }
