@@ -1,3 +1,43 @@
 footer {
     background-color: #aec5b8;
 }
+
+
+div.twocol>div {
+    flex-grow: 1;
+    padding: 0;
+    margin: 0;
+}
+
+div.twocol {
+    display: flex;
+    gap: 20px;
+}
+
+div[class*=highlight-] {
+    margin: 1em 0;
+}
+
+
+.highlight {
+    position: relative;
+}
+
+div.highlight code {
+    margin: 0;
+}
+
+code {
+    line-height: 125%;
+    padding: 10px;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.2rem;
+    box-shadow: 1px 1px 1px #d8d8d8;
+    display: block;
+    font-size: 87.5%;
+    overflow: auto;
+}
+
+a:hover {
+    color: #aec5b8;
+}

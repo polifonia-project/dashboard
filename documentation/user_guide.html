@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- style -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- headers -->
+    <header class="text-gray-600 body-font">
+        <div class="container mx-auto flex flex-wrap p-4 flex-col md:flex-row items-center">
+            <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0" href="../index.html">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="white" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-green-500 rounded-full"
+                    viewBox="0 0 640 512">
+                    <path
+                        d="M18.43 255.8L192 224L100.8 292.6C90.67 302.8 97.8 320 112 320h222.7c-9.499-26.5-14.75-54.5-14.75-83.38V194.2L200.3 106.8C176.5 90.88 145 92.75 123.3 111.2l-117.5 116.4C-6.562 238 2.436 258 18.43 255.8zM575.2 289.9l-100.7-50.25c-16.25-8.125-26.5-24.75-26.5-43V160h63.99l28.12 22.62C546.1 188.6 554.2 192 562.7 192h30.1c11.1 0 23.12-6.875 28.5-17.75l14.37-28.62c5.374-10.87 4.25-23.75-2.999-33.5l-74.49-99.37C552.1 4.75 543.5 0 533.5 0H296C288.9 0 285.4 8.625 290.4 13.62L351.1 64L292.4 88.75c-5.874 3-5.874 11.37 0 14.37L351.1 128l-.0011 108.6c0 72 35.99 139.4 95.99 179.4c-195.6 6.75-344.4 41-434.1 60.88c-8.124 1.75-13.87 9-13.87 17.38C.0463 504 8.045 512 17.79 512h499.1c63.24 0 119.6-47.5 122.1-110.8C642.3 354 617.1 310.9 575.2 289.9zM489.1 66.25l45.74 11.38c-2.75 11-12.5 18.88-24.12 18.25C497.7 95.25 484.8 83.38 489.1 66.25z" />
+                </svg>
+                <span class="ml-3 text-xl">Polifonia Dashboard</span>
+            </a>
+            <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+                <a class="mr-5 hover:text-gray-900" href="getting_started.html">Getting Started</a>
+                <a class="mr-5 hover:text-gray-900">Third Link</a>
+                <a class="mr-5 hover:text-gray-900" href="user_guide.html">User Guide</a>
+                <a class="mr-5 hover:text-gray-900">Fourth Link</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex flex-wrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    <!-- sidebar -->
+                    <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
+                        <ul class="list-unstyled ps-0">
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                                    Home
+                                </button>
+                                <div class="collapse show" id="home-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="#" class="link-dark rounded">Overview</a></li>
+                                        <li><a href="#" class="link-dark rounded">Updates</a></li>
+                                        <li><a href="#" class="link-dark rounded">Reports</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse" data-bs-target="#dashboard-collapse"
+                                    aria-expanded="false">
+                                    Dashboard
+                                </button>
+                                <div class="collapse" id="dashboard-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="#" class="link-dark rounded">Overview</a></li>
+                                        <li><a href="#" class="link-dark rounded">Weekly</a></li>
+                                        <li><a href="#" class="link-dark rounded">Monthly</a></li>
+                                        <li><a href="#" class="link-dark rounded">Annually</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
+                                    Orders
+                                </button>
+                                <div class="collapse" id="orders-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="#" class="link-dark rounded">New</a></li>
+                                        <li><a href="#" class="link-dark rounded">Processed</a></li>
+                                        <li><a href="#" class="link-dark rounded">Shipped</a></li>
+                                        <li><a href="#" class="link-dark rounded">Returned</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="border-top my-3"></li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                                    Account
+                                </button>
+                                <div class="collapse" id="account-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="#" class="link-dark rounded">New...</a></li>
+                                        <li><a href="#" class="link-dark rounded">Profile</a></li>
+                                        <li><a href="#" class="link-dark rounded">Settings</a></li>
+                                        <li><a href="#" class="link-dark rounded">Sign out</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- main -->
+                <div class="col-9">
+                    <div class="flex flex-col w-full">
+                        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">User Guide</h1>
+                        <p class="mb-3">If you haven't installed the Dashboard yet, check out <a class="text-green-500"
+                                href="getting_started.html">the instructions</a>. If you're ready instead, visit <a
+                                class="text-green-500" href="http://127.0.0.1:5000/"
+                                target="_blank">http://127.0.0.1:5000/</a>.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Welcome Page
+                        </h2>
+                        <p class="mb-3">The welcome page is very simple and gives you access to the most important
+                            functionalities. On the left, the sidebar contains the data stories, if any, grouped by
+                            area. From here you can access the code repository and, most importantly, the setup page
+                            where you can create and publish your datastories.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Setup
+                        </h2>
+                        <p class="mb-3">The setup page consists of two steps:</p>
+                        <ol class="list-group-numbered">
+                            <li>In the first step, you select the type of template, section and title of the datastory
+                                and specify the SPARQL endpoint.</li>
+                            <li>The second step is a WYSIWYG form in the style of the chosen template, which you fill
+                                with the desired information.</li>
+                        </ol>
+                        <p class="mb-3">The individual elements are explained in the next paragraphs.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Templates
+                        </h2>
+                        <p class="mb-3">The idea of the template is to provide an already well thought-out design
+                            product that can be adapted to different needs while maintaining a consistent style.
+                            For this reason, we offer four different templates:</p>
+                        <ol class="list-group-numbered">
+                            <li><b>Statistics</b>: With this template you can create data stories that contain both text
+                                and statistical representations of data, such as counts and charts of various kinds.
+                            </li>
+                            <li><b>Maps</b>: With this template you can create a narrative that revolves around data on
+                                a map and is enriched with text and statistical information.</li>
+                            <li><b>Networks</b>:</li>
+                            <li><b>Timelines</b>:</li>
+                        </ol>
+                        <p class="mb-3">The individual elements are explained in the next paragraphs.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Section
+                        </h2>
+                        <p class="mb-3">Sections can be thought of as thematic macro areas. If the data you want to work
+                            with can be divided in a meaningful way, this is the place to do it. You can enter the name
+                            of the
+                            section you want to start with or select one of the existing ones (this happens after
+                            submitting the first data story).</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Title
+                        </h2>
+                        <p class="mb-3">The title of the data story doesn't need much explanation. It's the first
+                            prominent communication tool in the narrative of the data story you're going to create.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL Endpoint
+                        </h2>
+                        <p class="mb-3">In order to retrieve data, the SPARQL endpoint from which we want to retrieve
+                            data must be communicated to the software. Check carefully that it's working.</p>
+                        <p class="mb-3">When you've filled in all the previous fields, you can click on the "Submit"
+                            button. You'll be taken to a WYSIWYG form designed based on the template you've chosen. With
+                            this type of form, you can immediately see how the date story will look once published.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Statistics Template
+                        </h2>
+                        <p class="mb-3">The Statistics template is designed for a 'classic' type of data story, where
+                            you can combine textual information with statistical information such as counts and charts
+                            to create a narrative.<br>
+                            In this particular case, the first information that can be filled in or changed are the
+                            colours, the title, the subtitle, the curator and an introductory description of the data
+                            story.<br>
+                            With three different buttons you can add boxes with tests, sums and charts. Each box can be
+                            moved up and down or removed.</p>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Counts
+                        </h2>
+                        <p class="mb-3">Counts are numbers that represent a sum of a certain type of data. They're used
+                            to give an overview, e.g. of the type of data that fills a record. This type of
+                            visualisation requires:</p>
+                        <ul style="list-style: inside;" class="mb-3">
+                            <li>A SPARQL query, which should be designed to return a number with the variable name
+                                "count".
+                            </li>
+                            <li>A short label to describe the number displayed.</li>
+                        </ul>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Charts
+                        </h2>
+                        <p class="mb-3">Charts are the most important part of the data visualisation in this template.
+                            Three different types are provided:</p>
+                        <ul style="list-style: inside;" class="mb-3">
+                            <li>Bar chart
+                            </li>
+                            <li>Line chart</li>
+                            <li>Doughnut chart</li>
+                        </ul>
+                        <p class="mb-3">For each chart, the following information must be provided:</p>
+                        <ol class="list-group-numbered mb-3">
+                            <li>Select the type (required).
+                            </li>
+                            <li>Insert SPARQL query (required).</li>
+                            <li>Insert chart Title (required).</li>
+                            <li>Choose one or more operations (optional).</li>
+                        </ol>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL Query
+                        </h2>
+                        <p class="mb-3">Overall, a query can be of two types:</p>
+                        <ul style="list-style: inside;" class="mb-3">
+                            <li><b>Simple</b>: means that the query retrieves non-aggregated data that's post-processed
+                                using operations.
+                            </li>
+                            <li><b>Complex</b>: means that the query retrieves information directly suitable for
+                                charting.</li>
+                        </ul>
+                        <p class="mb-3">However, the structure of the query also depends on the type of chart chosen, as
+                            different types of data are needed. In addition, depending on the optional operations
+                            chosen, there are also requirements for the variable names.</p>
+                        <p class="mb-3">In case of a <b>simple</b> query, bar chart, line chart and doughnut chart all
+                            require
+                            the <b>count operation</b>:<br>
+                            a simple query provides information in the form of a list with the labels of the elements.
+                            In this case, the operation "count" must be applied. The required variable name is
+                            "label".<br>
+                            Example:
+                            <code>SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . }</code>
+                        </p>
+                        <p class="mb-3">In case of a <b>complex</b> query, every chart requires its own characteristics:
+                        </p>
+                        <ul style="list-style: inside;" class="mb-3">
+                            <li>For bar chart and doughnut chart, a complex query provides information about the number
+                                of repetitions ( number, variable "y") of certain elements (labels or numbers, variable
+                                "x").<br>
+                                Example:
+                                <code>SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label</code>
+                            </li>
+                            <li>For line chart, complex query returns information about the number of repetitions (
+                                number, variable "y") of certain entities (labels or numbers, variable "x").<br>
+                                Example:
+                                <code>SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x</code>
+                            </li>
+                        </ul>
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Publish
+                        </h2>
+                        <p class="mb-3">Once all the information has been added, you can submit the form. This will
+                            create the final product, an HTML page containing the data history thus created, which can
+                            be accessed from the sidebar on the left. Each chart can be printed as a .png image or
+                            exported as embeddable code.<br>
+                            It's possible to change the content of a data story at any time by clicking on the "modify"
+                            button in the sidebar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="text-gray-600 body-font">
+        <div
+            class="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
+            <div class="w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left">
+                <a class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2"
+                        class="w-10 h-10 text-white p-2 bg-green-500 rounded-full" viewBox="0 0 640 512">
+                        <path
+                            d="M18.43 255.8L192 224L100.8 292.6C90.67 302.8 97.8 320 112 320h222.7c-9.499-26.5-14.75-54.5-14.75-83.38V194.2L200.3 106.8C176.5 90.88 145 92.75 123.3 111.2l-117.5 116.4C-6.562 238 2.436 258 18.43 255.8zM575.2 289.9l-100.7-50.25c-16.25-8.125-26.5-24.75-26.5-43V160h63.99l28.12 22.62C546.1 188.6 554.2 192 562.7 192h30.1c11.1 0 23.12-6.875 28.5-17.75l14.37-28.62c5.374-10.87 4.25-23.75-2.999-33.5l-74.49-99.37C552.1 4.75 543.5 0 533.5 0H296C288.9 0 285.4 8.625 290.4 13.62L351.1 64L292.4 88.75c-5.874 3-5.874 11.37 0 14.37L351.1 128l-.0011 108.6c0 72 35.99 139.4 95.99 179.4c-195.6 6.75-344.4 41-434.1 60.88c-8.124 1.75-13.87 9-13.87 17.38C.0463 504 8.045 512 17.79 512h499.1c63.24 0 119.6-47.5 122.1-110.8C642.3 354 617.1 310.9 575.2 289.9zM489.1 66.25l45.74 11.38c-2.75 11-12.5 18.88-24.12 18.25C497.7 95.25 484.8 83.38 489.1 66.25z" />
+                    </svg>
+                    <span class="ml-3 text-xl">Polifonia Dashboard</span>
+                </a>
+                <p class="mt-2 text-sm text-gray-500">Air plant banjo lyft occupy retro adaptogen indego</p>
+            </div>
+            <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
+                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                    <nav class="list-none mb-10">
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                        </li>
+                    </nav>
+                </div>
+                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                    <nav class="list-none mb-10">
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                        </li>
+                    </nav>
+                </div>
+                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                    <nav class="list-none mb-10">
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                        </li>
+                    </nav>
+                </div>
+                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                    <nav class="list-none mb-10">
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                        </li>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gray-100">
+            <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
+                <p class="text-gray-500 text-sm text-center sm:text-left">© 2020 Polifonia Dashboard —
+                    <a href="https://twitter.com/knyttneve" rel="noopener noreferrer" class="text-gray-600 ml-1"
+                        target="_blank">@giuliarenda</a>
+                </p>
+                <span class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
+                    <a class="text-gray-500">
+                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            class="w-5 h-5" viewBox="0 0 24 24">
+                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a class="ml-3 text-gray-500">
+                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            class="w-5 h-5" viewBox="0 0 24 24">
+                            <path
+                                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
+                            </path>
+                        </svg>
+                    </a>
+                    <a class="ml-3 text-gray-500">
+                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+                        </svg>
+                    </a>
+                    <a class="ml-3 text-gray-500">
+                        <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
+                            <path stroke="none"
+                                d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
+                            </path>
+                            <circle cx="4" cy="4" r="2" stroke="none"></circle>
+                        </svg>
+                    </a>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
