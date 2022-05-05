@@ -107,7 +107,6 @@ function add_field(name) {
 }
 
 // preview content
-
 $(function () {
     const update = function () {
         var fields = $('form').serializeArray();
@@ -934,6 +933,14 @@ function doughnutchart(element) {
                                 right: 20,
                                 top: 20,
                                 bottom: 20
+                            }
+                        },
+                        animation: {
+                            onComplete: function () {
+                                image = myDoughnutChart.toBase64Image();
+                                printChart(image, element.position);
+                                labels = arrayToString(chartLabels);
+                                exportChart(element.position, 'doughnut', labels, chartData);
                             }
                         }
                     }
