@@ -10,11 +10,11 @@
 <div class="content">
 	<div class="page-inner">
 		<div class="page-header">
-			<h4 class="page-title">Set up the information for you template</h4>
+			<h2 class="page-title">Set up your data story</h2>
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<form action="setup" method="post" class="card">
+				<form action="setup" method="post" class="setupcard">
 					<div class="card-body">
 						<div class="row">
 							<div class="col">
@@ -22,18 +22,19 @@
 									<label class="form-label">Choose the template</label>
 									<div class="row">
 										<div class="col-sm-6 col-md-3">
-											<select name="template_mode" class="form-control"
+											<select name="template_mode" class="custom-select form-control"
 												id="exampleFormControlSelect1" required>
 												{% for item in template_data %}
-												<option>{{item.name|capitalize}}</option>
+												<option value="{{item.name|capitalize}}" disabled>{{item.name|capitalize}}</option>
 												{% endfor %}
 											</select>
 										</div>
 										<div class="col-12 col-md-8">
 											<div class="row">
+												<p class="col-md-12">See a preview of our templates</p>
 												{% for item in template_data %}
 												<div class="col-sm-6 col-md-3">
-													<figure>
+													<figure class="templatepreview">
 														<a data-target="#{{item.name}}Modal" role="button"
 															data-toggle="modal">
 															<img src="{{item.img_path}}" alt="{{item.name}}"
@@ -44,7 +45,7 @@
 												</div>
 
 												<!-- start modals for templates -->
-												<div class="modal fade" id="{{item.name}}Modal"
+												<div class="modal fade templatepreviewcard" id="{{item.name}}Modal"
 													data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
 													aria-labelledby="staticBackdropLabel" aria-hidden="true">
 													<div class="modal-dialog">
@@ -53,7 +54,7 @@
 																<h5 class="modal-title" id="{{item.name}}Label">
 																	{{item.name|capitalize}} Template</h5>
 																<button type="button" class="btn-close"
-																	data-bs-dismiss="modal" aria-label="Close"></button>
+																	data-bs-dismiss="modal" aria-label="Close">x</button>
 															</div>
 															<div class="modal-body">
 																<div class="card card-profile">
@@ -62,19 +63,21 @@
 																	</div> -->
 																	<div class="card-body">
 																		<img src="{{item.img_path}}"
-																			style="max-width: 100%; max-height: 100%;">
+																			style="max-width: 30%; height: auto;">
 																	</div>
 																	<div class="card-footer">
-																		<div class="row user-stats text-center">
-																			<div class="col">
+																		<div class="row user-stats">
+																			<div class="col-3">
 																				<div class="title">Default Colors</div>
 																				<div class="number">
-																					{{item.default_color[0]}}<br>{{item.default_color[1]}}
+																					<span class="colorpreview" style="background-color: {{item.default_color[0]}}"></span>
+																					<span class="colorpreview" style="background-color: {{item.default_color[1]}}"></span>
+
 																				</div>
 																			</div>
 																			<div class="col">
-																				<div class="title">Main Features</div>
-																				<div class="number">...</div>
+																				<div class="title">Description</div>
+																				<div class="number">{{item.main_feature}}</div>
 																			</div>
 																		</div>
 																	</div>
@@ -94,15 +97,15 @@
 								<!-- if no resaure is present -->
 								{% if general_data.data_sources|length == 0 %}
 								<div class="form-group">
-									<label for="section_name">Create your Section</label><br />
+									<label for="section_name" class="form-label">Create a section</label><br />
 									<input name="section_name" placeholder="Your Section"
 										class="form-control input-border-bottom col-6" required>
 								</div>
 								<!-- if there are pilots -->
 								{% else %}
 								<div class="form-group">
-									<label for="section_name">Choose or create your Section</label><br />
-									<input list="section_name" autocomplete="off" name="section_name"
+									<label class="form-label" for="section_name">Choose or create a Section</label><br />
+									<input id="sectionselect" list="section_name" autocomplete="off" name="section_name"
 										placeholder="The Section" class="form-control input-border-bottom col-6"
 										required>
 									<datalist id="section_name">
@@ -117,13 +120,13 @@
 
 
 								<div class="form-group form-floating-label">
-									<label for="title">The title of your Data Story</label>
-									<input name="title" type="text" class="form-control form-control col-6" id="title"
+									<label class="form-label" for="title">Enter The title of your data story</label>
+									<input name="title" type="text" class="form-control form-control input-border-bottom col-6" id="title"
 										placeholder="The Data Story" required>
 								</div>
 								<div class="form-group">
-									<label for="sparql_endpoint">SPARQL Endpoint</label>
-									<input name="sparql_endpoint" type="text" class="form-control form-control col-6"
+									<label class="form-label" for="sparql_endpoint">Enter The URL of the SPARQL Endpoint</label>
+									<input name="sparql_endpoint" type="text" class="form-control form-control input-border-bottom col-6"
 										id="sparql_endpoint" placeholder="https://query.example.org/" required>
 								</div>
 

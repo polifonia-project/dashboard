@@ -1,18 +1,27 @@
 <footer class="footer">
-	<div class="container-fluid">
-		<nav class="pull-left">
-			<ul class="nav">
-				<li class="nav-item">
-					<a class="nav-link" target="_blank"
-						href="https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark">
-						Flask Atlantis Dark
-					</a>
-				</li>
-			</ul>
-		</nav>
-		<div class="copyright ml-auto">
-			&copy; <a target="_blank" href="https://github.com/mondoboia/polifonia_dashboard">GitHub repo</a>
-			- coded by <a target="_blank" href="https://github.com/mondoboia">Giulia Renda</a>
+	<div class="container-fluid d-flex align-items-start">
+		<div class="p-2 col-md-3">
+			<h6>MELODY</h6>
+			<p><a target="_blank" href="/">Home</a></p>
+			<p><a target="_blank" href="setup">Create a story</a></p>
+		</div>
+		<div class="p-2 col-md-3">
+			<h6>Links</h6>
+			<p>Read the <a href="https://polifonia-project.github.io/dashboard/" target="_blank">documentation</a></p>
+			<p>Source <a href="https://github.com/polifonia-project/dashboard" target="_blank">code</a></p>
+			<p>Theme <a target="_blank"
+				href="https://appseed.us/admin-dashboards/flask-dashboard-atlantis-dark">
+				 Flask Atlantis Dark
+			</a></p>
+		</div>
+
+		<div class="copyright ml-auto p-2 col-md-4">
+			<p>MELODY is part of</p>
+			<a href="#"><img src="{{url_for('static',filename='img/logopolifonia.svg')}}" alt=""></a>
+			<p>Polifonia has received funding from the European Union’s Horizon 2020 research
+				and innovation programme under grant agreement N. 101004746</p>
+			<!-- &copy; <a target="_blank" href="https://github.com/mondoboia/polifonia_dashboard">GitHub repo</a>
+			- coded by <a target="_blank" href="https://github.com/mondoboia">Giulia Renda</a>-->
 		</div>
 	</div>
 </footer>

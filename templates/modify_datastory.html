@@ -3,17 +3,32 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/templates.css') }}">
 {% endblock stylesheets %}
 
 {% block content %}
-<div class="content">
-    <form action="send_data" method="post" class="card">
+<div class="content row modifystory">
+    <section class="secondarymenu col-md-3 col-sm-12">
+      <section class="secondarymenuinner">
+        <h3>Data source</h3>
+        <p><a href="{{datastory_data.sparql_endpoint}}">SPARQL endpoint</a></p>
+        <h5 class="text-white op-7 pb-2">
+            {% if datastory_data.curator %}
+            <textarea oninput='auto_grow(this)' name="curator" type="text" id="" cols="{{ datastory_data.curator|length }}"
+                rows="1" placeholder="Authors">{{ datastory_data.curator }}</textarea>
+            {% else %}
+            <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1" placeholder="Authors"></textarea>
+            {%endif%}
+        </h5>
+      </section>
+    </section>
+    <form action="send_data" method="post" class="card col-md-8 col-sm-12"">
         <div class="panel-header bg-primary-gradient">
             <div class="page-inner">
                 <!-- color picker -->
                 <div id="colors">
+                    <p>Pick the colors of your story</p>
                     {% for color in datastory_data.color_code|reverse %}
                     <input type="color" id="{{loop.index}}_color" name="{{loop.index}}_color" value="{{color}}">
                     {% endfor %}
@@ -21,28 +36,22 @@
 
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
-                        <h2 class="text-white pb-2 fw-bold">
-                            <textarea name="title" type="text" id="" cols="{{ datastory_data.title|length }}" rows="1"
-                                placeholder="Write your Title" required>{{ datastory_data.title }}</textarea>
-                        </h2>
-                        <h5 class="text-white op-7 mb-2">
+                        <h1 class="text-white pb-2 fw-bold">
+                            <textarea oninput='auto_grow(this)' name="title" type="text" id="" cols="{{ datastory_data.title|length }}" rows="1"
+                                placeholder="The title of your story" required>{{ datastory_data.title }}</textarea>
+                        </h1>
+                        <h5 class="text-white mb-2 fw-bold">
                             {% if datastory_data.subtitle %}
-                            <textarea name="subtitle" type="text" id="" cols="{{ datastory_data.subtitle|length }}"
-                                rows="1" placeholder="Write your Subtitle">{{ datastory_data.subtitle }}</textarea>
+                            <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" cols="{{ datastory_data.subtitle|length }}"
+                                rows="1" placeholder="Subtitle">{{ datastory_data.subtitle }}</textarea>
                             {% else %}
-                            <textarea name="subtitle" type="text" id="" rows="1" placeholder="The Subtitle"></textarea>
+                            <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1" placeholder="Subtitle"></textarea>
                             {%endif%}
                         </h5>
+
                     </div>
                     <div class="ml-md-auto py-2 py-md-0">
-                        <h4 class="text-white pb-2 fw-bold">
-                            {% if datastory_data.curator %}
-                            <textarea name="curator" type="text" id="" cols="{{ datastory_data.curator|length }}"
-                                rows="1" placeholder="The Curator">{{ datastory_data.curator }}</textarea>
-                            {% else %}
-                            <textarea name="curator" type="text" id="" rows="1" placeholder="The Curator"></textarea>
-                            {%endif%}
-                        </h4>
+
                     </div>
                 </div>
             </div>
@@ -53,15 +62,15 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-head-row card-tools-still-right">
-                                <h4 class="card-title">About the Project</h4>
+                                <!-- <h4 class="card-title">About the Project</h4> -->
                             </div>
-                            <p class="card-category">
+                            <p class="text-white card-category">
                                 {% if datastory_data.description %}
-                                <textarea name="description" type="text" id=""
-                                    placeholder="Write a brief introdution to the project.">{{ datastory_data.description }}</textarea>
+                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
                                 {% else %}
-                                <textarea name="description" type="text" id="" rows="1"
-                                    placeholder="Write a brief introdution to the project."></textarea>
+                                <textarea oninput='auto_grow(this)' name="description" type="text" id="" rows="1"
+                                    placeholder="A brief introdution to the project."></textarea>
                                 {%endif%}
                             </p>
                         </div>
@@ -83,7 +92,7 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <textarea type="text" name="{{dict.position}}__{{dict.type}}"
+                                <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
                                     id="{{dict.position}}__{{dict.type}}"
                                     placeholder="{{dict.text}}">{{dict.text}}</textarea>
                             </div>
@@ -103,13 +112,13 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <div class='card-body option-2b' style='max-width: 200%;' id="{{dict.position}}__count">
-                                    <p id='{{dict.position}}__num'></p>
-                                    <p id='{{dict.position}}__lab'></p>
+                                <div class='card-body justify-content-center option-2b count_result col-md-4' id="{{dict.position}}__count">
+                                    <p class="counter_num" id='{{dict.position}}__num'></p>
+                                    <p class="counter_label" id='{{dict.position}}__lab'></p>
                                 </div>
 
                                 <!-- input -->
-                                <textarea name='{{dict.position}}__count_query' type='text'
+                                <textarea oninput='auto_grow(this)' name='{{dict.position}}__count_query' type='text'
                                     id='{{dict.position}}__count_query' value="{{dict.count_query}}"
                                     placeholder="Write the SPARQL query for the count." rows="1"
                                     required>{{dict.count_query}}</textarea>
@@ -153,7 +162,7 @@
                                         {% endfor %}
                                     </select>
                                     <label>SPARQL query</label>
-                                    <textarea name='{{dict.position}}__chart_query' type='text'
+                                    <textarea oninput='auto_grow(this)' name='{{dict.position}}__chart_query' type='text'
                                         id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
                                         required>{{dict.chart_query}}</textarea>
                                     <label>Chart Title</label>
@@ -195,7 +204,7 @@
                             {% endfor %}
 
                         </div>
-                        <section class="col-md-12 col-lg-12 col-sm-12">
+                        <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
                             <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
                                 Textbox</a>
                             <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
@@ -208,8 +217,9 @@
             </div>
         </div>
         <div class="card-action" style="margin:auto;">
-            <button type="submit" class="btn btn-success">Submit</button>
-            <button type="reset" class="btn btn-danger">Cancel</button>
+            <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
+            <button type="reset" class="btn btn-danger">Reset content</button>
+            <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
 
         </div>
     </form>
@@ -220,5 +230,8 @@
 {% block javascripts %}
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+<script type="text/javascript">
+
+</script>
 
 {% endblock javascripts %}

@@ -1,7 +1,8 @@
 {
     "sections": [
+        "musoW",
         "Wikidata",
-        "musoW"
+        "Listening Experiences"
     ],
     "operations": [
         "Count",
@@ -10,35 +11,30 @@
     "templates": {
         "template_01": {
             "name": "statistics",
-            "img_path": "/static/img/template_01.jpg",
+            "img_path": "/static/img/analytics.png",
             "default_color": [
                 "#39c6b4",
                 "#17cf31"
-            ]
+            ],
+            "main_feature": "Present charts and explanations in a personalised canvas. Include bar charts, line charts, doughnut charts and more!"
         },
         "template_02": {
-            "name": "maps",
-            "img_path": "/static/img/template_02.jpg",
+            "name": "map",
+            "img_path": "/static/img/map.png",
             "default_color": [
                 "#6e7e3a",
                 "#79f1e9"
-            ]
+            ],
+            "main_feature": "Configure an interactive map, with filters and interactive charts on demand."
         },
         "template_03": {
-            "name": "networks",
-            "img_path": "/static/img/template_03.jpg",
+            "name": "timeline",
+            "img_path": "/static/img/timeline.png",
             "default_color": [
                 "#0f64b9",
                 "#e2df1c"
-            ]
-        },
-        "template_04": {
-            "name": "random",
-            "img_path": "/static/img/template_04.jpg",
-            "default_color": [
-                "#77bbc7",
-                "#1d193e"
-            ]
+            ],
+            "main_feature": "Allow users to manipulate time series data. Incrementally build line charts, bar charts, and bubble charts, by adding/removing filters - and see the chart changing!"
         }
     },
     "chart_types": [
@@ -67,63 +63,65 @@
                 "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
                 "dynamic_elements": [
                     {
-                        "type": "text",
                         "position": 1,
-                        "text": "Let's explore some data through the use of several charts."
-                    },
-                    {
-                        "type": "count",
-                        "position": 2,
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
-                        "count_label": "Repositories"
-                    },
-                    {
-                        "type": "count",
-                        "position": 3,
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
-                        "count_label": "Catalogues"
-                    },
-                    {
-                        "type": "count",
-                        "position": 4,
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
-                        "count_label": "Datasets"
-                    },
-                    {
-                        "type": "count",
-                        "position": 5,
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
-                        "count_label": "Digital Libraries"
-                    },
-                    {
-                        "type": "count",
-                        "position": 6,
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
-                        "count_label": "Softwares"
-                    },
-                    {
-                        "type": "chart",
-                        "position": 7,
-                        "chart_type": "barchart",
-                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
-                        "chart_title": "Content Overview",
-                        "axes_label": [
-                            "xlabel",
-                            "ylabel"
-                        ],
+                        "type": "text",
+                        "text": "Let's explore some data through the use of several charts.",
                         "operations": []
                     },
                     {
+                        "position": 2,
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
+                        "count_label": "Repositories",
+                        "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
+                        "count_label": "Catalogues",
+                        "operations": []
+                    },
+                    {
+                        "position": 4,
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
+                        "count_label": "Datasets",
+                        "operations": []
+                    },
+                    {
+                        "position": 5,
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
+                        "count_label": "Digital Libraries",
+                        "operations": []
+                    },
+                    {
+                        "position": 6,
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
+                        "count_label": "Softwares",
+                        "operations": []
+                    },
+                    {
+                        "position": 7,
                         "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                        "chart_title": "Content Overview",
+                        "operations": []
+                    },
+                    {
                         "position": 8,
+                        "type": "chart",
                         "chart_type": "linechart",
                         "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
                         "chart_title": "New Entries",
                         "operations": []
                     },
                     {
-                        "type": "chart",
                         "position": 9,
+                        "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
                         "chart_title": "Audiences of Repository",
@@ -283,6 +281,38 @@
                         "text": "akjbbbbbbbbbb hjbbbbbbbbbb yyyyyyyyyyyyyyyyyyyyyy"
                     }
                 ]
+            }
+        },
+        "listening_experiences": {
+            "nurses'_listening_experiences_during_wwi_": {
+                "sparql_endpoint": "http://data.open.ac.uk/sparql",
+                "template_mode": "Statistics",
+                "title": "Nurses' listening experiences during WWI ",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Listening Experiences",
+                "subtitle": "An overview from the LED database",
+                "curator": "Marilena Daquino, Giulia Renda",
+                "description": "An overview of data from LED on nurses' listening experiences, including those they participated in and those they recorded in their journals.",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "count",
+                        "count_query": "PREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nSELECT DISTINCT (COUNT(?lex) AS ?count) \r\nWHERE {\r\n?lex a led:ListeningExperience .\r\n}\r\n",
+                        "count_label": "Listening experiences",
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "count",
+                        "count_query": "PREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nSELECT DISTINCT (COUNT(?lex) AS ?count) \r\nWHERE {\r\n?lex a led:ListeningExperience .\r\n}\r\n",
+                        "count_label": "Again",
+                        "operations": []
+                    }
+                ],
+                "action": "save"
             }
         }
     }

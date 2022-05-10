@@ -1,10 +1,19 @@
-window.onload = function () {
+addEventListener("DOMContentLoaded", function() {
+  console.log(datastory_data);
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+});
+
+window.onload = function () {
     queryCounter();
     chartViz();
     disableKeypress();
-    // sidebarContent();
 }
+
+// disable selection of templates other than statistics
+$( document ).ready(function() {
+  $("#exampleFormControlSelect1 option[value='Statistics']").removeAttr('disabled');
+  $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded','false');
+});
 
 //// WYSIWYG FORM FUNCTIONS ////
 
@@ -80,11 +89,11 @@ var counter = 0;
 function add_field(name) {
     var contents = "";
 
-    var text_field = "<textarea name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
+    var text_field = "<textarea oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
 
-    var count_field = "<div class='card-body option-2b' style='max-width: 200%;'><p id='" + (counter + 1) + "__num'></p><p id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' rows='1' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
+    var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' rows='1' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 
-    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='count' name='action1' value='count'><label for='count'>Count</label><br><input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label><br></div>"
+    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='count' name='action1' value='count'><label for='count'>Count</label><br><input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label><br></div>"
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a>';
 
@@ -169,7 +178,7 @@ $(function () {
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
-                        $("#" + (idx + 1) + "__num").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+                        $("#" + (idx + 1) + "__num").text(xhr.statusText + ' in the query, check and try again.');
                     }
                 });
             }
@@ -427,11 +436,22 @@ $(function () {
 
 function colorSwitch(color_1, color_2) {
     // gradient
-    var gradientEl = document.querySelector(".panel-header");
-    gradientEl.classList.remove("bg-primary-gradient");
+    // var gradientEl = document.querySelector(".panel-header");
+    // gradientEl.classList.remove("bg-primary-gradient");
+    // gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
+    var gradientEl = document.querySelector(".secondarymenuinner");
+    var counters = document.querySelectorAll(".count_result");
+    //gradientEl.classList.remove("bg-primary-gradient");
     gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
+
+    function borders(el) {
+      el.style.border = "solid 2px "+color_1;
+      el.style.color = color_1;
+    }
+    counters.forEach(borders);
 }
 
+// show counters in the final data story
 function queryCounter() {
     if (datastory_data.dynamic_elements) {
         datastory_data.dynamic_elements.forEach(element => {
@@ -466,13 +486,17 @@ function queryCounter() {
                                 // create div to contain number and label
                                 var countDiv = document.createElement("div");
                                 countDiv.className = "card-body option-2b";
-                                countDiv.appendChild(document.createTextNode(count));
-                                generalDiv.appendChild(countDiv);
+                                var numP = document.createElement("p");
+                                numP.appendChild(document.createTextNode(count));
+                                numP.className = 'counter_num';
+                                countDiv.appendChild(numP);
                                 // create and append p for label
                                 var labelP = document.createElement("p");
                                 labelP.appendChild(document.createTextNode(count_label));
+                                labelP.className = 'counter_label';
                                 countDiv.appendChild(labelP);
-
+                                generalDiv.appendChild(countDiv);
+                                colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
                                 // get container and append
                                 var container = document.getElementById(element.position);
                                 container.appendChild(generalDiv);
@@ -568,7 +592,6 @@ function printChart(image, position) {
         print_btn.download = 'my_chart.png';
     }
 }
-
 
 // array to string with quotes
 function arrayToString(labelsArray) {
@@ -1053,4 +1076,23 @@ function stacked_barchart(element) {
         })
     }
 
+}
+
+// autoresize textarea
+function auto_grow(element) {
+    element.style.height = "5px";
+    element.style.height = (element.scrollHeight)+"px";
+}
+
+function getPDF(elem_id) {
+  var element = document.getElementById(elem_id);
+  var opt = {
+    margin:       1,
+    filename:     'story.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 1 },
+    pagebreak:    { mode:'avoid-all', after:'pagebreak'},
+    jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
+  };
+  html2pdf(element, opt);
 }

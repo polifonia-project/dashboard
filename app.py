@@ -209,9 +209,20 @@ def modify_datastory(section_name, datastory_name):
     if request.method == 'GET':
         return render_template('modify_datastory.html', datastory_data=datastory_data, general_data=general_data)
     elif request.method == 'POST':
-        try:
-            datastory_name = manage_datastory_data(
-                general_data, 'config.json', section_name)
-            return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
-        except:
-            return 'Something went wrong'
+        if request.form['action'] == 'save':
+            try:
+                datastory_name = manage_datastory_data(
+                    general_data, 'config.json', section_name)
+                return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
+            except:
+                return 'Something went wrong'
+
+        elif request.form['action'] == 'delete':
+            print(section_name,datastory_name,request.form)
+            datastory_title = request.form['title'].lower().replace(" ", "_")
+            general_data['data_sources'][section_name].pop(datastory_title,'None')
+            update_json('config.json', general_data)
+            return redirect('/')
+
+if __name__ == "__main__":
+    app.run(debug=True)

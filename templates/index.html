@@ -7,37 +7,47 @@
 
 {% block content %}
 
-<div class="content">
+<div class="homepage content">
+	<b class="ball"></b><b class="ball2"></b>
 	<div class="panel-header bg-primary-gradient">
 		<div class="page-inner py-5">
 			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-				<div>
-					<h2 class="text-white pb-2 fw-bold">Welcome</h2>
-					<h5 class="text-white op-7 mb-2">Where you can go from here</h5>
+				<div class="home">
+					<h1 class="text-white fw-bold">Create <br> beautiful data stories <br> with MELODY</h1>
+					<h5 class="text-white op-7 mb-2 col-md-6">MELODY (Make mE a Linked Open Data storY) allows you to query Linked Open Data and create web-ready interactive data stories.</h5>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="page-inner mt--5">
-		<div class="row mt--2">
-			<div class="col-md-12">
-				<div class="card full-height">
-					<div class="card-body">
-						<div class="d-flex flex-wrap pb-2 pt-4">
-							<ul>
-								<li>The setup page allows you to choose a type of template and create a new pilot: <a
-										href="http://127.0.0.1:5000/setup"
-										target="_blank">http://127.0.0.1:5000/setup</a>. Once you submit, you are
-									redirected to the chosen template to fill it in.</li>
-								<li>In the sidebar on the left you can explore the pilots already created.</li>
-								<li>This is the repository on GitHub: <a
-										href="https://github.com/mondoboia/polifonia_dashboard"
-										target="_blank">https://github.com/mondoboia/polifonia_dashboard</a></li>
-							</ul>
-						</div>
+	<div class="page-inner">
+		<b class="ball2"></b>
+		<div class="actions row mt--2">
+
+					<div class="action col-md-2">
+						<h6>get ready</h6>
+						<p>Read the <a href="https://polifonia-project.github.io/dashboard/" target="_blank">docs</a>, learn how to create stories.</p>
 					</div>
-				</div>
-			</div>
+					<div class="action col-md-3">
+						<h6>get started</h6>
+						<p>Choose the data to explore, pick a template, and create a new <a href="setup" target="_blank">data story</a></p>
+					</div>
+					<div class="action col-md-4 whitebg">
+						<h6>get inspired</h6>
+						<p>Have a look at some example data stories we created for you. All published stories appear in the left sidebar.</p>
+					</div>
+					<div class="action col-md-3">
+						<h6>for geeks</h6>
+						<p>Get the source code from the <a
+								href="https://github.com/polifonia-project/dashboard"
+								target="_blank">GitHub repository</a></p>
+					</div>
+
+		</div>
+		<div class="row mt--2 signin">
+			<p class="col-md-6 col-sm-12">MELODY is part of Polifonia, a European project to disseminate music heritage data.
+				If you have a GitHub account, open an issue on the <a href="https://github.com/polifonia-project/dashboard">repository</a> of MELODY
+				 to become a collaborator. You'll be able to <b>Save</b> and publish your stories.</p>
+		 			<h2 class="col-md-4 col-sm-12">Sign in <br>to save your data stories</h2>
 		</div>
 	</div>
 </div>

@@ -2,7 +2,6 @@
 <div class="sidebar sidebar-style-2" data-background-color="dark2">
 	<div class="sidebar-wrapper scrollbar scrollbar-inner">
 		<div class="sidebar-content">
-
 			<ul class="nav nav-primary">
 				{% if general_data %}
 				{% for section in general_data.sections|sort() %}
@@ -11,28 +10,18 @@
 						<p>{{section}}</p>
 						<span class="caret"></span>
 					</a>
-					<div class="collapse show" id="submenu{{loop.index}}">
+					<div class="collapse" id="submenu{{loop.index}}">
 						<ul class="nav nav-collapse">
 							{% for key, value in general_data.data_sources.items() %}
 							{% if key == section|replace(' ', '_')|lower %}
-							<li>
+							<li class="menuitem row">
 								{% for k,v in value.items() %}
-								<div class="row">
-									<div class="col">
-										<a href="http://127.0.0.1:5000/{{section|replace(' ', '_')|lower}}/{{k}}"
+										<a class="col-8" href="/{{section|replace(' ', '_')|lower}}/{{k}}"
 											target="_blank">
-											<p>{{v.title}}</p>
+											{{v.title}}
 										</a>
-									</div>
-
-									<div class="col">
-										<a href="http://127.0.0.1:5000/modify/{{section|replace(' ', '_')|lower}}/{{k}}"
-											target="_blank" class="btn btn-primary btn-border btn-round btn-xs">
-											<p>modify</p>
-										</a>
-									</div>
-
-								</div>
+										<a class="col-4 modifystoryicon" href="/modify/{{section|replace(' ', '_')|lower}}/{{k}}"
+											target="_blank"><img src="{{ url_for('static', filename='img/edit.png') }}" alt=""></a>
 								{% endfor %}
 							</li>
 							{% endif %}

@@ -2,6 +2,7 @@
     margin-top: 0px;
 } */
 
+
 .option-1 {
     background: #5e72e4;
     color: rgba(255, 255, 255, 0.8);
@@ -42,17 +43,17 @@
     background: rgba(255, 255, 255, 0.8);
 }
 
-.main-panel {
+/* .main-panel {
     width: calc(100% - 180px);
-}
+} */
 
-.sidebar {
+/* .sidebar {
     width: 180px;
-}
+} */
 
-.logo-header {
+/* .logo-header {
     width: 180px;
-}
+} */
 
 p {
     white-space: pre-line;

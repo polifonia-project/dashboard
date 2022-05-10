@@ -1,3 +1,5 @@
+.sidebar-color, body, body[data-background-color=dark], h1, h2, h3, h4, h5, h6, p, li, a {font-family: 'Karla', sans-serif !important;}
+
 input[type='text'] {
     background-color: inherit;
     color: inherit;
@@ -13,11 +15,4 @@ textarea {
     font-weight: inherit;
     width: 100%;
     height: auto;
-}
-
-#colors {
-    margin: auto;
-    width: 60%;
-    padding: 10px;
-    text-align: center;
 }
