@@ -13,13 +13,11 @@
 <div class="content row datastorypage" id="dwn">
 	<section id="secondarymenu" class="secondarymenu col-md-3 col-sm-12">
 		<section id="secondarymenuinner" class="secondarymenuinner">
-			<h4>{{ datastory_data.title }} </h4>
+			<h4>About</h4>
+			{% if datastory_data.curator %}
+				<p>Authors: {{ datastory_data.curator }} </p>
+			{%endif%}
 			<p>Part of: {{ datastory_data.section_name }}</p>
-			<p>Authors:
-				{% if datastory_data.curator %}
-				{{ datastory_data.curator }}
-				{%endif%}
-			</p>
 			<p>Source: <a href="{{datastory_data.sparql_endpoint}}">SPARQL endpoint</a></p>
 			<p>Export</p>
 			<button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
@@ -74,20 +72,21 @@
 						<!-- chart -->
 						{% elif dict.type == 'chart' %}
 							<div class="chartstory col-md-12 col-sm-12" id="{{dict.position}}">
-								<div class="card-tools col-md-12 col-sm-12">
-									<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-										<span class="btn-label">
-											<i class="fa fa-pencil"></i>
-										</span>
-										Export
-									</a>
-									<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
-										<span class="btn-label">
-											<i class="fa fa-print"></i>
-										</span>
-										Print
-									</a>
-								</div>
+
+							</div>
+							<div class="exportchart card-tools col-md-12 col-sm-12">
+								<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+									<span class="btn-label">
+										<i class="fa fa-pencil"></i>
+									</span>
+									Embed
+								</a>
+								<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+									<span class="btn-label">
+										<i class="fa fa-print"></i>
+									</span>
+									Save picture
+								</a>
 							</div>
 						{% endif %}
 

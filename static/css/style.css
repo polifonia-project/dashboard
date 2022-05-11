@@ -142,7 +142,7 @@ div[id*='block_field'], body[data-background-color=dark] .modifystory .card .car
 .secondarymenu {margin: 6em 0px 2em 0px;}
 .secondarymenuinner {padding: 2em;  }
 /* .secondarymenu * {color: var(--dark-grey) !important;} */
-
+.secondarymenu p {margin-bottom: 7px !important;}
 .secondarymenu a {text-decoration: underline;}
 .exportbutton {cursor: pointer; background-color: transparent; border: solid 1px var(--dark-grey); box-shadow: none;}
 .exportbutton a {text-decoration: none !important;}
@@ -150,7 +150,7 @@ div[id*='block_field'], body[data-background-color=dark] .modifystory .card .car
 #colors { width: 60%; padding: 2em 0px ; }
 #colors p {color: var(--dark-grey);}
 
-#sortable a.up, #sortable a.down, #sortable a.trash {right: 10px !important; float: right; margin: 5px;}
+#sortable a.up, #sortable a.down, #sortable a.trash {right: 10px !important; float: right; margin: 5px 5px 35px 0px;}
 .count_result {margin: 0.5em;}
 .count_result .card-body {padding: 0px !important;}
 .counter_num {font-size: 3em;}
@@ -161,5 +161,5 @@ div[id*='block_field'], body[data-background-color=dark] .modifystory .card .car
 .datastorypage h2 {font-size: 2em;}
 .datastorypagefields p {font-size: 1.5em; line-height: 1.5em;}
 .chartstory {margin: 2em 0px;}
-
+.exportchart {margin-bottom: 2em;}
 .typography-line p {font-size: 1.3em; line-height: 1.3em; margin: 1em 0px;}

@@ -1,0 +1,5 @@
+clientID=''
+clientSecret=''
+owner='polifonia-project'
+repo_name='dashboard'
+token=''

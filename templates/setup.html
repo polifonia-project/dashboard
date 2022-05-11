@@ -25,7 +25,7 @@
 											<select name="template_mode" class="custom-select form-control"
 												id="exampleFormControlSelect1" required>
 												{% for item in template_data %}
-												<option value="{{item.name|capitalize}}" disabled>{{item.name|capitalize}}</option>
+												<option value="{{item.name}}" disabled>{{item.name|capitalize}}</option>
 												{% endfor %}
 											</select>
 										</div>
@@ -134,8 +134,8 @@
 						</div>
 					</div>
 					<div class="card-action">
-						<button type="submit" class="btn btn-success">Submit</button>
-						<button type="reset" class="btn btn-danger">Cancel</button>
+						<button type="submit" method="post" class="btn btn-success">Submit</button>
+						<button type="reset" class="btn btn-danger">Reset content</button>
 					</div>
 				</form>
 			</div>

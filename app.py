@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, url_for, redirect
-
 import json
+import github_sync
 
 app = Flask(__name__)
 
@@ -112,7 +112,27 @@ def welcome():
 # def prova():
 #     general_data = read_json('config.json')
 #     return render_template('prova.html', general_data=general_data)
+@app.route("/gitauth")
+def gitauth():
+    github_auth = "https://github.com/login/oauth/authorize"
+    clientId = '6a49af44eaa2f9c3dfd0'
+    scope = "&read:user"
+    return redirect(github_auth+"?client_id="+clientId+scope)
 
+@app.route("/oauth-callback")
+def oauthcallback():
+    code = request.args.get('code')
+    res = github_sync.ask_user_permission(code)
+
+    if res:
+        userlogin, usermail, bearer_token = github_sync.get_user_login(res)
+        is_valid_user = github_sync.get_github_users(userlogin)
+        if is_valid_user == True:
+            print("good boy, good girl")
+    else:
+        print("bad boy's request to github oauth")
+    general_data = read_json('config.json')
+    return redirect(url_for('setup'))
 
 # access any datastory page
 @app.route("/<string:section_name>/<string:datastory_name>")
@@ -142,6 +162,7 @@ def setup():
         try:
             # get data
             form_data = request.form
+            print(form_data)
             template_mode = form_data['template_mode']
             datastory_title = form_data['title']
             datastory_endpoint = form_data['sparql_endpoint']
@@ -182,9 +203,9 @@ def setup():
                 clean_section, clean_title, 'config.json')
 
             # the correct template opens based on the name
-            return render_template(template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
-        except:
-            return 'did not save to database'
+            return redirect(url_for("modify_datastory",section_name=clean_section,datastory_name=clean_title))
+        except Exception as e:
+            return str(e)+'did not save to database'
     else:
         return 'something went wrong, try again'
 

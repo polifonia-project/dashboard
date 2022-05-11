@@ -1,8 +1,8 @@
 {
     "sections": [
+        "Listening Experiences",
         "musoW",
-        "Wikidata",
-        "Listening Experiences"
+        "Wikidata"
     ],
     "operations": [
         "Count",
@@ -65,7 +65,7 @@
                     {
                         "position": 1,
                         "type": "text",
-                        "text": "Let's explore some data through the use of several charts.",
+                        "text": "The catalogue includes descriptions of several music-related web resources, with a focus on those that serve or allow users to manipulate music data in any form.",
                         "operations": []
                     },
                     {
@@ -121,6 +121,12 @@
                     },
                     {
                         "position": 9,
+                        "type": "text",
+                        "text": "While collecting information about resources is important, we also focused on understanding the potential audience of the resources. We discovered that most of surveyed resources are targeted to scholars.",
+                        "operations": []
+                    },
+                    {
+                        "position": 10,
                         "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
@@ -135,126 +141,15 @@
                 ],
                 "action": "save"
             },
-            "musow_2": {
+            "try_preview": {
                 "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
                 "template_mode": "statistics",
-                "section_name": "musoW",
-                "title": "musoW 2",
+                "title": "Try preview",
                 "color_code": [
                     "#39c6b4",
                     "#17cf31"
                 ],
-                "subtitle": "Fingers crossed",
-                "curator": "Giulia Renda",
-                "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "count",
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
-                        "count_label": "Digital Libraries"
-                    },
-                    {
-                        "position": 2,
-                        "type": "text",
-                        "text": "Check"
-                    },
-                    {
-                        "position": 3,
-                        "type": "chart",
-                        "chart_type": "barchart",
-                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
-                        "chart_title": "Content Overview",
-                        "operations": []
-                    },
-                    {
-                        "position": 4,
-                        "type": "count",
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
-                        "count_label": "Datasets"
-                    },
-                    {
-                        "position": 5,
-                        "type": "chart",
-                        "chart_type": "linechart",
-                        "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
-                        "chart_title": "The other chart",
-                        "operations": []
-                    }
-                ],
-                "decription": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need."
-            },
-            "new_template": {
-                "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
-                "template_mode": "statistics",
-                "title": "New Template",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "musoW",
-                "subtitle": "",
-                "curator": "",
-                "description": "",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "chart",
-                        "chart_type": "linechart",
-                        "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
-                        "chart_title": "Title",
-                        "operations": []
-                    },
-                    {
-                        "position": 2,
-                        "type": "chart",
-                        "chart_type": "doughnutchart",
-                        "chart_query": "SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label",
-                        "chart_title": "Audiences of Repository",
-                        "operations": []
-                    }
-                ]
-            },
-            "check_barchart": {
-                "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
-                "template_mode": "Statistics",
-                "title": "Check Barchart",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "musoW",
-                "subtitle": "",
-                "curator": "",
-                "description": "",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "chart",
-                        "chart_type": "barchart",
-                        "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . }",
-                        "chart_title": "Barchart With Count",
-                        "operations": [
-                            {
-                                "action": "count",
-                                "param": "label"
-                            }
-                        ]
-                    },
-                    {
-                        "position": 2,
-                        "type": "chart",
-                        "chart_type": "linechart",
-                        "chart_query": "SELECT ?label WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } }",
-                        "chart_title": "Content Overview",
-                        "operations": [
-                            {
-                                "action": "count",
-                                "param": "label"
-                            }
-                        ]
-                    }
-                ]
+                "section_name": "musoW"
             }
         },
         "wikidata": {
@@ -321,6 +216,16 @@
                     }
                 ],
                 "action": "save"
+            },
+            "another": {
+                "sparql_endpoint": "http://led.uk",
+                "template_mode": "Statistics",
+                "title": "Another",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Listening Experiences"
             }
         }
     }

@@ -10,7 +10,7 @@ window.onload = function () {
 
 // disable selection of templates other than statistics
 $( document ).ready(function() {
-  $("#exampleFormControlSelect1 option[value='Statistics']").removeAttr('disabled');
+  $("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
   $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded','false');
   getBrightness(datastory_data.color_code[1]);
 });
@@ -95,7 +95,7 @@ function add_field(name) {
 
     var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='count' name='action1' value='count'><label for='count'>Count</label><br><input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label><br></div>"
 
-    var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a>';
+    var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
 
     if (name == 'textbox') {
         var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'>";
@@ -442,7 +442,8 @@ function colorSwitch(color_1, color_2) {
     var gradientEl = document.querySelector(".secondarymenuinner");
     var counters = document.querySelectorAll(".count_result");
     //gradientEl.classList.remove("bg-primary-gradient");
-    gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
+    if (gradientEl !== undefined)
+    {gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';}
 
     function borders(el) {
       el.style.border = "solid 2px "+color_1;
