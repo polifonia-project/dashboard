@@ -11,10 +11,10 @@
 {% block content %}
 
 <div class="content row datastorypage" id="dwn">
-	<section class="secondarymenu col-md-3 col-sm-12">
-		<section class="secondarymenuinner">
-			<h3>About</h3>
+	<section id="secondarymenu" class="secondarymenu col-md-3 col-sm-12">
+		<section id="secondarymenuinner" class="secondarymenuinner">
 			<h4>{{ datastory_data.title }} </h4>
+			<p>Part of: {{ datastory_data.section_name }}</p>
 			<p>Authors:
 				{% if datastory_data.curator %}
 				{{ datastory_data.curator }}

@@ -141,10 +141,11 @@ div[id*='block_field'], body[data-background-color=dark] .modifystory .card .car
 .modifystory .card {background-color: transparent !important;}
 .secondarymenu {margin: 6em 0px 2em 0px;}
 .secondarymenuinner {padding: 2em;  }
-.secondarymenu * {color: var(--dark-grey) !important;}
+/* .secondarymenu * {color: var(--dark-grey) !important;} */
 
 .secondarymenu a {text-decoration: underline;}
 .exportbutton {cursor: pointer; background-color: transparent; border: solid 1px var(--dark-grey); box-shadow: none;}
+.exportbutton a {text-decoration: none !important;}
 .modifystory ::placeholder { color: var(--extra-light-grey); font-style: italic;}
 #colors { width: 60%; padding: 2em 0px ; }
 #colors p {color: var(--dark-grey);}

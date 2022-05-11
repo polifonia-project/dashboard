@@ -1,5 +1,4 @@
 addEventListener("DOMContentLoaded", function() {
-  console.log(datastory_data);
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
 });
 
@@ -13,6 +12,7 @@ window.onload = function () {
 $( document ).ready(function() {
   $("#exampleFormControlSelect1 option[value='Statistics']").removeAttr('disabled');
   $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded','false');
+  getBrightness(datastory_data.color_code[1]);
 });
 
 //// WYSIWYG FORM FUNCTIONS ////
@@ -1118,4 +1118,29 @@ function getHTML(el) {
   var thishtml = encodeURIComponent(htmlcopy);
   el.href='data:text/html;charset=UTF-8,'+thishtml;
   window.open('../static/static.zip');
+}
+
+// change color of secondary menu in datastory
+function getBrightness(c) {
+  var c = c.substring(1);      // strip #
+  var rgb = parseInt(c, 16);   // convert rrggbb to decimal
+  var r = (rgb >> 16) & 0xff;  // extract red
+  var g = (rgb >>  8) & 0xff;  // extract green
+  var b = (rgb >>  0) & 0xff;  // extract blue
+  var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+
+  var nodes = document.getElementById('secondarymenuinner').children;
+  for (var i=0; i<nodes.length; i++) {
+      if (luma < 45) {
+        nodes[i].setAttribute('style', 'color:#ffffff !important');
+        $('.exportbutton').css('border','solid 1px #ffffff');
+       } else {
+         nodes[i].setAttribute('style', 'color: black !important');}
+
+     for (var j=0; j<nodes[i].children.length; j++) {
+         if (luma < 45) { nodes[i].children[j].setAttribute('style', 'color:#ffffff !important');
+       } else {nodes[i].children[j].setAttribute('style', 'color: black !important');}
+     }
+  };
+
 }
