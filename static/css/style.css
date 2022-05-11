@@ -28,7 +28,7 @@ footer a {color: var(--dark-main) !important;}
 
 /* HOMEPAGE */
 .home h1 {font-size: 5vw; padding-bottom: 2em; z-index: 1000; position: absolute; height: 30vw;}
-.home h5 {margin-top: 30vw; font-size: 1.3em; line-height: 1.7em; padding-left: 0px !important;}
+.home h5 {margin-top: 30vw; z-index: 1000; font-size: 1.3em; line-height: 1.7em; padding-left: 0px !important;}
 .main-panel>.content {padding:1em 5em !important; margin-bottom: 0px !important; }
 b.ball {
   display: block;z-index: 100;
@@ -45,7 +45,7 @@ b.ball {
   background-image: -ms-linear-gradient(-45deg, var(--dark-grey) 0%, transparent 100%);
 }
 b.ball2 {
-  display: block;z-index: 10;
+  display: block;
   position: absolute;
   width: 10vw;
   height: 10vw;
@@ -133,13 +133,13 @@ select-selected.select-arrow-active:after {border-color: transparent transparent
 
 /* SIDEBAR */
 .menuitem a {display: inline-block !important;}
-.modifystoryicon img {max-width: 20px; height: auto;}
+.modifystoryicon img {max-width: 20px; }
 
 
 /* modify datastory */
 div[id*='block_field'], body[data-background-color=dark] .modifystory .card .card-header {border-bottom: dotted 2px var(--main-color) !important; padding: 4em 0px;}
 .modifystory .card {background-color: transparent !important;}
-.secondarymenu {margin: 6em 2em 2em 0px;}
+.secondarymenu {margin: 6em 0px 2em 0px;}
 .secondarymenuinner {padding: 2em;  }
 .secondarymenu * {color: var(--dark-grey) !important;}
 
@@ -151,10 +151,14 @@ div[id*='block_field'], body[data-background-color=dark] .modifystory .card .car
 
 #sortable a.up, #sortable a.down, #sortable a.trash {right: 10px !important; float: right; margin: 5px;}
 .count_result {margin: 0.5em;}
+.count_result .card-body {padding: 0px !important;}
 .counter_num {font-size: 3em;}
+.counter_label {padding-bottom: 1em;}
 .addfieldssection {margin-top: 2em;}
 /* datastory */
 .datastorypage h1 {font-size: 3em;}
 .datastorypage h2 {font-size: 2em;}
 .datastorypagefields p {font-size: 1.5em; line-height: 1.5em;}
 .chartstory {margin: 2em 0px;}
+
+.typography-line p {font-size: 1.3em; line-height: 1.3em; margin: 1em 0px;}

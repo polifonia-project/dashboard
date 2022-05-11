@@ -100,14 +100,14 @@
                         "position": 6,
                         "type": "count",
                         "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
-                        "count_label": "Softwares",
+                        "count_label": "Software",
                         "operations": []
                     },
                     {
                         "position": 7,
                         "type": "chart",
                         "chart_type": "barchart",
-                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> SELECT ?x (COUNT(?content) AS ?y) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> \r\nSELECT ?x (COUNT(?content) AS ?y) \r\nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
                         "chart_title": "Content Overview",
                         "operations": []
                     },
@@ -124,7 +124,7 @@
                         "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
-                        "chart_title": "Audiences of Repository",
+                        "chart_title": "Audience of music resources",
                         "operations": [
                             {
                                 "action": "count",
@@ -132,7 +132,8 @@
                             }
                         ]
                     }
-                ]
+                ],
+                "action": "save"
             },
             "musow_2": {
                 "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
@@ -295,20 +296,27 @@
                 "section_name": "Listening Experiences",
                 "subtitle": "An overview from the LED database",
                 "curator": "Marilena Daquino, Giulia Renda",
-                "description": "An overview of data from LED on nurses' listening experiences, including those they participated in and those they recorded in their journals.",
+                "description": "An overview of nurses' listening experiences during WWI, including those in which they participated and those that nurses recorded in their journals. Data source: The Listening experience database.",
                 "dynamic_elements": [
                     {
                         "position": 1,
                         "type": "count",
-                        "count_query": "PREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nSELECT DISTINCT (COUNT(?lex) AS ?count) \r\nWHERE {\r\n?lex a led:ListeningExperience .\r\n}\r\n",
-                        "count_label": "Listening experiences",
+                        "count_query": "PREFIX led: <http://led.kmi.open.ac.uk/term/> \r\nPREFIX event: <http://purl.org/NET/c4dm/event.owl#>\r\nPREFIX dc: <http://purl.org/dc/terms/>\r\nPREFIX schema: <http://schema.org/>\r\nSELECT DISTINCT (COUNT(?nurse) AS ?count) \r\nWHERE {\r\nVALUES ?nocc { \r\n      <http://data.open.ac.uk/led/occupation/nurse> \r\n      <http://data.open.ac.uk/led/thing/QAIMNS+nurse> \r\n      <http://data.open.ac.uk/led/thing/VAD+nurse> \r\n   }\r\n   . ?nurse <http://dbpedia.org/ontology/occupation> ?nocc .\r\n}",
+                        "count_label": "Nurses",
                         "operations": []
                     },
                     {
                         "position": 2,
                         "type": "count",
-                        "count_query": "PREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nSELECT DISTINCT (COUNT(?lex) AS ?count) \r\nWHERE {\r\n?lex a led:ListeningExperience .\r\n}\r\n",
-                        "count_label": "Again",
+                        "count_query": "PREFIX dc: <http://purl.org/dc/terms/> \r\nPREFIX edtf: <http://data.open.ac.uk/edtf/ontology/>\r\nPREFIX edtfdata: <http://data.open.ac.uk/time/edtf/>\r\nPREFIX event: <http://purl.org/NET/c4dm/event.owl#>\r\nPREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX schema: <http://schema.org/>\r\nSELECT (COUNT(DISTINCT ?lexp) AS ?count) \r\nWHERE {\r\n   ?lexp event:time [ rdfs:label ?when ; edtf:century edtfdata:Century.19 ; edtf:yearOfCentury/rdf:value ?yoc ]\r\n   VALUES ?nocc { \r\n      <http://data.open.ac.uk/led/occupation/nurse> \r\n      <http://data.open.ac.uk/led/thing/QAIMNS+nurse> \r\n      <http://data.open.ac.uk/led/thing/VAD+nurse> \r\n   }\r\n   ?lexp ?p ?nurse\r\n   . ?nurse <http://dbpedia.org/ontology/occupation> ?nocc\r\n   FILTER ( ?yoc >= 14 && ?yoc <= 18 )\r\n} \r\nORDER BY ?lexp ?nurse\r\n",
+                        "count_label": "Listening experiences",
+                        "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "count",
+                        "count_query": "PREFIX dc: <http://purl.org/dc/terms/> \r\nPREFIX edtf: <http://data.open.ac.uk/edtf/ontology/>\r\nPREFIX edtfdata: <http://data.open.ac.uk/time/edtf/>\r\nPREFIX event: <http://purl.org/NET/c4dm/event.owl#>\r\nPREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX schema: <http://schema.org/>\r\nSELECT (COUNT(DISTINCT ?place) AS ?count) \r\nWHERE {\r\n   ?lexp event:time [ rdfs:label ?when ; edtf:century edtfdata:Century.19 ; edtf:yearOfCentury/rdf:value ?yoc ]\r\n   VALUES ?nocc { \r\n      <http://data.open.ac.uk/led/occupation/nurse> \r\n      <http://data.open.ac.uk/led/thing/QAIMNS+nurse> \r\n      <http://data.open.ac.uk/led/thing/VAD+nurse> \r\n   }\r\n   ?lexp <http://purl.org/NET/c4dm/event.owl#place> ?place ; ?p ?nurse\r\n   . ?nurse <http://dbpedia.org/ontology/occupation> ?nocc\r\n   FILTER ( ?yoc >= 14 && ?yoc <= 18 )\r\n\r\n} \r\nORDER BY ?lexp ?nurse\r\n\r\n",
+                        "count_label": "Places",
                         "operations": []
                     }
                 ],

@@ -240,7 +240,7 @@ $(function () {
                                 },
                                 options: {
                                     responsive: true,
-                                    maintainAspectRatio: false,
+                                    maintainAspectRatio: true,
                                     scales: {
                                         yAxes: [{
                                             ticks: {
@@ -308,7 +308,7 @@ $(function () {
                                 },
                                 options: {
                                     responsive: true,
-                                    maintainAspectRatio: false,
+                                    maintainAspectRatio: true,
                                     spanGaps: true,
                                     legend: {
                                         position: 'bottom',
@@ -398,7 +398,7 @@ $(function () {
                                 },
                                 options: {
                                     responsive: true,
-                                    maintainAspectRatio: false,
+                                    maintainAspectRatio: true,
                                     legend: {
                                         position: 'bottom'
                                     },
@@ -697,7 +697,7 @@ function barchart(element) {
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: true,
                         scales: {
                             yAxes: [{
                                 ticks: {
@@ -813,7 +813,7 @@ function linechart(element) {
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: true,
                         spanGaps: true,
                         legend: {
                             position: 'bottom',
@@ -946,7 +946,7 @@ function doughnutchart(element) {
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: true,
                         legend: {
                             position: 'bottom'
                         },
@@ -1049,7 +1049,7 @@ function stacked_barchart(element) {
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
+                        maintainAspectRatio: true,
                         legend: {
                             position: 'bottom'
                         },
@@ -1080,8 +1080,8 @@ function stacked_barchart(element) {
 
 // autoresize textarea
 function auto_grow(element) {
-    element.style.height = "5px";
-    element.style.height = (element.scrollHeight)+"px";
+    // element.style.height = "5px";
+    // element.style.height = (element.scrollHeight)+"px";
 }
 
 function getPDF(elem_id) {
@@ -1095,4 +1095,27 @@ function getPDF(elem_id) {
     jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
   };
   html2pdf(element, opt);
+}
+
+function getHTML(el) {
+  var html = document.documentElement.outerHTML;
+  var htmlcopy = html.replaceAll('/static', 'static');
+
+  // remove elements
+  // var div = document.createElement('div');
+  // div.innerHTML = htmlcopy;
+  // var elements = div.getElementsByClassName('sidebar');
+  // while (elements[0])
+  //   elements[0].parentNode.removeChild(elements[0])
+  // var elements2 = div.getElementsByClassName('main-header');
+  // while (elements2[0])
+  //   elements2[0].parentNode.removeChild(elements2[0])
+
+  // reassemble html
+  //var repl = div.innerHTML;
+  //console.log(repl);
+  // download html and zip file
+  var thishtml = encodeURIComponent(htmlcopy);
+  el.href='data:text/html;charset=UTF-8,'+thishtml;
+  window.open('../static/static.zip');
 }
