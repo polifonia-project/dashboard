@@ -132,7 +132,7 @@ def oauthcallback():
     else:
         session["name"] = None
         print("bad boy's request to github oauth")
-        return redirect(url_for('index.html'))
+        return redirect(url_for('welcome'))
 
 # signout
 @app.route("/signout")

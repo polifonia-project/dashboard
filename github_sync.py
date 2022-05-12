@@ -1,7 +1,6 @@
 import os , json
 import requests
 from github import Github, InputGitAuthor
-import utils as u
 import conf
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
