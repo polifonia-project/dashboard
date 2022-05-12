@@ -29,7 +29,7 @@
 					</div>
 					<div class="action col-md-3">
 						<h6>get started</h6>
-						<p>Choose the data to explore, pick a template, and create a new <a href="setup" target="_blank">data story</a></p>
+						<p>Choose the data to explore, pick a template, and create a new <a href="setup">data story</a></p>
 					</div>
 					<div class="action col-md-4 whitebg">
 						<h6>get inspired</h6>
@@ -44,9 +44,9 @@
 
 		</div>
 		<div class="row mt--2 signin">
-			<p class="col-md-6 col-sm-12">MELODY is part of Polifonia, a European project to disseminate music heritage data.
-				If you have a GitHub account, open an issue on the <a href="https://github.com/polifonia-project/dashboard">repository</a> of MELODY
-				 to become a collaborator. You'll be able to <b>Save</b> and publish your stories.</p>
+			<p class="col-md-6 col-sm-12">To save and publish data stories with MELODY, you will need a GitHub account.
+				If you already have a GitHub account, add a comment to this <a target="_blank" href="https://github.com/polifonia-project/dashboard/issues/19">issue</a> on the MELODY data stories repository.
+				 	We will answer ASAP, and you will become a collaborator. You'll be able to <b>Save</b> and publish your stories.</p>
 		 			<h2 class="col-md-4 col-sm-12">Sign in <br>to save your data stories</h2>
 		</div>
 	</div>
@@ -57,7 +57,10 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
-<script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+<script type="text/javascript">
+	var general_data = {{ general_data | tojson }};
+	var datastory_data = {};
+</script>
 
 
 {% endblock javascripts %}

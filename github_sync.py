@@ -24,6 +24,7 @@ def ask_user_permission(code):
 
 	req = requests.post('https://github.com/login/oauth/access_token', data=body,
 						headers={"accept": "application/json"})
+	print(body, req)
 	if req.status_code == 200:
 		res = req.json()
 	return res

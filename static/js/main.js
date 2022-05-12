@@ -1,9 +1,10 @@
 addEventListener("DOMContentLoaded", function() {
-    colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+  if (Object.getOwnPropertyNames(datastory_data).length > 0)
+    {colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);}
 });
 
 window.onload = function () {
-    queryCounter();
+  if (Object.getOwnPropertyNames(datastory_data).length > 0) {queryCounter();}
     chartViz();
     disableKeypress();
 }
@@ -12,7 +13,9 @@ window.onload = function () {
 $( document ).ready(function() {
   $("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
   $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded','false');
-  getBrightness(datastory_data.color_code[1]);
+  if (Object.getOwnPropertyNames(datastory_data).length > 0) {
+    getBrightness(datastory_data.color_code[1]);
+  }
 });
 
 //// WYSIWYG FORM FUNCTIONS ////

@@ -140,16 +140,6 @@
                     }
                 ],
                 "action": "save"
-            },
-            "try_preview": {
-                "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
-                "template_mode": "statistics",
-                "title": "Try preview",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "musoW"
             }
         },
         "wikidata": {
@@ -216,16 +206,6 @@
                     }
                 ],
                 "action": "save"
-            },
-            "another": {
-                "sparql_endpoint": "http://led.uk",
-                "template_mode": "Statistics",
-                "title": "Another",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "Listening Experiences"
             }
         }
     }
