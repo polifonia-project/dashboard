@@ -137,109 +137,109 @@
                         <p class="mb-3">When you've filled in all the previous fields, you can click on the "Submit"
                             button. You'll be taken to a WYSIWYG form designed based on the template you've chosen. With
                             this type of form, you can immediately see how the date story will look once published.</p>
-                        <h2class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
                             Statistics Template
-                            </h2>
-                            <p class="mb-3">The Statistics template is designed for a 'classic' type of data story,
-                                where
-                                you can combine textual information with statistical information such as counts and
-                                charts
-                                to create a narrative.<br>
-                                In this particular case, the first information that can be filled in or changed are the
-                                colours, the title, the subtitle, the curator and an introductory description of the
-                                data
-                                story.<br>
-                                With three different buttons you can add boxes with tests, sums and charts. Each box can
-                                be
-                                moved up and down or removed.</p>
-                            <h2 id="count" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Counts
-                            </h2>
-                            <p class="mb-3">Counts are numbers that represent a sum of a certain type of data. They're
-                                used
-                                to give an overview, e.g. of the type of data that fills a record. This type of
-                                visualisation requires:</p>
-                            <ul style="list-style: inside;" class="mb-3 pl-3">
-                                <li>A SPARQL query, which should be designed to return a number with the variable name
-                                    "count".
-                                </li>
-                                <li>A short label to describe the number displayed.</li>
-                            </ul>
-                            <h2 id="chart" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Charts
-                            </h2>
-                            <p class="mb-3">Charts are the most important part of the data visualisation in this
-                                template.
-                                Three different types are provided:</p>
-                            <ul style="list-style: inside;" class="mb-3 pl-3">
-                                <li>Bar chart
-                                </li>
-                                <li>Line chart</li>
-                                <li>Doughnut chart</li>
-                            </ul>
-                            <p class="mb-3">For each chart, the following information must be provided:</p>
-                            <ol class="list-group-numbered mb-3 pl-3">
-                                <li>Select the type (required).
-                                </li>
-                                <li>Insert SPARQL query (required).</li>
-                                <li>Insert chart Title (required).</li>
-                                <li>Choose one or more operations (optional).</li>
-                            </ol>
-                            <h2 id="query" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL
-                                Query
-                            </h2>
-                            <p class="mb-3">Overall, a query can be of two types:</p>
-                            <ul style="list-style: inside;" class="mb-3 pl-3">
-                                <li><b>Simple</b>: means that the query retrieves non-aggregated data that's
-                                    post-processed
-                                    using operations.
-                                </li>
-                                <li><b>Complex</b>: means that the query retrieves information directly suitable for
-                                    charting.</li>
-                            </ul>
-                            <p class="mb-3">However, the structure of the query also depends on the type of chart
-                                chosen, as
-                                different types of data are needed. In addition, depending on the optional operations
-                                chosen, there are also requirements for the variable names.</p>
-                            <p class="mb-3">In case of a <b>simple</b> query, bar chart, line chart and doughnut chart
-                                all
-                                require
-                                the <b>count operation</b>:<br>
-                                a simple query provides information in the form of a list with the labels of the
-                                elements.
-                                In this case, the operation "count" must be applied. The required variable name is
-                                "label".<br>
+                        </h2>
+                        <p class="mb-3">The Statistics template is designed for a 'classic' type of data story,
+                            where
+                            you can combine textual information with statistical information such as counts and
+                            charts
+                            to create a narrative.<br>
+                            In this particular case, the first information that can be filled in or changed are the
+                            colours, the title, the subtitle, the curator and an introductory description of the
+                            data
+                            story.<br>
+                            With three different buttons you can add boxes with tests, sums and charts. Each box can
+                            be
+                            moved up and down or removed.</p>
+                        <h2 id="count" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Counts
+                        </h2>
+                        <p class="mb-3">Counts are numbers that represent a sum of a certain type of data. They're
+                            used
+                            to give an overview, e.g. of the type of data that fills a record. This type of
+                            visualisation requires:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>A SPARQL query, which should be designed to return a number with the variable name
+                                "count".
+                            </li>
+                            <li>A short label to describe the number displayed.</li>
+                        </ul>
+                        <h2 id="chart" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Charts
+                        </h2>
+                        <p class="mb-3">Charts are the most important part of the data visualisation in this
+                            template.
+                            Three different types are provided:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>Bar chart
+                            </li>
+                            <li>Line chart</li>
+                            <li>Doughnut chart</li>
+                        </ul>
+                        <p class="mb-3">For each chart, the following information must be provided:</p>
+                        <ol class="list-group-numbered mb-3 pl-3">
+                            <li>Select the type (required).
+                            </li>
+                            <li>Insert SPARQL query (required).</li>
+                            <li>Insert chart Title (required).</li>
+                            <li>Choose one or more operations (optional).</li>
+                        </ol>
+                        <h2 id="query" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL
+                            Query
+                        </h2>
+                        <p class="mb-3">Overall, a query can be of two types:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li><b>Simple</b>: means that the query retrieves non-aggregated data that's
+                                post-processed
+                                using operations.
+                            </li>
+                            <li><b>Complex</b>: means that the query retrieves information directly suitable for
+                                charting.</li>
+                        </ul>
+                        <p class="mb-3">However, the structure of the query also depends on the type of chart
+                            chosen, as
+                            different types of data are needed. In addition, depending on the optional operations
+                            chosen, there are also requirements for the variable names.</p>
+                        <p class="mb-3">In case of a <b>simple</b> query, bar chart, line chart and doughnut chart
+                            all
+                            require
+                            the <b>count operation</b>:<br>
+                            a simple query provides information in the form of a list with the labels of the
+                            elements.
+                            In this case, the operation "count" must be applied. The required variable name is
+                            "label".<br>
+                            Example:
+                            <code>SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . }</code>
+                        </p>
+                        <p class="mb-3">In case of a <b>complex</b> query, every chart requires its own
+                            characteristics:
+                        </p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>For bar chart and doughnut chart, a complex query provides information about the
+                                number
+                                of repetitions ( number, variable "y") of certain elements (labels or numbers,
+                                variable
+                                "x").<br>
                                 Example:
-                                <code>SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . }</code>
-                            </p>
-                            <p class="mb-3">In case of a <b>complex</b> query, every chart requires its own
-                                characteristics:
-                            </p>
-                            <ul style="list-style: inside;" class="mb-3 pl-3">
-                                <li>For bar chart and doughnut chart, a complex query provides information about the
-                                    number
-                                    of repetitions ( number, variable "y") of certain elements (labels or numbers,
-                                    variable
-                                    "x").<br>
-                                    Example:
-                                    <code>SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label</code>
-                                </li>
-                                <li>For line chart, complex query returns information about the number of repetitions (
-                                    number, variable "y") of certain entities (labels or numbers, variable "x").<br>
-                                    Example:
-                                    <code>SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x</code>
-                                </li>
-                            </ul>
-                            <h2 id="publish" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
-                                Publish and Export
-                            </h2>
-                            <p class="mb-3">Once all the information has been added, you can submit the form. This will
-                                create the final product, an HTML page containing the data history thus created, which
-                                can
-                                be accessed from the sidebar on the left. Each chart can be printed as a .png image or
-                                exported as embeddable code.<br>
-                                It's possible to change the content of a data story at any time by clicking on the
-                                "modify"
-                                button in the sidebar.
-                            </p>
+                                <code>SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label</code>
+                            </li>
+                            <li>For line chart, complex query returns information about the number of repetitions (
+                                number, variable "y") of certain entities (labels or numbers, variable "x").<br>
+                                Example:
+                                <code>SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x</code>
+                            </li>
+                        </ul>
+                        <h2 id="publish" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                            Publish and Export
+                        </h2>
+                        <p class="mb-3">Once all the information has been added, you can submit the form. This will
+                            create the final product, an HTML page containing the data history thus created, which
+                            can
+                            be accessed from the sidebar on the left. Each chart can be printed as a .png image or
+                            exported as embeddable code.<br>
+                            It's possible to change the content of a data story at any time by clicking on the
+                            "modify"
+                            button in the sidebar.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -247,7 +247,7 @@
     </div>
 
     <!-- footer -->
-    <footer class="text-gray-600 body-font">
+    <footer class="text-gray-600 body-font mt-6">
         <div
             class="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
             <div class="w-64 flex-shrink-0 md:mx-0 mx-auto md:text-left">

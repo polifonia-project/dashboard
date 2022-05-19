@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- style -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- headers -->
+    <header class="text-gray-600 body-font">
+        <div class="container mx-auto flex flex-wrap p-4 flex-col md:flex-row items-center">
+            <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0" href="../index.html">
+                <span class="ml-3 text-xl">MELODY</span>
+            </a>
+            <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+                <a class="mr-5 hover:text-gray-900" href="getting_started.html">Getting Started</a>
+                <!-- <a class="mr-5 hover:text-gray-900" href="examples.html">Examples</a> -->
+                <a class="mr-5 hover:text-gray-900" href="user_guide.html">User Guide</a>
+                <a class="mr-5 hover:text-gray-900" href="documentation.html">Documentation</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex flex-wrap">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    <!-- sidebar -->
+                    <div class="flex-shrink-0 p-3 sticky-top" style="width: 280px;">
+                        <ul class="list-unstyled ps-0">
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse" data-bs-target="#app-collapse" aria-expanded="false">
+                                    The Flask Application
+                                </button>
+                                <div class="collapse show" id="app-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="#methods" class="link-dark rounded">Configuration Methods</a></li>
+                                        <li><a href="#routing" class="link-dark rounded">Routing</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed">
+                                    <a class="link-dark rounded" href="#config">The Configuration File</a>
+                                </button>
+                            </li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed">
+                                    <a class="link-dark rounded" href="#ajax">Ajax HTTP Requests</a>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- main -->
+                <div class="col-9">
+                    <div class="flex flex-col w-full">
+                        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Documentation</h1>
+                        <p class="mb-3">MELODY, a web-based, extensible, reusable, and user-friendly software for
+                            retrieving, presenting, and publishing Linked Data in the form of Data Stories. This is made
+                            possible by pre-built templates and functionalities described in the following sections. The
+                            core components of the project are:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>A Python application developed with the Flask framework.
+                            </li>
+                            <li>A JSON configuration file that stores setup information.</li>
+                            <li>A set of HTML pages that form the web interface.</li>
+                            <li>A set of HTML layout templates.</li>
+                            <li>A set of Ajax HTTP requests to query SPARQL endpoints and create charts.</li>
+                        </ul>
+                        <h2 id="app" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">The Flask
+                            Application
+                        </h2>
+                        <p class="mb-3">MELODY is a web-based Python application developed with the <a
+                                href="https://flask.palletsprojects.com/en/2.1.x/" target="_blank"
+                                class="text-green-500">Flask framework</a>. It serves two main functions:
+                        </p>
+                        <ol class="list-group-numbered pl-3 mb-3">
+                            <li>manages incoming and outgoing data from the configuration file using methods;</li>
+                            <li>provides a web interface similar to a CMS rendered via routing.</li>
+                        </ol>
+                        <h3 id="methods" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                            Configuration Methods
+                        </h3>
+                        <p class="mb-3 ">Four methods have been defined to manage the data:</p>
+                        <ol class="list-group-numbered pl-3 mb-3">
+                            <li>The <i>read_json</i> method accesses the config.json file to retrieve configuration
+                                information.
+                            </li>
+                            <li>The <i>update_json</i> method updates the config.json file with any new incoming
+                                information from the user.</li>
+                            <li>The <i>access_data_sources</i> method accesses data of a specific data story based
+                                on the
+                                title and the name of the section. This is possible because these two parameters
+                                define the location of each data story within the config.json file, as we will see
+                                in the next sections.</li>
+                            <li>The <i>manage_datastory_data</i> method manages and stores in the config.json file
+                                the
+                                information involved in submitting the WYSIWYG form. This means that information
+                                about what and how an author wants content displayed in a data story is received,
+                                processed, and stored in a specific structure that we will analyze in the next
+                                section.</li>
+                        </ol>
+                        <h3 id="routing" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                            Routing
+                        </h3>
+                        <p class="mb-3">Main routing functions are:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li><i>.route("/index.html")</i>: returns the homepage.
+                            </li>
+                            <li><i>.route("/setup", methods=['POST', 'GET'])</i>: if the HTTP method is GET, it
+                                renders the setup.html page, where the user can enter preliminary information
+                                about a data story; if the HTTP method is POST, the information submitted
+                                through the small form is received, managed, and stored in the config.json file.
+                                With the same information, the user is redirected to the selected template
+                                WYSIWYG form.</li>
+                            <li><i>.route("/send_data/&lt;string:section_name>", methods=['POST', 'GET'])</i>:
+                                this
+                                function manages the submission of the WYSIWYG form, i.e. the data is received
+                                thanks to the manage_datastory_data method, processed and stored in the
+                                config.json file. With the same data, the user is redirected to the final
+                                product, the page with the data story.</li>
+                            <li><i>.route("/&lt;string:section_name>/&lt;string:datastory_name>")</i>: thanks to
+                                the dynamic routing and the variables specified in the URL, the data story
+                                template is rendered and filled with the correct data. This routing function
+                                works for any available data story.</li>
+                            <li><i>.route("/modify/&lt;string:section_name>/&lt;string:datastory_name>",
+                                    methods=['POST', 'GET'])</i>: if the HTTP method is GET, the server renders
+                                the modifiable version of the data story, the WYSIWYG form; if the HTTP method
+                                is POST, the server again manages the submission of the WYSIWYG form and
+                                redirects to the data story page.</li>
+                        </ul>
+                        <h2 id="config" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">The
+                            Configuration File
+                        </h2>
+                        <p class="mb-3">The config.json file can be created almost from scratch. Ideally, when a new
+                            user downloads
+                            and runs the software for the first time, this file is filled with the most important
+                            default information. Anything regarding data stories that can be created is filled in via
+                            the setup passages provided by the web interface itself. On the server side, the
+                            configuration methods shown above are responsible for receiving, processing, and storing the
+                            data.</p>
+                        <p class="mb-3">The config.json file contains information about:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>Types of available templates and their basic properties.</li>
+                            <li>Types of charts.</li>
+                            <li>Types of operations.</li>
+                            <li>List of data stories, organized as “section:datastory_list”.</li>
+                        </ul>
+                        <p class="mb-3">In detail:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>“sections” are the macro areas in which data stories can be organized. They are stored
+                                as a list of strings, and are updated every time a new one is created.</li>
+                            <li>“operations” are the type of actions that can be performed on data after retrieval from
+                                the SPARQL endpoint. They are stored as a fixed list of strings.</li>
+                            <li>“templates” stores the information about the provided template types. It is structured
+                                as a dictionary that has as keys the name of each template, and as value a dictionary
+                                with detailed information.</li>
+                            <li>“chart_types” are the types of charts available to be visualized. They are stored as a
+                                fixed list of strings.</li>
+                            <li>“data_sources” contains the information about all the data stories created. It is
+                                structured as a dictionary in which keys are the name of the sections, the value is a
+                                dictionary that contains all the data story under a section. It is automatically updated
+                                during the setup phase. Each data story has as value a dictionary that contains its
+                                information, further organized.</li>
+                            <li>“dynamic_elements” is a list of dictionaries. Each dictionary is a dynamic segment that
+                                composes the final datastory, namely text, counts and charts. This is information that
+                                the user can add during the setup phase in the WYSIWYG form.</li>
+                        </ul>
+                        <h2 id="ajax" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Ajax HTTP
+                            Requests
+                        </h2>
+                        <p class="mb-3">Query Ajax HTTP requests are used to retrieve data from SPARQL endpoints: more
+                            specifically,
+                            in certain situations, the SPARQL queries in the config.json file are sent to the respective
+                            SPARQL endpoint to retrieve data that needs to be presented in the data stories. They are
+                            used for:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>Retrieving and displaying linked data from SPARQL endpoints as a preview when filling
+                                out the WYSIWYG form. In this case, the temporarily cached SPARQL queries are used as
+                                part of the input content.</li>
+                            <li>Retrieving linked data from SPARQL endpoints and displaying it in the final data story.
+                                In this case, it uses the SPARQL queries stored in the config.json file.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="text-gray-600 body-font mt-6">
+        <div
+            class="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
+            <div class="w-64 flex-shrink-0 md:mx-0 mx-auto md:text-left">
+                <p class="mt-2 text-sm text-gray-500">MELODY is part of</p>
+                <a href="https://polifonia-project.eu/" target="_blank">
+                    <img src="../static/img/logopolifonia.svg" style="background-color: darkslategray;">
+                </a>
+                <p class="mt-2 text-sm text-gray-500">Polifonia has received funding from the European Union’s Horizon
+                    2020 research
+                    and innovation programme under grant agreement N. 101004746.</p>
+            </div>
+            <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
+                <div class="lg:w-1/2 md:w-1/2 w-full px-4">
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">MELODY</h2>
+                    <nav class="list-none mb-10">
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800"
+                                href="https://github.com/polifonia-project/dashboard" target="_blank">Source code</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="https://polifonia-project.eu/"
+                                target="_blank">
+                                Polifonia
+                            </a>
+                        </li>
+                    </nav>
+                </div>
+                <div class="lg:w-1/2 md:w-1/2 w-full px-4">
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
+                    <nav class="list-none mb-10">
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="getting_started.html">Get
+                                started</a>
+                        </li>
+                        <!-- <li>
+                                <a class="text-gray-600 hover:text-pink-800" href="examples.html">Examples</a>
+                            </li> -->
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="user_guide.html">User
+                                Guide</a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="documentation.html">Documentation</a>
+                        </li>
+                    </nav>
+                </div>
+                <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
+                        <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                        <nav class="list-none mb-10">
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                            </li>
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                            </li>
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                            </li>
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                            </li>
+                        </nav>
+                    </div> -->
+                <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
+                        <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                        <nav class="list-none mb-10">
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                            </li>
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                            </li>
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                            </li>
+                            <li>
+                                <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                            </li>
+                        </nav>
+                    </div> -->
+            </div>
+        </div>
+        <div class="bg-gray-100">
+            <!-- <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
+                    <p class="text-gray-500 text-sm text-center sm:text-left">©
+                        <script>document.write(new Date().getFullYear());</script>
+                        Polifonia Dashboard —
+                        <a href="https://twitter.com/knyttneve" rel="noopener noreferrer" class="text-gray-600 ml-1"
+                            target="_blank">@giuliarenda</a>
+                    </p>
+                    <span class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
+                        <a class="text-gray-500">
+                            <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                class="w-5 h-5" viewBox="0 0 24 24">
+                                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                            </svg>
+                        </a>
+                        <a class="ml-3 text-gray-500">
+                            <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                class="w-5 h-5" viewBox="0 0 24 24">
+                                <path
+                                    d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
+                                </path>
+                            </svg>
+                        </a>
+                        <a class="ml-3 text-gray-500">
+                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+                            </svg>
+                        </a>
+                        <a class="ml-3 text-gray-500">
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
+                                <path stroke="none"
+                                    d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
+                                </path>
+                                <circle cx="4" cy="4" r="2" stroke="none"></circle>
+                            </svg>
+                        </a>
+                    </span>
+                </div> -->
+        </div>
+    </footer>
+    <!-- scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
