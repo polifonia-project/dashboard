@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
 import json
-import github_sync
+import github_sync , conf
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False

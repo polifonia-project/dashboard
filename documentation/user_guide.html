@@ -39,34 +39,38 @@
                         <ul class="list-unstyled ps-0">
                             <li class="mb-1">
                                 <button class="btn btn-toggle align-items-center rounded collapsed">
+                                    <a class="link-dark rounded" href="#auth">Authenticate</a>
+                                </button>
+                            </li>
+                            <li class="mb-1">
+                                <button class="btn btn-toggle align-items-center rounded collapsed">
                                     <a class="link-dark rounded" href="#welcome">Welcome Page</a>
                                 </button>
                             </li>
                             <li class="mb-1">
-                                <button class="btn btn-toggle align-items-center rounded collapsed"
-                                    data-bs-toggle="collapse" data-bs-target="#setup-collapse" aria-expanded="false">
-                                    Setup
+                                <button class="btn btn-toggle align-items-center rounded collapsed">
+                                    <a class="link-dark rounded" href="#create_story">Create a new story</a>
                                 </button>
-                                <div class="collapse show" id="setup-collapse">
+                                <!-- <div class="collapse show" id="setup-collapse">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                         <li><a href="#template" class="link-dark rounded">Templates</a></li>
                                         <li><a href="#section" class="link-dark rounded">Section</a></li>
                                         <li><a href="#title" class="link-dark rounded">Title</a></li>
                                         <li><a href="#endpoint" class="link-dark rounded">SPARQL endpoint</a></li>
                                     </ul>
-                                </div>
+                                </div> -->
                             </li>
                             <li class="mb-1">
                                 <button class="btn btn-toggle align-items-center rounded collapsed"
                                     data-bs-toggle="collapse" data-bs-target="#statistics-collapse"
                                     aria-expanded="false">
-                                    Statistics Template
+                                    <a class="link-dark rounded" href="#templates">Templates</a>
                                 </button>
                                 <div class="collapse show" id="statistics-collapse">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                        <li><a href="#count" class="link-dark rounded">Counts</a></li>
-                                        <li><a href="#chart" class="link-dark rounded">Charts</a></li>
-                                        <li><a href="#query" class="link-dark rounded">SPARQL query</a></li>
+                                        <li><a href="#statistics_template" class="link-dark rounded">The statistics template</a></li>
+                                        <!-- <li><a href="#chart" class="link-dark rounded">Charts</a></li>
+                                        <li><a href="#query" class="link-dark rounded">SPARQL query</a></li> -->
                                     </ul>
                                 </div>
                             </li>
@@ -86,160 +90,169 @@
                                 href="getting_started.html">the instructions</a>. If you're ready instead, visit <a
                                 class="text-green-500" href="http://127.0.0.1:5000/"
                                 target="_blank">http://127.0.0.1:5000/</a>.</p>
+                        <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Authenticate
+                        </h2>
+                        <p>To use MELODY both locally and in a production environment,
+                          your instance must be paired with a GitHub repository and an OAuth Application
+                          (see <a class="text-green-500"
+                                  href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app">how to create an OAuth app</a>
+                                  connected to your instance of MELODY and
+                                  <a class="text-green-500"
+                                  href="https://docs.github.com/en/organizations/restricting-access-to-your-organizations-data/approving-oauth-apps-for-your-organization">how to approve the app on your repository</a>).
+                          </p>
+                        <p>After creating the OAuth app, modify the file <b>conf.py</b> in the root directory to configure the login.</p>
+                        <code>
+                          <pre>clientID='OAUth client id'
+clientSecret='OAUth client secret id'
+owner='the owner of the repository'
+repo_name='the repository name'
+token='the bearer token of the admin of the repository'</pre>
+                        </code>
+                        <p>Collaborators of the repository can then sign in MELODY with their GitHub account.</p>
                         <h2 id="welcome" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Welcome
                             Page
                         </h2>
-                        <p class="mb-3">The welcome page is very simple and gives you access to the most important
-                            functionalities. On the left, the sidebar contains the data stories, if any, grouped by
-                            area. From here you can access the code repository and, most importantly, the setup page
-                            where you can create and publish your datastories.</p>
-                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Setup
+                        <p class="mb-3">The welcome page gives you access to the most important
+                            functionalities.</p>
+                        <img src="img/home.png" alt="">
+                        <p>The left sidebar includes some exemplar data stories, grouped by
+                        <i>section</i>. From the top right menu you can access the documentation (this document), create a new data story, and sign in with your GitHub credentials.
+                        </p>
+                        <h2 id="create_story" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Create a new story
                         </h2>
-                        <p class="mb-3 ">The setup page consists of two steps:</p>
-                        <ol class="list-group-numbered pl-3">
+                        <p class="mb-3 ">To create a new story, click on <i>Create a story</i>, in the top right menu. An initial setup page will require you to input some information to prepare the canvas of your story. </p>
+                        <!-- <h2 id="template" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Templates
+                        </h2> -->
+                        <img src="img/setup1.png" alt="">
+                        <p class="mb-3 ">Data stories are built on <b>templates</b>,
+                          a set of layout instructions for paginating contents and setup their interactivity. The idea is to provide a design
+                            that can be customised and adapted to different situations while maintaining a consistent style.
+                              We plan to offer three different templates:</p>
+                          <ol class="list-group-numbered pl-3">
+                              <li><b>Statistics</b>: allows a user to display on a canvas a sequence of textual contents, charts,
+                                  and data summaries.
+                              </li>
+                              <li><b>Map</b>: allows to create a geographical map. Data points can be filtered with user-defined filters, and explored via their metadata, statistics and other charts.</li>
+                              <li><b>Timeline</b>: allows to manipulate time series into adaptive charts, by adding or removing filters that intervene on the chart visualization.</li>
+                              <!--<li><b>Networks</b>:</li>-->
+                          </ol>
+                          <p>You can preview some features of templates and select your favourite from the dropdown.</p>
+                        <p class="mb-3 " style="color: red;">Currently only the <b>Statistics</b> template is available.</p>
+                        <!-- <ol class="list-group-numbered pl-3">
                             <li>In the first step, you select the type of template, section and title of the datastory
                                 and specify the SPARQL endpoint.</li>
                             <li>The second step is a WYSIWYG form in the style of the chosen template, which you fill
                                 with the desired information.</li>
-                        </ol>
-                        <p class="mb-3">The individual elements are explained in the next paragraphs.</p>
-                        <h2 id="template" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Templates
-                        </h2>
-                        <p class="mb-3">The idea of the template is to provide an already well thought-out design
-                            product that can be adapted to different needs while maintaining a consistent style.
-                            For this reason, we offer four different templates:</p>
-                        <ol class="list-group-numbered pl-3">
-                            <li><b>Statistics</b>: With this template you can create data stories that contain both text
-                                and statistical representations of data, such as counts and charts of various kinds.
-                            </li>
-                            <li><b>Maps</b>: With this template you can create a narrative that revolves around data on
-                                a map and is enriched with text and statistical information.</li>
-                            <li><b>Networks</b>:</li>
-                            <li><b>Timelines</b>:</li>
-                        </ol>
-                        <p class="mb-3">The individual elements are explained in the next paragraphs.</p>
-                        <h2 id="section" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Section
-                        </h2>
-                        <p class="mb-3">Sections can be thought of as thematic macro areas. If the data you want to work
-                            with can be divided in a meaningful way, this is the place to do it. You can enter the name
-                            of the
-                            section you want to start with or select one of the existing ones (this happens after
-                            submitting the first data story).</p>
-                        <h2 id="title" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Title
-                        </h2>
-                        <p class="mb-3">The title of the data story doesn't need much explanation. It's the first
+                        </ol> -->
+                        <!-- <h2 id="section" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Section
+                        </h2> -->
+                        <p class="mb-3"><b>Sections</b> are thematic groups including one or more stories. Section names appear on the left sidebar of MELODY.
+                          You can either create a new section by entering a new section title, or you can select one of the existing ones from the dropdown.</p>
+                          <img src="img/setup2.png" alt="">
+                        <!-- <h2 id="title" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Title
+                        </h2> -->
+                        <p class="mb-3">The <b>title</b> of the data story doesn't need much explanation. It's the first
                             prominent communication tool in the narrative of the data story you're going to create.</p>
-                        <h2 id="endpoint" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL
+                        <!-- <h2 id="endpoint" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL
                             Endpoint
+                        </h2> -->
+                        <p class="mb-3">Lastly, you must include the URL of an online <b>SPARQL endpoint</b> to retrieve
+                            data and populate the charts. Check carefully that it's working.</p>
+                        <img src="img/setup3.png" alt="">
+                        <p class="mb-3">Once you submit your setup information, a link to your datastory will appear in the left sidebar under the name of the section you chose. You'll be redirected to a user-friendly interface based on the template you've chosen.
+                          The new interface will alow you to write and run SPARQL queries and to populate the elements composing the canvas of your final data story.
+                          The interface is WYSIWYG (What You See Is What You Get), meaning you will be able to immediately see results of your queries as charts, modify the order of contents (when applicable) and preview the final data story to be published.</p>
+
+                        <h2 id="templates" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                            Templates
                         </h2>
-                        <p class="mb-3">In order to retrieve data, the SPARQL endpoint from which we want to retrieve
-                            data must be communicated to the software. Check carefully that it's working.</p>
-                        <p class="mb-3">When you've filled in all the previous fields, you can click on the "Submit"
-                            button. You'll be taken to a WYSIWYG form designed based on the template you've chosen. With
-                            this type of form, you can immediately see how the date story will look once published.</p>
-                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
-                            Statistics Template
+                        <h3 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="statistics_template">The Statistics template</h3>
+                        <p class="mb-3">The Statistics template is designed for a <i>classic</i> data story,
+                            where you can combine textual information with statistical information such as counts and
+                            charts to create a sequential narrative.</p>
+                          <img src="img/story1.png" alt="">
+                        <p>You can change the default <b>colors</b> of your story.
+                          The new colors will be used in every chart and will create a duotone background effect
+                          on the secondary menu.</p>
+                        <p>Similarly, the <b>title</b>, the <b>subtitle</b>, the <b>introduction</b>, and the <b>curators</b> of the story (in the secondary menu) can be modified. The position of these elements in the canvas cannot be modified.</p>
+                        <p>The optional elements of the page are: <b>textboxes</b>, <b>countings</b>, and <b>charts</b>. To add a new element use the respective buttons.
+                          Each box can be moved up and down or removed.</p>
+                          <img src="img/story2.png" alt="">
+                        <h2 id="count" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Counts
                         </h2>
-                        <p class="mb-3">The Statistics template is designed for a 'classic' type of data story,
-                            where
-                            you can combine textual information with statistical information such as counts and
-                            charts
-                            to create a narrative.<br>
-                            In this particular case, the first information that can be filled in or changed are the
-                            colours, the title, the subtitle, the curator and an introductory description of the
-                            data
-                            story.<br>
-                            With three different buttons you can add boxes with tests, sums and charts. Each box can
-                            be
-                            moved up and down or removed.</p>
-                        <h2 id="count" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Counts
-                        </h2>
-                        <p class="mb-3">Counts are numbers that represent a sum of a certain type of data. They're
-                            used
-                            to give an overview, e.g. of the type of data that fills a record. This type of
-                            visualisation requires:</p>
+                        <p class="mb-3">Counts are boxes including a counting that is the result of a SPARQL query and a label,
+                          that can be manually associated. Countings can be used to give an overview of the dataset. A count requires you to fill in two text areas:</p>
                         <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li>A SPARQL query, which should be designed to return a number with the variable name
-                                "count".
+                            <li>A SPARQL query that returns a number. The returned variable name MUST be named "count".
                             </li>
-                            <li>A short label to describe the number displayed.</li>
+                            <li>A short label to be associated to the number in the box.</li>
                         </ul>
-                        <h2 id="chart" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Charts
+                        <p>For instance, a counting can report the number of instances of a certain type. The SPARQL query may look like follows:</p>
+                        <code>SELECT (COUNT(?s) AS ?count) WHERE {?s ?p &lt;https://w3id.org/musow/vocab/repository&gt;.}</code>
+                        <p>Once the query is included in the text area, it automatically runs against the endpoint selected in the preliminary setup, and the resulting box appears on top.</p>
+                        <img src="img/count.png" alt="">
+                        <h2 id="chart" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Charts
                         </h2>
-                        <p class="mb-3">Charts are the most important part of the data visualisation in this
-                            template.
-                            Three different types are provided:</p>
-                        <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li>Bar chart
-                            </li>
-                            <li>Line chart</li>
-                            <li>Doughnut chart</li>
-                        </ul>
-                        <p class="mb-3">For each chart, the following information must be provided:</p>
+                        <p class="mb-3">Currently, in the statistics template
+                          you can choose between three types of charts: <b>Bar chart</b>, <b>Line chart</b>, and <b>Doughnut chart</b>.
+                        For each chart, the following information must be provided:</p>
                         <ol class="list-group-numbered mb-3 pl-3">
-                            <li>Select the type (required).
+                            <li>the type of chart (required), to be selected from a dropdown
                             </li>
-                            <li>Insert SPARQL query (required).</li>
-                            <li>Insert chart Title (required).</li>
-                            <li>Choose one or more operations (optional).</li>
+                            <li>the SPARQL query (required), to be added in a text area</li>
+                            <li>the chart Title (required)</li>
+                            <li>one or more operations (optional), to aggregate data returned by the query.</li>
                         </ol>
-                        <h2 id="query" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL
-                            Query
-                        </h2>
-                        <p class="mb-3">Overall, a query can be of two types:</p>
+
+                        <p class="mb-3">Overall, a SPARQL query to build a chart can be of two types:</p>
                         <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li><b>Simple</b>: means that the query retrieves non-aggregated data that's
-                                post-processed
-                                using operations.
+                            <li><b>Aggregating</b>: the query retrieves aggregated data that are
+                                automatically post-processed to be displayed in a chart.
+                                The query returns two variables, respectively called <b>?x</b> and <b>?y</b> which are respectively a categorical/numerical value (x), and a numerical value (y).
                             </li>
-                            <li><b>Complex</b>: means that the query retrieves information directly suitable for
-                                charting.</li>
+                            <li><b>Non-Aggregating</b>: the query retrieves non-aggregated data, which are not immediately suitable for
+                                charting, hence data need some post-processing operations, provided by the interface.
+                                The query returns one variable called <b>?label</b>, whose values are aggregated with the <b>count</b> operator available under the chart.</li>
                         </ul>
-                        <p class="mb-3">However, the structure of the query also depends on the type of chart
-                            chosen, as
-                            different types of data are needed. In addition, depending on the optional operations
-                            chosen, there are also requirements for the variable names.</p>
-                        <p class="mb-3">In case of a <b>simple</b> query, bar chart, line chart and doughnut chart
-                            all
-                            require
-                            the <b>count operation</b>:<br>
-                            a simple query provides information in the form of a list with the labels of the
-                            elements.
-                            In this case, the operation "count" must be applied. The required variable name is
-                            "label".<br>
-                            Example:
-                            <code>SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . }</code>
+                        <p class="mb-3">The returned variables and values of the query depend on the type of chart
+                            chosen. In addition, depending on the optional operations chosen,
+                            there are also requirements for the variable names.</p>
+                        <p>For instance, the following aggregating query:</p>
+                        <code><pre>SELECT ?x (COUNT(?content) AS ?y)
+WHERE {
+    ?content &lt;https://schema.org/additionalType&gt; ?type.
+    ?type rdfs:label ?x .
+ } GROUP BY ?x</pre> </code>
+                        <p>returns two variables (x and y) that are ready to fit in the requirements of the chart.</p>
+                        <img src="img/barchart1.png" alt="">
+
+                        <p class="mb-3">In case of a <b>non-aggregating</b> query, the query must return one variable called <b>?label</b>, and
+                          the operation <b>count</b> must be selected in order to plot results. For instance:
                         </p>
-                        <p class="mb-3">In case of a <b>complex</b> query, every chart requires its own
-                            characteristics:
-                        </p>
-                        <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li>For bar chart and doughnut chart, a complex query provides information about the
-                                number
-                                of repetitions ( number, variable "y") of certain elements (labels or numbers,
-                                variable
-                                "x").<br>
-                                Example:
-                                <code>SELECT ?label (COUNT(?entry) AS ?count) WHERE {?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . } GROUP BY ?label</code>
-                            </li>
-                            <li>For line chart, complex query returns information about the number of repetitions (
-                                number, variable "y") of certain entities (labels or numbers, variable "x").<br>
-                                Example:
-                                <code>SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x</code>
-                            </li>
-                        </ul>
+                            <code><pre>
+SELECT ?label
+WHERE {
+  ?content &lt;https://schema.org/additionalType&gt; ?type .
+  ?type rdfs:label ?label .
+}
+                            </pre> </code>
+                        <p>returns the same values as the aggregating query above, provided the checbox <b>Count</b> is selected.</p>
+                        <img src="img/donut.png" alt="">
+
                         <h2 id="publish" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
                             Publish and Export
                         </h2>
-                        <p class="mb-3">Once all the information has been added, you can submit the form. This will
-                            create the final product, an HTML page containing the data history thus created, which
-                            can
-                            be accessed from the sidebar on the left. Each chart can be printed as a .png image or
-                            exported as embeddable code.<br>
-                            It's possible to change the content of a data story at any time by clicking on the
-                            "modify"
-                            button in the sidebar.
+                        <p class="mb-3">Once the form is submitted the form, you are redirected to the data story, also
+                            available from the sidebar on the left, where to find the link to modify the story in the future.
                         </p>
+                        <p>The final data story presents elements of the canvas
+                          in the sequence selected by the designer and presents a few metadata in the secondary menu.
+                          The story can be exported as a PDF document and as a static HTML document, ready to be published in other platforms.</p>
+                        <img src="img/final1.png" alt="">
+                        <p>
+                            Similarly, each chart can be saved as a .png image, or
+                            exported as an embeddable HTML code snippet.</p>
+                        <img src="img/final2.png" alt="">
                     </div>
                 </div>
             </div>
