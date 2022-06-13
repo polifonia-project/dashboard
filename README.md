@@ -2,6 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/431529042.svg)](https://zenodo.org/badge/latestdoi/431529042)
 
+
 ---
 component-id: melody
 name: melody
@@ -25,6 +26,7 @@ credits:
  - Marilena Daquino, University of Bologna
 
 --- 
+
 
 See the full documentation at https://polifonia-project.github.io/dashboard/.
 
