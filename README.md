@@ -1,5 +1,33 @@
 # Polifonia Dashboard
 
+[![DOI](https://zenodo.org/badge/431529042.svg)](https://zenodo.org/badge/latestdoi/431529042)
+
+---
+component-id: melody
+name: melody
+description: MELODY is a dashboarding system for designing and publishing data stories based on Linked Open Data.
+type: software
+release-date: 2022-06-13
+release-number: 0.1.1
+work-package: WP1
+pilot: 
+keywords:
+  - storytelling
+  - linked open data
+  - dashboard
+licence: ISC
+release link: https://github.com/polifonia-project/dashboard/releases/latest
+links: 
+  - documentation https://polifonia-project.github.io/dashboard/
+running-instance:
+credits:
+ - Giulia Renda, University of Bologna
+ - Marilena Daquino, University of Bologna
+
+--- 
+
+See the full documentation at https://polifonia-project.github.io/dashboard/.
+
 ## Quickstart
 
 > **Step #1 - Get the source code**
