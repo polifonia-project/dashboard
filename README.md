@@ -22,8 +22,8 @@ links:
   - documentation https://polifonia-project.github.io/dashboard/
 running-instance:
 credits:
- - Giulia Renda, University of Bologna
- - Marilena Daquino, University of Bologna
+  - Giulia Renda, University of Bologna
+  - Marilena Daquino, University of Bologna
 
 --- 
 
