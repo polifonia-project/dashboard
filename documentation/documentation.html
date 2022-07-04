@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-3">
                     <!-- sidebar -->
-                    <div class="flex-shrink-0 p-3 sticky-top" style="width: 280px;">
+                    <div class="flex-shrink-0 p-3 sticky-top">
                         <ul class="list-unstyled ps-0">
                             <li class="mb-1">
                                 <button class="btn btn-toggle align-items-center rounded collapsed"
@@ -67,23 +67,13 @@
                     <div class="flex flex-col w-full">
                         <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Documentation</h1>
                         <p class="mb-3">MELODY, a web-based, extensible, reusable, and user-friendly software for
-                            retrieving, presenting, and publishing Linked Data in the form of Data Stories. This is made
-                            possible by pre-built templates and functionalities described in the following sections. The
-                            core components of the project are:</p>
-                        <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li>A Python application developed with the Flask framework.
-                            </li>
-                            <li>A JSON configuration file that stores setup information.</li>
-                            <li>A set of HTML pages that form the web interface.</li>
-                            <li>A set of HTML layout templates.</li>
-                            <li>A set of Ajax HTTP requests to query SPARQL endpoints and create charts.</li>
-                        </ul>
+                            retrieving, presenting, and publishing Linked Data in the form of Data Stories.</p>
                         <h2 id="app" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">The Flask
                             Application
                         </h2>
-                        <p class="mb-3">MELODY is a web-based Python application developed with the <a
+                        <p class="mb-3">MELODY is developed with the <a
                                 href="https://flask.palletsprojects.com/en/2.1.x/" target="_blank"
-                                class="text-green-500">Flask framework</a>. It serves two main functions:
+                                class="text-green-500">Flask framework</a> and serves two main functions:
                         </p>
                         <ol class="list-group-numbered pl-3 mb-3">
                             <li>manages incoming and outgoing data from the configuration file using methods;</li>
@@ -176,21 +166,6 @@
                             <li>“dynamic_elements” is a list of dictionaries. Each dictionary is a dynamic segment that
                                 composes the final datastory, namely text, counts and charts. This is information that
                                 the user can add during the setup phase in the WYSIWYG form.</li>
-                        </ul>
-                        <h2 id="ajax" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Ajax HTTP
-                            Requests
-                        </h2>
-                        <p class="mb-3">Query Ajax HTTP requests are used to retrieve data from SPARQL endpoints: more
-                            specifically,
-                            in certain situations, the SPARQL queries in the config.json file are sent to the respective
-                            SPARQL endpoint to retrieve data that needs to be presented in the data stories. They are
-                            used for:</p>
-                        <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li>Retrieving and displaying linked data from SPARQL endpoints as a preview when filling
-                                out the WYSIWYG form. In this case, the temporarily cached SPARQL queries are used as
-                                part of the input content.</li>
-                            <li>Retrieving linked data from SPARQL endpoints and displaying it in the final data story.
-                                In this case, it uses the SPARQL queries stored in the config.json file.</li>
                         </ul>
                     </div>
                 </div>

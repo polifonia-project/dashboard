@@ -42,5 +42,10 @@ a:hover {
     color: #aec5b8;
 }
 
-p {padding: 0.5em 0px;}
-h2 {padding-top: 2em;}
+p {
+    padding: 0.5em 0px;
+}
+
+h2 {
+    padding-top: 1em;
+}
