@@ -29,7 +29,8 @@
 <pre><code class="python">from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
 import json
-import github_sync , conf
+import github_sync
+import conf
 
 app = Flask(__name__)
 app.config[&#34;SESSION_PERMANENT&#34;] = False
@@ -37,9 +38,16 @@ app.config[&#34;SESSION_TYPE&#34;] = &#34;filesystem&#34;
 app.config[&#39;SESSION_FILE_THRESHOLD&#39;] = 100
 Session(app)
 
+
 def read_json(file_name):
     &#39;&#39;&#39;
     open and read json file
+
+    Args:
+        file_name (json): the json file to read.
+
+        Returns:
+        data: return a dictionary containing the content of the json file.
     &#39;&#39;&#39;
     with open(file_name) as config_form:
         data = json.load(config_form)
@@ -131,19 +139,25 @@ def manage_datastory_data(general_data, file, section_name):
     return (datastory_name)
 
 # access the welcome page
+
+
 @app.route(&#34;/&#34;)
 @app.route(&#34;/index.html&#34;)
 def welcome():
     general_data = read_json(&#39;config.json&#39;)
+    print(type(general_data))
     return render_template(&#39;index.html&#39;, general_data=general_data)
 
 # github authentication
+
+
 @app.route(&#34;/gitauth&#34;)
 def gitauth():
     github_auth = &#34;https://github.com/login/oauth/authorize&#34;
     clientId = &#39;6a49af44eaa2f9c3dfd0&#39;
     scope = &#34;&amp;read:user&#34;
     return redirect(github_auth+&#34;?client_id=&#34;+clientId+scope)
+
 
 @app.route(&#34;/oauth-callback&#34;)
 def oauthcallback():
@@ -155,7 +169,7 @@ def oauthcallback():
         is_valid_user = github_sync.get_github_users(userlogin)
         if is_valid_user == True:
             session[&#34;name&#34;] = userlogin
-            print(&#34;good chap, logged in as &#34;,session[&#34;name&#34;])
+            print(&#34;good chap, logged in as &#34;, session[&#34;name&#34;])
             return redirect(url_for(&#39;setup&#39;))
     else:
         session[&#34;name&#34;] = None
@@ -163,12 +177,16 @@ def oauthcallback():
         return redirect(url_for(&#39;welcome&#39;))
 
 # signout
+
+
 @app.route(&#34;/signout&#34;)
 def signout():
     session[&#34;name&#34;] = None
     return redirect(url_for(&#39;welcome&#39;))
 
 # access any datastory page
+
+
 @app.route(&#34;/&lt;string:section_name&gt;/&lt;string:datastory_name&gt;&#34;)
 def datastory(section_name, datastory_name):
     &#39;&#39;&#39;
@@ -242,7 +260,7 @@ def setup():
                         clean_section, clean_title, &#39;config.json&#39;)
 
                     # the correct template opens based on the name
-                    return redirect(url_for(&#34;modify_datastory&#34;,section_name=clean_section,datastory_name=clean_title))
+                    return redirect(url_for(&#34;modify_datastory&#34;, section_name=clean_section, datastory_name=clean_title))
                 except Exception as e:
                     return str(e)+&#39;did not save to database&#39;
     else:
@@ -284,11 +302,14 @@ def modify_datastory(section_name, datastory_name):
                         return &#39;Something went wrong&#39;
 
                 elif request.form[&#39;action&#39;] == &#39;delete&#39;:
-                    print(section_name,datastory_name,request.form)
-                    datastory_title = request.form[&#39;title&#39;].lower().replace(&#34; &#34;, &#34;_&#34;)
-                    general_data[&#39;data_sources&#39;][section_name].pop(datastory_title,&#39;None&#39;)
+                    print(section_name, datastory_name, request.form)
+                    datastory_title = request.form[&#39;title&#39;].lower().replace(
+                        &#34; &#34;, &#34;_&#34;)
+                    general_data[&#39;data_sources&#39;][section_name].pop(
+                        datastory_title, &#39;None&#39;)
                     update_json(&#39;config.json&#39;, general_data)
                     return redirect(&#39;/&#39;)
+
 
 if __name__ == &#34;__main__&#34;:
     app.run(debug=True)</code></pre>
@@ -468,9 +489,11 @@ def modify_datastory(section_name, datastory_name):
                         return &#39;Something went wrong&#39;
 
                 elif request.form[&#39;action&#39;] == &#39;delete&#39;:
-                    print(section_name,datastory_name,request.form)
-                    datastory_title = request.form[&#39;title&#39;].lower().replace(&#34; &#34;, &#34;_&#34;)
-                    general_data[&#39;data_sources&#39;][section_name].pop(datastory_title,&#39;None&#39;)
+                    print(section_name, datastory_name, request.form)
+                    datastory_title = request.form[&#39;title&#39;].lower().replace(
+                        &#34; &#34;, &#34;_&#34;)
+                    general_data[&#39;data_sources&#39;][section_name].pop(
+                        datastory_title, &#39;None&#39;)
                     update_json(&#39;config.json&#39;, general_data)
                     return redirect(&#39;/&#39;)</code></pre>
 </details>
@@ -494,7 +517,7 @@ def oauthcallback():
         is_valid_user = github_sync.get_github_users(userlogin)
         if is_valid_user == True:
             session[&#34;name&#34;] = userlogin
-            print(&#34;good chap, logged in as &#34;,session[&#34;name&#34;])
+            print(&#34;good chap, logged in as &#34;, session[&#34;name&#34;])
             return redirect(url_for(&#39;setup&#39;))
     else:
         session[&#34;name&#34;] = None
@@ -506,7 +529,15 @@ def oauthcallback():
 <span>def <span class="ident">read_json</span></span>(<span>file_name)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>open and read json file</p></div>
+<div class="desc"><p>open and read json file</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong> :&ensp;<code>json</code></dt>
+<dd>the json file to read.</dd>
+<dt>Returns:</dt>
+<dt><strong><code>data</code></strong></dt>
+<dd>return a dictionary containing the content of the json file.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -514,6 +545,12 @@ def oauthcallback():
 <pre><code class="python">def read_json(file_name):
     &#39;&#39;&#39;
     open and read json file
+
+    Args:
+        file_name (json): the json file to read.
+
+        Returns:
+        data: return a dictionary containing the content of the json file.
     &#39;&#39;&#39;
     with open(file_name) as config_form:
         data = json.load(config_form)
@@ -610,7 +647,7 @@ def setup():
                         clean_section, clean_title, &#39;config.json&#39;)
 
                     # the correct template opens based on the name
-                    return redirect(url_for(&#34;modify_datastory&#34;,section_name=clean_section,datastory_name=clean_title))
+                    return redirect(url_for(&#34;modify_datastory&#34;, section_name=clean_section, datastory_name=clean_title))
                 except Exception as e:
                     return str(e)+&#39;did not save to database&#39;
     else:
@@ -662,6 +699,7 @@ def signout():
 @app.route(&#34;/index.html&#34;)
 def welcome():
     general_data = read_json(&#39;config.json&#39;)
+    print(type(general_data))
     return render_template(&#39;index.html&#39;, general_data=general_data)</code></pre>
 </details>
 </dd>

@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_session import Session
 import json
-import github_sync , conf
+import github_sync
+import conf
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
@@ -9,9 +10,16 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 100
 Session(app)
 
+
 def read_json(file_name):
     '''
     open and read json file
+
+    Args:
+        file_name (json): the json file to read.
+
+        Returns:
+        data: a dictionary containing the content of the json file.
     '''
     with open(file_name) as config_form:
         data = json.load(config_form)
@@ -103,19 +111,25 @@ def manage_datastory_data(general_data, file, section_name):
     return (datastory_name)
 
 # access the welcome page
+
+
 @app.route("/")
 @app.route("/index.html")
 def welcome():
     general_data = read_json('config.json')
+    print(type(general_data))
     return render_template('index.html', general_data=general_data)
 
 # github authentication
+
+
 @app.route("/gitauth")
 def gitauth():
     github_auth = "https://github.com/login/oauth/authorize"
     clientId = '6a49af44eaa2f9c3dfd0'
     scope = "&read:user"
     return redirect(github_auth+"?client_id="+clientId+scope)
+
 
 @app.route("/oauth-callback")
 def oauthcallback():
@@ -127,7 +141,7 @@ def oauthcallback():
         is_valid_user = github_sync.get_github_users(userlogin)
         if is_valid_user == True:
             session["name"] = userlogin
-            print("good chap, logged in as ",session["name"])
+            print("good chap, logged in as ", session["name"])
             return redirect(url_for('setup'))
     else:
         session["name"] = None
@@ -135,12 +149,16 @@ def oauthcallback():
         return redirect(url_for('welcome'))
 
 # signout
+
+
 @app.route("/signout")
 def signout():
     session["name"] = None
     return redirect(url_for('welcome'))
 
 # access any datastory page
+
+
 @app.route("/<string:section_name>/<string:datastory_name>")
 def datastory(section_name, datastory_name):
     '''
@@ -214,7 +232,7 @@ def setup():
                         clean_section, clean_title, 'config.json')
 
                     # the correct template opens based on the name
-                    return redirect(url_for("modify_datastory",section_name=clean_section,datastory_name=clean_title))
+                    return redirect(url_for("modify_datastory", section_name=clean_section, datastory_name=clean_title))
                 except Exception as e:
                     return str(e)+'did not save to database'
     else:
@@ -256,11 +274,14 @@ def modify_datastory(section_name, datastory_name):
                         return 'Something went wrong'
 
                 elif request.form['action'] == 'delete':
-                    print(section_name,datastory_name,request.form)
-                    datastory_title = request.form['title'].lower().replace(" ", "_")
-                    general_data['data_sources'][section_name].pop(datastory_title,'None')
+                    print(section_name, datastory_name, request.form)
+                    datastory_title = request.form['title'].lower().replace(
+                        " ", "_")
+                    general_data['data_sources'][section_name].pop(
+                        datastory_title, 'None')
                     update_json('config.json', general_data)
                     return redirect('/')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
