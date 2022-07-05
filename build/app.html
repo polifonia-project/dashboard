@@ -41,13 +41,13 @@ Session(app)
 
 def read_json(file_name):
     &#39;&#39;&#39;
-    open and read json file
+    Open and read json file.
 
     Args:
-        file_name (json): the json file to read.
+        file_name (str): a string that specifies the name of the json file to read.
 
-        Returns:
-        data: return a dictionary containing the content of the json file.
+    Returns:
+        data (dict): a dictionary containing the content of the json file.
     &#39;&#39;&#39;
     with open(file_name) as config_form:
         data = json.load(config_form)
@@ -56,7 +56,11 @@ def read_json(file_name):
 
 def update_json(file_name, json_read):
     &#39;&#39;&#39;
-    update and dump json file
+    Update and dump a new json file.
+
+    Args:
+        file_name (str): a string that specifies the name of the json file to update.
+        json_read (dict): the dictionary that contains data to update the json file.
     &#39;&#39;&#39;
     with open(file_name, &#39;w&#39;) as config_update:
         json.dump(json_read, config_update, indent=4)
@@ -64,7 +68,15 @@ def update_json(file_name, json_read):
 
 def access_data_sources(section_name, datastory_name, file_name):
     &#39;&#39;&#39;
-    this function access a specific datastory data in the config file based on its name
+    This function accesses a specific datastory data in the config file based on its own and section names.
+
+    Args:
+        section_name (str): a string that identify the name of the section.
+        datastory_name (str): a string that identify the data story name.
+        file_name (str): a string that specifies the name of the json file to read.
+
+    Returns:
+        data (dict): a dictionary containing the data concerning the requested data story.
     &#39;&#39;&#39;
     for source, details in read_json(file_name)[&#39;data_sources&#39;][section_name].items():
         if datastory_name == source:
@@ -73,7 +85,15 @@ def access_data_sources(section_name, datastory_name, file_name):
 
 def manage_datastory_data(general_data, file, section_name):
     &#39;&#39;&#39;
-    This function deals with datastory data after the submission of the form
+    This function deals with data story data after the submission of the WYSIWYG form.
+
+    Args:
+        general_data (dict): a dictionary containing data of the json fiile.
+        file (str): a string that specifies the name of the json file to read.
+        section_name (str): a string that identify the name of the section.
+
+    Returns:
+        datastory_name (str): a string that identifies the data story name.
     &#39;&#39;&#39;
     # get data and add to existing datastory instance in config
 
@@ -138,14 +158,13 @@ def manage_datastory_data(general_data, file, section_name):
     datastory_name = datastory_title.lower().replace(&#34; &#34;, &#34;_&#34;)
     return (datastory_name)
 
-# access the welcome page
+# access the home page
 
 
 @app.route(&#34;/&#34;)
 @app.route(&#34;/index.html&#34;)
-def welcome():
+def home():
     general_data = read_json(&#39;config.json&#39;)
-    print(type(general_data))
     return render_template(&#39;index.html&#39;, general_data=general_data)
 
 # github authentication
@@ -174,7 +193,7 @@ def oauthcallback():
     else:
         session[&#34;name&#34;] = None
         print(&#34;bad boy&#39;s request to github oauth&#34;)
-        return redirect(url_for(&#39;welcome&#39;))
+        return redirect(url_for(&#39;home&#39;))
 
 # signout
 
@@ -182,7 +201,7 @@ def oauthcallback():
 @app.route(&#34;/signout&#34;)
 def signout():
     session[&#34;name&#34;] = None
-    return redirect(url_for(&#39;welcome&#39;))
+    return redirect(url_for(&#39;home&#39;))
 
 # access any datastory page
 
@@ -326,14 +345,33 @@ if __name__ == &#34;__main__&#34;:
 <span>def <span class="ident">access_data_sources</span></span>(<span>section_name, datastory_name, file_name)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>this function access a specific datastory data in the config file based on its name</p></div>
+<div class="desc"><p>This function accesses a specific datastory data in the config file based on its own and section names.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>section_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that identify the name of the section.</dd>
+<dt><strong><code>datastory_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that identify the data story name.</dd>
+<dt><strong><code>file_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that specifies the name of the json file to read.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>data (dict): a dictionary containing the data concerning the requested data story.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def access_data_sources(section_name, datastory_name, file_name):
     &#39;&#39;&#39;
-    this function access a specific datastory data in the config file based on its name
+    This function accesses a specific datastory data in the config file based on its own and section names.
+
+    Args:
+        section_name (str): a string that identify the name of the section.
+        datastory_name (str): a string that identify the data story name.
+        file_name (str): a string that specifies the name of the json file to read.
+
+    Returns:
+        data (dict): a dictionary containing the data concerning the requested data story.
     &#39;&#39;&#39;
     for source, details in read_json(file_name)[&#39;data_sources&#39;][section_name].items():
         if datastory_name == source:
@@ -382,18 +420,53 @@ def gitauth():
     return redirect(github_auth+&#34;?client_id=&#34;+clientId+scope)</code></pre>
 </details>
 </dd>
+<dt id="app.home"><code class="name flex">
+<span>def <span class="ident">home</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#34;/&#34;)
+@app.route(&#34;/index.html&#34;)
+def home():
+    general_data = read_json(&#39;config.json&#39;)
+    return render_template(&#39;index.html&#39;, general_data=general_data)</code></pre>
+</details>
+</dd>
 <dt id="app.manage_datastory_data"><code class="name flex">
 <span>def <span class="ident">manage_datastory_data</span></span>(<span>general_data, file, section_name)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>This function deals with datastory data after the submission of the form</p></div>
+<div class="desc"><p>This function deals with data story data after the submission of the WYSIWYG form.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>general_data</code></strong> :&ensp;<code>dict</code></dt>
+<dd>a dictionary containing data of the json fiile.</dd>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that specifies the name of the json file to read.</dd>
+<dt><strong><code>section_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that identify the name of the section.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>datastory_name (str): a string that identifies the data story name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def manage_datastory_data(general_data, file, section_name):
     &#39;&#39;&#39;
-    This function deals with datastory data after the submission of the form
+    This function deals with data story data after the submission of the WYSIWYG form.
+
+    Args:
+        general_data (dict): a dictionary containing data of the json fiile.
+        file (str): a string that specifies the name of the json file to read.
+        section_name (str): a string that identify the name of the section.
+
+    Returns:
+        datastory_name (str): a string that identifies the data story name.
     &#39;&#39;&#39;
     # get data and add to existing datastory instance in config
 
@@ -522,35 +595,34 @@ def oauthcallback():
     else:
         session[&#34;name&#34;] = None
         print(&#34;bad boy&#39;s request to github oauth&#34;)
-        return redirect(url_for(&#39;welcome&#39;))</code></pre>
+        return redirect(url_for(&#39;home&#39;))</code></pre>
 </details>
 </dd>
 <dt id="app.read_json"><code class="name flex">
 <span>def <span class="ident">read_json</span></span>(<span>file_name)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>open and read json file</p>
+<div class="desc"><p>Open and read json file.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>file_name</code></strong> :&ensp;<code>json</code></dt>
-<dd>the json file to read.</dd>
-<dt>Returns:</dt>
-<dt><strong><code>data</code></strong></dt>
-<dd>return a dictionary containing the content of the json file.</dd>
-</dl></div>
+<dt><strong><code>file_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that specifies the name of the json file to read.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>data (dict): a dictionary containing the content of the json file.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def read_json(file_name):
     &#39;&#39;&#39;
-    open and read json file
+    Open and read json file.
 
     Args:
-        file_name (json): the json file to read.
+        file_name (str): a string that specifies the name of the json file to read.
 
-        Returns:
-        data: return a dictionary containing the content of the json file.
+    Returns:
+        data (dict): a dictionary containing the content of the json file.
     &#39;&#39;&#39;
     with open(file_name) as config_form:
         data = json.load(config_form)
@@ -666,41 +738,35 @@ def setup():
 <pre><code class="python">@app.route(&#34;/signout&#34;)
 def signout():
     session[&#34;name&#34;] = None
-    return redirect(url_for(&#39;welcome&#39;))</code></pre>
+    return redirect(url_for(&#39;home&#39;))</code></pre>
 </details>
 </dd>
 <dt id="app.update_json"><code class="name flex">
 <span>def <span class="ident">update_json</span></span>(<span>file_name, json_read)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>update and dump json file</p></div>
+<div class="desc"><p>Update and dump a new json file.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>file_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>a string that specifies the name of the json file to update.</dd>
+<dt><strong><code>json_read</code></strong> :&ensp;<code>dict</code></dt>
+<dd>the dictionary that contains data to update the json file.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def update_json(file_name, json_read):
     &#39;&#39;&#39;
-    update and dump json file
+    Update and dump a new json file.
+
+    Args:
+        file_name (str): a string that specifies the name of the json file to update.
+        json_read (dict): the dictionary that contains data to update the json file.
     &#39;&#39;&#39;
     with open(file_name, &#39;w&#39;) as config_update:
         json.dump(json_read, config_update, indent=4)</code></pre>
-</details>
-</dd>
-<dt id="app.welcome"><code class="name flex">
-<span>def <span class="ident">welcome</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@app.route(&#34;/&#34;)
-@app.route(&#34;/index.html&#34;)
-def welcome():
-    general_data = read_json(&#39;config.json&#39;)
-    print(type(general_data))
-    return render_template(&#39;index.html&#39;, general_data=general_data)</code></pre>
 </details>
 </dd>
 </dl>
@@ -719,6 +785,7 @@ def welcome():
 <li><code><a title="app.access_data_sources" href="#app.access_data_sources">access_data_sources</a></code></li>
 <li><code><a title="app.datastory" href="#app.datastory">datastory</a></code></li>
 <li><code><a title="app.gitauth" href="#app.gitauth">gitauth</a></code></li>
+<li><code><a title="app.home" href="#app.home">home</a></code></li>
 <li><code><a title="app.manage_datastory_data" href="#app.manage_datastory_data">manage_datastory_data</a></code></li>
 <li><code><a title="app.modify_datastory" href="#app.modify_datastory">modify_datastory</a></code></li>
 <li><code><a title="app.oauthcallback" href="#app.oauthcallback">oauthcallback</a></code></li>
@@ -727,7 +794,6 @@ def welcome():
 <li><code><a title="app.setup" href="#app.setup">setup</a></code></li>
 <li><code><a title="app.signout" href="#app.signout">signout</a></code></li>
 <li><code><a title="app.update_json" href="#app.update_json">update_json</a></code></li>
-<li><code><a title="app.welcome" href="#app.welcome">welcome</a></code></li>
 </ul>
 </li>
 </ul>

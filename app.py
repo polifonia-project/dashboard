@@ -13,13 +13,13 @@ Session(app)
 
 def read_json(file_name):
     '''
-    open and read json file
+    Open and read json file.
 
     Args:
-        file_name (json): the json file to read.
+        file_name (str): a string that specifies the name of the json file to read.
 
-        Returns:
-        data: a dictionary containing the content of the json file.
+    Returns:
+        data (dict): a dictionary containing the content of the json file.
     '''
     with open(file_name) as config_form:
         data = json.load(config_form)
@@ -28,7 +28,11 @@ def read_json(file_name):
 
 def update_json(file_name, json_read):
     '''
-    update and dump json file
+    Update and dump a new json file.
+
+    Args:
+        file_name (str): a string that specifies the name of the json file to update.
+        json_read (dict): the dictionary that contains data to update the json file.
     '''
     with open(file_name, 'w') as config_update:
         json.dump(json_read, config_update, indent=4)
@@ -36,7 +40,15 @@ def update_json(file_name, json_read):
 
 def access_data_sources(section_name, datastory_name, file_name):
     '''
-    this function access a specific datastory data in the config file based on its name
+    This function accesses a specific datastory data in the config file based on its own and section names.
+
+    Args:
+        section_name (str): a string that identify the name of the section.
+        datastory_name (str): a string that identify the data story name.
+        file_name (str): a string that specifies the name of the json file to read.
+
+    Returns:
+        data (dict): a dictionary containing the data concerning the requested data story.
     '''
     for source, details in read_json(file_name)['data_sources'][section_name].items():
         if datastory_name == source:
@@ -45,7 +57,15 @@ def access_data_sources(section_name, datastory_name, file_name):
 
 def manage_datastory_data(general_data, file, section_name):
     '''
-    This function deals with datastory data after the submission of the form
+    This function deals with data story data after the submission of the WYSIWYG form.
+
+    Args:
+        general_data (dict): a dictionary containing data of the json fiile.
+        file (str): a string that specifies the name of the json file to read.
+        section_name (str): a string that identify the name of the section.
+
+    Returns:
+        datastory_name (str): a string that identifies the data story name.
     '''
     # get data and add to existing datastory instance in config
 
@@ -110,14 +130,13 @@ def manage_datastory_data(general_data, file, section_name):
     datastory_name = datastory_title.lower().replace(" ", "_")
     return (datastory_name)
 
-# access the welcome page
+# access the home page
 
 
 @app.route("/")
 @app.route("/index.html")
-def welcome():
+def home():
     general_data = read_json('config.json')
-    print(type(general_data))
     return render_template('index.html', general_data=general_data)
 
 # github authentication
@@ -146,7 +165,7 @@ def oauthcallback():
     else:
         session["name"] = None
         print("bad boy's request to github oauth")
-        return redirect(url_for('welcome'))
+        return redirect(url_for('home'))
 
 # signout
 
@@ -154,7 +173,7 @@ def oauthcallback():
 @app.route("/signout")
 def signout():
     session["name"] = None
-    return redirect(url_for('welcome'))
+    return redirect(url_for('home'))
 
 # access any datastory page
 
