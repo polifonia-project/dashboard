@@ -187,8 +187,9 @@ def datastory(section_name, datastory_name):
     general_data = read_json('config.json')
     datastory_data = access_data_sources(
         section_name, datastory_name, 'config.json')
+    template_mode = datastory_data['template_mode']
     if datastory_data:
-        return render_template('datastory.html', datastory_data=datastory_data, general_data=general_data)
+        return render_template('datastory_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
     else:
         return render_template('page-404.html')
 
@@ -276,11 +277,12 @@ def send_data(section_name):
 def modify_datastory(section_name, datastory_name):
     datastory_data = access_data_sources(
         section_name, datastory_name, 'config.json')
+    template_mode = datastory_data['template_mode']
     general_data = read_json('config.json')
     if request.method == 'GET':
         if session.get('name') is not None:
             if session['name']:
-                return render_template('modify_datastory.html', datastory_data=datastory_data, general_data=general_data)
+                return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
     elif request.method == 'POST':
         if session.get('name') is not None:
             if session['name']:
