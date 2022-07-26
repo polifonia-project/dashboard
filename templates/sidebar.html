@@ -16,15 +16,17 @@
 							{% if key == section|replace(' ', '_')|lower %}
 							<li class="menuitem row">
 								{% for k,v in value.items() %}
-										<a class="col-8" href=" {{ url_for('datastory', section_name=section|replace(' ', '_')|lower, datastory_name=k ) }}">
-											<!--/{{section|replace(' ', '_')|lower}}/{{k}}-->
-											{{v.title}}
-										</a>
-										{% if session['name'] %}
-										<a class="col-4 modifystoryicon" href="{{ url_for('modify_datastory', section_name=section|replace(' ', '_')|lower, datastory_name=k ) }}"
-											><img src="{{ url_for('static', filename='img/edit.png') }}" alt=""></a>
-											<!--/modify/{{section|replace(' ', '_')|lower}}/{{k}}-->
-										{% endif %}
+								<a class="col-8"
+									href=" {{ url_for('datastory', section_name=section|replace(' ', '_')|lower, datastory_name=k ) }}">
+									<!--/{{section|replace(' ', '_')|lower}}/{{k}}-->
+									{{v.title}}
+								</a>
+								{% if session['user_type'] == 'polifonia' %}
+								<a class="col-4 modifystoryicon"
+									href="{{ url_for('modify_datastory', section_name=section|replace(' ', '_')|lower, datastory_name=k ) }}"><img
+										src="{{ url_for('static', filename='img/edit.png') }}" alt=""></a>
+								<!--/modify/{{section|replace(' ', '_')|lower}}/{{k}}-->
+								{% endif %}
 								{% endfor %}
 							</li>
 							{% endif %}

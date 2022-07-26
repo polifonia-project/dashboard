@@ -97,7 +97,7 @@
 										#}
 									</div>
 								</div>
-
+								{% if session['user_type'] == 'polifonia' %}
 								<!-- the pilot as section -->
 								{% if general_data %}
 								<!-- if no resaure is present -->
@@ -124,6 +124,7 @@
 								</div>
 								{% endif %}
 								{% endif %}
+								{% endif %}
 
 
 								<div class="form-group form-floating-label">
@@ -148,6 +149,17 @@
 						<button type="reset" class="btn btn-danger">Reset content</button>
 					</div>
 				</form>
+				{% if session['user_type'] == 'random' %}
+				<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+					data-notify-position="bottom-right"
+					style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+					data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+						style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span
+						data-notify="icon" class="flaticon-alarm-1"></span> <span data-notify="title">Remember</span>
+					<span data-notify="message">If you don't login, you can only download material, not
+						publish.</span><a href="#" target="_blank" data-notify="url"></a>
+				</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>

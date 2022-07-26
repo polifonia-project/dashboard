@@ -30,19 +30,19 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{{ url_for('setup') }}" role="button" aria-expanded="false"
+					<a class="nav-link" href="{{ url_for('asklogin') }}" role="button" aria-expanded="false"
 						aria-controls="search-nav">
 						Create a story
 					</a>
 				</li>
-				{% if session['name'] %}
+				{% if session['name'] and session['name'] != 'anonym' %}
 				<li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}" role="button"
 						aria-expanded="false" aria-controls="search-nav">
 						Sign out
 					</a></li>
 				{% endif %}
 				<li class="nav-item">
-					{% if session['name'] %}
+					{% if session['name'] and session['name'] != 'anonym' %}
 					<div class="avatar-sm">
 						<img class="avatar-img rounded-circle" src="https://github.com/{{session['name']}}.png"
 							alt="{{session['name']}}">

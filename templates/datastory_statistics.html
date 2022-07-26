@@ -24,8 +24,16 @@
 			<p>Export</p>
 			<button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
 			<button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
-					download="story.html">HTML</a></button>
+					download="{{datastory_data.title}}.html">HTML</a></button>
 		</section>
+
+		<!-- modify button -->
+		{% if session['user_type'] != 'polifonia' %}
+		{% set name = (datastory_data.name).split('_') %}
+		<a class="col-4 modifystoryicon"
+			href="{{ url_for('modify_datastory', section_name=name[1], datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}"><img
+				src="{{ url_for('static', filename='img/edit.png') }}" alt=""></a>
+		{% endif %}
 	</section>
 	<div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
 		<div class="page-inner py-5">
@@ -101,6 +109,13 @@
 		</div>
 	</div>
 </div>
+{% if datastory_data.name %}
+<script>
+	window.onbeforeunload = function (event) {
+		event.returnValue = "";
+	};
+</script>
+{% endif %}
 
 {% endblock content %}
 

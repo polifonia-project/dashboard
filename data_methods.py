@@ -1,5 +1,6 @@
 import json
 from flask import request
+from datetime import datetime
 
 
 def read_json(file_name):
@@ -27,6 +28,18 @@ def update_json(file_name, json_read):
     '''
     with open(file_name, 'w') as config_update:
         json.dump(json_read, config_update, indent=4)
+
+
+def new_timestamp():
+    '''
+    Create a timetstamp.
+
+    Returns:
+        tr (float): the timetstamp.
+    '''
+    dt = datetime.now()
+    ts = datetime.timestamp(dt)
+    return ts
 
 
 def access_data_sources(section_name, datastory_name, file_name):

@@ -25,209 +25,231 @@
             </h5>
         </section>
     </section>
-    <form action="send_data" method="post" class="card col-md-9 col-sm-12"">
+    <form action="modify_datastory" method="post" class="card col-md-9 col-sm-12">
         <div class=" panel-header bg-primary-gradient">
-        <div class="page-inner">
-            <!-- color picker -->
-            <div id="colors">
-                <p>Pick the colors of your story</p>
-                {% for color in datastory_data.color_code|reverse %}
-                <input type="color" id="{{loop.index}}_color" name="{{loop.index}}_color" value="{{color}}">
-                {% endfor %}
-            </div>
-
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                <div>
-                    <h1 class="text-white pb-2 fw-bold">
-                        <textarea oninput='auto_grow(this)' name="title" type="text" id=""
-                            cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
-                            required>{{ datastory_data.title }}</textarea>
-                    </h1>
-                    <h5 class="text-white mb-2 fw-bold">
-                        {% if datastory_data.subtitle %}
-                        <textarea oninput='auto_grow(this)' name="subtitle" type="text" id=""
-                            cols="{{ datastory_data.subtitle|length }}" rows="1"
-                            placeholder="Subtitle">{{ datastory_data.subtitle }}</textarea>
-                        {% else %}
-                        <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1"
-                            placeholder="Subtitle"></textarea>
-                        {%endif%}
-                    </h5>
-
-                </div>
-                <div class="ml-md-auto py-2 py-md-0">
-
-                </div>
-            </div>
-        </div>
-</div>
-<div class="page-inner mt--5">
-    <div class="row row-card-no-pd">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-head-row card-tools-still-right">
-                        <!-- <h4 class="card-title">About the Project</h4> -->
-                    </div>
-                    <p class="text-white card-category">
-                        {% if datastory_data.description %}
-                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
-                            placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
-                        {% else %}
-                        <textarea oninput='auto_grow(this)' name="description" type="text" id="" rows="1"
-                            placeholder="A brief introdution to the project."></textarea>
-                        {%endif%}
-                    </p>
-                </div>
-                <div class="card-body" id="sortable">
-
-                    {% for dict in datastory_data.dynamic_elements %}
-                    <!-- TEXT -->
-                    {% if dict.type == 'text' %}
-                    <!-- buttons -->
-                    <div id="{{dict.position}}__block_field">
-                        <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                            <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                        </a>
-                        <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                            <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                        </a>
-                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                        </a>
-                        <br>
-                        <!-- preview -->
-                        <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
-                            id="{{dict.position}}__{{dict.type}}" placeholder="{{dict.text}}">{{dict.text}}</textarea>
-                    </div>
-
-                    <!-- COUNT -->
-                    {% elif dict.type == 'count' %}
-                    <div id="{{dict.position}}__block_field" id="count">
-                        <!-- buttons -->
-                        <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                            <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                        </a>
-                        <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                            <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                        </a>
-                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                        </a>
-                        <br>
-                        <!-- preview -->
-                        <div class='card-body justify-content-center option-2b count_result col-md-4'
-                            id="{{dict.position}}__count">
-                            <p class="counter_num" id='{{dict.position}}__num'></p>
-                            <p class="counter_label" id='{{dict.position}}__lab'></p>
-                        </div>
-
-                        <!-- input -->
-                        <textarea oninput='auto_grow(this)' name='{{dict.position}}__count_query' type='text'
-                            id='{{dict.position}}__count_query' value="{{dict.count_query}}"
-                            placeholder="Write the SPARQL query for the count." rows="1"
-                            required>{{dict.count_query}}</textarea>
-                        <input name='{{dict.position}}__count_label' type='text' id='{{dict.position}}__count_label'
-                            value="{{dict.count_label}}" required>
-                    </div>
-
-                    <!-- CHART -->
-                    {% elif dict.type == 'chart' %}
-                    <div class="col-12" id="{{dict.position}}__block_field">
-                        <!-- buttons -->
-                        <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                            <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                        </a>
-                        <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                            <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                        </a>
-                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                        </a>
-                        <br>
-                        <!-- preview -->
-                        <div class="chart-container">
-                            <canvas id="{{dict.position}}__chartid"></canvas>
-                        </div>
-
-                        <!-- input -->
-                        <div class="form-group" id="{{dict.position}}_undefined">
-                            <label>Chart Type</label>
-                            <select class="form-control" name="{{dict.position}}__chart_type"
-                                id="{{dict.position}}__chart_type">
-                                {% for chart in general_data.chart_types %}
-                                {% if chart == dict.chart_type %}
-                                <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}" selected>
-                                    {{chart}}
-                                </option>
-                                {% else %}
-                                <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}">
-                                    {{chart}}</option>
-                                {% endif %}
-                                {% endfor %}
-                            </select>
-                            <label>SPARQL query</label>
-                            <textarea oninput='auto_grow(this)' name='{{dict.position}}__chart_query' type='text'
-                                id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
-                                required>{{dict.chart_query}}</textarea>
-                            <label>Chart Title</label>
-                            <input name='{{dict.position}}__chart_title' type='text' id='{{dict.position}}__chart_title'
-                                value="{{dict.chart_title}}" required>
-                            <label>Operations</label><br>
-
-
-                            <!-- no operation present -->
-                            {% if dict.operations|length == 0 %}
-                            {% for op in general_data.operations %}
-                            <input type='checkbox' id='{{op|lower}}' name='{{dict.position}}__action1'
-                                value='{{op|lower}}'>
-                            <label for='{{op|lower}}'>{{op}}</label><br>
-                            {% endfor %}
-
-                            {% else %}
-
-                            {% for op in general_data.operations %}
-                            {% for dict_op in dict.operations %}
-                            {% if dict_op.action|capitalize == op %}
-                            <input type='checkbox' id='{{dict_op.action}}' name='{{dict.position}}__action1'
-                                value='{{dict_op.action}}' checked>
-                            <label for='{{dict_op.action}}'>{{dict_op.action|capitalize}}</label><br>
-                            {% else %}
-                            <input type='checkbox' id='{{op|lower}}' name='{{dict.position}}__action1'
-                                value='{{op|lower}}'>
-                            <label for='{{op|lower}}'>{{op}}</label><br>
-                            {% endif %}
-                            {% endfor %}
-                            {% endfor %}
-                            {% endif %}
-
-                        </div>
-                    </div>
-
-                    {% endif %}
-
+            <div class="page-inner">
+                <!-- color picker -->
+                <div id="colors">
+                    <p>Pick the colors of your story</p>
+                    {% for color in datastory_data.color_code|reverse %}
+                    <input type="color" id="{{loop.index}}_color" name="{{loop.index}}_color" value="{{color}}">
                     {% endfor %}
-
                 </div>
-                <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
-                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
-                        Textbox</a>
-                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
-                        Count</a>
-                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="barchart_box">Add
-                        Chart</a>
-                </section>
+
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                    <div>
+                        <h1 class="text-white pb-2 fw-bold">
+                            <textarea oninput='auto_grow(this)' name="title" type="text" id=""
+                                cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
+                                required>{{ datastory_data.title }}</textarea>
+                        </h1>
+                        <h5 class="text-white mb-2 fw-bold">
+                            {% if datastory_data.subtitle %}
+                            <textarea oninput='auto_grow(this)' name="subtitle" type="text" id=""
+                                cols="{{ datastory_data.subtitle|length }}" rows="1"
+                                placeholder="Subtitle">{{ datastory_data.subtitle }}</textarea>
+                            {% else %}
+                            <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1"
+                                placeholder="Subtitle"></textarea>
+                            {%endif%}
+                        </h5>
+
+                    </div>
+                    <div class="ml-md-auto py-2 py-md-0">
+
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        <div class="page-inner mt--5">
+            <div class="row row-card-no-pd">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row card-tools-still-right">
+                                <!-- <h4 class="card-title">About the Project</h4> -->
+                            </div>
+                            <p class="text-white card-category">
+                                {% if datastory_data.description %}
+                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
+                                {% else %}
+                                <textarea oninput='auto_grow(this)' name="description" type="text" id="" rows="1"
+                                    placeholder="A brief introdution to the project."></textarea>
+                                {%endif%}
+                            </p>
+                        </div>
+                        <div class="card-body" id="sortable">
+
+                            {% for dict in datastory_data.dynamic_elements %}
+                            <!-- TEXT -->
+                            {% if dict.type == 'text' %}
+                            <!-- buttons -->
+                            <div id="{{dict.position}}__block_field">
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                                </a>
+                                <br>
+                                <!-- preview -->
+                                <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
+                                    id="{{dict.position}}__{{dict.type}}"
+                                    placeholder="{{dict.text}}">{{dict.text}}</textarea>
+                            </div>
+
+                            <!-- COUNT -->
+                            {% elif dict.type == 'count' %}
+                            <div id="{{dict.position}}__block_field" id="count">
+                                <!-- buttons -->
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                                </a>
+                                <br>
+                                <!-- preview -->
+                                <div class='card-body justify-content-center option-2b count_result col-md-4'
+                                    id="{{dict.position}}__count">
+                                    <p class="counter_num" id='{{dict.position}}__num'></p>
+                                    <p class="counter_label" id='{{dict.position}}__lab'></p>
+                                </div>
+
+                                <!-- input -->
+                                <textarea oninput='auto_grow(this)' name='{{dict.position}}__count_query' type='text'
+                                    id='{{dict.position}}__count_query' value="{{dict.count_query}}"
+                                    placeholder="Write the SPARQL query for the count." rows="1"
+                                    required>{{dict.count_query}}</textarea>
+                                <input name='{{dict.position}}__count_label' type='text'
+                                    id='{{dict.position}}__count_label' value="{{dict.count_label}}" required>
+                            </div>
+
+                            <!-- CHART -->
+                            {% elif dict.type == 'chart' %}
+                            <div class="col-12" id="{{dict.position}}__block_field">
+                                <!-- buttons -->
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                                </a>
+                                <br>
+                                <!-- preview -->
+                                <div class="chart-container">
+                                    <canvas id="{{dict.position}}__chartid"></canvas>
+                                </div>
+
+                                <!-- input -->
+                                <div class="form-group" id="{{dict.position}}_undefined">
+                                    <label>Chart Type</label>
+                                    <select class="form-control" name="{{dict.position}}__chart_type"
+                                        id="{{dict.position}}__chart_type">
+                                        {% for chart in general_data.chart_types %}
+                                        {% if chart == dict.chart_type %}
+                                        <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}"
+                                            selected>
+                                            {{chart}}
+                                        </option>
+                                        {% else %}
+                                        <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}">
+                                            {{chart}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <label>SPARQL query</label>
+                                    <textarea oninput='auto_grow(this)' name='{{dict.position}}__chart_query'
+                                        type='text' id='{{dict.position}}__chart_query'
+                                        placeholder="{{dict.chart_query}}" required>{{dict.chart_query}}</textarea>
+                                    <label>Chart Title</label>
+                                    <input name='{{dict.position}}__chart_title' type='text'
+                                        id='{{dict.position}}__chart_title' value="{{dict.chart_title}}" required>
+                                    <label>Operations</label><br>
+
+
+                                    <!-- no operation present -->
+                                    {% if dict.operations|length == 0 %}
+                                    {% for op in general_data.operations %}
+                                    <input type='checkbox' id='{{op|lower}}' name='{{dict.position}}__action1'
+                                        value='{{op|lower}}'>
+                                    <label for='{{op|lower}}'>{{op}}</label><br>
+                                    {% endfor %}
+
+                                    {% else %}
+
+                                    {% for op in general_data.operations %}
+                                    {% for dict_op in dict.operations %}
+                                    {% if dict_op.action|capitalize == op %}
+                                    <input type='checkbox' id='{{dict_op.action}}' name='{{dict.position}}__action1'
+                                        value='{{dict_op.action}}' checked>
+                                    <label for='{{dict_op.action}}'>{{dict_op.action|capitalize}}</label><br>
+                                    {% else %}
+                                    <input type='checkbox' id='{{op|lower}}' name='{{dict.position}}__action1'
+                                        value='{{op|lower}}'>
+                                    <label for='{{op|lower}}'>{{op}}</label><br>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </div>
+                            </div>
+
+                            {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+                        <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
+                            <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
+                                Textbox</a>
+                            <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
+                                Count</a>
+                            <a class="btn btn-primary btn-border" onclick="add_field(name)" name="barchart_box">Add
+                                Chart</a>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-action" style="margin:auto;">
+            <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
+            <button type="reset" class="btn btn-danger">Reset content</button>
+            <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+        </div>
+    </form>
 </div>
-<div class="card-action" style="margin:auto;">
-    <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
-    <button type="reset" class="btn btn-danger">Reset content</button>
-    <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+{% if session['user_type'] == 'random' %}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+    data-notify-position="bottom-right"
+    style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+    data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+        style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+        class="flaticon-alarm-1"></span> <span data-notify="title">Remember</span>
+    <span data-notify="message">If you don't login, you can only download material, not
+        publish.</span><a href="#" target="_blank" data-notify="url"></a>
 </div>
-</form>
-</div>
+{% endif %}
+<!-- <script>
+    window.onbeforeunload = function (event) {
+        // prevent = document.getElementsByClassName('prevent');
+        // prevent.removeEventListener('onbeforeunload');
+        event.returnValue = "";
+    };
+</script> -->
+
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

@@ -14,7 +14,13 @@
 			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
 				<div class="home">
 					<h1 class="text-white fw-bold">Become<br> a data storyteller <br> with MELODY</h1>
-					<h5 class="text-white op-7 mb-2 col-md-6">You can start creating a data story in a few steps. We use GitHub to authenticate our users, so if you do not have an account yet, hurry up!</h5>
+					<h5 class="text-white op-7 mb-2 col-md-6">You can start creating a data story in a few steps. We use
+						GitHub to authenticate our users, so if you do not have an account yet, hurry up!</h5>
+				</div>
+				<div>
+					<a href="{{ url_for('gitauth') }}" role="button">Polifonia Collaborator</a><br>
+					<a href="{{ url_for('gitauth') }}" role="button">Github User</a><br>
+					<a href="{{url_for('setup')}}" role="button">TRY NOW</a>
 				</div>
 			</div>
 		</div>
@@ -22,22 +28,25 @@
 	<div class="page-inner">
 		<b class="ball2"></b>
 		<div class="actions row mt--2">
-					<div class="action col-md-3">
-						<h6>Start collaborating</h6>
-            <p>Add a comment to this <a target="_blank" href="https://github.com/polifonia-project/dashboard/issues/19">issue</a> to become a collaborator. We will answer ASAP!</p>
-            </div>
-					<div class="action col-md-3">
-						<h6>Sign in</h6>
-            <p>Once you are a collaborator, <a href="gitauth">sign in</a> to start!</p>
-            </div>
-					<div class="action col-md-3 whitebg">
-						<h6>Publish with us</h6>
-						<p>When saving your story this will be published immediately.</p>
-					</div>
-					<div class="action col-md-3">
-						<h6>Export your story</h6>
-						<p>You can export your data story as a web document or a PDF. Alternatively, you can embed or download single charts.</p>
-					</div>
+			<div class="action col-md-3">
+				<h6>Start collaborating</h6>
+				<p>Add a comment to this <a target="_blank"
+						href="https://github.com/polifonia-project/dashboard/issues/19">issue</a> to become a
+					collaborator. We will answer ASAP!</p>
+			</div>
+			<div class="action col-md-3">
+				<h6>Sign in</h6>
+				<p>Once you are a collaborator, <a href="gitauth">sign in</a> to start!</p>
+			</div>
+			<div class="action col-md-3 whitebg">
+				<h6>Publish with us</h6>
+				<p>When saving your story this will be published immediately.</p>
+			</div>
+			<div class="action col-md-3">
+				<h6>Export your story</h6>
+				<p>You can export your data story as a web document or a PDF. Alternatively, you can embed or download
+					single charts.</p>
+			</div>
 
 		</div>
 		<div class="row mt--2 signin">
