@@ -26,7 +26,12 @@
 			<button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
 					download="{{datastory_data.title}}.html">HTML</a></button>
 		</section>
-
+		<!-- publish button -->
+		{% if session['user_type'] == 'extra' %}
+		<form method="post">
+			<button type="submit" method="post" class="btn btn-success">Publish</button>
+		</form>
+		{% endif %}
 		<!-- modify button -->
 		{% if session['user_type'] != 'polifonia' %}
 		{% set name = (datastory_data.name).split('_') %}

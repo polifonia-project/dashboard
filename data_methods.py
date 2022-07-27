@@ -1,6 +1,7 @@
 import json
 from flask import request
 from datetime import datetime
+import requests
 
 
 def read_json(file_name):
@@ -133,3 +134,19 @@ def manage_datastory_data(general_data, file, section_name):
     update_json(file, general_data)
     datastory_name = datastory_title.lower().replace(" ", "_")
     return (datastory_name)
+
+
+def create_html(r, datastory_name, section_name):
+    '''
+    This function creates an html file out of a data story data.
+
+    Args:
+        r: the requested html page.
+        datastory_name (str): a string that identifies the data story name.
+        section_name (str): a string that identify the name of the section.
+    '''
+    html = r.text.replace('/static', 'static')  # replace
+    temp_html_file = open('static/temp/'+datastory_name+'_'+section_name+'.html', 'w')
+    # print(temp_html_file)
+    temp_html_file.write(html)
+    temp_html_file.close()

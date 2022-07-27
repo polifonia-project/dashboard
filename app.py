@@ -92,9 +92,26 @@ def datastory(section_name, datastory_name):
                 section_name, datastory_name, 'config.json')
         template_mode = datastory_data['template_mode']
         if datastory_data:
-            return render_template('datastory_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
+            return render_template('datastory_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data, section_name=section_name, datastory_name=datastory_name)
         else:
             return render_template('page-404.html')
+    elif request.method == 'POST':
+        r = requests.get('http://localhost:5000/'+section_name +
+                         '/'+datastory_name)
+        # open and create html file
+        data_methods.create_html(r, datastory_name, section_name)
+
+        # commit json and html to repo
+        github_sync.push('static/temp/config_'+section_name+'.json', branch='main', gituser='melodyeditor',
+                         email='editor.melody@gmail.com', bearer_token=conf.melody_token, action='')
+        github_sync.push('static/temp/'+datastory_name+'_'+section_name+'.html', branch='main', gituser='melodyeditor',
+                         email='editor.melody@gmail.com', bearer_token=conf.melody_token, action='')
+
+        # remove both files
+        os.remove('static/temp/config_'+section_name+'.json')
+        os.remove('static/temp/'+datastory_name+'_'+section_name+'.html')
+
+        return redirect('https://github.com/melody-data/stories')
 
 
 @app.route("/setup", methods=['POST', 'GET'])

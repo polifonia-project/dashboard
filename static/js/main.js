@@ -1,21 +1,21 @@
-addEventListener("DOMContentLoaded", function() {
-  if (Object.getOwnPropertyNames(datastory_data).length > 0)
-    {colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);}
+addEventListener("DOMContentLoaded", function () {
+    if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
 
 window.onload = function () {
-  if (Object.getOwnPropertyNames(datastory_data).length > 0) {queryCounter();}
+    if (Object.getOwnPropertyNames(datastory_data).length > 0) { queryCounter(); }
     chartViz();
     disableKeypress();
+    saveHTML(datastory_data.name);
 }
 
 // disable selection of templates other than statistics
-$( document ).ready(function() {
-  $("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
-  $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded','false');
-  if (Object.getOwnPropertyNames(datastory_data).length > 0) {
-    getBrightness(datastory_data.color_code[1]);
-  }
+$(document).ready(function () {
+    $("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
+    $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded', 'false');
+    if (Object.getOwnPropertyNames(datastory_data).length > 0) {
+        getBrightness(datastory_data.color_code[1]);
+    }
 });
 
 //// WYSIWYG FORM FUNCTIONS ////
@@ -445,12 +445,11 @@ function colorSwitch(color_1, color_2) {
     var gradientEl = document.querySelector(".secondarymenuinner");
     var counters = document.querySelectorAll(".count_result");
     //gradientEl.classList.remove("bg-primary-gradient");
-    if (gradientEl !== undefined)
-    {gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';}
+    if (gradientEl !== undefined) { gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')'; }
 
     function borders(el) {
-      el.style.border = "solid 2px "+color_1;
-      el.style.color = color_1;
+        el.style.border = "solid 2px " + color_1;
+        el.style.color = color_1;
     }
     counters.forEach(borders);
 }
@@ -1089,62 +1088,71 @@ function auto_grow(element) {
 }
 
 function getPDF(elem_id) {
-  var element = document.getElementById(elem_id);
-  var opt = {
-    margin:       1,
-    filename:     'story.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 1 },
-    pagebreak:    { mode:'avoid-all', after:'pagebreak'},
-    jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
-  };
-  html2pdf(element, opt);
+    var element = document.getElementById(elem_id);
+    var opt = {
+        margin: 1,
+        filename: 'story.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 1 },
+        pagebreak: { mode: 'avoid-all', after: 'pagebreak' },
+        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf(element, opt);
 }
 
 function getHTML(el) {
-  var html = document.documentElement.outerHTML;
-  var htmlcopy = html.replaceAll('/static', 'static');
+    var html = document.documentElement.outerHTML;
+    var htmlcopy = html.replaceAll('/static', 'static');
 
-  // remove elements
-  // var div = document.createElement('div');
-  // div.innerHTML = htmlcopy;
-  // var elements = div.getElementsByClassName('sidebar');
-  // while (elements[0])
-  //   elements[0].parentNode.removeChild(elements[0])
-  // var elements2 = div.getElementsByClassName('main-header');
-  // while (elements2[0])
-  //   elements2[0].parentNode.removeChild(elements2[0])
+    // remove elements
+    // var div = document.createElement('div');
+    // div.innerHTML = htmlcopy;
+    // var elements = div.getElementsByClassName('sidebar');
+    // while (elements[0])
+    //   elements[0].parentNode.removeChild(elements[0])
+    // var elements2 = div.getElementsByClassName('main-header');
+    // while (elements2[0])
+    //   elements2[0].parentNode.removeChild(elements2[0])
 
-  // reassemble html
-  //var repl = div.innerHTML;
-  //console.log(repl);
-  // download html and zip file
-  var thishtml = encodeURIComponent(htmlcopy);
-  el.href='data:text/html;charset=UTF-8,'+thishtml;
-  window.open('../static/static.zip');
+    // reassemble html
+    //var repl = div.innerHTML;
+    //console.log(repl);
+    // download html and zip file
+    var thishtml = encodeURIComponent(htmlcopy);
+    el.href = 'data:text/html;charset=UTF-8,' + thishtml;
+    window.open('../static/static.zip');
+}
+
+function saveHTML(name) {
+    var html = document.documentElement.outerHTML;
+    var htmlcopy = html.replaceAll('/static', 'static');
+    var thishtml = encodeURIComponent(htmlcopy);
+    saveAs(thishtml, name + '.html');
 }
 
 // change color of secondary menu in datastory
 function getBrightness(c) {
-  var c = c.substring(1);      // strip #
-  var rgb = parseInt(c, 16);   // convert rrggbb to decimal
-  var r = (rgb >> 16) & 0xff;  // extract red
-  var g = (rgb >>  8) & 0xff;  // extract green
-  var b = (rgb >>  0) & 0xff;  // extract blue
-  var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+    var c = c.substring(1);      // strip #
+    var rgb = parseInt(c, 16);   // convert rrggbb to decimal
+    var r = (rgb >> 16) & 0xff;  // extract red
+    var g = (rgb >> 8) & 0xff;  // extract green
+    var b = (rgb >> 0) & 0xff;  // extract blue
+    var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 
-  var nodes = document.getElementById('secondarymenuinner').children;
-  for (var i=0; i<nodes.length; i++) {
-      if (luma < 45) {
-        nodes[i].setAttribute('style', 'color:#ffffff !important');
-        $('.exportbutton').css('border','solid 1px #ffffff');
-       } else {
-         nodes[i].setAttribute('style', 'color: black !important');}
+    var nodes = document.getElementById('secondarymenuinner').children;
+    for (var i = 0; i < nodes.length; i++) {
+        if (luma < 45) {
+            nodes[i].setAttribute('style', 'color:#ffffff !important');
+            $('.exportbutton').css('border', 'solid 1px #ffffff');
+        } else {
+            nodes[i].setAttribute('style', 'color: black !important');
+        }
 
-     for (var j=0; j<nodes[i].children.length; j++) {
-         if (luma < 45) { nodes[i].children[j].setAttribute('style', 'color:#ffffff !important');
-       } else {nodes[i].children[j].setAttribute('style', 'color: black !important');}
-     }
-  };
+        for (var j = 0; j < nodes[i].children.length; j++) {
+            if (luma < 45) {
+                nodes[i].children[j].setAttribute('style', 'color:#ffffff !important');
+            } else { nodes[i].children[j].setAttribute('style', 'color: black !important'); }
+        }
+    };
 
 }
