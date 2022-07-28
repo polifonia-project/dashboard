@@ -34,9 +34,8 @@
 		{% endif %}
 		<!-- modify button -->
 		{% if session['user_type'] != 'polifonia' %}
-		{% set name = (datastory_data.name).split('_') %}
 		<a class="col-4 modifystoryicon"
-			href="{{ url_for('modify_datastory', section_name=name[1], datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}"><img
+			href="{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}"><img
 				src="{{ url_for('static', filename='img/edit.png') }}" alt=""></a>
 		{% endif %}
 	</section>

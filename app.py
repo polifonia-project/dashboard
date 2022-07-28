@@ -102,10 +102,10 @@ def datastory(section_name, datastory_name):
         data_methods.create_html(r, datastory_name, section_name)
 
         # commit json and html to repo
-        github_sync.push('static/temp/config_'+section_name+'.json', branch='main', gituser='melodyeditor',
-                         email='editor.melody@gmail.com', bearer_token=conf.melody_token, action='')
-        github_sync.push('static/temp/'+datastory_name+'_'+section_name+'.html', branch='main', gituser='melodyeditor',
-                         email='editor.melody@gmail.com', bearer_token=conf.melody_token, action='')
+        github_sync.push('static/temp/config_'+section_name+'.json', 'main', 'melodyeditor',
+                         'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
+        github_sync.push('static/temp/'+datastory_name+'_'+section_name+'.html', 'main', 'melodyeditor',
+                         'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
 
         # remove both files
         os.remove('static/temp/config_'+section_name+'.json')
@@ -195,7 +195,8 @@ def setup():
                         config_data['template_mode'] = template_mode
                         config_data['title'] = datastory_title
                         config_data['color_code'] = color_code
-                        config_data['name'] = session['name'] + '_' + str(ts)
+                        config_data['user_name'] = session['name']
+                        config_data['id'] = str(ts)
 
                         clean_title = datastory_title.lower().replace(" ", "_")
                         # add to config file

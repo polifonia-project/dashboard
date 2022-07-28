@@ -80,7 +80,7 @@ def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=
         message = "updated file "+absolute_file_path+" "+action
     except:
         update = False
-        message = "created file "+absolute_file_path
+        message = "created file "+absolute_file_path+" "+action
 
     # Both create/update file replace the file with the local one
     with open(local_file_path) as f:
