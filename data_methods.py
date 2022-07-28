@@ -60,33 +60,40 @@ def access_data_sources(section_name, datastory_name, file_name):
             return details
 
 
-def manage_datastory_data(general_data, file, section_name):
+def manage_datastory_data(general_data, file, section_name, datastory_name):
     '''
     This function deals with data story data after the submission of the WYSIWYG form.
 
     Args:
         general_data (dict): a dictionary containing data of the json fiile.
         file (str): a string that specifies the name of the json file to read.
-        section_name (str): a string that identify the name of the section.
-
+        section_name (str): a string that identifies the name of the section.
+        datastory_name (str): the partial URL that identifies the name of the data story.
     Returns:
-        datastory_name (str): a string that identifies the data story name.
+        datastory_name (str): a string that identifies the name of the data story.
     '''
     # get data and add to existing datastory instance in config
 
     # transform ImmutableMultiDict into regular dict
     form_data = request.form.to_dict(flat=True)
     datastory_title = form_data['title']
-
+    datastory_title_clean = datastory_title.lower().replace(" ", "_")
+    print(form_data)
+    print("datastory_title_clean", datastory_title_clean,
+          '\ndatastory_name', datastory_name)
     dynamic_elements = []
     position_set = set()
     color_code_list = []
 
+    # if the title has changed, rename the key
+    if datastory_name != datastory_title_clean:
+        general_data['data_sources'][section_name][datastory_title_clean] = general_data['data_sources'][section_name].pop(
+            datastory_name)
+
     for name, data in general_data['data_sources'].items():
         if name == section_name:
             for datastory, datastory_data in data.items():
-                # with the title we check where to insert data
-                if datastory == datastory_title.lower().replace(" ", "_"):
+                if datastory == datastory_title_clean:
                     # we fill a set with the positions of the elements' type
                     for k, v in form_data.items():
                         if '__' in k:
@@ -95,7 +102,6 @@ def manage_datastory_data(general_data, file, section_name):
                             color_code_list.insert(0, v)
                         else:
                             datastory_data[k] = v
-
                     datastory_data['color_code'] = color_code_list
                     # we create as many dicts as there are positions, to store each type of element and append to
                     # dynamic_elements list
@@ -107,8 +113,11 @@ def manage_datastory_data(general_data, file, section_name):
                         for k, v in form_data.items():
                             if '__' in k:
                                 if position == int(k.split('__')[0]):
-                                    if 'text' in k:
+                                    if 'text' in k and 'search' not in k:
                                         elements_dict['type'] = 'text'
+                                        elements_dict[k.split('__')[1]] = v
+                                    elif 'textsearch' in k:
+                                        elements_dict['type'] = 'textsearch'
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'count' in k:
                                         elements_dict['type'] = 'count'
@@ -131,9 +140,9 @@ def manage_datastory_data(general_data, file, section_name):
                         dynamic_elements.append(elements_dict)
 
                     datastory_data['dynamic_elements'] = dynamic_elements
+
     update_json(file, general_data)
-    datastory_name = datastory_title.lower().replace(" ", "_")
-    return (datastory_name)
+    return datastory_title_clean
 
 
 def create_html(r, datastory_name, section_name):
@@ -146,7 +155,8 @@ def create_html(r, datastory_name, section_name):
         section_name (str): a string that identify the name of the section.
     '''
     html = r.text.replace('/static', 'static')  # replace
-    temp_html_file = open('static/temp/'+datastory_name+'_'+section_name+'.html', 'w')
+    temp_html_file = open('static/temp/'+datastory_name +
+                          '_'+section_name+'.html', 'w')
     # print(temp_html_file)
     temp_html_file.write(html)
     temp_html_file.close()

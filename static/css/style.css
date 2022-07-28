@@ -97,7 +97,7 @@ footer a {
 }
 
 .main-panel>.content {
-  padding: 1em 5em !important;
+  padding: 1em 3em !important;
   margin-bottom: 0px !important;
 }
 
@@ -360,8 +360,14 @@ textarea:focus {
 /* modify datastory */
 div[id*='block_field'],
 body[data-background-color=dark] .modifystory .card .card-header {
-  border-bottom: dotted 2px var(--main-color) !important;
-  padding: 4em 0px;
+  /* border-bottom: dotted 2px var(--main-color) !important; */
+  padding: 2em;
+  margin-bottom: 1em;
+}
+
+div[id*='block_field'] {
+  border-radius: 20px;
+  background-image: linear-gradient(-45deg, var(--light-grey), var(--dark-grey));
 }
 
 .modifystory .card {
@@ -374,6 +380,12 @@ body[data-background-color=dark] .modifystory .card .card-header {
 
 .secondarymenuinner {
   padding: 2em;
+  position: fixed;
+  max-width: 18%;
+}
+
+.inputinvisible {
+  display: none !important;
 }
 
 /* .secondarymenu * {color: var(--dark-grey) !important;} */
@@ -385,15 +397,21 @@ body[data-background-color=dark] .modifystory .card .card-header {
   text-decoration: underline;
 }
 
-.exportbutton {
-  cursor: pointer;
-  background-color: transparent;
-  border: solid 1px var(--dark-grey);
-  box-shadow: none;
+.secondarymenuinner textarea {}
+
+.textsearch_userinput.modifydatastory {
+  border: solid 1px black !important;
+  border-radius: 4px;
+  color: black;
 }
 
-.exportbutton a {
-  text-decoration: none !important;
+.previewtextsearch {
+  padding: 1em;
+  margin-top: 1em;
+}
+
+.previewtextsearch input {
+  margin-bottom: 0.5em;
 }
 
 .modifystory ::placeholder {
@@ -407,7 +425,7 @@ body[data-background-color=dark] .modifystory .card .card-header {
 }
 
 #colors p {
-  color: var(--dark-grey);
+  color: var(--extra-light-grey);
 }
 
 #sortable a.up,
@@ -415,7 +433,12 @@ body[data-background-color=dark] .modifystory .card .card-header {
 #sortable a.trash {
   right: 10px !important;
   float: right;
+  text-align: center;
   margin: 5px 5px 35px 0px;
+  padding: 3px;
+  background-color: var(--light-grey);
+  width: 30px;
+  border-radius: 50%;
 }
 
 .count_result {
@@ -464,4 +487,62 @@ body[data-background-color=dark] .modifystory .card .card-header {
   font-size: 1.3em;
   line-height: 1.3em;
   margin: 1em 0px;
+}
+
+.textsearch_input,
+.textsearch_button {
+  shadow: none;
+  background-color: transparent;
+  border: solid 1px black !important;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+}
+
+.textsearch_button {
+  display: block;
+  max-width: 50%;
+  padding: .3em;
+  text-align: center;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  color: black !important;
+}
+
+.textsearch_button:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.textsearch_input:focus {
+  -webkit-transition-property: none;
+  -moz-transition-property: none;
+  -o-transition-property: none;
+  transition-property: none;
+}
+
+.exportbutton {
+  cursor: pointer;
+  background-color: transparent;
+  border: solid 1px var(--dark-grey);
+  box-shadow: none;
+}
+
+.exportbutton a {
+  text-decoration: none !important;
+}
+
+.nopaddingleft {
+  padding-left: 0px ! important;
+}
+
+table {
+  margin: 2em 0px;
+}
+
+table tr th {
+  border-top: solid 2px var(--light-grey);
+}
+
+tr:nth-child(even) {
+  background-color: var(--light-grey);
 }

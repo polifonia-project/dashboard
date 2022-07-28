@@ -10,7 +10,7 @@
 {% block content %}
 <div class="content row modifystory">
     <section class="secondarymenu col-md-3 col-sm-12">
-        <section class="secondarymenuinner">
+        <section class="secondarymenuinner" id="secondarymenuinner">
             <h3>Data source</h3>
             <p><a href="{{datastory_data.sparql_endpoint}}">SPARQL endpoint</a></p>
             <h5 class="text-white op-7 pb-2">
@@ -25,7 +25,8 @@
             </h5>
         </section>
     </section>
-    <form action="send_data" method="post" class="card col-md-9 col-sm-12"">
+    <!-- MD <form action="send_data" method="post" class="card col-md-9 col-sm-12""> -->
+    <form action="" method="post" class="card col-md-9 col-sm-12"">
         <div class=" panel-header bg-primary-gradient">
         <div class="page-inner">
             <!-- color picker -->

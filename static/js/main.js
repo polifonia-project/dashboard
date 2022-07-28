@@ -16,6 +16,7 @@ $(document).ready(function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
     }
+
 });
 
 //// WYSIWYG FORM FUNCTIONS ////
@@ -89,14 +90,49 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
 
 // add box
 var counter = 0;
-function add_field(name) {
+function add_field(name, bind_query_id = "") {
     var contents = "";
 
-    var text_field = "<textarea oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
+    var text_field = "<textarea rows='3' oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
 
-    var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' placeholder='Write the SPARQL query for the count.' rows='1' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
+    var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 
-    var chart_field = "<div class='chart-container'><canvas id='" + (counter + 1) + "__chartid'></canvas></div><div class='form-group'><label for='exampleFormControlSelect2'>Chart Type</label><select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'><option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option><option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option><option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option></select><label for='largeInput'>SPARQL query</label><textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='1' required></textarea><label for='largeInput'>Chart Title</label><input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label><br><input type='checkbox' id='count' name='action1' value='count'><label for='count'>Count</label><br><input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label><br></div>"
+    var chart_field = "<div class='chart-container'>\
+      <canvas id='" + (counter + 1) + "__chartid'></canvas>\
+      </div>\
+      <div class='form-group'>\
+        <label for='exampleFormControlSelect2'>Chart Type</label>\
+        <select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'>\
+          <option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
+          <option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
+          <option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
+        </select>\
+        <label for='largeInput'>SPARQL query</label>\
+        <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea>\
+        <label for='largeInput'>Chart Title</label>\
+        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label>\
+        <br><input type='checkbox' id='count' name='action1' value='count'>\
+        <label for='count'>Count</label><br>\
+        <input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label>\
+        <br></div>";
+
+
+    var text_search_field = "<textarea class='addplaceholder_textsearch' oninput='auto_grow(this)' name='" + (counter + 1) + "__textsearch_query' type='text' id='" + (counter + 1) + "__textsearch_query' rows='6' required></textarea>\
+    <div class='table-container textsearch_result'>\
+      <div class='previewtextsearch col-4' style='background-image: linear-gradient(-45deg, "+ datastory_data.color_code[0] + ", " + datastory_data.color_code[1] + ";'>\
+        <input class='textsearch_userinput modifydatastory' id='" + (counter + 1).toString() + "__textsearch_userinput' type='text' name='" + (counter + 1).toString() + "__textsearch_userinput' value=''>\
+        <a id='" + (counter + 1).toString() + "__textsearch_button' class='textsearch_button' onclick='perform_textsearch(\"" + (counter + 1).toString() + "__textsearch_userinput\")' name='" + (counter + 1).toString() + "__textsearch'>Search</a>\
+      </div>\
+      <table class='col-6' id='" + (counter + 1).toString() + "__textsearchid'>\
+        <!-- TODO add rows-->\
+      </table>\
+    </div>\
+    <h4 class='text-white'>Do you want to add an action to your results?</h4>\
+    <p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>\
+    <a class='btn btn-primary btn-border' onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' name='tablevalueaction'>Add\
+        action to results</a>";
+
+    var tablevalueaction_field = "<p>hello world " + bind_query_id + "</p>";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
 
@@ -112,8 +148,27 @@ function add_field(name) {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>";
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
+    } else if (name == 'textsearch') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + text_search_field + close_addons;
+    } else if (name.includes('tablevalueaction')) {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + tablevalueaction_field + close_addons;
+
     }
+
     $("#sortable").append(contents);
+    colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+
+    // add multiline placeholder
+    var placeholder_t = "Type an example text search query using the placeholder <<searchterm>>,\n\
+    prefix bds: <http://www.bigdata.com/rdf/search#>\n\
+    SELECT DISTINCT ?s ?o \n\
+    WHERE { ?o bds:search '<<searchterm>>' . ?s rdfs:label ?o . } LIMIT 10 \nWe will replace the placeholder with the user input";
+    $(".addplaceholder_textsearch").attr("placeholder", placeholder_t);
+
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
 }
@@ -138,6 +193,7 @@ $(function () {
 
         $('#sortable [id$="block_field"]').each(function (idx) {
             var count_query = '';
+            var textsearch_query = '';
             var count_label = '';
             var chart_query = '';
             var chart_title = '';
@@ -151,6 +207,8 @@ $(function () {
                     $("#" + (idx + 1) + "__lab").text(count_label);
                 } else if (element.name == (idx + 1) + '__chart_query') {
                     chart_query = element.value;
+                } else if (element.name == (idx + 1) + '__textsearch_query') {
+                    textsearch_query = element.value;
                 } else if (element.name == (idx + 1) + '__chart_title') {
                     chart_title = element.value;
                 } else if (element.name == (idx + 1) + '__chart_type') {
@@ -166,6 +224,7 @@ $(function () {
 
             var encoded_count = encodeURIComponent(count_query);
             var encoded_chart = encodeURIComponent(chart_query);
+
 
             // call for the count
             if (count_query) {
@@ -185,7 +244,6 @@ $(function () {
                     }
                 });
             }
-
             // call for the charts
             else if (chart_query) {
                 $.ajax({
@@ -428,6 +486,13 @@ $(function () {
                     }
                 });
             }
+
+            // textsearch
+            else if (textsearch_query) {
+                var encoded_textsearch = encodeURIComponent(textsearch_query);
+                // empty the table with results
+                $("#" + idx + "__textsearchid tr").detach();
+            }
         });
 
     };
@@ -435,6 +500,47 @@ $(function () {
     $('form').change(update);
 })
 
+// text search
+function perform_textsearch(elid, textsearch_query) {
+
+    var q = document.getElementById(elid).value.toString();
+    var pos = elid.split('__')[0].toString();
+    var textsearch_query = document.getElementById(pos + '__textsearch_query').value;
+    var textsearch_query = textsearch_query.replace('<<searchterm>>', q);
+    var encoded_textsearch = encodeURIComponent(textsearch_query);
+    console.log(textsearch_query);
+    var sparqlEndpoint = datastory_data.sparql_endpoint;
+    // empty table
+    $("#" + pos + "__textsearchid tr").detach();
+    $.ajax({
+        type: 'GET',
+        url: sparqlEndpoint + '?query=' + encoded_textsearch,
+        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        success: function (returnedJson) {
+            console.log(returnedJson);
+            var headings = returnedJson.head.vars;
+            var tabletoappend = "<tr>";
+
+            for (j = 0; j < headings.length; j++) {
+                tabletoappend += "<th>" + headings[j] + "</th>";
+            }
+            tabletoappend += "</tr>";
+            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                tabletoappend += "<tr>";
+                for (j = 0; j < headings.length; j++) {
+                    tabletoappend += "<td>";
+                    tabletoappend += returnedJson.results.bindings[i][headings[j]].value;
+                    tabletoappend += "</td>";
+                }
+                tabletoappend += "</tr>";
+            }
+            $("#" + pos + "__textsearchid").append(tabletoappend);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            $("#" + (pos + 1) + "__num").text(xhr.statusText + ' in the query, check and try again.');
+        }
+    });
+}
 //// STATISTICS TEMPLATE FUNCTIONS ////
 
 function colorSwitch(color_1, color_2) {
@@ -443,15 +549,25 @@ function colorSwitch(color_1, color_2) {
     // gradientEl.classList.remove("bg-primary-gradient");
     // gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
     var gradientEl = document.querySelector(".secondarymenuinner");
+    var gradientPreview = document.querySelectorAll(".previewtextsearch");
     var counters = document.querySelectorAll(".count_result");
+    //var textsearch_buttons = document.querySelectorAll(".textsearch_button");
     //gradientEl.classList.remove("bg-primary-gradient");
-    if (gradientEl !== undefined) { gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')'; }
+    if (typeof (gradientEl) != undefined && gradientEl != null) { gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')'; }
+
+    function gradientbackground(el) {
+        el.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
+    }
+    if (typeof (gradientPreview) != undefined && gradientPreview != null) {
+        gradientPreview.forEach(gradientbackground);
+    }
 
     function borders(el) {
         el.style.border = "solid 2px " + color_1;
         el.style.color = color_1;
     }
     counters.forEach(borders);
+
 }
 
 // show counters in the final data story

@@ -233,7 +233,6 @@ def modify_datastory(section_name, datastory_name):
             'static/temp/config_'+section_name+'.json')
     if request.method == 'GET':
         template_mode = datastory_data['template_mode']
-        print(template_mode)
         if session.get('name') is not None:
             if session['name']:
                 return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
@@ -243,9 +242,9 @@ def modify_datastory(section_name, datastory_name):
                 if request.form['action'] == 'save':
                     try:
                         if session['user_type'] == 'polifonia':
-                            datastory_name = data_methods.manage_datastory_data(
-                                general_data, 'config.json', section_name)
-                            return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
+                            new_datastory_name = data_methods.manage_datastory_data(
+                                general_data, 'config.json', section_name, datastory_name)
+                            return redirect(url_for('datastory', section_name=section_name, datastory_name=new_datastory_name))
                         elif session['user_type'] == 'extra' or session['user_type'] == 'random':
                             # get data and add to existing datastory instance in config
                             # transform ImmutableMultiDict into regular dict

@@ -30,10 +30,17 @@
 					</a>
 				</li>
 				<li class="nav-item">
+					{% if session['name'] and session['name'] != 'anonym' %}
+					<a class="nav-link" href="{{ url_for('setup') }}" role="button" aria-expanded="false"
+						aria-controls="search-nav">
+						Create a story
+					</a>
+					{% else %}
 					<a class="nav-link" href="{{ url_for('asklogin') }}" role="button" aria-expanded="false"
 						aria-controls="search-nav">
 						Create a story
 					</a>
+					{% endif %}
 				</li>
 				{% if session['name'] and session['name'] != 'anonym' %}
 				<li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}" role="button"
