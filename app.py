@@ -309,12 +309,16 @@ def modify_datastory(section_name, datastory_name):
 
                 elif request.form['action'] == 'delete':
                     print(section_name, datastory_name, request.form)
-                    datastory_title = request.form['title'].lower().replace(
-                        " ", "_")
-                    general_data['data_sources'][section_name].pop(
-                        datastory_title, 'None')
-                    data_methods.update_json('config.json', general_data)
-                    return redirect('/')
+                    if session['user_type'] == 'polifonia':
+                        datastory_title = request.form['title'].lower().replace(
+                            " ", "_")
+                        general_data['data_sources'][section_name].pop(
+                            datastory_title, 'None')
+                        data_methods.update_json('config.json', general_data)
+                        return redirect('/')
+                    elif session['user_type'] == 'extra' or session['user_type'] == 'random':
+                        os.remove('static/temp/config_'+section_name+'.json')
+                        return redirect('/')
 
 
 if __name__ == "__main__":
