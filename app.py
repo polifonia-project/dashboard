@@ -69,6 +69,7 @@ def oauthcallback(is_valid_user=None):
 @app.route("/signout")
 def signout():
     session["name"] = None
+    session["user_type"] = None
     return redirect(url_for('home'))
 
 
