@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect, session
 from itsdangerous import json
 import requests
@@ -6,6 +7,8 @@ import github_sync
 import conf
 import data_methods
 import os
+import time
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__)
@@ -15,9 +18,37 @@ app.config['SESSION_FILE_THRESHOLD'] = 100
 Session(app)
 
 
+def empty_temp():
+    '''
+    This function checks every 12 hours if there are files 
+    in the folder "temp" that were created more than 1 day before, and delete them.
+    '''
+    today = datetime.today().isocalendar()
+    file_list = os.listdir('static/temp')
+    if len(file_list) > 0:
+        for f in file_list:
+            file_path = 'static/temp/' + f
+            creation_timestamp = os.path.getmtime(file_path)
+            creation_date = datetime.fromtimestamp(
+                creation_timestamp).date().isocalendar()
+            if creation_date[2] != today[2]:
+                os.remove(file_path)
+                print(f'Removed {f}.')
+            else:
+                print(f'{f} is still too new.')
+    else:
+        return 'Temp folder empty.'
+
+
+scheduler = BackgroundScheduler()
+job = scheduler.add_job(empty_temp, 'interval', hours=12)
+scheduler.start()
+
+# In case 2 prints are shown see
+# https://stackoverflow.com/questions/11810461/how-to-perform-periodic-task-with-flask-in-python
+
+
 # access the home page
-
-
 @app.route("/")
 @app.route("/index.html")
 def home():
