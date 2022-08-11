@@ -1,7 +1,7 @@
 {
     "sections": [
-        "Listening Experiences",
         "musoW",
+        "Listening Experiences",
         "Wikidata"
     ],
     "operations": [
@@ -19,7 +19,7 @@
             "main_feature": "Present charts and explanations in a personalised canvas. Include bar charts, line charts, doughnut charts and more!"
         },
         "template_02": {
-            "name": "map",
+            "name": "maps",
             "img_path": "/static/img/map.png",
             "default_color": [
                 "#6e7e3a",
@@ -35,6 +35,15 @@
                 "#e2df1c"
             ],
             "main_feature": "Allow users to manipulate time series data. Incrementally build line charts, bar charts, and bubble charts, by adding/removing filters - and see the chart changing!"
+        },
+        "template_04": {
+            "name": "relations",
+            "img_path": "/static/img/relations.png",
+            "default_color": [
+                "#0f64b9",
+                "#e2df1c"
+            ],
+            "main_feature": "Allow users to explore a dataset from an entity and to iteratively perform actions on results of queries."
         }
     },
     "chart_types": [
@@ -140,6 +149,55 @@
                     }
                 ],
                 "action": "save"
+            },
+            "music_datasets": {
+                "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
+                "template_mode": "statistics",
+                "title": "Music datasets",
+                "color_code": [
+                    "#39c6b4",
+                    "#2c1376"
+                ],
+                "section_name": "musoW",
+                "subtitle": "",
+                "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.\r\n\r\nUsually scholars and creatives need to combine diverse resources (music scores, audiovisual materials, data) from digital music libraries and audiovisual archives. \r\n\r\nIn musoW we support users in searching over hundreds of online resources, including digital libraries, archives, datasets, and related technologies.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "text",
+                        "text": "",
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(?s) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
+                        "count_label": "Repositories",
+                        "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "chart",
+                        "chart_type": "doughnutchart",
+                        "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . } ",
+                        "chart_title": "Music resources on the web",
+                        "operations": [
+                            {
+                                "action": "count",
+                                "param": "label"
+                            }
+                        ]
+                    },
+                    {
+                        "position": 4,
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_query": "SELECT DISTINCT ?x (COUNT(DISTINCT ?content) AS ?y) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?x .\r\n } GROUP BY ?x ?y",
+                        "chart_title": "Music resources on the web",
+                        "operations": []
+                    }
+                ]
             }
         },
         "wikidata": {
@@ -154,7 +212,7 @@
                     "#48ce48"
                 ],
                 "logo_path": "",
-                "template_mode": "maps",
+                "template_mode": "map",
                 "section_name": "Wikidata",
                 "title": "Explore Another Possibility",
                 "subtitle": "",
@@ -165,6 +223,48 @@
                         "position": 1,
                         "type": "text",
                         "text": "akjbbbbbbbbbb hjbbbbbbbbbb yyyyyyyyyyyyyyyyyyyyyy"
+                    }
+                ]
+            },
+            "try_the_switch": {
+                "sparql_endpoint": "https://query.wikidata.org/",
+                "template_mode": "map",
+                "title": "Try the switch for Map",
+                "color_code": [
+                    "#6e7e3a",
+                    "#79f1e9"
+                ],
+                "section_name": "Wikidata"
+            },
+            "relations_between_museums": {
+                "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
+                "template_mode": "relations",
+                "title": "Relations between museums",
+                "color_code": [
+                    "#005aba",
+                    "#3de560"
+                ],
+                "section_name": "Wikidata",
+                "subtitle": "Explore relations between artists in museums",
+                "description": "Start a text search for museums you like. Once you found what you like in the list of results, click on the buttons that appear next to the result and keep exploring relations. New tables will appear, including more actions and relations to explore.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "textsearch",
+                        "textsearch_title": "Search a museum",
+                        "textsearch_query": "SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search \"<<searchterm>>\";\r\n                      mwapi:language \"en\".\r\n      ?item wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  ?item (wdt:P279|wdt:P31) wd:Q207694 ; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 20 ",
+                        "textsearch_userinput": "",
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "tablevalueaction",
+                        "tablevalueaction_title": "show similar museums",
+                        "tablevalueaction_column": "item",
+                        "tablevalueaction_table": "1__textsearch_query",
+                        "tablevalueaction_query": "SELECT DISTINCT ?museum ?museumLabel \r\nWHERE { \r\n  <<item>> wdt:P17 ?country . \r\n  ?museum (wdt:P279|wdt:P31) wd:Q33506; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 10",
+                        "operations": []
                     }
                 ]
             }

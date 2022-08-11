@@ -83,14 +83,14 @@
                             </p>
                         </div>
                         <div class="card-body nopaddingleft" id="sortable">
-
+                            <span id='loader' class='lds-dual-ring hidden overlay'></span>
                             {% for dict in datastory_data.dynamic_elements %}
 
                               <!-- TEXT SEARCH -->
                               {% if dict.type == 'textsearch' %}
                               <!-- buttons -->
                               <div id="{{dict.position}}__block_field">
-
+                                  <h4 class="block_title">Add text search</h4>
                                   <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
                                       <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
                                   </a>
@@ -101,7 +101,7 @@
                                       <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
                                   </a>
                                   <br>
-
+                                  <input class='textsearch_title' id='{{dict.position}}__textsearch_title' type='text' name='{{dict.position}}__textsearch_title' value='{{dict.textsearch_title}}' placeholder='A title, e.g. Search tunes'>
                                   <!-- input -->
                                   <textarea class='addplaceholder_textsearch'
                                             oninput='auto_grow(this)'
@@ -118,16 +118,49 @@
                                         name="{{dict.position}}__textsearch">Search</a>
                                     </div>
 
-                                    <table class="col-6" id='{{dict.position}}__textsearchid'>
+                                    <table class="col-12" id='{{dict.position}}__textsearchid'>
                                       <!-- add rows here -->
                                     </table>
-                                    <h4 class="text-white">Do you want to add an action to your results?</h4>
+                                    <h4 id="{{dict.position}}__addtablevalueactiontitle" class="text-white">Do you want to add an action to your results?</h4>
                                     <p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>
                                     <a class="btn btn-primary btn-border" onclick="add_field(name,'{{dict.position}}__textsearch_query')" name="tablevalueaction">Add
                                         action to results</a>
                                   </div>
                               </div>
-
+                              {% endif %}
+                              {% if dict.type == 'tablevalueaction' %}
+                              <div id="{{dict.position}}__block_field">
+                                <h4 class="block_title">Add action</h4>
+                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                                </a>
+                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                                </a>
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                                </a>
+                                <br>
+                                <input class='tablevalueaction_title'
+                                  id='{{dict.position}}__tablevalueaction_title'
+                                  type='text'
+                                  name='{{dict.position}}__tablevalueaction_title'
+                                  value='{{dict.tablevalueaction_title}}'
+                                  placeholder='A title, e.g. Show similar tunes'>
+                                <input class='tablevalueaction_column'
+                                  id='{{dict.position}}__tablevalueaction_column'
+                                  type='text'
+                                  name='{{dict.position}}__tablevalueaction_column'
+                                  value='{{dict.tablevalueaction_column}}'
+                                  placeholder='The name of the column'>
+                                <input class='tablevalueaction_table'
+                                  id='{{dict.position}}__tablevalueaction_table'
+                                  type='hidden'
+                                  name='{{dict.position}}__tablevalueaction_table'
+                                  value='{{dict.tablevalueaction_table}}'>
+                                <textarea class='addplaceholder_tablevalueaction' oninput='auto_grow(this)' name='{{dict.position}}__tablevalueaction_query' type='text' id='{{dict.position}}__tablevalueaction_query' rows='6' required>{{dict.tablevalueaction_query}}</textarea>
+                                <p><em>Type your query and perform a new search above to see the result</em></p>
+                              </div>
                               {% endif %}
 
                             {% endfor %}

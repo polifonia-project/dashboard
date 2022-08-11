@@ -19,25 +19,30 @@
 			{% if datastory_data.curator %}
 			<p>Authors: {{ datastory_data.curator }} </p>
 			{%endif%}
-			<p>Part of: {{ datastory_data.section_name }}</p>
+			{% if session['user_type'] == 'polifonia' %}
+				<p>Part of: {{ datastory_data.section_name }}</p>
+			{%endif%}
 			<p>Source: <a href="{{datastory_data.sparql_endpoint}}" target="_blank">SPARQL endpoint</a></p>
 			<p>Export</p>
 			<button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
 			<button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
 					download="{{datastory_data.title}}.html">HTML</a></button>
+					<!-- publish button -->
+			{% if session['user_type'] == 'extra' %}
+			<hr>
+			<form method="post">
+				<button type="submit" method="post" class="btn btn-success prevent_alert publish_btn">Publish now!</button>
+			</form>
+			{% endif %}
+			<!-- modify button -->
+			{% if session['user_type'] == 'extra' or session['user_type'] == 'random' %}
+			<a class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
+				href="{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
+				Modify
+			</a>
+			{% endif %}
 		</section>
-		<!-- publish button -->
-		{% if session['user_type'] == 'extra' %}
-		<form method="post">
-			<button type="submit" method="post" class="btn btn-success prevent_alert">Publish</button>
-		</form>
-		{% endif %}
-		<!-- modify button -->
-		{% if session['user_type'] == 'extra' or session['user_type'] == 'random' %}
-		<a class="col-4 modifystoryicon prevent_alert" id="prevent_alert"
-			href="{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}"><img
-				src="{{ url_for('static', filename='img/edit.png') }}" alt=""></a>
-		{% endif %}
+
 	</section>
 	<div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
 		<div class="page-inner py-5">

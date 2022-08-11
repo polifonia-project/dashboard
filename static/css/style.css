@@ -397,26 +397,15 @@ div[id*='block_field'] {
   text-decoration: underline;
 }
 
-.secondarymenuinner textarea {}
-
-.textsearch_userinput.modifydatastory {
-  border: solid 1px black !important;
-  border-radius: 4px;
-  color: black;
-}
-
-.previewtextsearch {
-  padding: 1em;
-  margin-top: 1em;
-}
-
-.previewtextsearch input {
-  margin-bottom: 0.5em;
-}
-
 .modifystory ::placeholder {
   color: var(--extra-light-grey);
   font-style: italic;
+}
+
+.publish_btn {
+  margin: 0.2em 0px;  border-color: black !important;
+  background-color: transparent !important;
+  color: black !important; text-decoration: none !important;
 }
 
 #colors {
@@ -428,6 +417,7 @@ div[id*='block_field'] {
   color: var(--extra-light-grey);
 }
 
+#sortable .block_title {float: left; color: white !important;}
 #sortable a.up,
 #sortable a.down,
 #sortable a.trash {
@@ -489,6 +479,46 @@ div[id*='block_field'] {
   margin: 1em 0px;
 }
 
+.exportbutton {
+  cursor: pointer;
+  background-color: transparent;
+  border: solid 1px black;
+  box-shadow: none;
+}
+
+.exportbutton a {
+  text-decoration: none !important;
+}
+
+.nopaddingleft {
+  padding-left: 0px ! important;
+}
+
+/**********************/
+/* relations template */
+/**********************/
+.textsearch_title, .tablevalueaction_title {
+  font-size: 1.3em;
+  margin-bottom: 1em;
+}
+.textsearch_userinput.modifydatastory {
+  border: solid 1px black !important;
+  border-radius: 4px;
+  color: black;
+  transition: none !important;
+  transition-property: none !important;
+}
+
+
+.previewtextsearch {
+  padding: 1em;
+  margin-top: 1em;
+}
+
+.previewtextsearch input {
+  margin-bottom: 0.5em;
+}
+
 .textsearch_input,
 .textsearch_button {
   shadow: none;
@@ -520,29 +550,102 @@ div[id*='block_field'] {
   transition-property: none;
 }
 
-.exportbutton {
-  cursor: pointer;
-  background-color: transparent;
-  border: solid 1px var(--dark-grey);
-  box-shadow: none;
-}
-
-.exportbutton a {
-  text-decoration: none !important;
-}
-
-.nopaddingleft {
-  padding-left: 0px ! important;
-}
-
 table {
   margin: 2em 0px;
 }
 
 table tr th {
   border-top: solid 2px var(--light-grey);
+  padding: 0.3em 0.6em;
 }
 
 tr:nth-child(even) {
   background-color: var(--light-grey);
+}
+
+td { word-wrap: break-word !important; padding: 0.3em 0.6em; vertical-align: top;}
+
+
+.action_button {
+  cursor: pointer;
+  text-decoration: none !important;
+  padding: 0.2em; margin: 0.2em 0.2em 0.2em 0px;
+  border-radius: 3px;
+  background-color: transparent;
+  color: var(--extra-light-grey) !important;
+  border: solid 1px var(--extra-light-grey) !important;
+  font-size: 0.8em;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+}
+
+.action_button:hover {
+  background-color: var(--extra-light-grey);
+  color: var(--dark-grey) !important;
+  border-color: var(--dark-grey);
+}
+
+.show_table {
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 2em 1em 1em 0px;
+  display: inline-block;
+}
+
+.selected_text_value {
+  margin: 0px 1em;
+  padding: 0.5em;
+  border-radius: 4px;
+  color: white !important;
+  cursor: pointer;
+}
+
+.selected_text_value::after {
+  content: " x";
+}
+
+/*Hidden class for adding and removing*/
+.lds-dual-ring.hidden {
+    display: none;
+}
+
+
+
+/*Spinner Styles*/
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 25% auto;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/*Add an overlay to the entire page blocking any further presses to buttons or other elements.*/
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,.6);
+    z-index: 999;
+    opacity: 1;
+    transition: all 0.5s;
 }

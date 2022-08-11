@@ -19,7 +19,12 @@
       <!-- textsearch -->
       {% if dict.type == 'textsearch' %}
         <div id="{{dict.position}}">
-          <h4 class="nopaddingleft">Search</h4>
+            {% if dict.textsearch_title %}
+              <h4 class="nopaddingleft">{{dict.textsearch_title}}</h4>
+            {% else %}
+              <h4 class="nopaddingleft">Search</h4>
+            {% endif %}
+
           <input class="inputinvisible" id="{{dict.position}}__textsearch_query" style="display:none !important;" value="{{dict.textsearch_query}}"></input>
           <input class="textsearch_input" id="{{dict.position}}__textsearch_userinput" type="text" name="{{dict.position}}__textsearch_userinput" value="">
           <a id="{{dict.position}}__textsearch_button"
@@ -65,13 +70,38 @@
                         {{ datastory_data.description }}
                     </p>
                     {%endif%}
+                    <span id='loader' class='lds-dual-ring hidden overlay'></span>
                     <!-- textsearch results -->
                     {% for dict in datastory_data.dynamic_elements %}
-
                       {% if dict.type == 'textsearch' %}
                         <table id='{{dict.position}}__textsearchid'>
                           <!-- TODO add rows-->
                         </table>
+                      {% endif %}
+                      {% if dict.type == 'tablevalueaction' %}
+                      <input class='tablevalueaction_title'
+                        id='{{dict.position}}__tablevalueaction_title'
+                        type='hidden'
+                        name='{{dict.position}}__tablevalueaction_title'
+                        value='{{dict.tablevalueaction_title}}'
+                        placeholder='A title, e.g. Show similar tunes'>
+                      <input class='tablevalueaction_column'
+                        id='{{dict.position}}__tablevalueaction_column'
+                        type='hidden'
+                        name='{{dict.position}}__tablevalueaction_column'
+                        value='{{dict.tablevalueaction_column}}'
+                        placeholder='The name of the column'>
+                      <input class='tablevalueaction_table'
+                        id='{{dict.position}}__tablevalueaction_table'
+                        type='hidden'
+                        name='{{dict.position}}__tablevalueaction_table'
+                        value='{{dict.tablevalueaction_table}}'>
+                      <textarea class='inputinvisible'
+                        name='{{dict.position}}__tablevalueaction_query'
+                        type='hidden'
+                        id='{{dict.position}}__tablevalueaction_query'
+                        rows='6' required>{{dict.tablevalueaction_query}}</textarea>
+
                       {% endif %}
                     {% endfor %}
                 </div>
