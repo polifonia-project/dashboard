@@ -58,7 +58,7 @@
     <div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
         <div class="page-inner py-5">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                <div>
+                <div id="relation_datastory">
                     <h1 class="text-white pb-2 fw-bold">{{ datastory_data.title }}</h1>
                     {% if datastory_data.subtitle %}
                     <h2 class="text-white op-7 mb-2">
@@ -74,7 +74,7 @@
                     <!-- textsearch results -->
                     {% for dict in datastory_data.dynamic_elements %}
                       {% if dict.type == 'textsearch' %}
-                        <table id='{{dict.position}}__textsearchid'>
+                        <table class='col-12' id='{{dict.position}}__textsearchid'>
                           <!-- TODO add rows-->
                         </table>
                       {% endif %}

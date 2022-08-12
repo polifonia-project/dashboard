@@ -58,7 +58,10 @@
 	</div>
 
 	{% include 'scripts.html' %}
-	<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<!-- utils js -->
+	<!-- <script src="{{ url_for('static', filename='js/utils.js') }}" type="module"></script> -->
+
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 
 	<!-- Specific Page JS goes HERE  -->

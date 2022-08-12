@@ -119,7 +119,12 @@ function add_field(name, bind_query_id = "") {
 
     var text_search_field = "\
     <input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
-    <textarea class='addplaceholder_textsearch' oninput='auto_grow(this)' name='" + (counter + 1) + "__textsearch_query' type='text' id='" + (counter + 1) + "__textsearch_query' rows='6' required></textarea>\
+    <textarea class='addplaceholder_textsearch' \
+      oninput='auto_grow(this)' \
+      name='" + (counter + 1) + "__textsearch_query' \
+      type='text' \
+      id='" + (counter + 1) + "__textsearch_query' \
+      rows='6' required></textarea>\
     <div class='table-container textsearch_result'>\
       <div class='previewtextsearch col-4' style='background-image: linear-gradient(-45deg, "+ datastory_data.color_code[0] + ", " + datastory_data.color_code[1] + ";'>\
         <input class='textsearch_userinput modifydatastory' id='" + (counter + 1).toString() + "__textsearch_userinput' type='text' name='" + (counter + 1).toString() + "__textsearch_userinput' value=''>\
@@ -131,22 +136,94 @@ function add_field(name, bind_query_id = "") {
     </div>\
     <h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
     <p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>\
-    <a class='btn btn-primary btn-border' onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' name='tablevalueaction'>Add\
+    <a class='btn btn-primary btn-border' \
+        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+        name='tablevalueaction'>Add\
         action to results</a>";
 
     var tablevalueaction_field = "\
-    <input class='tablevalueaction_title' id='" + (counter + 1).toString() + "__tablevalueaction_title' type='text' name='" + (counter + 1).toString() + "__tablevalueaction_title' placeholder='A title, e.g. Show similar tunes'>\
-    <input class='tablevalueaction_column' id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' name='" + (counter + 1).toString() + "__tablevalueaction_column' placeholder='The name of the column'>\
-    <input class='tablevalueaction_table' id='" + (counter + 1).toString() + "__tablevalueaction_table' type='hidden' name='" + (counter + 1).toString() + "__tablevalueaction_table' value='"+bind_query_id+"'>\
-    <textarea class='addplaceholder_tablevalueaction' oninput='auto_grow(this)' name='" + (counter + 1) + "__tablevalueaction_query' type='text' id='" + (counter + 1) + "__tablevalueaction_query' rows='6' required></textarea>\
+    <input class='tablevalueaction_title' \
+      id='" + (counter + 1).toString() + "__tablevalueaction_title' \
+      type='text' \
+      name='" + (counter + 1).toString() + "__tablevalueaction_title' \
+      placeholder='A title, e.g. Show similar tunes'>\
+    <input class='tablevalueaction_column' \
+      id='" + (counter + 1).toString() + "__tablevalueaction_column' \
+      type='text' \
+      name='" + (counter + 1).toString() + "__tablevalueaction_column' \
+      placeholder='The name of the column'>\
+    <input class='tablevalueaction_table' \
+      id='" + (counter + 1).toString() + "__tablevalueaction_table' \
+      type='hidden' \
+      name='" + (counter + 1).toString() + "__tablevalueaction_table' \
+      value='"+bind_query_id+"'>\
+    <textarea class='addplaceholder_tablevalueaction'  \
+      oninput='auto_grow(this)' \
+      name='" + (counter + 1) + "__tablevalueaction_query' \
+      type='text' \
+      id='" + (counter + 1) + "__tablevalueaction_query' \
+      rows='6' required></textarea>\
     <p><em>Type your query and perform a new search above to see the result</em></p>\
-    ";
+    <h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
+    <p>Row values can be subject of new queries and return tables or charts. \
+    For each action a button will appear in the table. You can also combine value results of this action with value results of a prior action or search.</p>\
+    <a class='btn btn-primary btn-border' \
+        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+        name='tablevalueaction'>Add\
+        action to results</a>\
+    <a class='btn btn-primary btn-border' \
+        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+        name='tablecomboaction'>\
+        Combine value results</a>";
 
+    var tablecomboaction_field = "\
+    <input class='tablevalueaction_title' \
+        id='" + (counter + 1).toString() + "__tablevalueaction_title' type='text' \
+        name='" + (counter + 1).toString() + "__tablevalueaction_title' \
+        placeholder='A title, e.g. Show tunes in common'>\
+    <input class='tablevalueaction_table' \
+      id='" + (counter + 1).toString() + "__tablevalueaction_table' \
+      type='hidden' \
+      name='" + (counter + 1).toString() + "__tablevalueaction_table' \
+      value='"+bind_query_id+"'>\
+    <input class='tablevalueaction_column' \
+        id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' \
+        name='" + (counter + 1).toString() + "__tablevalueaction_column' \
+        placeholder='The name of the column to combine'>\
+    <input class='tablevalueaction_column' \
+        id='" + (counter + 1).toString() + "__tablevalueaction_table_2' type='text' \
+        name='" + (counter + 1).toString() + "__tablevalueaction_table_2' \
+        placeholder='The name of other table to combine'>\
+    <input class='tablevalueaction_column' \
+        id='" + (counter + 1).toString() + "__tablevalueaction_column_2' type='text' \
+        name='" + (counter + 1).toString() + "__tablevalueaction_column_2' \
+        placeholder='The name of the column to combine'>\
+    <textarea class='addplaceholder_tablecomboaction' \
+        oninput='auto_grow(this)' \
+        name='" + (counter + 1) + "__tablecomboaction_query' type='text' \
+        id='" + (counter + 1) + "__tablecomboaction_query' \
+        rows='6' required></textarea>\
+    <p><em>Type your query and perform a new search above to see the result</em></p>\
+    <h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle'\
+        class='text-white'>Do you want to add an action to your results?</h4>\
+    <p>Row values can be subject of new queries and return tables or charts. \
+    For each action a button will appear in the table. You can also combine results of this \
+    action with results of a prior action or search.</p>\
+    <a class='btn btn-primary btn-border' \
+        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+        name='tablevalueaction'>Add\
+        action to results</a>\
+    <a class='btn btn-primary btn-border' \
+        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+        name='tablecomboaction'>\
+        Combine results</a>";
 
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
     <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
     <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
+    var no_up_down = '<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
+
 
     if (name == 'textbox') {
         var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
@@ -164,11 +241,14 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + text_search_field + close_addons;
-    } else if (name.includes('tablevalueaction')) {
+    } else if (name.includes('tablevalueaction') ) {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Add action</h4>";
         var close_addons = "</div>";
-        contents += open_addons + up_down + tablevalueaction_field + close_addons;
-
+        contents += open_addons + no_up_down + tablevalueaction_field + close_addons;
+    } else if (name.includes('tablecomboaction') ) {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
     }
 
     $("#sortable").append(contents);
@@ -181,11 +261,19 @@ function add_field(name, bind_query_id = "") {
     WHERE { ?o bds:search '<<searchterm>>' . ?s rdfs:label ?o . } LIMIT 10 \nWe will replace the placeholder with the user input";
     $(".addplaceholder_textsearch").attr("placeholder", placeholder_t);
 
-    var placeholder_action = "Type a query based on the entity selected in the table. Use the placeholder <<item>>,\n\
+    var placeholder_action = "Type a query based on the entity selected in the table. \n\
+    Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
     SELECT DISTINCT ?o ?oLabel \n\
     WHERE { <<item>> ?p ?o . ?o rdfs:label ?oLabel .} \n\
     LIMIT 10";
     $(".addplaceholder_tablevalueaction").attr("placeholder", placeholder_action);
+
+    var placeholder_combo = "Type a query based on the entities of the two tables. \n\
+    Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
+    SELECT DISTINCT ?o ?oLabel \n\
+    WHERE { <<item>> ?p ?o . <<other>> ?p ?o .} \n\
+    LIMIT 10";
+    $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
 
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
@@ -556,9 +644,27 @@ function addActionButton(actions,heading,table_pos,uri_or_text_value,text_value)
   var actionsHTML = "";
   if (actions.length) {
     actions.forEach(function(el, index) {
-      if (el.column === heading) {
-        actionsHTML += "<br/><span onclick='performActionQuery(\""+el.actionpos+"\",\""+heading+"\",\""+table_pos+"\", \""+escape(encodeURIComponent(uri_or_text_value))+"\", \""+escape(encodeURIComponent(text_value))+"\", \""+encodeURIComponent(el.query)+"\")' class='action_button' \
+      console.log(el);
+      if (el.column == heading && el.column_2 == "") {
+        // normal action
+        actionsHTML += "<br/><span \
+        onclick='performActionQuery(\""+el.actionpos+"\",\""+heading+"\",\""+table_pos+"\", \""+escape(encodeURIComponent(uri_or_text_value))+"\", \""+escape(encodeURIComponent(text_value))+"\", \""+encodeURIComponent(el.query)+"\", \""+encodeURIComponent(el.title)+"\")' class='action_button' \
            >"+el.title+"</span> ";
+      } else {
+        // combo action
+        if (el.column == heading || el.column_2 == heading) {
+          var other_heading = compareStrings(heading,el.column,el.column_2);
+          actionsHTML += "<br/><span \
+          onclick='performActionQuery(\""+el.actionpos+"\",\
+              \""+heading+"\",\""+table_pos+"\",\
+              \""+escape(encodeURIComponent(uri_or_text_value))+"\",\
+              \""+escape(encodeURIComponent(text_value))+"\", \
+              \""+encodeURIComponent(el.query)+"\", \
+              \""+encodeURIComponent(el.title)+"\", \
+              \"True\", \""+other_heading+"\", \""+el.table_2+"\")'\
+              class='action_button'>"+el.title+"</span> ";
+          console.log("combo button",other_heading,el.table_2);
+        }
       }
     });
   }
@@ -566,25 +672,37 @@ function addActionButton(actions,heading,table_pos,uri_or_text_value,text_value)
 };
 
 // perform action buttons query and hide the table
-function performActionQuery(actionpos,heading,table_pos,uri_or_text_value, text_value, encoded_query) {
+function performActionQuery(actionpos,heading,table_pos,uri_or_text_value, text_value, encoded_query, action_title, combo="False", heading_2="", table_2="") {
 
   var table_id = "#"+table_pos+"__textsearchid";
   uri_or_text_value = decodeURIComponent(unescape(uri_or_text_value));
   text_value = decodeURIComponent( unescape(text_value));
 
   // show button with selected value on top
-  manageSelectedValue(table_pos,table_id,text_value,datastory_data.color_code[0]);
-  toggleTable("#"+table_pos+"__textsearchid");
+  //manageSelectedValue(table_pos,table_id,text_value,datastory_data.color_code[0]);
+  //toggleTable("#"+table_pos+"__textsearchid");
+  collapseTable(table_pos+"__textsearchid")
 
   // decode query
   var decoded_query = decodeURIComponent(encoded_query);
-
+  var reencoded_query = "";
   // replace in the query the column header with the value of the table cell
   var q = "";
   if (uri_or_text_value.includes('http')) {q = "<"+uri_or_text_value+">";}
   else {q = "\""+uri_or_text_value+"\"";};
   var replaced_query = decoded_query.replace('<<'+heading+'>>', q);
-  var reencoded_query = encodeURIComponent(replaced_query);
+
+  if (heading_2==""){ var reencoded_query = encodeURIComponent(replaced_query);
+  } else {
+    var q2= "";
+    var other_field = $("#"+table_pos+"__selected_text_value").data('uri');
+    if (other_field.includes('http')) {q2 = "<"+other_field+">";}
+    else {q2 = "\""+other_field+"\"";};
+    replaced_query = replaced_query.replace('<<'+heading_2+'>>', q2);
+    var reencoded_query = encodeURIComponent(replaced_query);
+    console.log("a combo!",q, q2, heading_2, table_2,replaced_query);
+  }
+
   // send the query
   $.ajax({
       type: 'GET',
@@ -595,7 +713,7 @@ function performActionQuery(actionpos,heading,table_pos,uri_or_text_value, text_
         // lookup actions in the DOM
         var actions = getActionsFromInputs(actionpos);
         // create the results table
-        createResultsTable(returnedJson,actions,actionpos,table_pos);
+        createResultsTable(returnedJson,actions,actionpos,table_pos,action_title,encodeURIComponent(text_value),encodeURIComponent(uri_or_text_value));
 
       },
       complete: function () {  $('#loader').addClass('hidden') },
@@ -604,20 +722,15 @@ function performActionQuery(actionpos,heading,table_pos,uri_or_text_value, text_
       }
   });
 
-
-  // TODO
-  // behaviour of selected_text_value buttons when more are clicked
-  // set behaviour if the selected_text_value is removed
-
 };
 
-// manage buttons show result / selected value when performing an action
+// NOT USED manage buttons show result / selected value when performing an action
 function manageSelectedValue(table_pos,table_id,text_value,color) {
   // show button to toggle/show the table
-  var show_btn = "<span class='show_table' \
-    id='"+table_id+"__show_table' \
-    onclick='toggleTable(\""+table_id+"\")' \
-    data-table='"+table_id+"'>Show results</span>";
+  // var show_btn = "<span class='show_table' \
+  //   id='"+table_pos+"__textsearchid__show_table' \
+  //   onclick='toggleTable(\""+table_id+"\")' \
+  //   data-table='"+table_id+"'>Show results</span>";
 
   // selected value button
   var selected_button = "<span id='"+table_pos+"__selected_text_value' \
@@ -626,19 +739,14 @@ function manageSelectedValue(table_pos,table_id,text_value,color) {
     class='selected_text_value'\
     onclick='removeAllFrom("+table_pos.toString()+","+(parseInt(table_pos) + 1).toString()+")'>"+text_value+"</span>";
 
-  var prev_show_button = document.getElementById(table_id+"__show_table");
-  // add show results button
-  if ( prev_show_button === null) {
-    $( show_btn ).insertBefore(table_id);
-  } ;
-
-  // remove previous selected value button if multiple are selected
-  if ( $("#"+table_pos+"__selected_text_value") != undefined) {
-    $("#"+table_pos+"__selected_text_value").detach();
-  };
+  // var prev_show_button = document.getElementById(table_pos+"__textsearchid__show_table");
+  // // add show results button
+  // if ( prev_show_button === null) {
+  //   $( show_btn ).insertBefore(table_id);
+  // } ;
 
   // add selected value button
-  $( selected_button ).insertBefore(table_id);
+  $( selected_button ).insertAfter(table_id);
 
   // toggle the table
   //$("#"+table_pos+"__textsearchid").hide();
@@ -646,14 +754,15 @@ function manageSelectedValue(table_pos,table_id,text_value,color) {
 
 function removeAllFrom(cur_num, next_num ) {
   // detach current
-  var cur_el = document.getElementById(cur_num+"__selected_text_value");
-  if (cur_el != undefined) {cur_el.outerHTML = "";}
+  //var cur_el = document.querySelectorAll("[id*='"+cur_num+"__selected_text_value']");
+  //if (cur_el != undefined) {cur_el.outerHTML = "";}
   // other elements: TODO in the future there may be more elements to detach
-  var list_selected_text_value = document.querySelectorAll("[id*=__selected_text_value]");
+  //var list_selected_text_value = document.querySelectorAll("[id*=__selected_text_value]");
   var list_tables = document.querySelectorAll("[id*=__textsearchid]");
   var list_showtables = document.querySelectorAll("[id*=__textsearchid__show_table]");
 
-  list_selected_text_value.forEach(maybeDetach.bind(null, next_num));
+  //cur_el.forEach(maybeDetach.bind(null, cur_num));
+  //list_selected_text_value.forEach(maybeDetach.bind(null, next_num));
   list_tables.forEach(maybeDetach.bind(null, next_num));
   list_showtables.forEach(maybeDetach.bind(null, next_num));
 
@@ -682,20 +791,33 @@ function getActionsFromInputs(pos) {
       var actionpos = this.id.split('__')[0] ;
       var actiontitle = $("#"+actionpos+"__tablevalueaction_title").val();
       var actionquery = $("#"+actionpos+'__tablevalueaction_query').val();
-      var regExp = /<<([^)]+)>>/;
-      var matches = regExp.exec(actionquery);
+      var actiontable2 = $("#"+actionpos+'__tablevalueaction_table_2').val();
+      var matches = actionquery.match(/<<([^)]+)>>/g);
       actiondata.title = actiontitle;
       actiondata.query = actionquery;
-      actiondata.column = matches[1];
+      actiondata.column = matches[0].replace("<<","").replace(">>","");
+      actiondata.table_2 = "";
+      if (actiontable2 && actiontable2.length){
+        var table_2_pos = document.querySelector('input[value="'+actiontable2+'"]').id.split('__')[0];
+        actiondata.table_2 = table_2_pos ;}
+      actiondata.column_2 = "";
+      if (matches.length >= 2){actiondata.column_2 = matches[1].replace("<<","").replace(">>","");}
       actiondata.actionpos = actionpos;
       actions.push(actiondata);
+      console.log(actionquery, matches,actions);
     }
   });
   return actions;
 }
 
-function createResultsTable(returnedJson,actions,pos,table_pos=pos) {
-  var tabletoappend = "<tr>";
+function createResultsTable(returnedJson,actions,pos,table_pos=pos,action_title="search",text_value="",uri_or_text_value="") {
+  var tabletoappend = "<caption class='resulttable_caption' \
+  style='color: white'>"+decodeURIComponent(action_title)+"\
+  <span class='caret' onclick='collapseTable(\""+pos+"__textsearchid\")'></span>\
+  <span class='closetable' onclick='detachTable(\""+pos+"__textsearchid\")'>x</span>\
+  <br/><span id='"+pos+"__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='"+decodeURIComponent(uri_or_text_value)+"'>"+decodeURIComponent(text_value)+"</span>\
+  </caption>\
+  <tr>";
   // exclude headings with Label
   var headings = returnedJson.head.vars;
   for (j = 0; j < headings.length; j++) {
@@ -738,23 +860,32 @@ function createResultsTable(returnedJson,actions,pos,table_pos=pos) {
       }
       tabletoappend += "</tr>";
   }
-  //
   if ( !$("#"+pos+"__textsearchid").length) {
     var new_table = "<table class='col-12' id='"+pos+"__textsearchid'>\
     "+tabletoappend+"</table>";
-
-    if ($("#"+table_pos+"__addtablevalueactiontitle") != undefined) {
-      // if in WYSIWYG
-      $(new_table).insertBefore($("#"+table_pos+"__addtablevalueactiontitle"));
+    // WYSIWYG
+    if (!$("#relation_datastory") === null) {
+      $("#relation_datastory").append(new_table);
     } else {
-      // in preview
-      $(new_table).insertBefore($("#"+pos+"__tablevalueaction_title"));
+      // preview
+      var tables = document.getElementsByTagName('table');
+      $(new_table).insertAfter(tables[tables.length-1]);
     }
 
   } else {
+    $("#" + pos + "__textsearchid tr").detach();
     $("#" + pos + "__textsearchid").append(tabletoappend);
   }
 
+}
+
+function collapseTable(table_id) { $("#"+table_id+" tr").toggle(); }
+
+function detachTable(table_id) { $("#"+table_id+" tr,"+"#"+table_id+" caption").remove();}
+
+function compareStrings(heading,str1,str2) {
+  // return the different string
+  if (heading == str1) {return str2} else {return str1};
 }
 
 //// STATISTICS TEMPLATE FUNCTIONS ////

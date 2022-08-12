@@ -550,6 +550,15 @@ div[id*='block_field'] {
   transition-property: none;
 }
 
+.resulttable_caption {caption-side: top !important;}
+.resulttable_caption_searchedvalue {
+  font-size: 0.8em;
+  text-transform: uppercase;
+  color: var(--extra-light-grey);
+}
+.caret {  cursor: pointer;}
+.closetable { content: 'x'; float: right; cursor: pointer;}
+
 table {
   margin: 2em 0px;
 }
@@ -589,15 +598,16 @@ td { word-wrap: break-word !important; padding: 0.3em 0.6em; vertical-align: top
   text-decoration: underline;
   cursor: pointer;
   margin: 2em 1em 1em 0px;
-  display: inline-block;
+  display: block;
 }
 
 .selected_text_value {
-  margin: 0px 1em;
+  margin: 1em 1em 0.2em 0px;
   padding: 0.5em;
   border-radius: 4px;
   color: white !important;
   cursor: pointer;
+  display: inline-block;
 }
 
 .selected_text_value::after {

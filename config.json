@@ -241,12 +241,12 @@
                 "template_mode": "relations",
                 "title": "Relations between museums",
                 "color_code": [
-                    "#005aba",
-                    "#3de560"
+                    "#5904bb",
+                    "#73fa79"
                 ],
                 "section_name": "Wikidata",
                 "subtitle": "Explore relations between artists in museums",
-                "description": "Start a text search for museums you like. Once you found what you like in the list of results, click on the buttons that appear next to the result and keep exploring relations. New tables will appear, including more actions and relations to explore.",
+                "description": "Search for museums, choose from the list of results, click on the buttons that appear next to the result and keep exploring relations. New tables will appear, including more actions and relations to explore.",
                 "action": "save",
                 "dynamic_elements": [
                     {
@@ -254,7 +254,7 @@
                         "type": "textsearch",
                         "textsearch_title": "Search a museum",
                         "textsearch_query": "SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search \"<<searchterm>>\";\r\n                      mwapi:language \"en\".\r\n      ?item wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  ?item (wdt:P279|wdt:P31) wd:Q207694 ; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 20 ",
-                        "textsearch_userinput": "",
+                        "textsearch_userinput": "orsay",
                         "operations": []
                     },
                     {
@@ -263,10 +263,64 @@
                         "tablevalueaction_title": "show similar museums",
                         "tablevalueaction_column": "item",
                         "tablevalueaction_table": "1__textsearch_query",
-                        "tablevalueaction_query": "SELECT DISTINCT ?museum ?museumLabel \r\nWHERE { \r\n  <<item>> wdt:P17 ?country . \r\n  ?museum (wdt:P279|wdt:P31) wd:Q33506; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 10",
+                        "tablevalueaction_query": "SELECT DISTINCT ?museum ?museumLabel ?place ?placeLabel\r\nWHERE { \r\n?artwork p:P276 / ps:P276 <<item>> ; wdt:P170 ?artist ; wdt:P135 wd:Q40415 .\r\n?artwork2 wdt:P170 ?artist ; p:P276 / ps:P276 ?museum .\r\n?museum  wdt:P17 ?place .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 10",
+                        "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "tablevalueaction",
+                        "tablevalueaction_title": "show impressionists",
+                        "tablevalueaction_column": "item",
+                        "tablevalueaction_table": "1__textsearch_query",
+                        "tablevalueaction_query": "SELECT DISTINCT ?artist ?artistLabel WHERE {\r\n  ?stmt (ps:P276 | ps:P195) <<item>> .\r\n  ?artwork (p:P276 | p:P195 | p:P217) ?stmt ; wdt:P170 ?artist .\r\n  ?artist wdt:P135 wd:Q40415 .\r\n  SERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\n",
+                        "operations": []
+                    },
+                    {
+                        "position": 4,
+                        "type": "tablevalueaction",
+                        "tablevalueaction_title": "show other museums in this country",
+                        "tablevalueaction_column": "country",
+                        "tablevalueaction_table": "1__textsearch_query",
+                        "tablevalueaction_query": "SELECT DISTINCT ?other ?otherLabel \r\nWHERE { \r\n  ?other wdt:P17 <<country>>. \r\n  ?other (wdt:P279|wdt:P31) wd:Q33506.\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 10",
+                        "operations": []
+                    },
+                    {
+                        "position": 5,
+                        "type": "tablevalueaction",
+                        "tablevalueaction_title": "show birthplace",
+                        "tablevalueaction_column": "artist",
+                        "tablevalueaction_table": "3__textsearch_query",
+                        "tablevalueaction_query": "SELECT ?place ?placeLabel\r\nWHERE {<<artist>> wdt:P27 ?place .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}",
+                        "operations": []
+                    },
+                    {
+                        "position": 6,
+                        "type": "textsearch",
+                        "textsearch_title": "Search artist",
+                        "textsearch_query": "SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search \"<<searchterm>>\";\r\n                      mwapi:language \"en\".\r\n      ?item wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  ?item (wdt:P279|wdt:P31) wd:Q207694 ; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 20 ",
+                        "textsearch_userinput": "",
+                        "operations": []
+                    },
+                    {
+                        "position": 7,
+                        "type": "tablevalueaction",
+                        "tablevalueaction_title": "thingy",
+                        "tablevalueaction_column": "country",
+                        "tablevalueaction_table": "6__textsearch_query",
+                        "tablevalueaction_query": "SELECT DISTINCT ?other ?otherLabel \r\nWHERE { \r\n  ?other wdt:P17 <<country>>. \r\n  ?other (wdt:P279|wdt:P31) wd:Q33506.\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 10",
+                        "operations": []
+                    },
+                    {
+                        "position": 8,
+                        "type": "tablevalueaction",
+                        "tablevalueaction_title": "shared artists",
+                        "tablevalueaction_column": "museum",
+                        "tablevalueaction_table": "2__textsearch_query",
+                        "tablevalueaction_query": "SELECT DISTINCT ?artist ?artistLabel \r\nWHERE {\r\n?stmt (ps:P276 | ps:P195) <<item>> .\r\n ?artwork (p:P276 | p:P195 | p:P217) ?stmt ; wdt:P170 ?artist .\r\n?stmt2 (ps:P276 | ps:P195) <<museum>> .\r\n  ?artwork2 (p:P276 | p:P195 | p:P217) ?stmt2 ; wdt:P170 ?artist \r\n SERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n.} LIMIT 20",
                         "operations": []
                     }
-                ]
+                ],
+                "curator": "Marilena Daquino"
             }
         },
         "listening_experiences": {

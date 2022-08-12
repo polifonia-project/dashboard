@@ -20,7 +20,7 @@ Session(app)
 
 def empty_temp():
     '''
-    This function checks every 12 hours if there are files 
+    This function checks every 12 hours if there are files
     in the folder "temp" that were created more than 1 day before, and delete them.
     '''
     today = datetime.today().isocalendar()
@@ -66,7 +66,7 @@ def asklogin():
 @app.route("/gitauth")
 def gitauth():
     github_auth = "https://github.com/login/oauth/authorize"
-    clientId = '6a49af44eaa2f9c3dfd0'
+    clientId = conf.clientID
     scope = "&read:user"
     return redirect(github_auth+"?client_id="+clientId+scope)
 
@@ -92,6 +92,7 @@ def oauthcallback(is_valid_user=None):
             return redirect(url_for('setup'))
     else:
         session["name"] = 'None'
+        session["user_type"] = 'extra'
         print("bad boy's request to github oauth")
         return redirect(url_for('home'))
 

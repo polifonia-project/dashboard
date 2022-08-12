@@ -128,6 +128,9 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'tablevalueaction' in k:
                                         elements_dict['type'] = 'tablevalueaction'
                                         elements_dict[k.split('__')[1]] = v
+                                    elif 'tablecomboaction' in k:
+                                        elements_dict['type'] = 'tablecomboaction'
+                                        elements_dict[k.split('__')[1]] = v
                                     elif 'action' in k:
                                         op_list.append(v)
                         # create dicts with operations info
