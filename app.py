@@ -134,15 +134,38 @@ def datastory(section_name, datastory_name):
         # open and create html file
         data_methods.create_html(r, datastory_name, section_name)
 
-        # commit json and html to repo
+        new_story = {
+            'user_name': session['name'],
+            'id': section_name
+        }
+
+        stories_list = data_methods.get_raw_json(
+            branch='main', absolute_file_path='story_list.json')
+
+        if stories_list is not None:
+            stories_list[section_name] = new_story
+            data_methods.update_json(
+                'static/temp/stories_list.json', stories_list)
+        else:
+            stories_list = {}
+            stories_list[section_name] = new_story
+            data_methods.update_json(
+                'static/temp/stories_list.json', stories_list)
+
+        # commit config and html to repo
         github_sync.push('static/temp/config_'+section_name+'.json', 'main', 'melodyeditor',
                          'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
         github_sync.push('static/temp/'+datastory_name+'_'+section_name+'.html', 'main', 'melodyeditor',
                          'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
 
-        # remove both files
+        # commit stories list to repo
+        github_sync.push('static/temp/stories_list.json', 'main', 'melodyeditor',
+                         'editor.melody@gmail.com', conf.melody_token)
+
+        # remove the files
         os.remove('static/temp/config_'+section_name+'.json')
         os.remove('static/temp/'+datastory_name+'_'+section_name+'.html')
+        os.remove('static/temp/stories_list.json')
 
         return redirect('https://github.com/melody-data/stories')
 

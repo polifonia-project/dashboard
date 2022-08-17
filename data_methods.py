@@ -2,6 +2,7 @@ import json
 from flask import request
 from datetime import datetime
 import requests
+import conf
 
 
 def read_json(file_name):
@@ -166,3 +167,24 @@ def create_html(r, datastory_name, section_name):
     # print(temp_html_file)
     temp_html_file.write(html)
     temp_html_file.close()
+
+
+def get_raw_json(branch='main', absolute_file_path=None):
+    '''
+    This function request the raw version of a json file hosted in a Github repository.
+    Args:
+        branch (str): the repository branch from which the file is requested. Default is "main".
+        absolute_file_path (str): a string that identifies the name of the file (or its path).
+
+    Returns:
+        data (dict): a disctionary containing th econtent of the json file.
+
+    '''
+    try:
+        json_url = 'https://raw.githubusercontent.com/' + conf.melody_owner + '/' + \
+            conf.melody_repo_name+'/' + branch + '/' + absolute_file_path
+        r = requests.get(json_url)
+        data = r.json()
+    except:
+        data = None
+    return data
