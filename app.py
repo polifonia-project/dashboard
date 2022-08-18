@@ -134,9 +134,13 @@ def datastory(section_name, datastory_name):
         # open and create html file
         data_methods.create_html(r, datastory_name, section_name)
 
+        story_title = data_methods.read_json(
+            'static/temp/config_'+section_name+'.json')
+
         new_story = {
             'user_name': session['name'],
-            'id': section_name
+            'id': section_name,
+            'title': story_title['title']
         }
 
         stories_list = data_methods.get_raw_json(
