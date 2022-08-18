@@ -182,7 +182,8 @@ def get_raw_json(branch='main', absolute_file_path=None):
     '''
     try:
         json_url = 'https://raw.githubusercontent.com/' + conf.melody_owner + '/' + \
-            conf.melody_repo_name+'/' + branch + '/' + absolute_file_path
+            conf.melody_repo_name+'/' + branch + '/' + \
+            conf.melody_sub_dir + '/' + absolute_file_path
         r = requests.get(json_url)
         data = r.json()
     except:

@@ -140,7 +140,7 @@ def datastory(section_name, datastory_name):
         }
 
         stories_list = data_methods.get_raw_json(
-            branch='main', absolute_file_path='story_list.json')
+            branch='main', absolute_file_path='stories_list.json')
 
         if stories_list is not None:
             stories_list[section_name] = new_story
