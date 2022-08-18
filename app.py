@@ -285,100 +285,113 @@ def setup():
 
 @app.route("/modify/<string:section_name>/<string:datastory_name>", methods=['POST', 'GET'])
 def modify_datastory(section_name, datastory_name):
-    general_data = data_methods.read_json('config.json')
-    if session['user_type'] == 'polifonia':
-        datastory_data = data_methods.access_data_sources(
-            section_name, datastory_name, 'config.json')
-    elif session['user_type'] == 'extra' or session['user_type'] == 'random':
-        datastory_data = data_methods.read_json(
-            'static/temp/config_'+section_name+'.json')
-    if request.method == 'GET':
-        template_mode = datastory_data['template_mode']
-        if session.get('name') is not None:
-            if session['name']:
-                return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
-    elif request.method == 'POST':
-        if session.get('name') is not None:
-            if session['name']:
-                if request.form['action'] == 'save':
-                    try:
-                        if session['user_type'] == 'polifonia':
-                            new_datastory_name = data_methods.manage_datastory_data(
-                                general_data, 'config.json', section_name, datastory_name)
-                            return redirect(url_for('datastory', section_name=section_name, datastory_name=new_datastory_name))
-                        elif session['user_type'] == 'extra' or session['user_type'] == 'random':
-                            # get data and add to existing datastory instance in config
-                            # transform ImmutableMultiDict into regular dict
-                            form_data = request.form.to_dict(flat=True)
-                            datastory_title = form_data['title']
-                            dynamic_elements = []
-                            position_set = set()
-                            color_code_list = []
-                            # we fill a set with the positions of the elements' type
-                            for k, v in form_data.items():
-                                if '__' in k:
-                                    position_set.add(int(k.split('__')[0]))
-                                elif '_color' in k:
-                                    color_code_list.insert(0, v)
-                                else:
-                                    datastory_data[k] = v
-                            datastory_data['color_code'] = color_code_list
-                            # we create as many dicts as there are positions, to store each type of element and append to
-                            # dynamic_elements list
-                            for position in position_set:
-                                operations = []
-                                op_list = []
-                                elements_dict = {}
-                                elements_dict['position'] = position
-                                for k, v in form_data.items():
-                                    if '__' in k:
-                                        if position == int(k.split('__')[0]):
-                                            if 'text' in k:
-                                                elements_dict['type'] = 'text'
-                                                elements_dict[k.split('__')[
-                                                    1]] = v
-                                            elif 'count' in k:
-                                                elements_dict['type'] = 'count'
-                                                elements_dict[k.split('__')[
-                                                    1]] = v
-                                            elif 'chart' in k:
-                                                elements_dict['type'] = 'chart'
-                                                elements_dict[k.split('__')[
-                                                    1]] = v
-                                            elif 'action' in k:
-                                                op_list.append(v)
-                                # create dicts with operations info
-                                for op in op_list:
-                                    op_dict = {}
-                                    op_dict['action'] = op
-                                    if op == 'count':
-                                        op_dict['param'] = 'label'
-                                    elif op == 'sort':
-                                        op_dict['param'] = 'another'
-                                    operations.append(op_dict)
-                                elements_dict['operations'] = operations
-                                dynamic_elements.append(elements_dict)
+    while True:
+        try:
+            general_data = data_methods.read_json('config.json')
+            if session['user_type'] == 'polifonia':
+                datastory_data = data_methods.access_data_sources(
+                    section_name, datastory_name, 'config.json')
+            elif session['user_type'] == 'extra' or session['user_type'] == 'random':
+                datastory_data = data_methods.read_json(
+                    'static/temp/config_'+section_name+'.json')
+                print(datastory_data)
+            if request.method == 'GET':
+                template_mode = datastory_data['template_mode']
+                if session.get('name') is not None:
+                    if session['name']:
+                        return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
+            elif request.method == 'POST':
+                if session.get('name') is not None:
+                    if session['name']:
+                        if request.form['action'] == 'save':
+                            try:
+                                if session['user_type'] == 'polifonia':
+                                    new_datastory_name = data_methods.manage_datastory_data(
+                                        general_data, 'config.json', section_name, datastory_name)
+                                    return redirect(url_for('datastory', section_name=section_name, datastory_name=new_datastory_name))
+                                elif session['user_type'] == 'extra' or session['user_type'] == 'random':
+                                    # get data and add to existing datastory instance in config
+                                    # transform ImmutableMultiDict into regular dict
+                                    form_data = request.form.to_dict(flat=True)
+                                    datastory_title = form_data['title']
+                                    dynamic_elements = []
+                                    position_set = set()
+                                    color_code_list = []
+                                    # we fill a set with the positions of the elements' type
+                                    for k, v in form_data.items():
+                                        if '__' in k:
+                                            position_set.add(
+                                                int(k.split('__')[0]))
+                                        elif '_color' in k:
+                                            color_code_list.insert(0, v)
+                                        else:
+                                            datastory_data[k] = v
+                                    datastory_data['color_code'] = color_code_list
+                                    # we create as many dicts as there are positions, to store each type of element and append to
+                                    # dynamic_elements list
+                                    for position in position_set:
+                                        operations = []
+                                        op_list = []
+                                        elements_dict = {}
+                                        elements_dict['position'] = position
+                                        for k, v in form_data.items():
+                                            if '__' in k:
+                                                if position == int(k.split('__')[0]):
+                                                    if 'text' in k:
+                                                        elements_dict['type'] = 'text'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'count' in k:
+                                                        elements_dict['type'] = 'count'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'chart' in k:
+                                                        elements_dict['type'] = 'chart'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'action' in k:
+                                                        op_list.append(v)
+                                        # create dicts with operations info
+                                        for op in op_list:
+                                            op_dict = {}
+                                            op_dict['action'] = op
+                                            if op == 'count':
+                                                op_dict['param'] = 'label'
+                                            elif op == 'sort':
+                                                op_dict['param'] = 'another'
+                                            operations.append(op_dict)
+                                        elements_dict['operations'] = operations
+                                        dynamic_elements.append(elements_dict)
 
-                            datastory_data['dynamic_elements'] = dynamic_elements
-                            data_methods.update_json(
-                                'static/temp/config_'+section_name+'.json', datastory_data)
-                            datastory_name = datastory_title.lower().replace(" ", "_")
-                            return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
-                    except:
-                        return 'Something went wrong'
+                                    datastory_data['dynamic_elements'] = dynamic_elements
+                                    data_methods.update_json(
+                                        'static/temp/config_'+section_name+'.json', datastory_data)
+                                    datastory_name = datastory_title.lower().replace(" ", "_")
+                                    return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
+                            except:
+                                return 'Something went wrong'
 
-                elif request.form['action'] == 'delete':
-                    print(section_name, datastory_name, request.form)
-                    if session['user_type'] == 'polifonia':
-                        datastory_title = request.form['title'].lower().replace(
-                            " ", "_")
-                        general_data['data_sources'][section_name].pop(
-                            datastory_title, 'None')
-                        data_methods.update_json('config.json', general_data)
-                        return redirect('/')
-                    elif session['user_type'] == 'extra' or session['user_type'] == 'random':
-                        os.remove('static/temp/config_'+section_name+'.json')
-                        return redirect('/')
+                        elif request.form['action'] == 'delete':
+                            print(section_name, datastory_name, request.form)
+                            if session['user_type'] == 'polifonia':
+                                datastory_title = request.form['title'].lower().replace(
+                                    " ", "_")
+                                general_data['data_sources'][section_name].pop(
+                                    datastory_title, 'None')
+                                data_methods.update_json(
+                                    'config.json', general_data)
+                                return redirect('/')
+                            elif session['user_type'] == 'extra' or session['user_type'] == 'random':
+                                os.remove('static/temp/config_' +
+                                          section_name+'.json')
+                                return redirect('/')
+        except:
+            retrieved_config = data_methods.get_raw_json(
+                branch='main', absolute_file_path='config_' + section_name + '.json')
+            data_methods.update_json(
+                'static/temp/config_' + section_name + '.json', retrieved_config)
+            continue
+        break
 
 
 if __name__ == "__main__":

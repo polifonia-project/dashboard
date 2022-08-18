@@ -1628,10 +1628,9 @@ async function fillDropDownList() {
         try {
             const response = await fetch('https://raw.githubusercontent.com/melody-data/stories/main/published_stories/stories_list.json');
             const data = await response.json();
-            console.log(data);
             for (story of data) {
                 if (name === story.user_name) {
-                    storyList.appendChild(newListElement(story.title))
+                    storyList.appendChild(newListElement(story.title, story.id))
                 }
             }
         }
@@ -1641,13 +1640,14 @@ async function fillDropDownList() {
     }
 }
 
-const newListElement = (title) => {
+const newListElement = (title, id) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     const text = title;
     const aContent = document.createTextNode(text);
-    a.setAttribute('href', '#');
-    a.setAttribute('onclick', 'myFunction();return false;');
+    let file_name = title.replace(/[^\w]/g, '_').toLowerCase();
+    a.setAttribute('href', '/modify/' + id + '/' + file_name);
+    a.setAttribute('onclick', 'retrieveConfig(' + '"' + id + '"' + ');');
     a.appendChild(aContent);
     li.appendChild(a);
     return li;
