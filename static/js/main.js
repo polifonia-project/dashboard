@@ -16,8 +16,13 @@ $(document).ready(function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
     }
-    fillDropDownList();
 });
+
+// check for drop down story list and call function
+const storyList = document.getElementById('story-list');
+if (storyList) {
+    fillDropDownList(storyList);
+}
 
 //// WYSIWYG FORM FUNCTIONS ////
 
@@ -1621,22 +1626,19 @@ function getBrightness(c) {
 
 }
 
-async function fillDropDownList() {
-    const storyList = document.getElementById('story-list');
-    if (storyList) {
-        const name = storyList.getAttribute('name');
-        try {
-            const response = await fetch('https://raw.githubusercontent.com/melody-data/stories/main/published_stories/stories_list.json');
-            const data = await response.json();
-            for (story of data) {
-                if (name === story.user_name) {
-                    storyList.appendChild(newListElement(story.title, story.id))
-                }
+async function fillDropDownList(storyList) {
+    const name = storyList.getAttribute('name');
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/melody-data/stories/main/published_stories/stories_list.json');
+        const data = await response.json();
+        for (story of data) {
+            if (name === story.user_name) {
+                storyList.appendChild(newListElement(story.title, story.id))
             }
         }
-        catch (error) {
-            console.log('Error: ', error);
-        }
+    }
+    catch (error) {
+        console.log('Error: ', error);
     }
 }
 
@@ -1646,8 +1648,7 @@ const newListElement = (title, id) => {
     const text = title;
     const aContent = document.createTextNode(text);
     let file_name = title.replace(/[^\w]/g, '_').toLowerCase();
-    a.setAttribute('href', '/modify/' + id + '/' + file_name);
-    a.setAttribute('onclick', 'retrieveConfig(' + '"' + id + '"' + ');');
+    a.setAttribute('href', 'modify/' + id + '/' + file_name);
     a.appendChild(aContent);
     li.appendChild(a);
     return li;
