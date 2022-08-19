@@ -1643,13 +1643,12 @@ async function fillDropDownList(storyList) {
 }
 
 const newListElement = (title, id) => {
-    const li = document.createElement('li');
     const a = document.createElement('a');
     const text = title;
     const aContent = document.createTextNode(text);
     let file_name = title.replace(/[^\w]/g, '_').toLowerCase();
+    a.setAttribute('class', 'dropdown-item');
     a.setAttribute('href', 'modify/' + id + '/' + file_name);
     a.appendChild(aContent);
-    li.appendChild(a);
-    return li;
+    return a;
 }
