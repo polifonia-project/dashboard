@@ -80,6 +80,36 @@
                     </p>
                 </div>
                 <div class="card-body" id="sortable">
+                    <!-- Button trigger modal -->
+
+
+                    <!-- Modal for query and chart preview -->
+                    <div class="modal fade" id="chartsModalLong" tabindex="-1" role="dialog"
+                        aria-labelledby="chartsModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 id="chartsModalLongTitle">Choose the right chart for your
+                                        query</h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Introduction</p>
+                                    <div>
+                                        <h4>Chart</h4>
+                                        <p>Description</p>
+                                        <img>
+                                        <h5>Variables</h5>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {% for dict in datastory_data.dynamic_elements %}
                     <!-- TEXT -->
