@@ -86,22 +86,116 @@
                     <!-- Modal for query and chart preview -->
                     <div class="modal fade" id="chartsModalLong" tabindex="-1" role="dialog"
                         aria-labelledby="chartsModalLongTitle" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content card">
                                 <div class="modal-header">
-                                    <h3 id="chartsModalLongTitle">Choose the right chart for your
+                                    <h4 id="chartsModalLongTitle" class="card-title">Choose the right chart for your
                                         query</h3>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Introduction</p>
                                     <div>
-                                        <h4>Chart</h4>
-                                        <p>Description</p>
-                                        <img>
-                                        <h5>Variables</h5>
+                                        <p>Introduction</p>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <h4>Bar Chart</h4>
+                                    <div class="row chart-preview">
+                                        <div class="col-5 col-md-4">
+                                            <img class="preview-png" src="/static/img/bar-chart.png" />
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div>
+                                                <p>A bar chart is a graph with rectangular bars that useful for looking
+                                                    at a set of data and making comparisons.
+                                                    The horizontal (x) axis represents the categories.
+                                                    The vertical (y) axis represents a value for those categories.
+                                                    The values can be percentages or numbers.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        To build it, you can:
+                                    </p>
+                                    <ul>
+                                        <li>write a non-aggregating query that returns a variable called
+                                            ?label (the categories) and flag the "Count" operation.</li>
+                                        <li>write an aggregating query that returns two variables:
+                                            <ol>
+                                                <li>?label (categorical/numerical values that represents categories
+                                                    in the x axis)</li>
+                                                <li>?count (corresponding numerical values in the y axis).</li>
+                                            </ol>
+                                        </li>
+                                    </ul>
+                                    <h4>Line Chart</h4>
+                                    <div class="row chart-preview">
+                                        <div class="col-5 col-md-4">
+                                            <img class="preview-png" src="/static/img/line-chart.png" />
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div>
+                                                <p>Line charts are usually employed to track changes in data over
+                                                    periods of time.
+                                                    A line chart is created plotting a series of several points
+                                                    connected with a continuous line.
+                                                    The horizontal (x) axis represents the time period. The vertical (y)
+                                                    axis represents the item that is being measured in that specifi
+                                                    period.</p>
+                                                <p>
+                                                    To build it, you can:
+                                                </p>
+                                                <ul>
+                                                    <li>write a non-aggregating query that returns a variable called
+                                                        ?label (time periods) and flag the "Count" operation.</li>
+                                                    <li>write an aggregating query that returns two variables:
+                                                        <ol>
+                                                            <li>?label (categorical/numerical values that represents
+                                                                periods of time in the x axis)</li>
+                                                            <li>?count (corresponding numerical value for the item in
+                                                                the y axis).
+                                                            </li>
+                                                        </ol>
+                                                    </li>
+                                                    * The ?label can be numbers or letters to represent day, months,
+                                                    years, or other periods of time.
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h4>Doughnut Chart</h4>
+                                    <div class="row chart-preview">
+                                        <div class="col-5 col-md-4">
+                                            <img class="preview-png" src="/static/img/doughnut-chart.png" />
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div>
+                                                <p>Doughnut charts are used to express a "part-to-whole" relationship,
+                                                    where all pieces together represent 100%.
+                                                    A doughnut chart works best to display data with a small number of
+                                                    categories (2-5).</p>
+                                                <p>
+                                                    To build it, you can:
+                                                </p>
+                                                <ul>
+                                                    <li>write a non-aggregating query that returns sa variable called
+                                                        ?label (the categories) and flag the "Count" operation.</li>
+                                                    <li>write an aggregating query that returns two variables:
+                                                        <ol>
+                                                            <li>?label (categorical/numerical values that represents
+                                                                categories)</li>
+                                                            <li>?count (corresponding numerical values for each
+                                                                segment).
+                                                            </li>
+                                                        </ol>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
