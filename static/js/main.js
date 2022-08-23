@@ -392,8 +392,8 @@ $(function () {
                             } else if (operations.length == 0) {
                                 // without operations
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
                                 }
                             }
 
@@ -452,8 +452,8 @@ $(function () {
                             } else if (operations.length == 0) {
                                 // without operations
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
                                 }
                             }
                             //  retrieve the chart id
@@ -1146,8 +1146,8 @@ function barchart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
                     }
                 }
 
@@ -1256,8 +1256,8 @@ function linechart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
                     }
                 }
 
