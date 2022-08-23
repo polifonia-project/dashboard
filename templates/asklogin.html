@@ -14,13 +14,8 @@
 			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
 				<div class="home">
 					<h1 class="text-white fw-bold">Become<br> a data storyteller <br> with MELODY</h1>
-					<h5 class="text-white op-7 mb-2 col-md-6">You can start creating a data story in a few steps. We use
+					<h5 class="text-white op-7 mb-2 col-md-6">You can start creating a data story right now! We use
 						GitHub to authenticate our users, so if you do not have an account yet, hurry up!</h5>
-				</div>
-				<div>
-					<a href="{{ url_for('gitauth') }}" role="button">Polifonia Collaborator</a><br>
-					<a href="{{ url_for('gitauth') }}" role="button">Github User</a><br>
-					<a href="{{url_for('setup')}}" role="button">TRY NOW</a>
 				</div>
 			</div>
 		</div>
@@ -29,22 +24,31 @@
 		<b class="ball2"></b>
 		<div class="actions row mt--2">
 			<div class="action col-md-3">
-				<h6>Start collaborating</h6>
-				<p>Add a comment to this <a target="_blank"
-						href="https://github.com/polifonia-project/dashboard/issues/19">issue</a> to become a
-					collaborator. We will answer ASAP!</p>
+				<h6>TRY NOW!</h6>
+				<p>If <u>you do not have a GitHub account</u>,
+					you can create stories and export them immediately,
+					but you cannot save them!</p>
+					<a href="{{url_for('setup')}}" role="button">START NOW</a>
 			</div>
 			<div class="action col-md-3">
-				<h6>Sign in</h6>
-				<p>Once you are a collaborator, <a href="gitauth">sign in</a> to start!</p>
+				<h6>Or sign in</h6>
+				<p>If you are a registered user,
+					you can sign in and start! Your stories will be published here,
+					in the left sidebar.</p>
+					<a href="{{ url_for('gitauth') }}" role="button">SIGN IN</a>
 			</div>
 			<div class="action col-md-3 whitebg">
 				<h6>Publish with us</h6>
-				<p>When saving your story this will be published immediately.</p>
+				<p>We can publish your stories.
+					If you have a GitHub account (but you are not registered),
+					your stories are published on <a target="_blank" href="https://melody-data.github.io/stories/">MELODY stories</a>,
+					our online catalogue. It's free!
+				</p>
+				<a href="{{ url_for('gitauth') }}" role="button">SIGN IN</a><br>
 			</div>
 			<div class="action col-md-3">
 				<h6>Export your story</h6>
-				<p>You can export your data story as a web document or a PDF. Alternatively, you can embed or download
+				<p>You can always export your data story as a web document or a PDF. Alternatively, you can embed or download
 					single charts.</p>
 			</div>
 
