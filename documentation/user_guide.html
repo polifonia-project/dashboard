@@ -12,11 +12,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <!-- headers -->
-    <header class="text-gray-600 body-font">
+    <header class="text-gray-600 body-font sticky-top">
         <div class="container mx-auto flex flex-wrap p-4 flex-col md:flex-row items-center">
             <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0" href="../index.html">
                 <span class="ml-3 text-xl">MELODY</span>
@@ -36,12 +39,12 @@
                 <div class="col-3">
                     <!-- sidebar -->
                     <div class="flex-shrink-0 p-3 sticky-top" style="width: 280px;">
-                        <ul class="list-unstyled ps-0">
-                            <li class="mb-1">
-                                <button class="btn btn-toggle align-items-center rounded collapsed">
-                                    <a class="link-dark rounded" href="#auth">Authenticate</a>
-                                </button>
-                            </li>
+                        <ul class="list-unstyled ps-0" style="margin-top: 4em;">
+                          <li class="mb-1">
+                              <button class="btn btn-toggle align-items-center rounded collapsed">
+                                  <a class="link-dark rounded" href="#auth">Which MELODY user are you?</a>
+                              </button>
+                          </li>
                             <li class="mb-1">
                                 <button class="btn btn-toggle align-items-center rounded collapsed">
                                     <a class="link-dark rounded" href="#welcome">Welcome Page</a>
@@ -67,10 +70,52 @@
                                     <a class="link-dark rounded" href="#templates">Templates</a>
                                 </button>
                                 <div class="collapse show" id="statistics-collapse">
-                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                        <li><a href="#statistics_template" class="link-dark rounded">The statistics template</a></li>
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
+                                        <li>
+                                          <button class="btn btn-toggle align-items-center rounded collapsed"
+                                              data-bs-toggle="collapse" data-bs-target="#statisticsel-collapse"
+                                              aria-expanded="false">
+                                              <a href="#statistics_template" class="link-dark rounded">Statistics</a>
+                                          </button>
+                                          <div class="collapse show" id="statisticsel-collapse">
+                                              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
+                                                  <li>
+                                                    <a href="#textboxes" class="link-dark rounded">Text boxes</a>
+                                                  </li>
+                                                  <li>
+                                                    <a href="#counter" class="link-dark rounded">Counters</a>
+                                                  </li>
+                                                  <li>
+                                                    <a href="#chart" class="link-dark rounded">Charts</a>
+                                                  </li>
+                                              </ul>
+                                          </div>
+
+                                        </li>
                                         <!-- <li><a href="#chart" class="link-dark rounded">Charts</a></li>
                                         <li><a href="#query" class="link-dark rounded">SPARQL query</a></li> -->
+                                        <li>
+                                          <button class="btn btn-toggle align-items-center rounded collapsed"
+                                              data-bs-toggle="collapse" data-bs-target="#relationsel-collapse"
+                                              aria-expanded="false">
+                                              <a href="#relations_template" class="link-dark rounded">Relations</a>
+                                          </button>
+                                          <div class="collapse show" id="relationsel-collapse">
+                                              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
+                                                  <li>
+                                                    <a href="#textsearch" class="link-dark rounded">Text search</a>
+                                                  </li>
+                                                  <li>
+                                                    <a href="#action" class="link-dark rounded">Action on results</a>
+                                                  </li>
+                                                  <li>
+                                                    <a href="#combine" class="link-dark rounded">Combine results</a>
+                                                  </li>
+                                              </ul>
+                                          </div>
+
+                                        </li>
+
                                     </ul>
                                 </div>
                             </li>
@@ -85,180 +130,495 @@
                 <!-- main -->
                 <div class="col-9">
                     <div class="flex flex-col w-full">
-                        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">User Guide</h1>
-                        <p class="mb-3">If you haven't installed the Dashboard yet, check out <a class="text-green-500"
-                                href="getting_started.html">the instructions</a>. If you're ready instead, visit <a
-                                class="text-green-500" href="http://127.0.0.1:5000/"
-                                target="_blank">http://127.0.0.1:5000/</a>.</p>
-                        <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Authenticate
-                        </h2>
-                        <p>To use MELODY both locally and in a production environment,
-                          your instance must be paired with a GitHub repository and an OAuth Application
-                          (see <a class="text-green-500"
-                                  href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app">how to create an OAuth app</a>
-                                  connected to your instance of MELODY and
-                                  <a class="text-green-500"
-                                  href="https://docs.github.com/en/organizations/restricting-access-to-your-organizations-data/approving-oauth-apps-for-your-organization">how to approve the app on your repository</a>).
+                      <!-- USER -->
+                        <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Which MELODY user are you?</h2>
+                        <p>In MELODY there are three types of user.</p>
+                        <p>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>
+                          <strong>Registered users</strong> are members of a project that have a registered GitHub account.
+
+                        </p>
+                        <p>For instance, <a class="text-green-500" target="_blank" href="https://projects.dharc.unibo.it/melody">MELODY dashboard</a> is developed and maintained by members of the <a class="text-green-500" target="_blank" href="https://github.com/polifonia-project/">Polifonia H2020 project</a>.
+                        All project members have a GitHub account and are members of the GitHub organisation that published MELODY.
+                        Registered users create and modify all stories that appear in <a class="text-green-500" target="_blank" href="https://projects.dharc.unibo.it/melody">MELODY dashboard</a>.
+                          When they publish a story, this appears in the left sidebar, along with a button to modify it.</p>
+
+                          <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                            <strong>External users with a GitHub account</strong> are users that have a GitHub account, but they are not registered as members of the project.
                           </p>
-                        <p>After creating the OAuth app, modify the file <b>conf.py</b> in the root directory to configure the login.</p>
-                        <code>
-                          <pre>clientID='OAUth client id'
-clientSecret='OAUth client secret id'
-owner='the owner of the repository'
-repo_name='the repository name'
-token='the bearer token of the admin of the repository'</pre>
-                        </code>
-                        <p>Collaborators of the repository can then sign in MELODY with their GitHub account.</p>
+                          <p>External users can create and modify only the stories they authored.
+                            Stories do not appear in <a class="text-green-500" target="_blank" href="https://projects.dharc.unibo.it/melody">MELODY dashboard</a>.
+                            Instead, these are published (for free) in <a class="text-green-500" target="_blank" href="https://melody-data.github.io/stories/">MELODY stories</a>.
+                            If a non registered user wants to modify a story published in <a class="text-green-500" target="_blank" href="https://melody-data.github.io/stories/">MELODY stories</a>,
+                            after the login in <a class="text-green-500" target="_blank" href="https://projects.dharc.unibo.it/melody">MELODY dashboard</a>,
+                            on the top-right menu a button named <em>Modify your stories</em> will appear, showing the list of user's stories.
+                          </p>
+                          <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                            <strong>External users without a GitHub account</strong> are curious users
+                            that do not have a GitHub account, but they want to try out MELODY dashboard.
+                          </p>
+                          <p>This kind of user can access the dashboard and create their stories.
+                            However, at the end of the session the story is not saved anywhere
+                            (neither in MELODY dashboard, nor in MELODY stories).
+                            Therefore users are invited to immediately export their story.</p>
+                        <p>All users can export any story as a web-ready document (HTML, CSS, JS) or PDF, as well as any chart or graph (as image or embeddable code snippet).</p>
                         <h2 id="welcome" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Welcome
                             Page
                         </h2>
                         <p class="mb-3">The welcome page gives you access to the most important
                             functionalities.</p>
                         <img src="img/home.png" alt="">
-                        <p>The left sidebar includes some exemplar data stories, grouped by
+                        <p class="figcaption">The homepage of MELODY. You can login or start immediately</p>
+                        <p>The left sidebar includes data stories created by registered users, grouped by
                         <i>section</i>. From the top right menu you can access the documentation (this document), create a new data story, and sign in with your GitHub credentials.
                         </p>
+                        <p>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg> If you are a <strong>registered user</strong>, your stories will always be accessible from the left sidebar. From there you can modify, delete, or see the final result.
+                        </p>
+                        <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>If you are an <strong>external user with a GitHub account</strong>, your stories will be published elsewhere (see <a class="text-green-500" target="_blank" href="https://melody-data.github.io/stories/">MELODY stories</a>). To access and modify your stories, use the button named <em>Modify your stories</em> on the top right menu (it shows when you are logged in).
+                        </p>
+                        <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>If you are an <strong>external user without a GitHub account</strong>, your stories cannot be published nor modified. Once you create a story, you will be asked to export it, either as a web document or as a PDF.
+                        </p>
+                        <!-- CREATE A STORY-->
+                        <!-- HOW DO NON REG USERS CAN CREATE A STORY-->
+                        <!-- -->
+                        <!-- -->
+                        <!-- -->
+                        <!-- -->
                         <h2 id="create_story" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Create a new story
                         </h2>
-                        <p class="mb-3 ">To create a new story, click on <i>Create a story</i>, in the top right menu. An initial setup page will require you to input some information to prepare the canvas of your story. </p>
+                        <p class="mb-3 ">To create a new story,
+                          click on <i>Create a story</i>, in the top right menu.
+                          If you haven't logged in yet, you will be asked whether you want to do it.
+
+                        </p>
+                        <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>If you are a registered user, we will know!
+                        </p>
+                        <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>If you do not have a GitHub account, click on <strong>START NOW</strong>
+                        </p>
+                        <p>
+                          You are redirected to an initial setup page
+                          to prepare the canvas of your story. </p>
                         <!-- <h2 id="template" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Templates
                         </h2> -->
                         <img src="img/setup1.png" alt="">
+                        <p class="figcaption">The setup page of the data story</p>
+                        <h3><strong>Select the template</strong> </h3>
                         <p class="mb-3 ">Data stories are built on <b>templates</b>,
-                          a set of layout instructions for paginating contents and setup their interactivity. The idea is to provide a design
-                            that can be customised and adapted to different situations while maintaining a consistent style.
-                              We plan to offer three different templates:</p>
+                          a set of layout instructions for paginating contents.
+                          <!--The idea is to provide a design
+                            that can be customised and adapted to different situations while maintaining a consistent style.-->
+                              We plan to offer several templates:</p>
                           <ol class="list-group-numbered pl-3">
-                              <li><b>Statistics</b>: allows a user to display on a canvas a sequence of textual contents, charts,
+                              <li><b>Statistics</b>: display on a canvas text contents, charts,
                                   and data summaries.
                               </li>
-                              <li><b>Map</b>: allows to create a geographical map. Data points can be filtered with user-defined filters, and explored via their metadata, statistics and other charts.</li>
-                              <li><b>Timeline</b>: allows to manipulate time series into adaptive charts, by adding or removing filters that intervene on the chart visualization.</li>
+                              <li><b>Relations</b>: an interactive text search that allows to manipulate actions on results (e.g. make new text searches, combine results of multiple searches).</li>
+                              <li><span style="color: red;">(not available yet)</span> <b>Map</b>: allows to create a geographical map. Data points can be filtered with user-defined filters, and explored via their metadata, statistics and other charts.</li>
+                              <li><span style="color: red;">(not available yet)</span> <b>Timeline</b>: allows to manipulate time series into adaptive charts, by adding or removing filters that intervene on the chart visualization.</li>
                               <!--<li><b>Networks</b>:</li>-->
                           </ol>
-                          <p>You can preview some features of templates and select your favourite from the dropdown.</p>
-                        <p class="mb-3 " style="color: red;">Currently only the <b>Statistics</b> template is available.</p>
-                        <!-- <ol class="list-group-numbered pl-3">
-                            <li>In the first step, you select the type of template, section and title of the datastory
-                                and specify the SPARQL endpoint.</li>
-                            <li>The second step is a WYSIWYG form in the style of the chosen template, which you fill
-                                with the desired information.</li>
-                        </ol> -->
-                        <!-- <h2 id="section" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Section
-                        </h2> -->
-                        <p class="mb-3"><b>Sections</b> are thematic groups including one or more stories. Section names appear on the left sidebar of MELODY.
-                          You can either create a new section by entering a new section title, or you can select one of the existing ones from the dropdown.</p>
+                          <h3><strong>Select the section</strong> </h3>
+                          <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>Only if you are a registered user, you will be asked to choose a section.
+                          </p>
+                        <p class="mb-3"><b>Sections</b> are thematic groups including one or more stories, that appear on the left sidebar.
+                          Create a new section or select an existing one from the dropdown menu.</p>
                           <img src="img/setup2.png" alt="">
-                        <!-- <h2 id="title" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Title
-                        </h2> -->
+                          <p class="figcaption">Select the section of your story (only registered users)</p>
+                        <h3><strong>Select the title</strong> </h3>
                         <p class="mb-3">The <b>title</b> of the data story doesn't need much explanation. It's the first
-                            prominent communication tool in the narrative of the data story you're going to create.</p>
-                        <!-- <h2 id="endpoint" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">SPARQL
-                            Endpoint
-                        </h2> -->
+                            prominent communication tool in the narrative of the data story you're going to create. You can change it later.</p>
+                        <img src="img/setup3.png" alt="">
+                        <p class="figcaption">Choose a title and provide the URL of the SPARQL endpoint</p>
+
+                        <h3><strong>Select the SPARQL endpoint</strong> </h3>
                         <p class="mb-3">Lastly, you must include the URL of an online <b>SPARQL endpoint</b> to retrieve
                             data and populate the charts. Check carefully that it's working.</p>
-                        <img src="img/setup3.png" alt="">
-                        <p class="mb-3">Once you submit your setup information, a link to your datastory will appear in the left sidebar under the name of the section you chose. You'll be redirected to a user-friendly interface based on the template you've chosen.
-                          The new interface will alow you to write and run SPARQL queries and to populate the elements composing the canvas of your final data story.
-                          The interface is WYSIWYG (What You See Is What You Get), meaning you will be able to immediately see results of your queries as charts, modify the order of contents (when applicable) and preview the final data story to be published.</p>
 
+                        <h3><strong>Submit and go!</strong> </h3>
+                        <p class="mb-3">Once you submit your setup information,
+                          you are redirected to a user-friendly interface
+                          based on the template you've chosen.
+                        </p>
+                        <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>
+                           If you are a registered user, a link to your datastory will appear in the left sidebar under the name of the section you chose.
+                        </p>
                         <h2 id="templates" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
                             Templates
                         </h2>
-                        <h3 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="statistics_template">The Statistics template</h3>
-                        <p class="mb-3">The Statistics template is designed for a <i>classic</i> data story,
-                            where you can combine textual information with statistical information such as counts and
-                            charts to create a sequential narrative.</p>
-                          <img src="img/story1.png" alt="">
+                        <p>Regardless of the template you chose,
+                          your task is to select the UI elements to be added to your canvas (e.g. texts, bart charts, text searches),
+                          write a SPARQL query to populate the elements, and browse the preview of the results.
+                        The interface is WYSIWYG (What You See Is What You Get),
+                        meaning you will be able to (i) see immediately results of your queries as charts,
+                        (ii) modify the order of contents (when applicable)
+                        and (iii) preview the final data story to be published.</p>
+                        <p>All templates share a few elements</p>
+                        <ul class="list-group-numbered pl-3">
+                          <li>Color picker</li>
+                          <li>Title <span style="color: red;">(mandatory)</span> </li>
+                          <li>Subtitle</li>
+                          <li>Description</li>
+                          <li>Curators</li>
+                        </ul>
                         <p>You can change the default <b>colors</b> of your story.
                           The new colors will be used in every chart and will create a duotone background effect
                           on the secondary menu.</p>
-                        <p>Similarly, the <b>title</b>, the <b>subtitle</b>, the <b>introduction</b>, and the <b>curators</b> of the story (in the secondary menu) can be modified. The position of these elements in the canvas cannot be modified.</p>
-                        <p>The optional elements of the page are: <b>textboxes</b>, <b>countings</b>, and <b>charts</b>. To add a new element use the respective buttons.
-                          Each box can be moved up and down or removed.</p>
-                          <img src="img/story2.png" alt="">
-                        <h2 id="count" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Counts
-                        </h2>
-                        <p class="mb-3">Counts are boxes including a counting that is the result of a SPARQL query and a label,
-                          that can be manually associated. Countings can be used to give an overview of the dataset. A count requires you to fill in two text areas:</p>
-                        <ul style="list-style: inside;" class="mb-3 pl-3">
-                            <li>A SPARQL query that returns a number. The returned variable name MUST be named "count".
-                            </li>
-                            <li>A short label to be associated to the number in the box.</li>
+                        <p>Similarly, the <b>title</b>, the <b>subtitle</b>, the <b>introduction</b>, and the <b>curators</b>
+                          of the story (in the secondary menu) can be modified.
+                          The position of these elements in the canvas cannot be modified.</p>
+                          <img src="img/story1.png" alt="">
+                          <p class="figcaption">Color picker, title, subtitle, description, and curators</p>
+
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="statistics_template">The Statistics template</h2>
+                        <p class="mb-3">The Statistics template is designed for a <i>classic</i> data story,
+                            where you can combine textual information with statistical information such as counters and
+                            charts to create a sequential narrative.</p>
+                        <p>The elements of the page are:</p>
+                        <ul class="list-group-numbered pl-3">
+                          <li>Text boxes</li>
+                          <li>Counters</li>
+                          <li>Charts</li>
                         </ul>
-                        <p>For instance, a counting can report the number of instances of a certain type. The SPARQL query may look like follows:</p>
-                        <code>SELECT (COUNT(?s) AS ?count) WHERE {?s ?p &lt;https://w3id.org/musow/vocab/repository&gt;.}</code>
-                        <p>Once the query is included in the text area, it automatically runs against the endpoint selected in the preliminary setup, and the resulting box appears on top.</p>
+                        <p>You can add as many elements as you want. To add a new element use the respective button, and a box will appear.
+                          Each box can be moved up and down or removed.</p>
+                        <img src="img/story2.png" alt="">
+                        <p class="figcaption">Text box. Each box includes buttons to move up/down or delete an element</p>
+                        <h2 id="textboxes" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Textboxes
+                        </h2>
+                        <p class="mb-3">Text boxes are meant to include free text descriptions. Each text box is rendered as a single paragraph.</p>
+                        <h2 id="counter" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Counters
+                        </h2>
+                        <p class="mb-3">Counters can be used to give some figures on the dataset, e.g. the number of individuals of a certain class.
+                          Counters are rendered as boxes including a counting and a label.
+                          The counting is the result of a SPARQL query, while the label is manually associated.
+                          To create a counter, fill in the two respective text areas:</p>
+                        <ul style="list-style: inside;" class="mb-3 pl-3">
+                            <li>The SPARQL query <span style="color: red;">(required)</span>. It MUST return a number only, and the variable name MUST be named <strong>?count</strong>.
+                            </li>
+                            <li>The label. A short label to be associated to the number in the box.</li>
+                        </ul>
+                        <p>The SPARQL query should look like follows:</p>
+                        <code><pre>
+SELECT (COUNT(?s) AS ?count)
+WHERE {?s ?p &lt;https://w3id.org/musow/vocab/repository&gt;.}</pre> </code>
+                        <p class="figcaption">A SPARQL query to create a counter</p>
+                        <p>The query automatically runs against the endpoint when moving the mouse out of the text area, and the resulting box appears on top.</p>
                         <img src="img/count.png" alt="">
+                        <p class="figcaption">Counter: a SPARQL query that returns a number and a label.</p>
+
                         <h2 id="chart" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Charts
                         </h2>
-                        <p class="mb-3">Currently, in the statistics template
-                          you can choose between three types of charts: <b>Bar chart</b>, <b>Line chart</b>, and <b>Doughnut chart</b>.
-                        For each chart, the following information must be provided:</p>
+                        <p class="mb-3">You can choose between a few charts: <b>Bar chart</b>, <b>Line chart</b>, and <b>Doughnut chart</b></p>
+                        <p class="mb-3">For each chart, the following information must be provided:</p>
                         <ol class="list-group-numbered mb-3 pl-3">
-                            <li>the type of chart (required), to be selected from a dropdown
+                            <li>the type of chart <span style="color: red;">(required)</span>, to be selected from a dropdown
                             </li>
-                            <li>the SPARQL query (required), to be added in a text area</li>
-                            <li>the chart Title (required)</li>
-                            <li>one or more operations (optional), to aggregate data returned by the query.</li>
+                            <li>the SPARQL query <span style="color: red;">(required)</span>, that MUST return two variables, respectively <strong>?label</strong> and <strong>?count</strong> </li>
+                            <li>the title of the chart <span style="color: red;">(required)</span></li>
+                            <li>operations (optional), to aggregate data returned by the query.</li>
                         </ol>
-
-                        <p class="mb-3">Overall, a SPARQL query to build a chart can be of two types:</p>
+                        <p class="mb-3">A SPARQL query to build a chart can be of two types:</p>
                         <ul style="list-style: inside;" class="mb-3 pl-3">
                             <li><b>Aggregating</b>: the query retrieves aggregated data that are
-                                automatically post-processed to be displayed in a chart.
-                                The query returns two variables, respectively called <b>?x</b> and <b>?y</b> which are respectively a categorical/numerical value (x), and a numerical value (y).
+                                ready to be displayed in a chart.
+                                That is, the query MUST return two variables,
+                                respectively called <b>?label</b> and <b>?count</b>.
+                                <b>?label</b> can be a categorical/numerical value to be displayed on the x axis,
+                                 while <b>?count</b> MUST be a numerical value, to be displayed on the y axis.
                             </li>
-                            <li><b>Non-Aggregating</b>: the query retrieves non-aggregated data, which are not immediately suitable for
-                                charting, hence data need some post-processing operations, provided by the interface.
-                                The query returns one variable called <b>?label</b>, whose values are aggregated with the <b>count</b> operator available under the chart.</li>
+                            <li><b>Non-Aggregating</b>: the query retrieves non-aggregated data,
+                              which are not immediately suitable for charting.
+                              The query MUST return only one variable called <b>?label</b>.
+                              The values of <b>?label</b> must be grouped by their counting using the <b>count</b> checkbox under the chart.</li>
                         </ul>
-                        <p class="mb-3">The returned variables and values of the query depend on the type of chart
-                            chosen. In addition, depending on the optional operations chosen,
-                            there are also requirements for the variable names.</p>
-                        <p>For instance, the following aggregating query:</p>
-                        <code><pre>SELECT ?x (COUNT(?content) AS ?y)
+                        <p class="mb-3"><strong>Bart charts and line charts</strong></p>
+                        <p class="mb-3">To build bar charts and line charts
+                          you can perform both aggregating and non-aggregating queries.
+                          An aggregating query to plot a bar/line chart looks like follows:</p>
+                        <code><pre>SELECT ?label (COUNT(?content) AS ?count)
 WHERE {
     ?content &lt;https://schema.org/additionalType&gt; ?type.
-    ?type rdfs:label ?x .
- } GROUP BY ?x</pre> </code>
-                        <p>returns two variables (x and y) that are ready to fit in the requirements of the chart.</p>
+    ?type rdfs:label ?label .
+ } GROUP BY ?label</pre> </code>
+                        <p class="figcaption">An aggregating SPARQL query to create a bar/line chart</p>
+                        <p>The query returns two variables (?label and ?count)
+                          that fit the requirements, hence no further operations are needed.</p>
                         <img src="img/barchart1.png" alt="">
-
-                        <p class="mb-3">In case of a <b>non-aggregating</b> query, the query must return one variable called <b>?label</b>, and
-                          the operation <b>count</b> must be selected in order to plot results. For instance:
+                        <p class="figcaption">A bar chart created with an aggregating query</p>
+                        <p class="mb-3"><strong>Doughnut charts</strong></p>
+                        <p class="mb-3">Doughnut charts accept only <b>non-aggregating</b> queries.
+                          The query must return only one variable called <b>?label</b>, and
+                          the operation <b>count</b> must be checked in order to plot results.
+                          For instance:
                         </p>
                             <code><pre>
 SELECT ?label
 WHERE {
   ?content &lt;https://schema.org/additionalType&gt; ?type .
   ?type rdfs:label ?label .
-}
-                            </pre> </code>
-                        <p>returns the same values as the aggregating query above, provided the checbox <b>Count</b> is selected.</p>
+}</pre> </code>
+                        <p class="figcaption">A non-aggregating SPARQL query to create a doughnut chart</p>
+                        <p>The query returns the same values as the aggregating query above,
+                          provided that the checbox <b>Count</b> is selected.</p>
                         <img src="img/donut.png" alt="">
+                        <p class="figcaption">A doughnut chart created with a non-aggregating SPARQL query</p>
+
+
+                        <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="relations_template">The Relations template</h2>
+                        <p class="mb-3">The Relations template provides an interactive, iterative,
+                          text search to show relations between data,
+                          designed according to authors' preferences.
+                          With Relations you can design a flow of searches, based on results of a previous one.
+                          You can combine results of multiple searches and highlight patterns,
+                          or you can let the reader discover new insights in a follow-your-nose fashion.
+                        </p>
+                        <img src="img/relations1.png" alt="">
+                        <p class="figcaption">Relations: create interactive, iterative text searches on a dataset</p>
+
+                        <p class="mb-3">The main elements of the template are:</p>
+                        <ul class="list-group-numbered pl-3">
+                          <li>Text search</li>
+                          <li>Action on results</li>
+                          <li>Combine results</li>
+                        </ul>
+                        <p class="mb-3">You can add as many searches as you want.
+                          Actions and combinations of results can be hierarchically
+                          attached to any search results (even to results of actions or
+                          combinations). In this template, elements can be deleted but
+                          cannot be moved up/down, since anyway is the hierarchical order that matters.</p>
+                        <h2 id="textsearch" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Text search
+                        </h2>
+                        <p class="mb-3">A text search presents two areas to be filled in, namely:</p>
+                        <ul class="list-group-numbered pl-3">
+                          <li>The SPARQL query <span style="color:red;">(required)</span>.
+                            A query that performs a text search on the dataset and returns results in a table.</li>
+                          <li>The title of the search (optional).
+                            The title appears on top of the final search box.</li>
+                        </ul>
+                        <p class="mb-3">Below the two areas, a preview of the final search box is shown.
+                          Once you fill in the query, you can immediately try the results.</p>
+                          <img src="img/relationssearch.png" alt="">
+                          <p class="figcaption">Text search: add a SPARQL query in the area and try it immediately in the search box</p>
+
+                        <p class="mb-3">While the SPARQL query does not have constraints
+                          on the variable names, and it can return as many variables as needed,
+                          it requires a <b>placeholder</b> to be included
+                          instead of the term to be searched.
+                          The placeholder is usually enquoted, and MUST be called</p>
+                          <code>&lt;&lt;searchterm&gt;&gt;</code>
+                        <p class="mb-3">For instance, a query on Wikidata to
+                          return a) museums whose name includes the search term (exact match in this case), and b) their country, would look like follows:</p>
+                          <code><pre>
+SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {
+  SERVICE wikibase:mwapi {
+      bd:serviceParam wikibase:endpoint "www.wikidata.org";
+                      wikibase:api "EntitySearch";
+                      mwapi:search "&lt;&lt;searchterm&gt;&gt;";
+                      mwapi:language "en".
+      ?item wikibase:apiOutputItem mwapi:item.
+  }
+  ?item (wdt:P279|wdt:P31) wd:Q207694 ; wdt:P17 ?country .
+SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en"
+  }
+}  LIMIT 20</pre></code>
+                        <p class="figcaption">A SPARQL query performing a text search in Wikidata</p>
+                        <p class="mb-3">SPARQL endpoints usually provide specific APIs
+                          for text searches. Therefore the query might significantly change
+                          depending on such services.</p>
+
+                        <p class="mb-3">Once you type the above query, it returns the following result</p>
+                        <img src="img/relations2.png" alt="">
+                        <p class="figcaption">Text search: preview results of a text search</p>
+
+                        <p class="mb-3"><b>N.B.</b> The above query would usually
+                          return a table with four columns, one for each variable in the SELECT clause.
+                          To make results easy to read,
+                          labels can replace URIs if these are named <b>?{variable}Label</b>.
+                          For instance, in the above table, values of the variable <b>?item</b> (URIs)
+                          are replaced with values of the variable <b>?itemLabel</b>,
+                          and include a link to the URI (<b>?item</b>).
+                        </p>
+
+                        <h2 id="action" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Action on results
+                        </h2>
+                        <p class="mb-3">Actions are SPARQL queries that can be attached to results of a previous search (or action).
+                        Again, results of the SPARQL query are shown as tables.
+                        In detail, actions are attached to columns of the table,
+                        i.e. a variable name of a previous SPARQL query,
+                        and these appear as buttons in the former table.</p>
+                        <img src="img/relations3.png" alt="">
+                        <p class="figcaption">Actions appear as buttons near results of a previous search (or action)</p>
+                        <p class="mb-3">To add an action click on the button <b>Add action to results</b>
+                          below the previous SPARQL query</p>
+                          <img src="img/relations4.png" alt="">
+                          <p class="figcaption">Add an action to results of a SPARQL query</p>
+                          <p class="mb-3">An action consists of three areas to be filled in, namely:</p>
+                          <ul class="list-group-numbered pl-3">
+                            <li>The name of action <span style="color:red;">(required)</span>. It will appear as a button in the table</li>
+                            <li>The name of the column <span style="color:red;">(required)</span>.
+                              The name of the column of the previous search to which to attach the action. The button will appear for each element in that column.</li>
+                            <li>The SPARQL query <span style="color:red;">(required)</span>.
+                              It does not have any constraint on the variable names,
+                              it can return as many values as needed,
+                              and the same rule for replacing URIs with their labels apply also here.
+                              </li>
+                          </ul>
+                          <p class="mb-3">However, a placeholder with the name of the column MUST be included in the query in the following form</p>
+                          <code><pre>&lt;&lt;{variable}&gt;&gt;</pre></code>
+                          <p class="mb-3">For instance, if the column name is <b>?item</b>,
+                            the placeholder will be <b>&lt;&lt;item&gt;&gt;</b> (see the picture below,
+                            where an action called <b>show similar museums</b> is
+                            attached to the column <b>item</b> of the text search described above).</p>
+                          <p class="mb-3">Multiple actions can be attached to the same column, as well as to different columns.</p>
+
+                          <img src="img/relations5.png" alt="">
+                          <p class="figcaption">Actions: select the column of a previous search and use the placeholder in the SPARQL query.</p>
+                          <p class="mb-3">To preview the results of an action,
+                            go back to the preview of the initial text search,
+                            perform a search and click on the button that appears
+                            in results.
+                            The new query replaces the placeholder with the value of the
+                            cell where the action was selected.</p>
+                            <img src="img/relations6.png" alt="">
+                            <p class="figcaption">Actions: perform a search and click on the <em>Action button</em>.</p>
+                            <p class="mb-3">In the above examples you can already see that results
+                              of an action (<em>Show similar museums</em>) can
+                              be further associated with new actions (e.g. <em>shared artists</em>).
+                              To attach an action to results of a previous action,
+                              use the button you find below the latter.
+                            </p>
+                            <img src="img/relations7.png" alt="">
+                            <p class="figcaption">Actions: attach a new action to results of an action.</p>
+                            <p class="mb-3">Actions are <b>strictly hierarchically</b> organised, i.e. an action can be attached
+                              to an immediate parent action or search, but not to anchestors.
+                              There is no limit in the hierarchy, so you can create an infinite flow
+                            of research paths. </p>
+                        <h2 id="combine" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Combine results
+                        </h2>
+                        <p class="mb-3">Results of an action can be associated with a <b>combine results</b> action
+                        that combines (a) the user-selected value from the initial search
+                        and (b) the user-selected value from the action results. In other terms, once you have at least one text search and one action,
+                          you can perform new queries that include individuals from the two sets of results,
+                          and show results in a new table.
+                           </p>
+
+                        <p class="mb-3">For instance, the above text search returns a list
+                        of museums that include the search term <em>Orsay</em>.
+                        The column <b>item</b> of this set of results
+                        is associated with an action that shows similar museums
+                        (i.e., the action <b>show similar museums</b>).
+                        The table with similar museums includes a column called <b>museum</b>.
+                        Now, we could combine (a) Musee d'Orsay (<b>item</b>)
+                        and (b) Metropolitan Museum of Art (<b>museum</b>) in a new query
+                        to show the artists these museums have in common.
+                        We can call this combined-results-action <b>shared artists</b>.</p>
+                        <p class="mb-3">The box <b>combine results</b> action looks exactly like an action,
+                           including three text areas, namely:</p>
+                         <ul class="list-group-numbered pl-3">
+                           <li>The name of the action <span style="color:red;">(required)</span>. It appears as button in the table.</li>
+                           <li>The name of the column <span style="color:red;">(required)</span>.
+                             Specify the column name of the table (result of an action) to which to attach the combine-results-action
+                             (in the above example it would be <b>museum</b>).</li>
+                           <li>The SPARQL query <span style="color:red;">(required)</span>.
+                             In a combine-results-action there MUST be two placeholders,
+                             respectively identifying: (a) the column name of the action to be attached (e.g. <b>museum</b>)
+                             and (b) the column name of the parent text search or action (e.g. <b>item</b>).</li>
+                         </ul>
+                        <p class="mb-3"><b>N.B.</b> Be aware that the two placeholders,
+                          hence the two columns from the two sets of results, MUST NOT have the same name.</p>
+                        <p class="mb-3">Following the previous example, the SPARQL query below returns
+                          all artists whose artworks are on display in both the selected museums.</p>
+                        <img src="img/relations8.png" alt="">
+                        <p class="figcaption">Combine results: a SPARQL query that combines individuals of two sets of results.</p>
+
+                        <p class="mb-3">To see the results of a combine-results action,
+                          perform a new text search in the preview (e.g. search <em>Orsay</em>),
+                          then click on the button that performs the first action (<em>Show similar museums</em>),
+                          and finally click on the button of the combine-results action (<em>Shared artists</em>)</p>
+                        <p class="mb-3">The result of the combine-results action would look like follows.</p>
+                        <img src="img/relations9.png" alt="">
+                        <p class="figcaption">Combine results: follow the flow of queries and see results of a combine-results action.</p>
+
 
                         <h2 id="publish" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
                             Publish and Export
                         </h2>
-                        <p class="mb-3">Once the form is submitted the form, you are redirected to the data story, also
-                            available from the sidebar on the left, where to find the link to modify the story in the future.
-                        </p>
-                        <p>The final data story presents elements of the canvas
-                          in the sequence selected by the designer and presents a few metadata in the secondary menu.
-                          The story can be exported as a PDF document and as a static HTML document, ready to be published in other platforms.</p>
+                        <p class="mb-3">When you save your work,
+                          you are redirected to the preview of the data story.</p>
+
                         <img src="img/final1.png" alt="">
-                        <p>
+                        <p class="figcaption">The preview of the final data story: export as PDF/HTML in the secondary menu</p>
+                        <p class="mb-3">The final data story presents elements on the canvas
+                          in the same order defined by the designer.
+                          In the secondary menu, a few metadata and the export buttons are shown.
+                          </p>
+                        <p class="mb-3"><strong>Modify your story</strong></p>
+                        <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>If you are a <b>registered user</b>, in the left sidebar you will see the title of your story under the section you chose. Your story is already published, and you can always access and modify it from there.</p>
+                        <img src="img/modify1.png" alt="">
+                        <p class="figcaption">Registered users: the story is published in MELODY dashboard and can be modified from the left sidebar</p>
+
+
+                        <p class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>If you are a <b>non-registered user with a github account</b>,
+                        in the secondary menu two buttons appear: you can continue modifying
+                        your story until you are happy, and you can publish it for free on
+                        <a class="text-green-500" href="https://melody-data.github.io/stories/"
+                            target="_blank">Melody stories</a>.
+                            Be aware that your story will not be saved if you leave the page or you do not publish it!
+                          </p>
+                        <img src="img/modify2.png" alt="" style="width: 200px; text-align:center; margin: 0 auto;">
+                        <p class="figcaption">Non-registered GitHub users: modify or publish the story</p>
+
+                        <p class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>If you are a <b>user without any GitHub account</b>,
+                        in the secondary menu only the <em>Modify</em> button will appear. You can continue modifying
+                        your story until you are happy, and you can export it.
+                        Be aware that your story will not be saved if you leave the page or you do not export it!
+                          </p>
+
+                        <p class="mb-3"><strong>Export</strong></p>
+                        <p class="mb-3">
+                          The whole story can be exported as a PDF document or as a web document,
+                          ready to be published in you favourite platform.
                             Similarly, each chart can be saved as a .png image, or
                             exported as an embeddable HTML code snippet.</p>
                         <img src="img/final2.png" alt="">
+                        <p class="figcaption">Export charts as images or embeddable snippets</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- footer -->
     <!-- footer -->
     <footer class="text-gray-600 body-font mt-6">
         <div
@@ -272,41 +632,57 @@ WHERE {
                     2020 research
                     and innovation programme under grant agreement N. 101004746.</p>
             </div>
-            <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
+            <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left ">
                 <div class="lg:w-1/2 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">MELODY</h2>
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">ABOUT MELODY</h2>
                     <nav class="list-none mb-10">
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800"
-                                href="https://github.com/polifonia-project/dashboard" target="_blank">Source code</a>
-                        </li>
                         <li>
                             <a class="text-gray-600 hover:text-pink-800" href="https://polifonia-project.eu/"
                                 target="_blank">
                                 Polifonia
                             </a>
                         </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="https://projects.dharc.unibo.it/melody"
+                                target="_blank">
+                                Melody dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="https://melody-data.github.io/stories/"
+                                target="_blank">
+                                Melody stories
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800"
+                                href="https://github.com/polifonia-project/dashboard" target="_blank">Source code</a>
+                        </li>
                     </nav>
+
                 </div>
                 <div class="lg:w-1/2 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
-                    <nav class="list-none mb-10">
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="getting_started.html">Get
-                                started</a>
-                        </li>
-                        <!-- <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="examples.html">Examples</a>
-                        </li> -->
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="user_guide.html">User
-                                Guide</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="documentation.html">Documentation</a>
-                        </li>
-                    </nav>
-                </div>
+                  <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
+                  <nav class="list-none mb-10">
+                      <li>
+                          <a class="text-gray-600 hover:text-pink-800" href="documentation/getting_started.html">Getting
+                              started</a>
+                      </li>
+                      <!-- <li>
+                          <a class="text-gray-600 hover:text-pink-800" href="documentation/examples.html">Examples</a>
+                      </li> -->
+                      <li>
+                          <a class="text-gray-600 hover:text-pink-800" href="documentation/user_guide.html">User
+                              Guide</a>
+                      </li>
+                      <li>
+                          <a class="text-gray-600 hover:text-pink-800"
+                              href="documentation/documentation.html">Documentation</a>
+                      </li>
+                  </nav>
+
+                    </div>
+
                 <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
                     <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
                     <nav class="list-none mb-10">
@@ -343,49 +719,9 @@ WHERE {
                 </div> -->
             </div>
         </div>
-        <div class="bg-gray-100">
-            <!-- <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
-                <p class="text-gray-500 text-sm text-center sm:text-left">©
-                    <script>document.write(new Date().getFullYear());</script>
-                    Polifonia Dashboard —
-                    <a href="https://twitter.com/knyttneve" rel="noopener noreferrer" class="text-gray-600 ml-1"
-                        target="_blank">@giuliarenda</a>
-                </p>
-                <span class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
-                    <a class="text-gray-500">
-                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            class="w-5 h-5" viewBox="0 0 24 24">
-                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                        </svg>
-                    </a>
-                    <a class="ml-3 text-gray-500">
-                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            class="w-5 h-5" viewBox="0 0 24 24">
-                            <path
-                                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
-                            </path>
-                        </svg>
-                    </a>
-                    <a class="ml-3 text-gray-500">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-                        </svg>
-                    </a>
-                    <a class="ml-3 text-gray-500">
-                        <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
-                            <path stroke="none"
-                                d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
-                            </path>
-                            <circle cx="4" cy="4" r="2" stroke="none"></circle>
-                        </svg>
-                    </a>
-                </span>
-            </div> -->
-        </div>
+
     </footer>
+
 
     <!-- scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
