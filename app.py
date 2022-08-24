@@ -394,5 +394,10 @@ def modify_datastory(section_name, datastory_name):
         break
 
 
+@app.route("/<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])
+def redirect_to_modify(section_name, datastory_name, whatever=None):
+    return redirect(url_for('modify_datastory', section_name=section_name, datastory_name=datastory_name))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
