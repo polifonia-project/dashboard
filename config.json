@@ -1,8 +1,9 @@
 {
     "sections": [
-        "musoW",
         "Listening Experiences",
-        "Wikidata"
+        "Wikidata",
+        "Tests",
+        "musoW"
     ],
     "operations": [
         "Count",
@@ -116,7 +117,7 @@
                         "position": 7,
                         "type": "chart",
                         "chart_type": "barchart",
-                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> \r\nSELECT ?x (COUNT(?content) AS ?y) \r\nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?x .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?x .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?x .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?x .} UNION {?content ?p musow:software . musow:software rdfs:label ?x .} } GROUP BY ?x",
+                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> \r\nSELECT ?label (COUNT(?content) AS ?count) \r\nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?label .} UNION {?content ?p musow:software . musow:software rdfs:label ?label .} } GROUP BY ?label",
                         "chart_title": "Content Overview",
                         "operations": []
                     },
@@ -124,7 +125,7 @@
                         "position": 8,
                         "type": "chart",
                         "chart_type": "linechart",
-                        "chart_query": "SELECT ?x (COUNT(?x) AS ?y) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?x ORDER BY ?x",
+                        "chart_query": "SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?label ORDER BY ?label",
                         "chart_title": "New Entries",
                         "operations": []
                     },
@@ -193,7 +194,7 @@
                         "position": 4,
                         "type": "chart",
                         "chart_type": "barchart",
-                        "chart_query": "SELECT DISTINCT ?x (COUNT(DISTINCT ?content) AS ?y) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?x .\r\n } GROUP BY ?x ?y",
+                        "chart_query": "SELECT DISTINCT ?label (COUNT(DISTINCT ?content) AS ?count) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?label .\r\n } GROUP BY ?label ?count",
                         "chart_title": "Music resources on the web",
                         "operations": []
                     }

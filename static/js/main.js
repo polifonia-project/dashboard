@@ -111,12 +111,14 @@ function add_field(name, bind_query_id = "") {
           <option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
           <option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
           <option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
-        </select>\
+        </select><br/>\
         <label for='largeInput'>SPARQL query</label>\
-        <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea>\
+        <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
         <label for='largeInput'>Chart Title</label>\
-        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label>\
-        <br><input type='checkbox' id='count' name='action1' value='count'>\
+        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
+        <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
+        <label>Operations</label><br/>\
+        <input type='checkbox' id='count' name='action1' value='count'>\
         <label for='count'>Count</label><br>\
         <input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label>\
         <br></div>";
@@ -390,8 +392,8 @@ $(function () {
                             } else if (operations.length == 0) {
                                 // without operations
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
                                 }
                             }
 
@@ -450,8 +452,8 @@ $(function () {
                             } else if (operations.length == 0) {
                                 // without operations
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
                                 }
                             }
                             //  retrieve the chart id
@@ -1144,8 +1146,8 @@ function barchart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
                     }
                 }
 
@@ -1254,8 +1256,8 @@ function linechart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
                     }
                 }
 
