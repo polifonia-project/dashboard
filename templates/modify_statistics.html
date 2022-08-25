@@ -362,6 +362,11 @@
                             <textarea oninput='auto_grow(this)' name='{{dict.position}}__chart_query' type='text'
                                 id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
                                 required>{{dict.chart_query}}</textarea>
+                            <input style='display: none;' class='form-control' type='text'
+                                name='{{dict.position}}__query_series' id='{{dict.position}}__query_series'
+                                placeholder='The label for the data series' required><br />
+                            <a id='query-btn' style='display: none;' class='btn btn-primary btn-border'
+                                onclick='addQueryField(name)' name='query-btn'>Add another query</a><br />
                             <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more
                                 about query and charts.</a><br />
                             <label>Chart Title</label>
@@ -408,7 +413,7 @@
                         Textbox</a>
                     <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
                         Count</a>
-                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="barchart_box">Add
+                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="chart_box">Add
                         Chart</a>
                 </section>
             </div>

@@ -1,9 +1,9 @@
 {
     "sections": [
-        "Listening Experiences",
-        "Wikidata",
         "Tests",
-        "musoW"
+        "Wikidata",
+        "musoW",
+        "Listening Experiences"
     ],
     "operations": [
         "Count",
@@ -50,7 +50,8 @@
     "chart_types": [
         "barchart",
         "linechart",
-        "doughnutchart"
+        "doughnutchart",
+        "scatterplot"
     ],
     "data_sources": {
         "musow": {
@@ -361,6 +362,59 @@
                     }
                 ],
                 "action": "save"
+            }
+        },
+        "tests": {
+            "check_data_management": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Check data management",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Tests",
+                "subtitle": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "chart",
+                        "chart_type": "scatterplot",
+                        "chart_query": "main 1",
+                        "chart_title": "Films' Box Office per Review Scores",
+                        "extra_queries": [
+                            {
+                                "extra_query_1661443206875": "11111222222",
+                                "extra_series_1661443206875": "11111112222"
+                            },
+                            {
+                                "extra_query_1661443202334": "111111111111",
+                                "extra_series_1661443202334": "11111111111"
+                            }
+                        ],
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "chart",
+                        "chart_type": "scatterplot",
+                        "chart_query": "main 2",
+                        "chart_title": "Audiences of Repository",
+                        "extra_queries": [
+                            {
+                                "extra_query_1661443248708": "222222222211111111",
+                                "extra_series_1661443248708": "2222221111"
+                            },
+                            {
+                                "extra_query_1661443258494": "2222222222222222",
+                                "extra_series_1661443258494": "22222222222222"
+                            }
+                        ],
+                        "operations": []
+                    }
+                ]
             }
         }
     }

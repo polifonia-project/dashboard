@@ -61,6 +61,10 @@ def access_data_sources(section_name, datastory_name, file_name):
             return details
 
 
+def manage_extra_queries():
+    return
+
+
 def manage_datastory_data(general_data, file, section_name, datastory_name):
     '''
     This function deals with data story data after the submission of the WYSIWYG form.
@@ -77,9 +81,9 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
 
     # transform ImmutableMultiDict into regular dict
     form_data = request.form.to_dict(flat=True)
+    print(form_data)
     datastory_title = form_data['title']
     datastory_title_clean = datastory_title.lower().replace(" ", "_")
-    print(form_data)
     print("datastory_title_clean", datastory_title_clean,
           '\ndatastory_name', datastory_name)
     dynamic_elements = []
@@ -107,10 +111,20 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                     # we create as many dicts as there are positions, to store each type of element and append to
                     # dynamic_elements list
                     for position in position_set:
+                        extra_set = set()
+                        total_extra_dict = {}
                         operations = []
                         op_list = []
                         elements_dict = {}
                         elements_dict['position'] = position
+                        #######################
+                        #######################
+                        extra_set = set()
+                        total_extra_dict = {}  # to store together extra data of one chart
+                        extra_queries = []  # to store in separate dict extra data of one chart
+                        #######################
+                        #######################
+
                         for k, v in form_data.items():
                             if '__' in k:
                                 if position == int(k.split('__')[0]):
@@ -134,6 +148,20 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'action' in k:
                                         op_list.append(v)
+                                    #######################
+                                    #######################
+                                    elif 'extra' in k:
+                                        extra_set.add(int(k.split('_')[4]))
+                                        total_extra_dict[k.split('__')[1]] = v
+
+                        for e in extra_set:
+                            extra_dict = {}
+                            for k, v in total_extra_dict.items():
+                                if str(e) in k:
+                                    extra_dict[k] = v
+                            extra_queries.append(extra_dict)
+                        elements_dict['extra_queries'] = extra_queries
+
                         # create dicts with operations info
                         for op in op_list:
                             op_dict = {}
@@ -143,6 +171,7 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                             elif op == 'sort':
                                 op_dict['param'] = 'another'
                             operations.append(op_dict)
+
                         elements_dict['operations'] = operations
                         dynamic_elements.append(elements_dict)
 

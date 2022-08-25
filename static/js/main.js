@@ -101,7 +101,7 @@ function add_field(name, bind_query_id = "") {
     var text_field = "<textarea rows='3' oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
 
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
-
+    var help = 'True';
     var chart_field = "<div class='chart-container'>\
       <canvas id='" + (counter + 1) + "__chartid'></canvas>\
       </div>\
@@ -113,17 +113,19 @@ function add_field(name, bind_query_id = "") {
           <option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
           <option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
         </select><br/>\
-        <label for='largeInput'>SPARQL query</label>\
+        <label for='largeInput'>SPARQL query</label><br/>\
         <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
-        <label for='largeInput'>Chart Title</label>\
-        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
+        <input style='display: none;' class='form-control' type='text' name='" + (counter + 1) + "__query_series' id='" + (counter + 1) + "__query_series' placeholder='The label for the data series' required><br/>\
+        <a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
         <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
-        <label>Operations</label><br/>\
+        <label for='largeInput'>Chart Title</label><br/>\
+        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
+        <br/><label>Operations</label><br/>\
         <input type='checkbox' id='count' name='action1' value='count'>\
-        <label for='count'>Count</label><br>\
-        <input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label>\
-        <br></div>";
-
+        <label for='count'>Count</label><br/>\
+        <input type='checkbox' id='sort' name='action2' value='sort'>\
+        <label for='count'>Sort</label><br/>\
+        </div>";
 
     var text_search_field = "\
     <input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
@@ -241,7 +243,7 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + count_field + close_addons;
-    } else if (name == 'barchart_box') {
+    } else if (name == 'chart_box') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
@@ -259,8 +261,15 @@ function add_field(name, bind_query_id = "") {
         contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
     }
 
-    $("#sortable").append(contents);
+    if (name.includes('query-btn')) {
+        addQueryField(name, (counter + 1));
+    } else {
+        $("#sortable").append(contents);
+    }
+
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+
+
 
     // add multiline placeholder
     var placeholder_t = "Type an example text search query using the placeholder <<searchterm>>,\n\
@@ -285,6 +294,24 @@ function add_field(name, bind_query_id = "") {
 
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
+}
+
+// add new query field
+const addQueryField = (name, idx) => {
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime();
+
+    let content = '';
+    const openDiv = '<div class="query-div">'
+    const closeDiv = '</div>'
+    const query_field = "<label for='largeInput'>SPARQL query</label><br/>\
+    <textarea oninput='auto_grow(this)' id='" + idx + "__extra_query_" + timestamp + "' name='" + idx + "__extra_query_" + timestamp + "' type='text' placeholder='Type your query'></textarea><br/>\
+    <input class='form-control' type='text' id='" + idx + "__extra_series_" + timestamp + "' name='" + idx + "__extra_series_" + timestamp + "' placeholder='The label for the data series'><br/>";
+    const trash = '<a href="#" class="trash" id="trash" name="trash"><i class="far fa-trash-alt" id="bin"></i></a><br/>';
+    content = openDiv + trash + query_field + closeDiv;
+
+    const afterElement = document.getElementById(name);
+    afterElement.insertAdjacentHTML('beforebegin', content);
 }
 
 // preview content
@@ -334,9 +361,18 @@ $(function () {
 
             );
 
-            const mainQueryEl = document.getElementById((idx + 1) + '__chart_query');
-            const formGroupEl = document.getElementById((idx + 1) + '__form_group');
-            generateButton(mainQueryEl, formGroupEl, 'Add another query');
+            // show hide elements
+            const queryButton = document.getElementById((idx + 1) + '__query-btn');
+            const querySeries = document.getElementById((idx + 1) + '__query_series');
+            if (chart_type == 'scatterplot') {
+                // show
+                queryButton.style.display = "block";
+                querySeries.style.display = "block";
+            } else {
+                // hide
+                queryButton.style.display = "none";
+                querySeries.style.display = "none";
+            }
 
             var sparqlEndpoint = datastory_data.sparql_endpoint;
 
@@ -591,44 +627,45 @@ $(function () {
                                     }
                                 }
                             });
-                        } else if (chart_type == 'scatterplot') {
-                            var chartData = [];
-                            let tempLabels = [];
-                            const queryResults = returnedJson.results.bindings;
-                            for (entry in queryResults) {
-                                const xValue = parseInt(queryResults[entry].x.value);
-                                const yValue = parseInt(queryResults[entry].y.value);
-                                const entryObj = { x: xValue, y: yValue }
-                                tempLabels.push(xValue);
-                                chartData.push(entryObj);
-                            }
-                            //  retrieve the chart id
-                            var chartId = $("#" + (idx + 1) + "__chartid");
-                            var chartColor = color_1;
-                            // graph plotting
-                            var myScatterChart = new Chart(chartId, {
-                                type: 'scatter',
-                                data: {
-                                    datasets: [{
-                                        label: 'Review Score 1',
-                                        data: chartData,
-                                        backgroundColor: chartColor
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    plugins: {
-                                        legend: {
-                                            position: 'top',
-                                        },
-                                        title: {
-                                            display: true,
-                                            text: chart_title
-                                        }
-                                    }
-                                }
-                            });
                         }
+                        // else if (chart_type == 'scatterplot') {
+                        //     var chartData = [];
+                        //     let tempLabels = [];
+                        //     const queryResults = returnedJson.results.bindings;
+                        //     for (entry in queryResults) {
+                        //         const xValue = parseInt(queryResults[entry].x.value);
+                        //         const yValue = parseInt(queryResults[entry].y.value);
+                        //         const entryObj = { x: xValue, y: yValue }
+                        //         tempLabels.push(xValue);
+                        //         chartData.push(entryObj);
+                        //     }
+                        //     //  retrieve the chart id
+                        //     var chartId = $("#" + (idx + 1) + "__chartid");
+                        //     var chartColor = color_1;
+                        //     // graph plotting
+                        //     var myScatterChart = new Chart(chartId, {
+                        //         type: 'scatter',
+                        //         data: {
+                        //             datasets: [{
+                        //                 label: 'Review Score 1',
+                        //                 data: chartData,
+                        //                 backgroundColor: chartColor
+                        //             }]
+                        //         },
+                        //         options: {
+                        //             responsive: true,
+                        //             plugins: {
+                        //                 legend: {
+                        //                     position: 'top',
+                        //                 },
+                        //                 title: {
+                        //                     display: true,
+                        //                     text: chart_title
+                        //                 }
+                        //             }
+                        //         }
+                        //     });
+                        // }
 
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -655,16 +692,8 @@ $(function () {
     $('form').change(update);
 })
 
-const generateButton = (beforeId, parentId, buttonText) => {
-    const beforeEl = document.getElementById(beforeId);
-    const parentEl = document.getElementById(parentId)
-    const newButton = document.createElement('a');
-    newButton.setAttribute('class', 'btn btn-primary btn-border');
-    newButton.setAttribute('href', '#');
-    newButton.textContent = buttonText;
-
-    // beforeEl.insertAfter(newButton);
-    // console.log('success')
+const addQueryArea = () => {
+    console.log('check');
 }
 
 //// RELATIONS TEMPLATE FUNCTIONS ////
