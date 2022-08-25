@@ -362,11 +362,40 @@
                             <textarea oninput='auto_grow(this)' name='{{dict.position}}__chart_query' type='text'
                                 id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
                                 required>{{dict.chart_query}}</textarea>
+                            {% if dict.chart_type == 'scatterplot' %}
+                            <input style='display: block;' class='form-control' type='text'
+                                name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
+                                placeholder='{{dict.chart_series}}' value='{{dict.chart_series}}' required><br />
+                            <a id='{{dict.position}}__query-btn' style='display: block;'
+                                class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
+                                name='{{dict.position}}__query-btn'>Add another query</a><br />
+                            {% for extra in dict.extra_queries %}
+                            <div class="query-div" id="{{dict.position}}_undefined">
+                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                                </a>
+                                <br />
+                                <label>SPARQL query</label>
+                                <br />
+                                <textarea oninput='auto_grow(this)'
+                                    name='{{dict.position}}__extra_query_{{extra.extra_id}}' type='text'
+                                    id='{{dict.position}}__extra_query_{{extra.extra_id}}'
+                                    placeholder="{{extra.extra_query}}" required>{{extra.extra_query}}</textarea>
+                                <br />
+                                <input style='display: block;' class='form-control' type='text'
+                                    name='{{dict.position}}__extra_series_{{extra.extra_id}}'
+                                    id='{{dict.position}}__extra_series_{{extra.extra_id}}'
+                                    placeholder='{{extra.extra_series}}' value='{{extra.extra_series}}' required><br />
+                            </div>
+                            {% endfor %}
+                            {% else %}
                             <input style='display: none;' class='form-control' type='text'
-                                name='{{dict.position}}__query_series' id='{{dict.position}}__query_series'
+                                name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
                                 placeholder='The label for the data series' required><br />
-                            <a id='query-btn' style='display: none;' class='btn btn-primary btn-border'
-                                onclick='addQueryField(name)' name='query-btn'>Add another query</a><br />
+                            <a id='{{dict.position}}__query-btn' style='display: none;'
+                                class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
+                                name='{{dict.position}}__query-btn'>Add another query</a><br />
+                            {% endif %}
                             <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more
                                 about query and charts.</a><br />
                             <label>Chart Title</label>

@@ -148,8 +148,8 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'action' in k:
                                         op_list.append(v)
-                                    #######################
-                                    #######################
+                        #######################
+                        #######################
                                     elif 'extra' in k:
                                         extra_set.add(int(k.split('_')[4]))
                                         total_extra_dict[k.split('__')[1]] = v
@@ -158,9 +158,12 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                             extra_dict = {}
                             for k, v in total_extra_dict.items():
                                 if str(e) in k:
-                                    extra_dict[k] = v
+                                    extra_dict[k.strip('_'+str(e))] = v
+                                    extra_dict['extra_id'] = str(e)
                             extra_queries.append(extra_dict)
                         elements_dict['extra_queries'] = extra_queries
+                        #######################
+                        #######################
 
                         # create dicts with operations info
                         for op in op_list:
