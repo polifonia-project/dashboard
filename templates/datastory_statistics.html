@@ -137,7 +137,7 @@
 	var datastory_data = {{ datastory_data | tojson }};
 	$('footer').detach();
 </script>
-{% if session[name] and datastory_data.user_name %}
+{% if datastory_data.user_name %}
 <script>
 	let hostname = window.location.hostname;
 	if (!hostname.includes('github')) {
