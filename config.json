@@ -365,65 +365,6 @@
             }
         },
         "tests": {
-            "story_recreation": {
-                "sparql_endpoint": "https://query.wikidata.org/sparql",
-                "template_mode": "statistics",
-                "title": "Story recreation",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "Tests",
-                "subtitle": "",
-                "description": "",
-                "action": "save",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "chart",
-                        "chart_type": "scatterplot",
-                        "chart_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX wd: <http://www.wikidata.org/entity/>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\r\nSELECT DISTINCT ?item ?review_value ?box_office_value WHERE {\r\n  ?item wdt:P31 wd:Q11424.\r\n  ?item p:P444 ?review_statement .\r\n  ?review_statement ps:P444 ?review_value .\r\n  ?review_statement pq:P447 wd:Q105584 .\r\n  ?review_statement pq:P459 wd:Q108403393 .\r\n\r\n  \r\n  ?item p:P2142 ?box_office_statement .\r\n  ?box_office_statement ps:P2142 ?box_office_value .\r\n  ?box_office_statement pq:P3005 wd:Q30 .\r\n}",
-                        "chart_series": "ss",
-                        "chart_title": "Films' Box Office per Review Scores",
-                        "extra_queries": [
-                            {
-                                "extra_query": "wwwwww",
-                                "extra_id": "1661458177490",
-                                "extra_series": "sssssssss"
-                            }
-                        ],
-                        "operations": []
-                    },
-                    {
-                        "position": 2,
-                        "type": "chart",
-                        "chart_type": "scatterplot",
-                        "chart_query": "wwwwwwwwwwwwww",
-                        "chart_series": "rrrrrrrrr",
-                        "chart_title": "Audiences of Repository",
-                        "extra_queries": [
-                            {
-                                "extra_query": "qqqqqqqq",
-                                "extra_id": "1661458189034",
-                                "extra_series": "eeeeeee"
-                            },
-                            {
-                                "extra_query": "rrrrrr",
-                                "extra_id": "1661458193306",
-                                "extra_series": "ttttttttttt"
-                            }
-                        ],
-                        "operations": []
-                    },
-                    {
-                        "position": 3,
-                        "type": "text",
-                        "text": "wwwwwwwwwwwwwwwwwwwww",
-                        "extra_queries": [],
-                        "operations": []
-                    }
-                ]
-            },
             "single_scatter_plot": {
                 "sparql_endpoint": "https://query.wikidata.org/sparql",
                 "template_mode": "statistics",
@@ -479,16 +420,6 @@
                         "operations": []
                     }
                 ]
-            },
-            "boh_linechart": {
-                "sparql_endpoint": "https://query.wikidata.org/sparql",
-                "template_mode": "statistics",
-                "title": "Boh linechart",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "Tests"
             }
         }
     }
