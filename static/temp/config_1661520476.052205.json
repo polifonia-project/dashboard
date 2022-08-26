@@ -1,15 +1,11 @@
 {
     "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
     "template_mode": "statistics",
-    "title": "Check Temp Files Removal",
+    "title": "Discover Musica Data on the Web",
     "color_code": [
         "#39c6b4",
         "#17cf31"
     ],
     "user_name": "cesenacomics",
-    "id": "1660135249.225261",
-    "subtitle": "",
-    "description": "",
-    "action": "save",
-    "dynamic_elements": []
+    "id": "1661520476.052205"
 }
