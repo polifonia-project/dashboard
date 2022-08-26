@@ -171,7 +171,7 @@ def datastory(section_name, datastory_name):
         os.remove('static/temp/'+datastory_name+'_'+section_name+'.html')
         os.remove('static/temp/stories_list.json')
 
-        return redirect('https://github.com/melody-data/stories')
+        return redirect('https://melody-data.github.io/stories/published_stories/' + datastory_name + '_' + section_name + '.html')
 
 
 @app.route("/setup", methods=['POST', 'GET'])
