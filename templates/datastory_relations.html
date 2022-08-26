@@ -5,8 +5,8 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-    integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
 {% endblock stylesheets %}
 
@@ -18,20 +18,21 @@
       {% for dict in datastory_data.dynamic_elements %}
       <!-- textsearch -->
       {% if dict.type == 'textsearch' %}
-        <div id="{{dict.position}}">
-            {% if dict.textsearch_title %}
-              <h4 class="nopaddingleft">{{dict.textsearch_title}}</h4>
-            {% else %}
-              <h4 class="nopaddingleft">Search</h4>
-            {% endif %}
+      <div id="{{dict.position}}">
+        {% if dict.textsearch_title %}
+        <h4 class="nopaddingleft">{{dict.textsearch_title}}</h4>
+        {% else %}
+        <h4 class="nopaddingleft">Search</h4>
+        {% endif %}
 
-          <input class="inputinvisible" id="{{dict.position}}__textsearch_query" style="display:none !important;" value="{{dict.textsearch_query}}"></input>
-          <input class="textsearch_input" id="{{dict.position}}__textsearch_userinput" type="text" name="{{dict.position}}__textsearch_userinput" value="">
-          <a id="{{dict.position}}__textsearch_button"
-            class="textsearch_button datastory"
-            onclick="perform_textsearch('{{dict.position}}__textsearch_userinput')"
-            name="{{dict.position}}__textsearch">Search</a>
-        </div>
+        <input class="inputinvisible" id="{{dict.position}}__textsearch_query" style="display:none !important;"
+          value="{{dict.textsearch_query}}"></input>
+        <input class="textsearch_input" id="{{dict.position}}__textsearch_userinput" type="text"
+          name="{{dict.position}}__textsearch_userinput" value="">
+        <a id="{{dict.position}}__textsearch_button" class="textsearch_button datastory"
+          onclick="perform_textsearch('{{dict.position}}__textsearch_userinput')"
+          name="{{dict.position}}__textsearch">Search</a>
+      </div>
       {% endif %}
 
       {% endfor %}
@@ -55,60 +56,70 @@
     {% endif %}
     {% endif %}
   </section>
-    <div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
-        <div class="page-inner py-5">
-            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                <div id="relation_datastory">
-                    <h1 class="text-white pb-2 fw-bold">{{ datastory_data.title }}</h1>
-                    {% if datastory_data.subtitle %}
-                    <h2 class="text-white op-7 mb-2">
-                        {{ datastory_data.subtitle }}
-                    </h2>
-                    {%endif%}
-                    {% if datastory_data.description %}
-                    <p class="card-category">
-                        {{ datastory_data.description }}
-                    </p>
-                    {%endif%}
-                    <span id='loader' class='lds-dual-ring hidden overlay'></span>
-                    <!-- textsearch results -->
-                    {% for dict in datastory_data.dynamic_elements %}
-                      {% if dict.type == 'textsearch' %}
-                        <table class='col-12' id='{{dict.position}}__textsearchid'>
-                          <!-- TODO add rows-->
-                        </table>
-                      {% endif %}
-                      {% if dict.type == 'tablevalueaction' %}
-                      <input class='tablevalueaction_title'
-                        id='{{dict.position}}__tablevalueaction_title'
-                        type='hidden'
-                        name='{{dict.position}}__tablevalueaction_title'
-                        value='{{dict.tablevalueaction_title}}'
-                        placeholder='A title, e.g. Show similar tunes'>
-                      <input class='tablevalueaction_column'
-                        id='{{dict.position}}__tablevalueaction_column'
-                        type='hidden'
-                        name='{{dict.position}}__tablevalueaction_column'
-                        value='{{dict.tablevalueaction_column}}'
-                        placeholder='The name of the column'>
-                      <input class='tablevalueaction_table'
-                        id='{{dict.position}}__tablevalueaction_table'
-                        type='hidden'
-                        name='{{dict.position}}__tablevalueaction_table'
-                        value='{{dict.tablevalueaction_table}}'>
-                      <textarea class='inputinvisible'
-                        name='{{dict.position}}__tablevalueaction_query'
-                        type='hidden'
-                        id='{{dict.position}}__tablevalueaction_query'
-                        rows='6' required>{{dict.tablevalueaction_query}}</textarea>
+  <div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
+    <div class="page-inner py-5">
+      <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+        <div id="relation_datastory">
+          <h1 class="text-white pb-2 fw-bold">{{ datastory_data.title }}</h1>
+          {% if datastory_data.subtitle %}
+          <h2 class="text-white op-7 mb-2">
+            {{ datastory_data.subtitle }}
+          </h2>
+          {%endif%}
+          {% if datastory_data.description %}
+          <p class="card-category">
+            {{ datastory_data.description }}
+          </p>
+          {%endif%}
+          <span id='loader' class='lds-dual-ring hidden overlay'></span>
+          <!-- textsearch results -->
+          {% for dict in datastory_data.dynamic_elements %}
+          {% if dict.type == 'textsearch' %}
+          <table class='col-12' id='{{dict.position}}__textsearchid'>
+            <!-- TODO add rows-->
+          </table>
+          {% endif %}
+          {% if dict.type == 'tablevalueaction' %}
+          <input class='tablevalueaction_title' id='{{dict.position}}__tablevalueaction_title' type='hidden'
+            name='{{dict.position}}__tablevalueaction_title' value='{{dict.tablevalueaction_title}}'
+            placeholder='A title, e.g. Show similar tunes'>
+          <input class='tablevalueaction_column' id='{{dict.position}}__tablevalueaction_column' type='hidden'
+            name='{{dict.position}}__tablevalueaction_column' value='{{dict.tablevalueaction_column}}'
+            placeholder='The name of the column'>
+          <input class='tablevalueaction_table' id='{{dict.position}}__tablevalueaction_table' type='hidden'
+            name='{{dict.position}}__tablevalueaction_table' value='{{dict.tablevalueaction_table}}'>
+          <textarea class='inputinvisible' name='{{dict.position}}__tablevalueaction_query' type='hidden'
+            id='{{dict.position}}__tablevalueaction_query' rows='6' required>{{dict.tablevalueaction_query}}</textarea>
 
-                      {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
+          {% endif %}
+          {% endfor %}
         </div>
+      </div>
     </div>
+  </div>
 </div>
+<!-- alerts -->
+{% if session['user_type'] == 'extra' and datastory_data.id %}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+  data-notify-position="bottom-right"
+  style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+  data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+    style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+    class="flaticon-alarm-1"></span> <span data-notify="title">Important</span>
+  <span data-notify="message">If you leave without downloading or publishing your data story, it will be
+    deleted.</span><a href="#" target="_blank" data-notify="url"></a>
+</div>
+{% elif session['user_type'] == 'random' and datastory_data.id%}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+  data-notify-position="bottom-right"
+  style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+  data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+    style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+    class="flaticon-alarm-1"></span> <span data-notify="title">Important</span>
+  <span data-notify="message">If you leave without downloading your date story, it will be deleted.</span><a href="#"
+    target="_blank" data-notify="url"></a>
+</div>
+{% endif %}
 
 {% endblock content %}
 
@@ -117,8 +128,32 @@
 
 {% block javascripts %}
 <script type="text/javascript">
-    var datastory_data = {{ datastory_data | tojson }};
-    $('footer').detach();
+  var datastory_data = {{ datastory_data | tojson }};
+  $('footer').detach();
 </script>
+{% if datastory_data.user_name %}
+<script>
+  let hostname = window.location.hostname;
+  if (!hostname.includes('github')) {
+    let beforeUnloadAlert = true;
+    window.addEventListener('beforeunload', function (e) {
+      if (!beforeUnloadAlert) return;
+
+      // etc
+      e.preventDefault();
+      e.returnValue = '';
+    });
+
+    function myFunction() {
+      beforeUnloadAlert = false;
+    }
+    var myObj = document.getElementsByClassName('prevent_alert')
+    console.log(myObj);
+    for (el of myObj) {
+      el.addEventListener('click', myFunction);
+    }
+  }
+</script>
+{% endif %}
 
 {% endblock javascripts %}
