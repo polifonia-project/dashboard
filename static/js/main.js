@@ -340,6 +340,9 @@ $(function () {
             var chart_title = '';
             var chart_type = '';
             var operations = [];
+            var chart_series = '';
+            var extra_queries = [];
+            var extra_series = [];
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -356,23 +359,35 @@ $(function () {
                     chart_type = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
+                } else if (element.name.includes((idx + 1) + '__chart_series')) {
+                    chart_series = element.value;
+                } else if (element.name.includes((idx + 1) + '__extra_query')) {
+                    extra_queries.push(element.value);
+                } else if (element.name.includes((idx + 1) + '__extra_series')) {
+                    extra_series.push(element.value);
                 }
             }
 
             );
 
+            ////////// this piece of code prevent other charts from previewing
             // show hide elements
-            const queryButton = document.getElementById((idx + 1) + '__query-btn');
-            const querySeries = document.getElementById((idx + 1) + '__chart_series');
-            if (chart_type == 'scatterplot') {
-                // show
-                queryButton.style.display = "block";
-                querySeries.style.display = "block";
-            } else {
-                // hide
-                queryButton.style.display = "none";
-                querySeries.style.display = "none";
+            const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
+            const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But hten I have to delete the else, and when I change the chart they remain visible
+            if (queryButton) {
+                if (chart_type == 'scatterplot') {
+                    // show
+                    queryButton.style.display = "block";
+                    querySeries.style.display = "block";
+                } else {
+                    // hide
+                    queryButton.style.display = "none";
+                    querySeries.style.display = "none";
+                }
             }
+
+
+            //////////////
 
             var sparqlEndpoint = datastory_data.sparql_endpoint;
 
@@ -398,8 +413,166 @@ $(function () {
                     }
                 });
             }
+
             // call for the charts
             else if (chart_query) {
+                // scatter plot
+                if (chart_type == 'scatterplot') {
+                    let queryArray = [];
+
+                    // check if chart requires extra queries
+                    if (extra_queries.length == 0) {
+                        // where I'll store the data necessary fo the scatter plot
+                        let chartData = [];
+                        let tempLabels = [];
+
+                        let query = chart_query;
+                        // check if the query is an API request
+                        if (query.startsWith('http')) {
+                            alert('There is an API request.');
+                            // $.ajax({
+                            //     type: 'GET',
+                            //     url: query,
+                            //     headers: {Accept: 'application/json'},
+                            //     success: function (returnedJson) {
+                            //         do things
+                            //     }
+                            // }
+                        } else {
+                            // if it is a sparql query
+                            var encoded = encodeURIComponent(query);
+                            var sparqlEndpoint = sparqlEndpoint;
+                            $.ajax({
+                                type: 'GET',
+                                url: sparqlEndpoint + '?query=' + encoded,
+                                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                                success: function (returnedJson) {
+                                    const queryResults = returnedJson.results.bindings;
+                                    for (entry in queryResults) {
+                                        const xValue = parseInt(queryResults[entry].x.value);
+                                        const yValue = parseInt(queryResults[entry].y.value);
+                                        const entryObj = { x: xValue, y: yValue }
+                                        tempLabels.push(xValue);
+                                        chartData.push(entryObj);
+                                    }
+
+                                    //  retrieve the chart id
+                                    var chartId = $("#" + (idx + 1) + "__chartid");
+                                    var chartColor = color_2;
+                                    // graph plotting
+                                    var myScatterChart = new Chart(chartId, {
+                                        type: 'scatter',
+                                        data: {
+                                            datasets: [{
+                                                label: chart_series,
+                                                data: chartData,
+                                                backgroundColor: chartColor
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: chart_title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                    } else if (extra_queries.length > 0) {
+                        let query = chart_query;
+                        let seriesArray = [];
+                        let datasetArray = [];
+                        queryArray.push(query);
+                        seriesArray.push(chart_series);
+
+                        for (e of extra_queries) {
+                            queryArray.push(e);
+                        }
+
+                        for (s of extra_series) {
+                            seriesArray.push(s);
+                        }
+                        console.log(queryArray);
+                        console.log(seriesArray);
+
+                        // generate colors based on number of queries
+                        var colors = d3.quantize(d3.interpolateHcl(color_2, color_1), queryArray.length);
+
+                        for (const [i, q] of queryArray.entries()) {
+                            let scatter_query = q;
+                            let chartData = [];
+                            let dataDict = {};
+
+                            // check if the query is an API request
+                            if (scatter_query.startsWith('http')) {
+                                alert('There is an API request.');
+                                // $.ajax({
+                                //     type: 'GET',
+                                //     url: query,
+                                //     headers: {Accept: 'application/json'},
+                                //     success: function (returnedJson) {
+                                //         do things
+                                //     }
+                                // }
+                            } else {
+                                // if it is a sparql query
+                                var encoded = encodeURIComponent(scatter_query);
+                                var sparqlEndpoint = sparqlEndpoint;
+                                $.ajax({
+                                    type: 'GET',
+                                    url: sparqlEndpoint + '?query=' + encoded,
+                                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                                    success: function (returnedJson) {
+                                        const queryResults = returnedJson.results.bindings;
+                                        for (entry in queryResults) {
+                                            const xValue = parseInt(queryResults[entry].x.value);
+                                            const yValue = parseInt(queryResults[entry].y.value);
+                                            const entryObj = { x: xValue, y: yValue }
+                                            chartData.push(entryObj);
+                                        }
+                                        dataDict.data = chartData;
+                                        dataDict.label = seriesArray[i];
+                                        dataDict.backgroundColor = colors[i];
+                                        datasetArray.push(dataDict);
+                                        myScatterChart.update();
+                                    }
+                                });
+                            }
+                        }
+
+
+                        //  retrieve the chart id
+                        var chartId = $("#" + (idx + 1) + "__chartid");
+
+                        // graph plotting
+                        var myScatterChart = new Chart(chartId, {
+                            type: 'scatter',
+                            data: data = {
+                                datasets: datasetArray
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: chart_title
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
                 $.ajax({
                     type: 'GET',
                     url: sparqlEndpoint + '?query=' + encoded_chart,
@@ -628,44 +801,6 @@ $(function () {
                                 }
                             });
                         }
-                        // else if (chart_type == 'scatterplot') {
-                        //     var chartData = [];
-                        //     let tempLabels = [];
-                        //     const queryResults = returnedJson.results.bindings;
-                        //     for (entry in queryResults) {
-                        //         const xValue = parseInt(queryResults[entry].x.value);
-                        //         const yValue = parseInt(queryResults[entry].y.value);
-                        //         const entryObj = { x: xValue, y: yValue }
-                        //         tempLabels.push(xValue);
-                        //         chartData.push(entryObj);
-                        //     }
-                        //     //  retrieve the chart id
-                        //     var chartId = $("#" + (idx + 1) + "__chartid");
-                        //     var chartColor = color_1;
-                        //     // graph plotting
-                        //     var myScatterChart = new Chart(chartId, {
-                        //         type: 'scatter',
-                        //         data: {
-                        //             datasets: [{
-                        //                 label: 'Review Score 1',
-                        //                 data: chartData,
-                        //                 backgroundColor: chartColor
-                        //             }]
-                        //         },
-                        //         options: {
-                        //             responsive: true,
-                        //             plugins: {
-                        //                 legend: {
-                        //                     position: 'top',
-                        //                 },
-                        //                 title: {
-                        //                     display: true,
-                        //                     text: chart_title
-                        //                 }
-                        //             }
-                        //         }
-                        //     });
-                        // }
 
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -1079,7 +1214,8 @@ function chartViz() {
                     linechart(element);
                 } else if (chart === "doughnutchart") {
                     doughnutchart(element);
-                } else if (chart === 'scatterplot') {
+                }
+                else if (chart === 'scatterplot') {
                     scatterplot(element);
                 }
             }
@@ -1627,7 +1763,6 @@ function scatterplot(element) {
         // generate colors based on number of queries
         var colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), queryArray.length);
 
-
         for (const [i, q] of queryArray.entries()) {
             let chart_query = q;
             let chartData = [];
@@ -1701,9 +1836,6 @@ function scatterplot(element) {
                 }
             }
         });
-
-
-
     }
 }
 
