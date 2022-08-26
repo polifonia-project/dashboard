@@ -455,7 +455,7 @@
                 "title": "Complex Scatter Plot",
                 "color_code": [
                     "#39c6b4",
-                    "#17cf31"
+                    "#cf4e17"
                 ],
                 "section_name": "Tests",
                 "subtitle": "",
@@ -467,13 +467,13 @@
                         "type": "chart",
                         "chart_type": "scatterplot",
                         "chart_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/> PREFIX wd: <http://www.wikidata.org/entity/> PREFIX p: <http://www.wikidata.org/prop/> PREFIX ps: <http://www.wikidata.org/prop/statement/> PREFIX pq: <http://www.wikidata.org/prop/qualifier/> SELECT DISTINCT ?y ?x WHERE {?item wdt:P31 wd:Q11424. ?item p:P444 ?review_statement . ?review_statement ps:P444 ?y .  ?review_statement pq:P447 wd:Q105584 .  ?review_statement pq:P459 wd:Q108403393 .  ?item p:P2142 ?box_office_statement .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q30 .}",
-                        "chart_series": "Rotten Tomatoes",
+                        "chart_series": "USA",
                         "chart_title": "Films' Box Office per Review Scores",
                         "extra_queries": [
                             {
-                                "extra_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/> PREFIX wd: <http://www.wikidata.org/entity/> PREFIX p: <http://www.wikidata.org/prop/> PREFIX ps: <http://www.wikidata.org/prop/statement/> PREFIX pq: <http://www.wikidata.org/prop/qualifier/> SELECT DISTINCT ?y ?x WHERE { ?item wdt:P31 wd:Q11424. ?item p:P444 ?review_statement .  ?review_statement ps:P444 ?y . ?review_statement pq:P447 wd:Q37312 .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q30 .}",
+                                "extra_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/> PREFIX wd: <http://www.wikidata.org/entity/> PREFIX p: <http://www.wikidata.org/prop/> PREFIX ps: <http://www.wikidata.org/prop/statement/> PREFIX pq: <http://www.wikidata.org/prop/qualifier/> SELECT DISTINCT ?y ?x WHERE {?item wdt:P31 wd:Q11424. ?item p:P444 ?review_statement . ?review_statement ps:P444 ?y .  ?review_statement pq:P447 wd:Q105584 .  ?review_statement pq:P459 wd:Q108403393 .  ?item p:P2142 ?box_office_statement .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q13780930 .}",
                                 "extra_id": "1661461978547",
-                                "extra_series": "IMDb"
+                                "extra_series": "Worldwide"
                             }
                         ],
                         "operations": []

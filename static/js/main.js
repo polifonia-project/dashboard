@@ -1669,18 +1669,17 @@ function scatterplot(element) {
                 });
             }
         }
-        console.log(datasetArray)
+
         //  create the HTML structure that'll receive the data
         chartHTMLElements(element);
         //  retrieve the chart id
         var chartId = "chart_" + element.position;
-        console.log(chartId);
 
         // graph plotting
         var myScatterChart = new Chart(chartId, {
             type: 'scatter',
             data: data = {
-                datasets: { datasetArray }
+                datasets: datasetArray
             },
             options: {
                 responsive: true,
@@ -1702,6 +1701,8 @@ function scatterplot(element) {
                 }
             }
         });
+
+
 
     }
 }
