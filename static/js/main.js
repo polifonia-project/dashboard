@@ -370,7 +370,6 @@ $(function () {
 
             );
 
-            ////////// this piece of code prevent other charts from previewing
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
             const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But hten I have to delete the else, and when I change the chart they remain visible
@@ -385,9 +384,6 @@ $(function () {
                     querySeries.style.display = "none";
                 }
             }
-
-
-            //////////////
 
             var sparqlEndpoint = datastory_data.sparql_endpoint;
 
