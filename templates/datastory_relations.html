@@ -47,14 +47,22 @@
       <button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
       <button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
           download="{{datastory_data.title}}.html">HTML</a></button>
+      <!-- publish button -->
+      {% if datastory_data.id and session['user_type'] == 'extra' %}
+      <hr>
+      <form method="post">
+        <button type="submit" method="post" class="btn btn-success prevent_alert publish_btn">Publish
+          now!</button>
+      </form>
+      {% endif %}
+      <!-- modify button -->
+      {% if datastory_data.id and session['user_type'] == 'extra' or session['user_type'] == 'random' %}
+      <a class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
+        href="{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
+        Modify
+      </a>
+      {% endif %}
     </section>
-    {% if session['user_type'] == 'extra' %}
-    {% if flash_message == True %}
-    <form action="datastory" method="post">
-      <button type="submit" method="post" class="btn btn-success">Publish</button>
-    </form>
-    {% endif %}
-    {% endif %}
   </section>
   <div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
     <div class="page-inner py-5">
