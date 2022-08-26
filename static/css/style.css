@@ -418,6 +418,10 @@ div[id*='block_field'] {
   text-decoration: none !important;
 }
 
+.publish_btn:hover {
+  background-color: white !important;
+}
+
 #colors {
   width: 60%;
   padding: 2em 0px;
