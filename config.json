@@ -1,8 +1,8 @@
 {
     "sections": [
+        "Tests",
         "Listening Experiences",
         "Wikidata",
-        "Tests",
         "musoW"
     ],
     "operations": [
@@ -50,7 +50,8 @@
     "chart_types": [
         "barchart",
         "linechart",
-        "doughnutchart"
+        "doughnutchart",
+        "scatterplot"
     ],
     "data_sources": {
         "musow": {
@@ -361,6 +362,64 @@
                     }
                 ],
                 "action": "save"
+            }
+        },
+        "tests": {
+            "single_scatter_plot": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Single Scatter Plot",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Tests",
+                "subtitle": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "chart",
+                        "chart_type": "scatterplot",
+                        "chart_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX wd: <http://www.wikidata.org/entity/>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\nPREFIX pq: <http://www.wikidata.org/prop/qualifier/>\r\nSELECT DISTINCT ?y ?x WHERE {\r\n  ?item wdt:P31 wd:Q11424.\r\n  ?item p:P444 ?review_statement .\r\n  ?review_statement ps:P444 ?y .\r\n  ?review_statement pq:P447 wd:Q105584 .\r\n  ?review_statement pq:P459 wd:Q108403393 .\r\n\r\n  \r\n  ?item p:P2142 ?box_office_statement .\r\n  ?box_office_statement ps:P2142 ?x .\r\n  ?box_office_statement pq:P3005 wd:Q30 .\r\n}",
+                        "chart_series": "Rotten Tomatoes",
+                        "chart_title": "Films' Box Office per Review Scores",
+                        "extra_queries": [],
+                        "operations": []
+                    }
+                ]
+            },
+            "complex_scatter_plot": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Complex Scatter Plot",
+                "color_code": [
+                    "#39c6b4",
+                    "#cf4e17"
+                ],
+                "section_name": "Tests",
+                "subtitle": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "chart",
+                        "chart_type": "scatterplot",
+                        "chart_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/> PREFIX wd: <http://www.wikidata.org/entity/> PREFIX p: <http://www.wikidata.org/prop/> PREFIX ps: <http://www.wikidata.org/prop/statement/> PREFIX pq: <http://www.wikidata.org/prop/qualifier/> SELECT DISTINCT ?y ?x WHERE {?item wdt:P31 wd:Q11424. ?item p:P444 ?review_statement . ?review_statement ps:P444 ?y .  ?review_statement pq:P447 wd:Q105584 .  ?review_statement pq:P459 wd:Q108403393 .  ?item p:P2142 ?box_office_statement .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q30 .}",
+                        "chart_series": "USA",
+                        "chart_title": "Films' Box Office per Review Scores",
+                        "extra_queries": [
+                            {
+                                "extra_query": "PREFIX wdt: <http://www.wikidata.org/prop/direct/> PREFIX wd: <http://www.wikidata.org/entity/> PREFIX p: <http://www.wikidata.org/prop/> PREFIX ps: <http://www.wikidata.org/prop/statement/> PREFIX pq: <http://www.wikidata.org/prop/qualifier/> SELECT DISTINCT ?y ?x WHERE {?item wdt:P31 wd:Q11424. ?item p:P444 ?review_statement . ?review_statement ps:P444 ?y .  ?review_statement pq:P447 wd:Q105584 .  ?review_statement pq:P459 wd:Q108403393 .  ?item p:P2142 ?box_office_statement .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q13780930 .}",
+                                "extra_id": "1661461978547",
+                                "extra_series": "Worldwide"
+                            }
+                        ],
+                        "operations": []
+                    }
+                ]
             }
         }
     }
