@@ -13,16 +13,6 @@
         <section class="secondarymenuinner" id="secondarymenuinner">
             <h3>Data source</h3>
             <p><a href="{{datastory_data.sparql_endpoint}}" target="_blank">SPARQL endpoint</a></p>
-            <h5 class="text-white op-7 pb-2">
-                {% if datastory_data.curator %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                    placeholder="Authors">{{ datastory_data.curator }}</textarea>
-                <!-- cols="{{ datastory_data.curator|length }}"  -->
-                {% else %}
-                <textarea class="col-10" oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                    placeholder="Authors"></textarea>
-                {%endif%}
-            </h5>
         </section>
     </section>
     <form action="" method="post" class="card col-md-9 col-sm-12"">
@@ -53,7 +43,15 @@
                             placeholder="Subtitle"></textarea>
                         {%endif%}
                     </h5>
-
+                    <h5 class="text-white op-7 pb-2">
+                        {% if datastory_data.curator %}
+                        <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                            placeholder="Authors">{{ datastory_data.curator }}</textarea>
+                        {% else %}
+                        <textarea class="col-10" oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                            placeholder="Authors"></textarea>
+                        {%endif%}
+                    </h5>
                 </div>
                 <div class="ml-md-auto py-2 py-md-0">
 
