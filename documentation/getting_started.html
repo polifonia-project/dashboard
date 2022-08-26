@@ -12,11 +12,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <!-- headers -->
-    <header class="text-gray-600 body-font">
+    <header class="text-gray-600 body-font sticky-top">
         <div class="container mx-auto flex flex-wrap p-4 flex-col md:flex-row items-center">
             <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0" href="../index.html">
                 <span class="ml-3 text-xl">MELODY</span>
@@ -142,6 +145,48 @@
                         </div>
                         <p>Running at <a class="text-green-500" href="http://127.0.0.1:5000/"
                                 target="_blank">http://127.0.0.1:5000/</a>.</p>
+
+                                <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Authentication
+                                </h2>
+                                <p>MELODY has a tight-knit relation with GitHub. To use MELODY both locally
+                                  and in a production environment,
+                                  your instance must be paired with a GitHub repository and an OAuth Application
+                                  (see <a class="text-green-500"
+                                          href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app">how to create an OAuth app</a>
+                                          connected to your instance of MELODY and
+                                          <a class="text-green-500"
+                                          href="https://docs.github.com/en/organizations/restricting-access-to-your-organizations-data/approving-oauth-apps-for-your-organization">how to approve the app on your repository</a>).
+                                  </p>
+                                <p>After creating the OAuth app, modify the file <b>conf.py</b>
+                                  in the root directory to configure the login.</p>
+                                <code>
+                                  <pre>
+        clientID='OAUth client id'
+        clientSecret='OAUth client secret id'
+        owner='the owner of the repository'
+        repo_name='the repository name'
+        token='the bearer token of the admin of the repository'</pre>
+                                </code>
+                                <p>If you run the application locally, you need an OAuth app anyway.
+                                  Only collaborators of the repository can sign in with their GitHub account and can publish a story, which will appear in the left sidebar.</p>
+                                <h3><strong>Allow external collaborators (optional)</strong></h3>
+                                <p>If you want to create an online environment where to allow external users
+                                  to publish stories, you must add other parameters to the configuration file.</p>
+                                <code>
+                                  <pre>
+        melody_owner = 'the owner of the repository where external users can publish stories'
+        melody_repo_name = 'the name of the repository where external users can publish stories'
+        melody_sub_dir = 'if applicable, the name of the folder in the repository where stories are stored'
+        melody_token = 'the bearer token of the admin of the repository'</pre>
+                                </code>
+                                <p>These parameters may be the same as the previous ones or may be different - so that stories published by external users are stored separately.</p>
+                                <p>So created stories are saved as HTML and JSON files on the chosen repository. To enable the publication as web pages, you need:</p>
+                                <ol class="list-group-numbered mb-4">
+                                  <li>copy <a class="text-green-500" target="_blank" href="https://github.com/melody-data/stories/tree/main/published_stories/static">this folder</a> into your repository.</li>
+                                  <li>activate github pages on the repository</li>
+                                </ol>
+
+
                     </div>
                     <div class="h-1 w-20 bg-green-500 rounded mt-10"></div>
                     <h4 class="text-lg sm:text-base text-gray-900 font-medium title-font mt-2">Now you have averything
@@ -162,44 +207,60 @@
                     <img src="../static/img/logopolifonia.svg" style="background-color: darkslategray;">
                 </a>
                 <p class="mt-2 text-sm text-gray-500">Polifonia has received funding from the European Union’s Horizon
-                    2020 research
+                    2020 research 
                     and innovation programme under grant agreement N. 101004746.</p>
             </div>
-            <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
+            <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left ">
                 <div class="lg:w-1/2 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">MELODY</h2>
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">ABOUT MELODY</h2>
                     <nav class="list-none mb-10">
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800"
-                                href="https://github.com/polifonia-project/dashboard" target="_blank">Source code</a>
-                        </li>
                         <li>
                             <a class="text-gray-600 hover:text-pink-800" href="https://polifonia-project.eu/"
                                 target="_blank">
                                 Polifonia
                             </a>
                         </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="https://projects.dharc.unibo.it/melody"
+                                target="_blank">
+                                Melody dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800" href="https://melody-data.github.io/stories/"
+                                target="_blank">
+                                Melody stories
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-gray-600 hover:text-pink-800"
+                                href="https://github.com/polifonia-project/dashboard" target="_blank">Source code</a>
+                        </li>
                     </nav>
+
                 </div>
                 <div class="lg:w-1/2 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
-                    <nav class="list-none mb-10">
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="getting_started.html">Get
-                                started</a>
-                        </li>
-                        <!-- <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="examples.html">Examples</a>
-                        </li> -->
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="user_guide.html">User
-                                Guide</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-pink-800" href="documentation.html">Documentation</a>
-                        </li>
-                    </nav>
-                </div>
+                  <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
+                  <nav class="list-none mb-10">
+                      <li>
+                          <a class="text-gray-600 hover:text-pink-800" href="documentation/getting_started.html">Getting
+                              started</a>
+                      </li>
+                      <!-- <li>
+                          <a class="text-gray-600 hover:text-pink-800" href="documentation/examples.html">Examples</a>
+                      </li> -->
+                      <li>
+                          <a class="text-gray-600 hover:text-pink-800" href="documentation/user_guide.html">User
+                              Guide</a>
+                      </li>
+                      <li>
+                          <a class="text-gray-600 hover:text-pink-800"
+                              href="documentation/documentation.html">Documentation</a>
+                      </li>
+                  </nav>
+
+                    </div>
+
                 <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
                     <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
                     <nav class="list-none mb-10">
@@ -236,49 +297,9 @@
                 </div> -->
             </div>
         </div>
-        <div class="bg-gray-100">
-            <!-- <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
-                <p class="text-gray-500 text-sm text-center sm:text-left">©
-                    <script>document.write(new Date().getFullYear());</script>
-                    Polifonia Dashboard —
-                    <a href="https://twitter.com/knyttneve" rel="noopener noreferrer" class="text-gray-600 ml-1"
-                        target="_blank">@giuliarenda</a>
-                </p>
-                <span class="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
-                    <a class="text-gray-500">
-                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            class="w-5 h-5" viewBox="0 0 24 24">
-                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                        </svg>
-                    </a>
-                    <a class="ml-3 text-gray-500">
-                        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            class="w-5 h-5" viewBox="0 0 24 24">
-                            <path
-                                d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
-                            </path>
-                        </svg>
-                    </a>
-                    <a class="ml-3 text-gray-500">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-                        </svg>
-                    </a>
-                    <a class="ml-3 text-gray-500">
-                        <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
-                            <path stroke="none"
-                                d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z">
-                            </path>
-                            <circle cx="4" cy="4" r="2" stroke="none"></circle>
-                        </svg>
-                    </a>
-                </span>
-            </div> -->
-        </div>
+
     </footer>
+
 
     <!-- scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"

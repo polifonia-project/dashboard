@@ -16,8 +16,13 @@ $(document).ready(function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
     }
-
 });
+
+// check for drop down story list and call function
+const storyList = document.getElementById('story-list');
+if (storyList) {
+    fillDropDownList(storyList);
+}
 
 //// WYSIWYG FORM FUNCTIONS ////
 
@@ -96,26 +101,31 @@ function add_field(name, bind_query_id = "") {
     var text_field = "<textarea rows='3' oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
 
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
-
+    var help = 'True';
     var chart_field = "<div class='chart-container'>\
       <canvas id='" + (counter + 1) + "__chartid'></canvas>\
       </div>\
-      <div class='form-group'>\
+      <div class='form-group' id='" + (counter + 1) + "__form_group'>\
         <label for='exampleFormControlSelect2'>Chart Type</label>\
         <select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'>\
           <option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
           <option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
           <option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
-        </select>\
-        <label for='largeInput'>SPARQL query</label>\
-        <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea>\
-        <label for='largeInput'>Chart Title</label>\
-        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><label>Operations</label>\
-        <br><input type='checkbox' id='count' name='action1' value='count'>\
-        <label for='count'>Count</label><br>\
-        <input type='checkbox' id='sort' name='action2' value='sort'><label for='count'>Sort</label>\
-        <br></div>";
-
+          <option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
+        </select><br/>\
+        <label for='largeInput'>SPARQL query</label><br/>\
+        <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
+        <input style='display: none;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series' required><br/>\
+        <a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
+        <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
+        <label for='largeInput'>Chart Title</label><br/>\
+        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
+        <br/><label>Operations</label><br/>\
+        <input type='checkbox' id='count' name='action1' value='count'>\
+        <label for='count'>Count</label><br/>\
+        <input type='checkbox' id='sort' name='action2' value='sort'>\
+        <label for='count'>Sort</label><br/>\
+        </div>";
 
     var text_search_field = "\
     <input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
@@ -156,7 +166,7 @@ function add_field(name, bind_query_id = "") {
       id='" + (counter + 1).toString() + "__tablevalueaction_table' \
       type='hidden' \
       name='" + (counter + 1).toString() + "__tablevalueaction_table' \
-      value='"+bind_query_id+"'>\
+      value='"+ bind_query_id + "'>\
     <textarea class='addplaceholder_tablevalueaction'  \
       oninput='auto_grow(this)' \
       name='" + (counter + 1) + "__tablevalueaction_query' \
@@ -185,7 +195,7 @@ function add_field(name, bind_query_id = "") {
       id='" + (counter + 1).toString() + "__tablevalueaction_table' \
       type='hidden' \
       name='" + (counter + 1).toString() + "__tablevalueaction_table' \
-      value='"+bind_query_id+"'>\
+      value='"+ bind_query_id + "'>\
     <input class='tablevalueaction_column' \
         id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' \
         name='" + (counter + 1).toString() + "__tablevalueaction_column' \
@@ -233,7 +243,7 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + count_field + close_addons;
-    } else if (name == 'barchart_box') {
+    } else if (name == 'chart_box') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
@@ -241,18 +251,25 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + text_search_field + close_addons;
-    } else if (name.includes('tablevalueaction') ) {
+    } else if (name.includes('tablevalueaction')) {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Add action</h4>";
         var close_addons = "</div>";
         contents += open_addons + no_up_down + tablevalueaction_field + close_addons;
-    } else if (name.includes('tablecomboaction') ) {
+    } else if (name.includes('tablecomboaction')) {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
         var close_addons = "</div>";
         contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
     }
 
-    $("#sortable").append(contents);
+    if (name.includes('query-btn')) {
+        addQueryField(name, (counter + 1));
+    } else {
+        $("#sortable").append(contents);
+    }
+
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+
+
 
     // add multiline placeholder
     var placeholder_t = "Type an example text search query using the placeholder <<searchterm>>,\n\
@@ -279,6 +296,24 @@ function add_field(name, bind_query_id = "") {
     updateindex();
 }
 
+// add new query field
+const addQueryField = (name, idx) => {
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime();
+
+    let content = '';
+    const openDiv = '<div class="query-div">'
+    const closeDiv = '</div>'
+    const query_field = "<label for='largeInput'>SPARQL query</label><br/>\
+    <textarea oninput='auto_grow(this)' id='" + idx + "__extra_query_" + timestamp + "' name='" + idx + "__extra_query_" + timestamp + "' type='text' placeholder='Type your query' required></textarea><br/>\
+    <input class='form-control' type='text' id='" + idx + "__extra_series_" + timestamp + "' name='" + idx + "__extra_series_" + timestamp + "' placeholder='The label for the data series' required><br/>";
+    const trash = '<a href="#" class="trash" id="trash" name="trash"><i class="far fa-trash-alt" id="bin"></i></a><br/>';
+    content = openDiv + trash + query_field + closeDiv;
+
+    const afterElement = document.getElementById(name);
+    afterElement.insertAdjacentHTML('beforebegin', content);
+}
+
 // preview content
 $(function () {
     const update = function () {
@@ -297,6 +332,7 @@ $(function () {
         colorSwitch(color_2, color_1);
 
         $('#sortable [id$="block_field"]').each(function (idx) {
+            console.log(fields);
             var count_query = '';
             var textsearch_query = '';
             var count_label = '';
@@ -304,6 +340,9 @@ $(function () {
             var chart_title = '';
             var chart_type = '';
             var operations = [];
+            var chart_series = '';
+            var extra_queries = [];
+            var extra_series = [];
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -320,10 +359,31 @@ $(function () {
                     chart_type = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
+                } else if (element.name.includes((idx + 1) + '__chart_series')) {
+                    chart_series = element.value;
+                } else if (element.name.includes((idx + 1) + '__extra_query')) {
+                    extra_queries.push(element.value);
+                } else if (element.name.includes((idx + 1) + '__extra_series')) {
+                    extra_series.push(element.value);
                 }
             }
 
             );
+
+            // show hide elements
+            const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
+            const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But hten I have to delete the else, and when I change the chart they remain visible
+            if (queryButton) {
+                if (chart_type == 'scatterplot') {
+                    // show
+                    queryButton.style.display = "block";
+                    querySeries.style.display = "block";
+                } else {
+                    // hide
+                    queryButton.style.display = "none";
+                    querySeries.style.display = "none";
+                }
+            }
 
             var sparqlEndpoint = datastory_data.sparql_endpoint;
 
@@ -349,8 +409,166 @@ $(function () {
                     }
                 });
             }
+
             // call for the charts
             else if (chart_query) {
+                // scatter plot
+                if (chart_type == 'scatterplot') {
+                    let queryArray = [];
+
+                    // check if chart requires extra queries
+                    if (extra_queries.length == 0) {
+                        // where I'll store the data necessary fo the scatter plot
+                        let chartData = [];
+                        let tempLabels = [];
+
+                        let query = chart_query;
+                        // check if the query is an API request
+                        if (query.startsWith('http')) {
+                            alert('There is an API request.');
+                            // $.ajax({
+                            //     type: 'GET',
+                            //     url: query,
+                            //     headers: {Accept: 'application/json'},
+                            //     success: function (returnedJson) {
+                            //         do things
+                            //     }
+                            // }
+                        } else {
+                            // if it is a sparql query
+                            var encoded = encodeURIComponent(query);
+                            var sparqlEndpoint = sparqlEndpoint;
+                            $.ajax({
+                                type: 'GET',
+                                url: sparqlEndpoint + '?query=' + encoded,
+                                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                                success: function (returnedJson) {
+                                    const queryResults = returnedJson.results.bindings;
+                                    for (entry in queryResults) {
+                                        const xValue = parseInt(queryResults[entry].x.value);
+                                        const yValue = parseInt(queryResults[entry].y.value);
+                                        const entryObj = { x: xValue, y: yValue }
+                                        tempLabels.push(xValue);
+                                        chartData.push(entryObj);
+                                    }
+
+                                    //  retrieve the chart id
+                                    var chartId = $("#" + (idx + 1) + "__chartid");
+                                    var chartColor = color_2;
+                                    // graph plotting
+                                    var myScatterChart = new Chart(chartId, {
+                                        type: 'scatter',
+                                        data: {
+                                            datasets: [{
+                                                label: chart_series,
+                                                data: chartData,
+                                                backgroundColor: chartColor
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                title: {
+                                                    display: true,
+                                                    text: chart_title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                    } else if (extra_queries.length > 0) {
+                        let query = chart_query;
+                        let seriesArray = [];
+                        let datasetArray = [];
+                        queryArray.push(query);
+                        seriesArray.push(chart_series);
+
+                        for (e of extra_queries) {
+                            queryArray.push(e);
+                        }
+
+                        for (s of extra_series) {
+                            seriesArray.push(s);
+                        }
+                        console.log(queryArray);
+                        console.log(seriesArray);
+
+                        // generate colors based on number of queries
+                        var colors = d3.quantize(d3.interpolateHcl(color_2, color_1), queryArray.length);
+
+                        for (const [i, q] of queryArray.entries()) {
+                            let scatter_query = q;
+                            let chartData = [];
+                            let dataDict = {};
+
+                            // check if the query is an API request
+                            if (scatter_query.startsWith('http')) {
+                                alert('There is an API request.');
+                                // $.ajax({
+                                //     type: 'GET',
+                                //     url: query,
+                                //     headers: {Accept: 'application/json'},
+                                //     success: function (returnedJson) {
+                                //         do things
+                                //     }
+                                // }
+                            } else {
+                                // if it is a sparql query
+                                var encoded = encodeURIComponent(scatter_query);
+                                var sparqlEndpoint = sparqlEndpoint;
+                                $.ajax({
+                                    type: 'GET',
+                                    url: sparqlEndpoint + '?query=' + encoded,
+                                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                                    success: function (returnedJson) {
+                                        const queryResults = returnedJson.results.bindings;
+                                        for (entry in queryResults) {
+                                            const xValue = parseInt(queryResults[entry].x.value);
+                                            const yValue = parseInt(queryResults[entry].y.value);
+                                            const entryObj = { x: xValue, y: yValue }
+                                            chartData.push(entryObj);
+                                        }
+                                        dataDict.data = chartData;
+                                        dataDict.label = seriesArray[i];
+                                        dataDict.backgroundColor = colors[i];
+                                        datasetArray.push(dataDict);
+                                        myScatterChart.update();
+                                    }
+                                });
+                            }
+                        }
+
+
+                        //  retrieve the chart id
+                        var chartId = $("#" + (idx + 1) + "__chartid");
+
+                        // graph plotting
+                        var myScatterChart = new Chart(chartId, {
+                            type: 'scatter',
+                            data: data = {
+                                datasets: datasetArray
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: chart_title
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+
                 $.ajax({
                     type: 'GET',
                     url: sparqlEndpoint + '?query=' + encoded_chart,
@@ -385,8 +603,8 @@ $(function () {
                             } else if (operations.length == 0) {
                                 // without operations
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
                                 }
                             }
 
@@ -445,8 +663,8 @@ $(function () {
                             } else if (operations.length == 0) {
                                 // without operations
                                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                    chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                                    chartData[i] = returnedJson.results.bindings[i].y.value;
+                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                    chartData[i] = returnedJson.results.bindings[i].count.value;
                                 }
                             }
                             //  retrieve the chart id
@@ -605,6 +823,10 @@ $(function () {
     $('form').change(update);
 })
 
+const addQueryArea = () => {
+    console.log('check');
+}
+
 //// RELATIONS TEMPLATE FUNCTIONS ////
 
 // text search
@@ -618,7 +840,7 @@ function perform_textsearch(elid, textsearch_query) {
 
     // empty table and remove all previous searches
     $("#" + pos + "__textsearchid tr").detach();
-    removeAllFrom(pos, parseInt(pos)+1 )
+    removeAllFrom(pos, parseInt(pos) + 1)
 
     // send the query
     $.ajax({
@@ -626,11 +848,11 @@ function perform_textsearch(elid, textsearch_query) {
         url: sparqlEndpoint + '?query=' + encoded_textsearch,
         headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
         success: function (returnedJson) {
-          // lookup actions in the DOM
-          var actions = getActionsFromInputs(pos);
-          // create results table
-          createResultsTable(returnedJson,actions,pos);
-          $("#"+pos+"__textsearchid").show();
+            // lookup actions in the DOM
+            var actions = getActionsFromInputs(pos);
+            // create results table
+            createResultsTable(returnedJson, actions, pos);
+            $("#" + pos + "__textsearchid").show();
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(xhr.statusText);
@@ -640,252 +862,254 @@ function perform_textsearch(elid, textsearch_query) {
 };
 
 // add action buttons in the table of text search results
-function addActionButton(actions,heading,table_pos,uri_or_text_value,text_value) {
-  var actionsHTML = "";
-  if (actions.length) {
-    actions.forEach(function(el, index) {
-      console.log(el);
-      if (el.column == heading && el.column_2 == "") {
-        // normal action
-        actionsHTML += "<br/><span \
-        onclick='performActionQuery(\""+el.actionpos+"\",\""+heading+"\",\""+table_pos+"\", \""+escape(encodeURIComponent(uri_or_text_value))+"\", \""+escape(encodeURIComponent(text_value))+"\", \""+encodeURIComponent(el.query)+"\", \""+encodeURIComponent(el.title)+"\")' class='action_button' \
-           >"+el.title+"</span> ";
-      } else {
-        // combo action
-        if (el.column == heading || el.column_2 == heading) {
-          var other_heading = compareStrings(heading,el.column,el.column_2);
-          actionsHTML += "<br/><span \
-          onclick='performActionQuery(\""+el.actionpos+"\",\
-              \""+heading+"\",\""+table_pos+"\",\
-              \""+escape(encodeURIComponent(uri_or_text_value))+"\",\
-              \""+escape(encodeURIComponent(text_value))+"\", \
-              \""+encodeURIComponent(el.query)+"\", \
-              \""+encodeURIComponent(el.title)+"\", \
-              \"True\", \""+other_heading+"\", \""+el.table_2+"\")'\
-              class='action_button'>"+el.title+"</span> ";
-          console.log("combo button",other_heading,el.table_2);
-        }
-      }
-    });
-  }
-  return actionsHTML;
+function addActionButton(actions, heading, table_pos, uri_or_text_value, text_value) {
+    var actionsHTML = "";
+    if (actions.length) {
+        actions.forEach(function (el, index) {
+            console.log(el);
+            if (el.column == heading && el.column_2 == "") {
+                // normal action
+                actionsHTML += "<br/><span \
+        onclick='performActionQuery(\""+ el.actionpos + "\",\"" + heading + "\",\"" + table_pos + "\", \"" + escape(encodeURIComponent(uri_or_text_value)) + "\", \"" + escape(encodeURIComponent(text_value)) + "\", \"" + encodeURIComponent(el.query) + "\", \"" + encodeURIComponent(el.title) + "\")' class='action_button' \
+           >"+ el.title + "</span> ";
+            } else {
+                // combo action
+                if (el.column == heading || el.column_2 == heading) {
+                    var other_heading = compareStrings(heading, el.column, el.column_2);
+                    actionsHTML += "<br/><span \
+          onclick='performActionQuery(\""+ el.actionpos + "\",\
+              \""+ heading + "\",\"" + table_pos + "\",\
+              \""+ escape(encodeURIComponent(uri_or_text_value)) + "\",\
+              \""+ escape(encodeURIComponent(text_value)) + "\", \
+              \""+ encodeURIComponent(el.query) + "\", \
+              \""+ encodeURIComponent(el.title) + "\", \
+              \"True\", \""+ other_heading + "\", \"" + el.table_2 + "\")'\
+              class='action_button'>"+ el.title + "</span> ";
+                    console.log("combo button", other_heading, el.table_2);
+                }
+            }
+        });
+    }
+    return actionsHTML;
 };
 
 // perform action buttons query and hide the table
-function performActionQuery(actionpos,heading,table_pos,uri_or_text_value, text_value, encoded_query, action_title, combo="False", heading_2="", table_2="") {
+function performActionQuery(actionpos, heading, table_pos, uri_or_text_value, text_value, encoded_query, action_title, combo = "False", heading_2 = "", table_2 = "") {
 
-  var table_id = "#"+table_pos+"__textsearchid";
-  uri_or_text_value = decodeURIComponent(unescape(uri_or_text_value));
-  text_value = decodeURIComponent( unescape(text_value));
+    var table_id = "#" + table_pos + "__textsearchid";
+    uri_or_text_value = decodeURIComponent(unescape(uri_or_text_value));
+    text_value = decodeURIComponent(unescape(text_value));
 
-  // show button with selected value on top
-  //manageSelectedValue(table_pos,table_id,text_value,datastory_data.color_code[0]);
-  //toggleTable("#"+table_pos+"__textsearchid");
-  collapseTable(table_pos+"__textsearchid")
+    // show button with selected value on top
+    //manageSelectedValue(table_pos,table_id,text_value,datastory_data.color_code[0]);
+    //toggleTable("#"+table_pos+"__textsearchid");
+    collapseTable(table_pos + "__textsearchid")
 
-  // decode query
-  var decoded_query = decodeURIComponent(encoded_query);
-  var reencoded_query = "";
-  // replace in the query the column header with the value of the table cell
-  var q = "";
-  if (uri_or_text_value.includes('http')) {q = "<"+uri_or_text_value+">";}
-  else {q = "\""+uri_or_text_value+"\"";};
-  var replaced_query = decoded_query.replace('<<'+heading+'>>', q);
+    // decode query
+    var decoded_query = decodeURIComponent(encoded_query);
+    var reencoded_query = "";
+    // replace in the query the column header with the value of the table cell
+    var q = "";
+    if (uri_or_text_value.includes('http')) { q = "<" + uri_or_text_value + ">"; }
+    else { q = "\"" + uri_or_text_value + "\""; };
+    var replaced_query = decoded_query.replace('<<' + heading + '>>', q);
 
-  if (heading_2==""){ var reencoded_query = encodeURIComponent(replaced_query);
-  } else {
-    var q2= "";
-    var other_field = $("#"+table_pos+"__selected_text_value").data('uri');
-    if (other_field.includes('http')) {q2 = "<"+other_field+">";}
-    else {q2 = "\""+other_field+"\"";};
-    replaced_query = replaced_query.replace('<<'+heading_2+'>>', q2);
-    var reencoded_query = encodeURIComponent(replaced_query);
-    console.log("a combo!",q, q2, heading_2, table_2,replaced_query);
-  }
+    if (heading_2 == "") {
+        var reencoded_query = encodeURIComponent(replaced_query);
+    } else {
+        var q2 = "";
+        var other_field = $("#" + table_pos + "__selected_text_value").data('uri');
+        if (other_field.includes('http')) { q2 = "<" + other_field + ">"; }
+        else { q2 = "\"" + other_field + "\""; };
+        replaced_query = replaced_query.replace('<<' + heading_2 + '>>', q2);
+        var reencoded_query = encodeURIComponent(replaced_query);
+        console.log("a combo!", q, q2, heading_2, table_2, replaced_query);
+    }
 
-  // send the query
-  $.ajax({
-      type: 'GET',
-      url: datastory_data.sparql_endpoint + '?query=' + reencoded_query,
-      headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-      beforeSend: function () { $('#loader').removeClass('hidden') },
-      success: function (returnedJson) {
-        // lookup actions in the DOM
-        var actions = getActionsFromInputs(actionpos);
-        // create the results table
-        createResultsTable(returnedJson,actions,actionpos,table_pos,action_title,encodeURIComponent(text_value),encodeURIComponent(uri_or_text_value));
+    // send the query
+    $.ajax({
+        type: 'GET',
+        url: datastory_data.sparql_endpoint + '?query=' + reencoded_query,
+        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
+        success: function (returnedJson) {
+            // lookup actions in the DOM
+            var actions = getActionsFromInputs(actionpos);
+            // create the results table
+            createResultsTable(returnedJson, actions, actionpos, table_pos, action_title, encodeURIComponent(text_value), encodeURIComponent(uri_or_text_value));
 
-      },
-      complete: function () {  $('#loader').addClass('hidden') },
-      error: function (xhr, ajaxOptions, thrownError) {
-          return xhr.statusText;
-      }
-  });
+        },
+        complete: function () { $('#loader').addClass('hidden') },
+        error: function (xhr, ajaxOptions, thrownError) {
+            return xhr.statusText;
+        }
+    });
 
 };
 
 // NOT USED manage buttons show result / selected value when performing an action
-function manageSelectedValue(table_pos,table_id,text_value,color) {
-  // show button to toggle/show the table
-  // var show_btn = "<span class='show_table' \
-  //   id='"+table_pos+"__textsearchid__show_table' \
-  //   onclick='toggleTable(\""+table_id+"\")' \
-  //   data-table='"+table_id+"'>Show results</span>";
+function manageSelectedValue(table_pos, table_id, text_value, color) {
+    // show button to toggle/show the table
+    // var show_btn = "<span class='show_table' \
+    //   id='"+table_pos+"__textsearchid__show_table' \
+    //   onclick='toggleTable(\""+table_id+"\")' \
+    //   data-table='"+table_id+"'>Show results</span>";
 
-  // selected value button
-  var selected_button = "<span id='"+table_pos+"__selected_text_value' \
-    style='background-color: "+color+";' \
-    data-table='"+table_id+"' \
+    // selected value button
+    var selected_button = "<span id='" + table_pos + "__selected_text_value' \
+    style='background-color: "+ color + ";' \
+    data-table='"+ table_id + "' \
     class='selected_text_value'\
-    onclick='removeAllFrom("+table_pos.toString()+","+(parseInt(table_pos) + 1).toString()+")'>"+text_value+"</span>";
+    onclick='removeAllFrom("+ table_pos.toString() + "," + (parseInt(table_pos) + 1).toString() + ")'>" + text_value + "</span>";
 
-  // var prev_show_button = document.getElementById(table_pos+"__textsearchid__show_table");
-  // // add show results button
-  // if ( prev_show_button === null) {
-  //   $( show_btn ).insertBefore(table_id);
-  // } ;
+    // var prev_show_button = document.getElementById(table_pos+"__textsearchid__show_table");
+    // // add show results button
+    // if ( prev_show_button === null) {
+    //   $( show_btn ).insertBefore(table_id);
+    // } ;
 
-  // add selected value button
-  $( selected_button ).insertAfter(table_id);
+    // add selected value button
+    $(selected_button).insertAfter(table_id);
 
-  // toggle the table
-  //$("#"+table_pos+"__textsearchid").hide();
+    // toggle the table
+    //$("#"+table_pos+"__textsearchid").hide();
 };
 
-function removeAllFrom(cur_num, next_num ) {
-  // detach current
-  //var cur_el = document.querySelectorAll("[id*='"+cur_num+"__selected_text_value']");
-  //if (cur_el != undefined) {cur_el.outerHTML = "";}
-  // other elements: TODO in the future there may be more elements to detach
-  //var list_selected_text_value = document.querySelectorAll("[id*=__selected_text_value]");
-  var list_tables = document.querySelectorAll("[id*=__textsearchid]");
-  var list_showtables = document.querySelectorAll("[id*=__textsearchid__show_table]");
+function removeAllFrom(cur_num, next_num) {
+    // detach current
+    //var cur_el = document.querySelectorAll("[id*='"+cur_num+"__selected_text_value']");
+    //if (cur_el != undefined) {cur_el.outerHTML = "";}
+    // other elements: TODO in the future there may be more elements to detach
+    //var list_selected_text_value = document.querySelectorAll("[id*=__selected_text_value]");
+    var list_tables = document.querySelectorAll("[id*=__textsearchid]");
+    var list_showtables = document.querySelectorAll("[id*=__textsearchid__show_table]");
 
-  //cur_el.forEach(maybeDetach.bind(null, cur_num));
-  //list_selected_text_value.forEach(maybeDetach.bind(null, next_num));
-  list_tables.forEach(maybeDetach.bind(null, next_num));
-  list_showtables.forEach(maybeDetach.bind(null, next_num));
+    //cur_el.forEach(maybeDetach.bind(null, cur_num));
+    //list_selected_text_value.forEach(maybeDetach.bind(null, next_num));
+    list_tables.forEach(maybeDetach.bind(null, next_num));
+    list_showtables.forEach(maybeDetach.bind(null, next_num));
 
-  // show again the table
-  //toggleTable("#"+cur_num+"__textsearchid");
+    // show again the table
+    //toggleTable("#"+cur_num+"__textsearchid");
 }
 
-function maybeDetach(next_num,el,index) {
-  var cur_num = el.id.split('__')[0];
-  if ( parseInt(cur_num) >= parseInt(next_num)) {
-    el.outerHTML = "";
-  }
+function maybeDetach(next_num, el, index) {
+    var cur_num = el.id.split('__')[0];
+    if (parseInt(cur_num) >= parseInt(next_num)) {
+        el.outerHTML = "";
+    }
 }
 
 function toggleTable(table_id) {
-  $(table_id).toggle();
+    $(table_id).toggle();
 }
 
 function getActionsFromInputs(pos) {
-  var inputs = document.getElementsByTagName('input');
-  var actions = [];
-  $('input').each(function(i) {
-    var inputvalue = $(this).val();
-    if ( inputvalue.length && inputvalue === pos+'__textsearch_query') {
-      var actiondata = {};
-      var actionpos = this.id.split('__')[0] ;
-      var actiontitle = $("#"+actionpos+"__tablevalueaction_title").val();
-      var actionquery = $("#"+actionpos+'__tablevalueaction_query').val();
-      var actiontable2 = $("#"+actionpos+'__tablevalueaction_table_2').val();
-      var matches = actionquery.match(/<<([^)]+)>>/g);
-      actiondata.title = actiontitle;
-      actiondata.query = actionquery;
-      actiondata.column = matches[0].replace("<<","").replace(">>","");
-      actiondata.table_2 = "";
-      if (actiontable2 && actiontable2.length){
-        var table_2_pos = document.querySelector('input[value="'+actiontable2+'"]').id.split('__')[0];
-        actiondata.table_2 = table_2_pos ;}
-      actiondata.column_2 = "";
-      if (matches.length >= 2){actiondata.column_2 = matches[1].replace("<<","").replace(">>","");}
-      actiondata.actionpos = actionpos;
-      actions.push(actiondata);
-      console.log(actionquery, matches,actions);
-    }
-  });
-  return actions;
+    var inputs = document.getElementsByTagName('input');
+    var actions = [];
+    $('input').each(function (i) {
+        var inputvalue = $(this).val();
+        if (inputvalue.length && inputvalue === pos + '__textsearch_query') {
+            var actiondata = {};
+            var actionpos = this.id.split('__')[0];
+            var actiontitle = $("#" + actionpos + "__tablevalueaction_title").val();
+            var actionquery = $("#" + actionpos + '__tablevalueaction_query').val();
+            var actiontable2 = $("#" + actionpos + '__tablevalueaction_table_2').val();
+            var matches = actionquery.match(/<<([^)]+)>>/g);
+            actiondata.title = actiontitle;
+            actiondata.query = actionquery;
+            actiondata.column = matches[0].replace("<<", "").replace(">>", "");
+            actiondata.table_2 = "";
+            if (actiontable2 && actiontable2.length) {
+                var table_2_pos = document.querySelector('input[value="' + actiontable2 + '"]').id.split('__')[0];
+                actiondata.table_2 = table_2_pos;
+            }
+            actiondata.column_2 = "";
+            if (matches.length >= 2) { actiondata.column_2 = matches[1].replace("<<", "").replace(">>", ""); }
+            actiondata.actionpos = actionpos;
+            actions.push(actiondata);
+            console.log(actionquery, matches, actions);
+        }
+    });
+    return actions;
 }
 
-function createResultsTable(returnedJson,actions,pos,table_pos=pos,action_title="search",text_value="",uri_or_text_value="") {
-  var tabletoappend = "<caption class='resulttable_caption' \
-  style='color: white'>"+decodeURIComponent(action_title)+"\
-  <span class='caret' onclick='collapseTable(\""+pos+"__textsearchid\")'></span>\
-  <span class='closetable' onclick='detachTable(\""+pos+"__textsearchid\")'>x</span>\
-  <br/><span id='"+pos+"__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='"+decodeURIComponent(uri_or_text_value)+"'>"+decodeURIComponent(text_value)+"</span>\
+function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_title = "search", text_value = "", uri_or_text_value = "") {
+    var tabletoappend = "<caption class='resulttable_caption' \
+  style='color: white'>"+ decodeURIComponent(action_title) + "\
+  <span class='caret' onclick='collapseTable(\""+ pos + "__textsearchid\")'></span>\
+  <span class='closetable' onclick='detachTable(\""+ pos + "__textsearchid\")'>x</span>\
+  <br/><span id='"+ pos + "__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='" + decodeURIComponent(uri_or_text_value) + "'>" + decodeURIComponent(text_value) + "</span>\
   </caption>\
   <tr>";
-  // exclude headings with Label
-  var headings = returnedJson.head.vars;
-  for (j = 0; j < headings.length; j++) {
-    if (!headings[j].includes('Label')) {
-      tabletoappend += "<th>" + headings[j] + "</th>";
-    } else {
-      headings.splice(j, 1);
-      j--;
-    }
-  }
-
-  // format table
-  tabletoappend += "</tr>";
-  //if (returnedJson.length >= 1) {
-  for (i = 0; i < returnedJson.results.bindings.length; i++) {
-      tabletoappend += "<tr>";
-      for (j = 0; j < headings.length; j++) {
-
-        var res_value = "";
-        if (returnedJson.results.bindings[i][headings[j]] !== undefined) {
-          res_value = returnedJson.results.bindings[i][headings[j]].value ;
-        };
-
-        if ( returnedJson.results.bindings[i][headings[j]+'Label'] != undefined) {
-          var res_label = ""
-          if (returnedJson.results.bindings[i][headings[j]+'Label'].value.length) {
-            res_label = returnedJson.results.bindings[i][headings[j]+'Label'].value ;
-          }
-          tabletoappend += "<td>";
-          tabletoappend += "<a class='table_result' href='"+res_value+"'>"+res_label+"</a>";
-          var buttons = addActionButton(actions,headings[j],pos,res_value, res_label);
-          tabletoappend += buttons+"</td>";
+    // exclude headings with Label
+    var headings = returnedJson.head.vars;
+    for (j = 0; j < headings.length; j++) {
+        if (!headings[j].includes('Label')) {
+            tabletoappend += "<th>" + headings[j] + "</th>";
+        } else {
+            headings.splice(j, 1);
+            j--;
         }
-        else {
-          tabletoappend += "<td>";
-          tabletoappend += "<span class='table_result'>"+res_value+"</span>";
-          var buttons = addActionButton(actions,headings[j],pos,res_value,res_value);
-          tabletoappend += buttons+"</td>";
-        }
-      }
-      tabletoappend += "</tr>";
-  }
-  if ( !$("#"+pos+"__textsearchid").length) {
-    var new_table = "<table class='col-12' id='"+pos+"__textsearchid'>\
-    "+tabletoappend+"</table>";
-    // WYSIWYG
-    if (!$("#relation_datastory") === null) {
-      $("#relation_datastory").append(new_table);
-    } else {
-      // preview
-      var tables = document.getElementsByTagName('table');
-      $(new_table).insertAfter(tables[tables.length-1]);
     }
 
-  } else {
-    $("#" + pos + "__textsearchid tr").detach();
-    $("#" + pos + "__textsearchid").append(tabletoappend);
-  }
+    // format table
+    tabletoappend += "</tr>";
+    //if (returnedJson.length >= 1) {
+    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+        tabletoappend += "<tr>";
+        for (j = 0; j < headings.length; j++) {
+
+            var res_value = "";
+            if (returnedJson.results.bindings[i][headings[j]] !== undefined) {
+                res_value = returnedJson.results.bindings[i][headings[j]].value;
+            };
+
+            if (returnedJson.results.bindings[i][headings[j] + 'Label'] != undefined) {
+                var res_label = ""
+                if (returnedJson.results.bindings[i][headings[j] + 'Label'].value.length) {
+                    res_label = returnedJson.results.bindings[i][headings[j] + 'Label'].value;
+                }
+                tabletoappend += "<td>";
+                tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+                var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
+                tabletoappend += buttons + "</td>";
+            }
+            else {
+                tabletoappend += "<td>";
+                tabletoappend += "<span class='table_result'>" + res_value + "</span>";
+                var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
+                tabletoappend += buttons + "</td>";
+            }
+        }
+        tabletoappend += "</tr>";
+    }
+    if (!$("#" + pos + "__textsearchid").length) {
+        var new_table = "<table class='col-12' id='" + pos + "__textsearchid'>\
+    "+ tabletoappend + "</table>";
+        // WYSIWYG
+        if (!$("#relation_datastory") === null) {
+            $("#relation_datastory").append(new_table);
+        } else {
+            // preview
+            var tables = document.getElementsByTagName('table');
+            $(new_table).insertAfter(tables[tables.length - 1]);
+        }
+
+    } else {
+        $("#" + pos + "__textsearchid tr").detach();
+        $("#" + pos + "__textsearchid").append(tabletoappend);
+    }
 
 }
 
-function collapseTable(table_id) { $("#"+table_id+" tr").toggle(); }
+function collapseTable(table_id) { $("#" + table_id + " tr").toggle(); }
 
-function detachTable(table_id) { $("#"+table_id+" tr,"+"#"+table_id+" caption").remove();}
+function detachTable(table_id) { $("#" + table_id + " tr," + "#" + table_id + " caption").remove(); }
 
-function compareStrings(heading,str1,str2) {
-  // return the different string
-  if (heading == str1) {return str2} else {return str1};
+function compareStrings(heading, str1, str2) {
+    // return the different string
+    if (heading == str1) { return str2 } else { return str1 };
 }
 
 //// STATISTICS TEMPLATE FUNCTIONS ////
@@ -978,7 +1202,7 @@ function queryCounter() {
 function chartViz() {
     if (datastory_data.dynamic_elements) {
         datastory_data.dynamic_elements.forEach(element => {
-            if (element.type == 'chart') {
+            if (element.type === 'chart') {
                 var chart = element.chart_type;
                 if (chart === "barchart") {
                     barchart(element);
@@ -986,6 +1210,9 @@ function chartViz() {
                     linechart(element);
                 } else if (chart === "doughnutchart") {
                     doughnutchart(element);
+                }
+                else if (chart === 'scatterplot') {
+                    scatterplot(element);
                 }
             }
         }
@@ -1137,8 +1364,8 @@ function barchart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
                     }
                 }
 
@@ -1247,8 +1474,8 @@ function linechart(element) {
                     })
                 } else if (op.length == 0) {
                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].x.value;
-                        chartData[i] = returnedJson.results.bindings[i].y.value;
+                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                        chartData[i] = returnedJson.results.bindings[i].count.value;
                     }
                 }
 
@@ -1440,109 +1667,277 @@ function doughnutchart(element) {
 
 }
 
-function stacked_barchart(element) {
+function scatterplot(element) {
+    let queryArray = [];
 
-    // get the data that I need
-    // now starts a piece of code that is exactly the same from function counter
-    // ********
+    // check if chart requires extra queries
+    var extra = element.extra_queries;
+    if (extra.length == 0) {
+        // where I'll store the data necessary fo the scatter plot
+        let chartData = [];
+        let tempLabels = [];
 
+        let query = element.chart_query;
+        // check if the query is an API request
+        if (query.startsWith('http')) {
+            alert('There is an API request.');
+            // $.ajax({
+            //     type: 'GET',
+            //     url: query,
+            //     headers: {Accept: 'application/json'},
+            //     success: function (returnedJson) {
+            //         do things
+            //     }
+            // }
+        } else {
+            // if it is a sparql query
+            var encoded = encodeURIComponent(query);
+            var sparqlEndpoint = datastory_data.sparql_endpoint;
+            $.ajax({
+                type: 'GET',
+                url: sparqlEndpoint + '?query=' + encoded,
+                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                success: function (returnedJson) {
+                    const queryResults = returnedJson.results.bindings;
+                    for (entry in queryResults) {
+                        const xValue = parseInt(queryResults[entry].x.value);
+                        const yValue = parseInt(queryResults[entry].y.value);
+                        const entryObj = { x: xValue, y: yValue }
+                        tempLabels.push(xValue);
+                        chartData.push(entryObj);
+                    }
 
-    var query = element.chart_query;
-    // check if the query is an API request
-    if (query.startsWith('http')) {
-        alert('There is an API request.');
-        // $.ajax({
-        //     type: 'GET',
-        //     url: query,
-        //     headers: {Accept: 'application/json'},
-        //     success: function (returnedJson) {
-        //         do things
-        //     }
-        // }
-    } else {
-        // if it is a sparql query
-        var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = datastory_data.sparql_endpoint;
-
-        $.ajax({
-            type: 'GET',
-            url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-            success: function (returnedJson) {
-
-                const dataElements = [];
-                for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                    // dataElements[i] = returnedJson.results.bindings[i].label.value;
-                }
-
-                if (element.operations == 'count') {
-                    // elCount = count(dataElements);
-                }
-
-                // where I'll store the data necessary fo the bar chart
-                // var chartData = Object.values(elCount);
-                // var chartLabels = Object.keys(elCount);
-
-                // create the HTML structure that'll receive the data
-                chartHTMLElements(element);
-                // retrieve the chart id
-                var chartId = "chart_" + element.position;
-
-                // chart colors
-                // var colors = chartColor(data.color_code[0], data.color_code[1], chartLabels.length);
-
-                // chart plotting
-                var myMultipleBarChart = new Chart(chartId, {
-                    type: 'bar',
-                    data: {
-                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                        datasets: [{
-                            // label: "First time visitors",
-                            // backgroundColor: '#59d05d',
-                            // borderColor: '#59d05d',
-                            // data: [95, 100, 112, 101, 144, 159, 178, 156, 188, 190, 210, 245],
-                        }, {
-                            // label: "Visitors",
-                            // backgroundColor: '#fdaf4b',
-                            // borderColor: '#fdaf4b',
-                            // data: [145, 256, 244, 233, 210, 279, 287, 253, 287, 299, 312, 356],
-                        }, {
-                            // label: "Pageview",
-                            // backgroundColor: '#177dff',
-                            // borderColor: '#177dff',
-                            // data: [185, 279, 273, 287, 234, 312, 322, 286, 301, 320, 346, 399],
-                        }],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        legend: {
-                            position: 'bottom'
-                        },
-                        // title: {
-                        //     display: true,
-                        //     text: 'Traffic Stats'
-                        // },
-                        tooltips: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        responsive: true,
-                        scales: {
-                            xAxes: [{
-                                stacked: true,
-                            }],
-                            yAxes: [{
-                                stacked: true
+                    //  create the HTML structure that'll receive the data
+                    chartHTMLElements(element);
+                    //  retrieve the chart id
+                    var chartId = "chart_" + element.position;
+                    var chartColor = datastory_data.color_code[0];
+                    // graph plotting
+                    var myScatterChart = new Chart(chartId, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                label: element.chart_series,
+                                data: chartData,
+                                backgroundColor: chartColor
                             }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: element.chart_title
+                                }
+                            },
+                            animation: {
+                                onComplete: function () {
+                                    image = myScatterChart.toBase64Image();
+                                    printChart(image, element.position);
+                                    exportChart(element.position, 'scatter', chartData);
+                                }
+                            }
                         }
+                    });
+                }
+            })
+        }
+    } else if (extra.length > 0) {
+        let query = element.chart_query;
+        let seriesArray = [];
+        let datasetArray = [];
+        queryArray.push(query);
+        seriesArray.push(element.chart_series);
+
+        for (const e of extra) {
+            queryArray.push(e.extra_query);
+            seriesArray.push(e.extra_series);
+        }
+        // generate colors based on number of queries
+        var colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), queryArray.length);
+
+        for (const [i, q] of queryArray.entries()) {
+            let chart_query = q;
+            let chartData = [];
+            let dataDict = {};
+
+            // check if the query is an API request
+            if (chart_query.startsWith('http')) {
+                alert('There is an API request.');
+                // $.ajax({
+                //     type: 'GET',
+                //     url: query,
+                //     headers: {Accept: 'application/json'},
+                //     success: function (returnedJson) {
+                //         do things
+                //     }
+                // }
+            } else {
+                // if it is a sparql query
+                var encoded = encodeURIComponent(chart_query);
+                var sparqlEndpoint = datastory_data.sparql_endpoint;
+                $.ajax({
+                    type: 'GET',
+                    url: sparqlEndpoint + '?query=' + encoded,
+                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                    success: function (returnedJson) {
+                        const queryResults = returnedJson.results.bindings;
+                        for (entry in queryResults) {
+                            const xValue = parseInt(queryResults[entry].x.value);
+                            const yValue = parseInt(queryResults[entry].y.value);
+                            const entryObj = { x: xValue, y: yValue }
+                            chartData.push(entryObj);
+                        }
+                        dataDict.data = chartData;
+                        dataDict.label = seriesArray[i];
+                        dataDict.backgroundColor = colors[i];
+                        datasetArray.push(dataDict);
+                        myScatterChart.update();
                     }
                 });
             }
-        })
-    }
+        }
 
+        //  create the HTML structure that'll receive the data
+        chartHTMLElements(element);
+        //  retrieve the chart id
+        var chartId = "chart_" + element.position;
+
+        // graph plotting
+        var myScatterChart = new Chart(chartId, {
+            type: 'scatter',
+            data: data = {
+                datasets: datasetArray
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: element.chart_title
+                    }
+                },
+                animation: {
+                    onComplete: function () {
+                        image = myScatterChart.toBase64Image();
+                        printChart(image, element.position);
+                        exportChart(element.position, 'scatter', datasetArray);
+                    }
+                }
+            }
+        });
+    }
 }
+
+// function stacked_barchart(element) {
+
+//     // get the data that I need
+//     // now starts a piece of code that is exactly the same from function counter
+//     // ********
+
+
+//     var query = element.chart_query;
+//     // check if the query is an API request
+//     if (query.startsWith('http')) {
+//         alert('There is an API request.');
+//         // $.ajax({
+//         //     type: 'GET',
+//         //     url: query,
+//         //     headers: {Accept: 'application/json'},
+//         //     success: function (returnedJson) {
+//         //         do things
+//         //     }
+//         // }
+//     } else {
+//         // if it is a sparql query
+//         var encoded = encodeURIComponent(query);
+//         var sparqlEndpoint = datastory_data.sparql_endpoint;
+
+//         $.ajax({
+//             type: 'GET',
+//             url: sparqlEndpoint + '?query=' + encoded,
+//             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+//             success: function (returnedJson) {
+
+//                 const dataElements = [];
+//                 for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                     // dataElements[i] = returnedJson.results.bindings[i].label.value;
+//                 }
+
+//                 if (element.operations == 'count') {
+//                     // elCount = count(dataElements);
+//                 }
+
+//                 // where I'll store the data necessary fo the bar chart
+//                 // var chartData = Object.values(elCount);
+//                 // var chartLabels = Object.keys(elCount);
+
+//                 // create the HTML structure that'll receive the data
+//                 chartHTMLElements(element);
+//                 // retrieve the chart id
+//                 var chartId = "chart_" + element.position;
+
+//                 // chart colors
+//                 // var colors = chartColor(data.color_code[0], data.color_code[1], chartLabels.length);
+
+//                 // chart plotting
+//                 var myMultipleBarChart = new Chart(chartId, {
+//                     type: 'bar',
+//                     data: {
+//                         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+//                         datasets: [{
+//                             // label: "First time visitors",
+//                             // backgroundColor: '#59d05d',
+//                             // borderColor: '#59d05d',
+//                             // data: [95, 100, 112, 101, 144, 159, 178, 156, 188, 190, 210, 245],
+//                         }, {
+//                             // label: "Visitors",
+//                             // backgroundColor: '#fdaf4b',
+//                             // borderColor: '#fdaf4b',
+//                             // data: [145, 256, 244, 233, 210, 279, 287, 253, 287, 299, 312, 356],
+//                         }, {
+//                             // label: "Pageview",
+//                             // backgroundColor: '#177dff',
+//                             // borderColor: '#177dff',
+//                             // data: [185, 279, 273, 287, 234, 312, 322, 286, 301, 320, 346, 399],
+//                         }],
+//                     },
+//                     options: {
+//                         responsive: true,
+//                         maintainAspectRatio: true,
+//                         legend: {
+//                             position: 'bottom'
+//                         },
+//                         // title: {
+//                         //     display: true,
+//                         //     text: 'Traffic Stats'
+//                         // },
+//                         tooltips: {
+//                             mode: 'index',
+//                             intersect: false
+//                         },
+//                         responsive: true,
+//                         scales: {
+//                             xAxes: [{
+//                                 stacked: true,
+//                             }],
+//                             yAxes: [{
+//                                 stacked: true
+//                             }]
+//                         }
+//                     }
+//                 });
+//             }
+//         })
+//     }
+
+// }
 
 // autoresize textarea
 function auto_grow(element) {
@@ -1617,4 +2012,31 @@ function getBrightness(c) {
         }
     };
 
+}
+
+async function fillDropDownList(storyList) {
+    const name = storyList.getAttribute('name');
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/melody-data/stories/main/published_stories/stories_list.json');
+        const data = await response.json();
+        for (story of data) {
+            if (name === story.user_name) {
+                storyList.appendChild(newListElement(story.title, story.id))
+            }
+        }
+    }
+    catch (error) {
+        console.log('Error: ', error);
+    }
+}
+
+const newListElement = (title, id) => {
+    const a = document.createElement('a');
+    const text = title;
+    const aContent = document.createTextNode(text);
+    let file_name = title.replace(/[^\w]/g, '_').toLowerCase();
+    a.setAttribute('class', 'dropdown-item');
+    a.setAttribute('href', 'modify/' + id + '/' + file_name);
+    a.appendChild(aContent);
+    return a;
 }
