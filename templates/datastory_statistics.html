@@ -137,24 +137,27 @@
 	var datastory_data = {{ datastory_data | tojson }};
 	$('footer').detach();
 </script>
-{% if datastory_data.user_name %}
+{% if session[name] and datastory_data.user_name %}
 <script>
-	let beforeUnloadAlert = true;
-	window.addEventListener('beforeunload', function (e) {
-		if (!beforeUnloadAlert) return;
+	let hostname = window.location.hostname;
+	if (!hostname.includes('github')) {
+		let beforeUnloadAlert = true;
+		window.addEventListener('beforeunload', function (e) {
+			if (!beforeUnloadAlert) return;
 
-		// etc
-		e.preventDefault();
-		e.returnValue = '';
-	});
+			// etc
+			e.preventDefault();
+			e.returnValue = '';
+		});
 
-	function myFunction() {
-		beforeUnloadAlert = false;
-	}
-	var myObj = document.getElementsByClassName('prevent_alert')
-	console.log(myObj);
-	for (el of myObj) {
-		el.addEventListener('click', myFunction);
+		function myFunction() {
+			beforeUnloadAlert = false;
+		}
+		var myObj = document.getElementsByClassName('prevent_alert')
+		console.log(myObj);
+		for (el of myObj) {
+			el.addEventListener('click', myFunction);
+		}
 	}
 </script>
 {% endif %}
