@@ -418,7 +418,8 @@ div[id*='block_field'] {
   text-decoration: none !important;
 }
 
-.publish_btn:hover {
+.publish_btn:hover,
+.publish_btn:active {
   background-color: white !important;
 }
 
