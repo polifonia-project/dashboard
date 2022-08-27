@@ -13,16 +13,6 @@
         <section class="secondarymenuinner" id="secondarymenuinner">
             <h3>Data source</h3>
             <p><a href="{{datastory_data.sparql_endpoint}}" target="_blank">SPARQL endpoint</a></p>
-            <h5 class="text-white op-7 pb-2">
-                {% if datastory_data.curator %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                    placeholder="Authors">{{ datastory_data.curator }}</textarea>
-                <!-- cols="{{ datastory_data.curator|length }}"  -->
-                {% else %}
-                <textarea class="col-10" oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                    placeholder="Authors"></textarea>
-                {%endif%}
-            </h5>
         </section>
     </section>
     <form action="" method="post" class="card col-md-9 col-sm-12"">
@@ -53,7 +43,15 @@
                             placeholder="Subtitle"></textarea>
                         {%endif%}
                     </h5>
-
+                    <h5 class="text-white op-7 pb-2">
+                        {% if datastory_data.curator %}
+                        <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                            placeholder="Authors">{{ datastory_data.curator }}</textarea>
+                        {% else %}
+                        <textarea class="col-10" oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                            placeholder="Authors"></textarea>
+                        {%endif%}
+                    </h5>
                 </div>
                 <div class="ml-md-auto py-2 py-md-0">
 
@@ -161,7 +159,7 @@
                                                             the y axis).</li>
                                                     </ol>
                                                     <code
-                                                        class="query-eg">SELECT ?label (COUNT(?content) AS ?count) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} } GROUP BY ?label</code>
+                                                        class="query-eg">PREFIX musow: &lt;https://w3id.org/musow/vocab/&gt; SELECT ?label (COUNT(?content) AS ?count) nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} } GROUP BY ?label</code>
                                                 </li>
                                             </ul>
                                         </div>
@@ -211,7 +209,7 @@
                                                             the item in the y axis).</li>
                                                     </ol>
                                                     <code
-                                                        class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry &lt;http://www.w3.org/ns/prov#generatedAtTime&gt; ?time . } } } GROUP BY ?x ORDER BY ?x</code>
+                                                        class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?label ORDER BY ?label</code>
                                                 </li>
                                             </ul>
                                             <p>* The ?label can be numbers or letters to represent day, months, years,

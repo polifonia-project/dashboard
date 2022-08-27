@@ -28,7 +28,7 @@
 			<button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
 					download="{{datastory_data.title}}.html">HTML</a></button>
 			<!-- publish button -->
-			{% if session['user_type'] == 'extra' %}
+			{% if datastory_data.id and session['user_type'] == 'extra' %}
 			<hr>
 			<form method="post">
 				<button type="submit" method="post" class="btn btn-success prevent_alert publish_btn">Publish
@@ -36,7 +36,7 @@
 			</form>
 			{% endif %}
 			<!-- modify button -->
-			{% if session['user_type'] == 'extra' or session['user_type'] == 'random' %}
+			{% if datastory_data.id and session['user_type'] == 'extra' or session['user_type'] == 'random' %}
 			<a class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
 				href="{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
 				Modify
@@ -60,23 +60,7 @@
 						{{ datastory_data.description }}
 					</p>
 					{%endif%}
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-3 col-sm-12">
-	</div>
-	<div class="page-inner py-5 col-md-9 col-sm-12">
-		<div class="row">
-			<div class="col-md-12 col-lg-12 col-sm-12">
 
-				<div class="col-md-12 col-sm-12">
-					<!-- <div class="card-header">
-						<div class="card-head-row card-tools-still-right">
-							<h4 class="card-title">About the Project</h4>
-						</div>
-
-					</div> -->
 					<div class="card-body row">
 
 						{% for dict in datastory_data.dynamic_elements %}
@@ -120,7 +104,7 @@
 	</div>
 </div>
 <!-- alerts -->
-{% if session['user_type'] == 'extra'%}
+{% if session['user_type'] == 'extra' and datastory_data.id %}
 <div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
 	data-notify-position="bottom-right"
 	style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
@@ -130,7 +114,7 @@
 	<span data-notify="message">If you leave without downloading or publishing your data story, it will be
 		deleted.</span><a href="#" target="_blank" data-notify="url"></a>
 </div>
-{% elif session['user_type'] == 'random'%}
+{% elif session['user_type'] == 'random' and datastory_data.id%}
 <div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
 	data-notify-position="bottom-right"
 	style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
@@ -155,22 +139,25 @@
 </script>
 {% if datastory_data.user_name %}
 <script>
-	let beforeUnloadAlert = true;
-	window.addEventListener('beforeunload', function (e) {
-		if (!beforeUnloadAlert) return;
+	let hostname = window.location.hostname;
+	if (!hostname.includes('github')) {
+		let beforeUnloadAlert = true;
+		window.addEventListener('beforeunload', function (e) {
+			if (!beforeUnloadAlert) return;
 
-		// etc
-		e.preventDefault();
-		e.returnValue = '';
-	});
+			// etc
+			e.preventDefault();
+			e.returnValue = '';
+		});
 
-	function myFunction() {
-		beforeUnloadAlert = false;
-	}
-	var myObj = document.getElementsByClassName('prevent_alert')
-	console.log(myObj);
-	for (el of myObj) {
-		el.addEventListener('click', myFunction);
+		function myFunction() {
+			beforeUnloadAlert = false;
+		}
+		var myObj = document.getElementsByClassName('prevent_alert')
+		console.log(myObj);
+		for (el of myObj) {
+			el.addEventListener('click', myFunction);
+		}
 	}
 </script>
 {% endif %}

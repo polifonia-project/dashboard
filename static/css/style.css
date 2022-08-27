@@ -143,8 +143,13 @@ b.ball2 {
   padding: 5em 3em;
 }
 
-.action:nth-of-type(1) {padding-left: 6em;}
-.action:nth-last-of-type(1) {padding-right: 6em;}
+.action:nth-of-type(1) {
+  padding-left: 6em;
+}
+
+.action:nth-last-of-type(1) {
+  padding-right: 6em;
+}
 
 .action:hover {
   background: var(--dark-grey);
@@ -413,6 +418,11 @@ div[id*='block_field'] {
   text-decoration: none !important;
 }
 
+.publish_btn:hover,
+.publish_btn:active {
+  background-color: white !important;
+}
+
 #colors {
   width: 60%;
   padding: 2em 0px;
@@ -449,11 +459,15 @@ div[id*='block_field'] {
 }
 
 .counter_num {
-  font-size: 3em;
+  line-height: 1.82 !important;
+  font-size: 3em !important;
 }
 
 .counter_label {
   padding-bottom: 1em;
+  font-size: 14px !important;
+  line-height: 1.82 !important;
+  margin-bottom: 1rem !important;
 }
 
 .addfieldssection {
