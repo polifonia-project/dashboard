@@ -96,7 +96,11 @@
                                 <div class="modal-body">
                                     <div class="container">
                                         <div class="row">
-                                            <p>Overall, a SPARQL query to build a chart can be of two types:</p>
+                                            <p>Check the description of the charts to see which one fits the data you
+                                                want to show. Pay particular attention to the terminology of the
+                                                variables.</p>
+                                            <p>Although this is not the case for all charts, overall a SPARQL query to
+                                                build a chart can be of two types:</p>
                                             <ul>
                                                 <li class="pb-2"><strong>Aggregating</strong>: the query retrieves
                                                     aggregated data that are automatically post-processed to be
@@ -110,8 +114,6 @@
                                                     <code>?label</code>.
                                                 </li>
                                             </ul>
-                                            <p>Check the description of the charts to see which one fits the data you
-                                                want to show.</p>
                                         </div>
                                     </div>
                                     <!-- Bar chart -->
@@ -260,6 +262,47 @@
                                                     <code
                                                         class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { ?entry ?p &lt;https://w3id.org/musow/vocab/repository&gt; . ?entry &lt;https://schema.org/audience&gt; ?audience . ?audience rdfs:label ?label . } GROUP BY ?label ORDER BY ?label</code>
                                                 </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <!-- Scatter plot -->
+                                    <div class="container">
+                                        <div class="row">
+                                            <h4>Scatter Plot</h4>
+                                        </div>
+                                        <div class="row pt-3">
+                                            <div class="col-sm-4 col-lg-3 text-center">
+                                                <img class="preview-png" src="/static/img/scatter-chart.png" />
+                                            </div>
+                                            <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
+                                                <p>Scatter plots usually display values for two variables for a set of
+                                                    data.<br />
+                                                    Data is displayed as a collection of points, each having the value
+                                                    of one variable determining the position on the axes (x, y).
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row pt-3">
+                                            <p>
+                                                To build it, you can:
+                                            </p>
+                                            <ul>
+                                                <li class="pb-2">write a single query that returns two numerical
+                                                    variables called <code>?x</code> and <code>?y</code> that represent
+                                                    the
+                                                    coordinates of each point.<br />
+                                                </li>
+                                                <li class="pb-2">write two or more queries each of which returns two
+                                                    numerical variables called <code>?x</code> and <code>?y</code> that
+                                                    represent the coordinates of each point. <br />
+                                                    This is the case in which, for example, you want to <strong>compare
+                                                        different datasets</strong> on the same type of characteristics
+                                                    (age/height). Datasets will be distinguished by color.
+                                                </li>
+                                                <code
+                                                    class="query-eg">PREFIX wdt: &lt;http://www.wikidata.org/prop/direct/&gt; PREFIX wd: &lt;http://www.wikidata.org/entity/&gt; PREFIX p: &lt;http://www.wikidata.org/prop/&gt; PREFIX ps: &lt;http://www.wikidata.org/prop/statement/&gt; PREFIX pq: &lt;http://www.wikidata.org/prop/qualifier/&gt; SELECT DISTINCT ?y ?x WHERE {  ?item wdt:P31 wd:Q11424.  ?item p:P444 ?review_statement .  ?review_statement ps:P444 ?y .  ?review_statement pq:P447 wd:Q105584 .  ?review_statement pq:P459 wd:Q108403393 .  ?item p:P2142 ?box_office_statement .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q30 .}</code>
+
                                             </ul>
                                         </div>
                                     </div>
