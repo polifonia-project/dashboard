@@ -159,7 +159,7 @@
                                                             the y axis).</li>
                                                     </ol>
                                                     <code
-                                                        class="query-eg">SELECT ?label (COUNT(?content) AS ?count) WHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} } GROUP BY ?label</code>
+                                                        class="query-eg">PREFIX musow: &lt;https://w3id.org/musow/vocab/&gt; SELECT ?label (COUNT(?content) AS ?count) nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} } GROUP BY ?label</code>
                                                 </li>
                                             </ul>
                                         </div>
@@ -209,7 +209,7 @@
                                                             the item in the y axis).</li>
                                                     </ol>
                                                     <code
-                                                        class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?x) WHERE { ?entry &lt;http://www.w3.org/ns/prov#generatedAtTime&gt; ?time . } } } GROUP BY ?x ORDER BY ?x</code>
+                                                        class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?label ORDER BY ?label</code>
                                                 </li>
                                             </ul>
                                             <p>* The ?label can be numbers or letters to represent day, months, years,
