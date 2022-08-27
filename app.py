@@ -147,9 +147,14 @@ def datastory(section_name, datastory_name):
             branch='main', absolute_file_path='stories_list.json')
 
         if stories_list is not None:
-            stories_list.append(new_story)
             data_methods.update_json(
                 'static/temp/stories_list.json', stories_list)
+            if new_story in stories_list:
+                pass
+            else:
+                stories_list.append(new_story)
+                data_methods.update_json(
+                    'static/temp/stories_list.json', stories_list)
         else:
             stories_list = []
             stories_list.append(new_story)
