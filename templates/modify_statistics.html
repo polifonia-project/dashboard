@@ -4,7 +4,7 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/templates.css') }}">
+<link rel="stylesheet" href="/melody/static/css/templates.css">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -123,7 +123,7 @@
                                         </div>
                                         <div class="row pt-3">
                                             <div class="col-sm-4 col-lg-3 text-center">
-                                                <img class="preview-png" src="/static/img/bar-chart.png" />
+                                                <img class="preview-png" src="/melody/static/img/bar-chart.png" />
                                             </div>
                                             <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
                                                 <p>A bar chart is a graph with rectangular bars that's useful for
@@ -144,10 +144,10 @@
                                                     returns a
                                                     variable called <code>?label</code> (time periods) and flag
                                                     the "<strong>Count</strong>" operation.
-                                                    <code class="query-eg">SELECT ?label 
-                                                        WHERE { 
-                                                            ?entry ?p &lt;https://w3id.org/musow/vocab/repository&gt; . 
-                                                            ?entry &lt;https://schema.org/audience&gt; ?audience . ?audience rdfs:label ?label . 
+                                                    <code class="query-eg">SELECT ?label
+                                                        WHERE {
+                                                            ?entry ?p &lt;https://w3id.org/musow/vocab/repository&gt; .
+                                                            ?entry &lt;https://schema.org/audience&gt; ?audience . ?audience rdfs:label ?label .
                                                         }</code>
                                                 </li>
                                                 <li>write an <strong>aggregating</strong> query that returns two
@@ -174,7 +174,7 @@
                                         </div>
                                         <div class="row pt-3">
                                             <div class="col-sm-4 col-lg-3 text-center">
-                                                <img class="preview-png" src="/static/img/line-chart.png" />
+                                                <img class="preview-png" src="/melody/static/img/line-chart.png" />
                                             </div>
                                             <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
                                                 <p>Line charts are usually employed to track changes in data over
@@ -226,7 +226,7 @@
                                         </div>
                                         <div class="row pt-3">
                                             <div class="col-sm-4 col-lg-3 text-center">
-                                                <img class="preview-png" src="/static/img/doughnut-chart.png" />
+                                                <img class="preview-png" src="/melody/static/img/doughnut-chart.png" />
                                             </div>
                                             <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
                                                 <p>Doughnut charts are used to express a "part-to-whole" relationship,
