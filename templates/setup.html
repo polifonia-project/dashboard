@@ -38,7 +38,7 @@
 													<figure class="templatepreview">
 														<a data-target="#{{item.name}}Modal" role="button"
 															data-toggle="modal">
-															<img src="{{item.img_path}}" alt="{{item.name}}"
+															<img src="/melody{{item.img_path}}" alt="{{item.name}}"
 																class="imagecheck-image">
 														</a>
 														<figcaption>{{item.name|capitalize}}</figcaption>
@@ -64,7 +64,7 @@
 																		style="background-image: url('{{item.img_path}}')">
 																	</div> -->
 																	<div class="card-body">
-																		<img src="{{item.img_path}}"
+																		<img src="/melody{{item.img_path}}"
 																			style="max-width: 30%; height: auto;">
 																	</div>
 																	<div class="card-footer">
@@ -172,7 +172,7 @@
 <script type="text/javascript"> var template_data = {{ template_data | tojson }};</script>
 
 <!-- Atlantis DEMO methods, don't include it in your project! -->
-<script src="/static/js/setting-demo2.js"></script>
+<script src="/melody/static/js/setting-demo2.js"></script>
 <!-- <script>
 	$("#section_name").find("[value='Type your Section...']").prop("disabled", true);
 </script> -->

@@ -11,10 +11,11 @@ import time
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/melody/static')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 100
+app.config["APPLICATION_ROOT"] = "/melody"
 Session(app)
 
 
@@ -47,23 +48,23 @@ scheduler.start()
 # In case 2 prints are shown see
 # https://stackoverflow.com/questions/11810461/how-to-perform-periodic-task-with-flask-in-python
 
-
+PREFIX = '/melody/'
 # access the home page
-@app.route("/")
-@app.route("/index.html")
+@app.route(PREFIX+"")
+@app.route(PREFIX+"index.html")
 def home():
     general_data = data_methods.read_json('config.json')
     return render_template('index.html', general_data=general_data)
 
 
-@app.route("/asklogin")
+@app.route(PREFIX+"asklogin")
 def asklogin():
     general_data = data_methods.read_json('config.json')
     return render_template('asklogin.html', general_data=general_data)
 
 
 # github authentication
-@app.route("/gitauth")
+@app.route(PREFIX+"gitauth")
 def gitauth():
     github_auth = "https://github.com/login/oauth/authorize"
     clientId = conf.clientID
@@ -71,7 +72,7 @@ def gitauth():
     return redirect(github_auth+"?client_id="+clientId+scope)
 
 
-@app.route("/oauth-callback")
+@app.route(PREFIX+"oauth-callback")
 def oauthcallback(is_valid_user=None):
     code = request.args.get('code')
     res = github_sync.ask_user_permission(code)
@@ -98,7 +99,7 @@ def oauthcallback(is_valid_user=None):
 
 
 # signout
-@app.route("/signout")
+@app.route(PREFIX+"signout")
 def signout():
     session["name"] = None
     session["user_type"] = None
@@ -106,7 +107,7 @@ def signout():
 
 
 # access any datastory page
-@app.route("/<string:section_name>/<string:datastory_name>", methods=['GET', 'POST'])
+@app.route(PREFIX+"<string:section_name>/<string:datastory_name>", methods=['GET', 'POST'])
 def datastory(section_name, datastory_name):
     '''
     opens the config file, checks if datastory_name is inside data_sources and returns its page with the data(datastory_data)
@@ -179,7 +180,7 @@ def datastory(section_name, datastory_name):
         return redirect('https://melody-data.github.io/stories/published_stories/' + datastory_name + '_' + section_name + '.html')
 
 
-@app.route("/setup", methods=['POST', 'GET'])
+@app.route(PREFIX+"setup", methods=['POST', 'GET'])
 def setup():
     general_data = data_methods.read_json('config.json')
     if request.method == 'GET':
@@ -274,7 +275,7 @@ def setup():
         return 'something went wrong, try again'
 
 
-# @app.route("/send_data/<string:section_name>", methods=['POST', 'GET'])
+# @app.route(PREFIX+"send_data/<string:section_name>", methods=['POST', 'GET'])
 # def send_data(section_name):
 #     general_data = data_methods.read_json('config.json')
 #     if request.method == 'POST':
@@ -288,7 +289,7 @@ def setup():
 #                     return 'Something went wrong'
 
 
-@app.route("/modify/<string:section_name>/<string:datastory_name>", methods=['POST', 'GET'])
+@app.route(PREFIX+"modify/<string:section_name>/<string:datastory_name>", methods=['POST', 'GET'])
 def modify_datastory(section_name, datastory_name):
     while True:
         try:
@@ -399,7 +400,7 @@ def modify_datastory(section_name, datastory_name):
         break
 
 
-@app.route("/<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])
+@app.route(PREFIX+"<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])
 def redirect_to_modify(section_name, datastory_name, whatever=None):
     return redirect(url_for('modify_datastory', section_name=section_name, datastory_name=datastory_name))
 

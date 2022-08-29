@@ -3,7 +3,7 @@
 	<!-- Logo Header -->
 	<div class="logo-header" data-background-color="dark2">
 
-		<a href="{{ url_for('home') }}" class="logo">MELODY</a>
+		<a href="/melody/" class="logo">MELODY</a>
 		<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"
 			data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon">
@@ -42,19 +42,19 @@
 				</li>
 				<li class="nav-item">
 					{% if session['name'] and session['name'] != 'anonym' %}
-					<a class="nav-link" href="{{ url_for('setup') }}" role="button" aria-expanded="false"
+					<a class="nav-link" href="/melody/setup" role="button" aria-expanded="false"
 						aria-controls="search-nav">
 						Create a story
 					</a>
 					{% else %}
-					<a class="nav-link" href="{{ url_for('asklogin') }}" role="button" aria-expanded="false"
+					<a class="nav-link" href="/melody/asklogin" role="button" aria-expanded="false"
 						aria-controls="search-nav">
 						Create a story
 					</a>
 					{% endif %}
 				</li>
 				{% if session['name'] and session['name'] != 'anonym' %}
-				<li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}" role="button"
+				<li class="nav-item"><a class="nav-link" href="/melody/signout" role="button"
 						aria-expanded="false" aria-controls="search-nav">
 						Sign out
 					</a></li>
@@ -66,7 +66,7 @@
 							alt="{{session['name']}}">
 					</div>
 					{% else %}
-					<a class="nav-link" href="{{ url_for('gitauth') }}" role="button" aria-expanded="false"
+					<a class="nav-link" href="/melody/gitauth" role="button" aria-expanded="false"
 						aria-controls="search-nav">
 						Sign in
 					</a>
