@@ -389,7 +389,7 @@ div[id*='block_field'] {
 .secondarymenuinner {
   padding: 2em;
   position: fixed;
-  max-width: 20%;
+  max-width: 19%;
   max-height: calc(100% - 12rem);
   overflow-y: auto;
   overflow-x: hidden;
