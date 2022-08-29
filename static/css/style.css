@@ -143,8 +143,13 @@ b.ball2 {
   padding: 5em 3em;
 }
 
-.action:nth-of-type(1) {padding-left: 6em;}
-.action:nth-last-of-type(1) {padding-right: 6em;}
+.action:nth-of-type(1) {
+  padding-left: 6em;
+}
+
+.action:nth-last-of-type(1) {
+  padding-right: 6em;
+}
 
 .action:hover {
   background: var(--dark-grey);
@@ -384,7 +389,10 @@ div[id*='block_field'] {
 .secondarymenuinner {
   padding: 2em;
   position: fixed;
-  max-width: 18%;
+  max-width: 19%;
+  max-height: calc(100% - 12rem);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .inputinvisible {
@@ -411,6 +419,11 @@ div[id*='block_field'] {
   background-color: transparent !important;
   color: black !important;
   text-decoration: none !important;
+}
+
+.publish_btn:hover,
+.publish_btn:active {
+  background-color: white !important;
 }
 
 #colors {
@@ -449,11 +462,15 @@ div[id*='block_field'] {
 }
 
 .counter_num {
-  font-size: 3em;
+  line-height: 1.82 !important;
+  font-size: 3em !important;
 }
 
 .counter_label {
   padding-bottom: 1em;
+  font-size: 14px !important;
+  line-height: 1.82 !important;
+  margin-bottom: 1rem !important;
 }
 
 .addfieldssection {

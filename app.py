@@ -148,9 +148,14 @@ def datastory(section_name, datastory_name):
             branch='main', absolute_file_path='stories_list.json')
 
         if stories_list is not None:
-            stories_list.append(new_story)
             data_methods.update_json(
                 'static/temp/stories_list.json', stories_list)
+            if new_story in stories_list:
+                pass
+            else:
+                stories_list.append(new_story)
+                data_methods.update_json(
+                    'static/temp/stories_list.json', stories_list)
         else:
             stories_list = []
             stories_list.append(new_story)
@@ -172,7 +177,7 @@ def datastory(section_name, datastory_name):
         os.remove('static/temp/'+datastory_name+'_'+section_name+'.html')
         os.remove('static/temp/stories_list.json')
 
-        return redirect('https://github.com/melody-data/stories')
+        return redirect('https://melody-data.github.io/stories/published_stories/' + datastory_name + '_' + section_name + '.html')
 
 
 @app.route(PREFIX+"setup", methods=['POST', 'GET'])
