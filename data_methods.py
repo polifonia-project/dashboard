@@ -61,10 +61,6 @@ def access_data_sources(section_name, datastory_name, file_name):
             return details
 
 
-def manage_extra_queries():
-    return
-
-
 def manage_datastory_data(general_data, file, section_name, datastory_name):
     '''
     This function deals with data story data after the submission of the WYSIWYG form.

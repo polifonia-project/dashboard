@@ -13,8 +13,8 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -26,9 +26,9 @@
             </a>
             <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
                 <a class="mr-5 hover:text-gray-900" href="getting_started.html">Getting Started</a>
-                <!-- <a class="mr-5 hover:text-gray-900" href="examples.html">Examples</a> -->
                 <a class="mr-5 hover:text-gray-900" href="user_guide.html">User Guide</a>
                 <a class="mr-5 hover:text-gray-900" href="documentation.html">Documentation</a>
+                <a class="mr-5 hover:text-gray-900" href="https://melody-data.github.io/stories/#catalogue">Examples</a>
             </nav>
         </div>
     </header>
@@ -49,7 +49,8 @@
                             <p>Download the latest release<a class="reference external" href=""></a>:</p>
                             <div class="highlight-bash notranslate">
                                 <div class="highlight">
-                                    <code id="codecell0"><span></span>https://github.com/polifonia-project/dashboard/releases</code>
+                                    <code
+                                        id="codecell0"><span></span>https://github.com/polifonia-project/dashboard/releases</code>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +74,7 @@
                             <li>Python3 should be installed properly in the workstation. If you
                                 are not sure if Python
                                 is properly installed, please open a terminal and type python --version.</li>
-                            <li>Enter the project folder using the terminal/powershel/bash.</li>
+                            <li>Enter the project folder using the terminal/powershell/bash.</li>
                             <li>Install modules using a <a href="https://docs.python.org/3/library/venv.html"
                                     class="text-green-500" target="_blank">Virtual Environment</a>.</li>
                         </ol>
@@ -143,23 +144,26 @@
                                 </div>
                             </div>
                         </div>
-                        <p>Running at <a class="text-green-500" href="http://127.0.0.1:5000/"
-                                target="_blank">http://127.0.0.1:5000/</a>.</p>
+                        <p>Running at <a class="text-green-500" href="http://127.0.0.1:5000/melody"
+                                target="_blank">http://127.0.0.1:5000/melody</a>.</p>
 
-                                <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Authentication
-                                </h2>
-                                <p>MELODY has a tight-knit relation with GitHub. To use MELODY both locally
-                                  and in a production environment,
-                                  your instance must be paired with a GitHub repository and an OAuth Application
-                                  (see <a class="text-green-500"
-                                          href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app">how to create an OAuth app</a>
-                                          connected to your instance of MELODY and
-                                          <a class="text-green-500"
-                                          href="https://docs.github.com/en/organizations/restricting-access-to-your-organizations-data/approving-oauth-apps-for-your-organization">how to approve the app on your repository</a>).
-                                  </p>
-                                <p>After creating the OAuth app, modify the file <b>conf.py</b>
-                                  in the root directory to configure the login.</p>
-                                <code>
+                        <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                            Authentication
+                        </h2>
+                        <p>MELODY has a tight-knit relation with GitHub. To use MELODY both locally
+                            and in a production environment,
+                            your instance must be paired with a GitHub repository and an OAuth Application
+                            (see <a class="text-green-500" target="_blank"
+                                href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app">how
+                                to create an OAuth app</a>
+                            connected to your instance of MELODY and
+                            <a class="text-green-500" target="_blank"
+                                href="https://docs.github.com/en/organizations/restricting-access-to-your-organizations-data/approving-oauth-apps-for-your-organization">how
+                                to approve the app on your repository</a>).
+                        </p>
+                        <p>After creating the OAuth app, modify the file <b>conf.py</b>
+                            in the root directory to configure the login.</p>
+                        <code>
                                   <pre>
         clientID='OAUth client id'
         clientSecret='OAUth client secret id'
@@ -167,24 +171,29 @@
         repo_name='the repository name'
         token='the bearer token of the admin of the repository'</pre>
                                 </code>
-                                <p>If you run the application locally, you need an OAuth app anyway.
-                                  Only collaborators of the repository can sign in with their GitHub account and can publish a story, which will appear in the left sidebar.</p>
-                                <h3><strong>Allow external collaborators (optional)</strong></h3>
-                                <p>If you want to create an online environment where to allow external users
-                                  to publish stories, you must add other parameters to the configuration file.</p>
-                                <code>
+                        <p>If you run the application locally, you need an OAuth app anyway.
+                            Only collaborators of the repository can sign in with their GitHub account and can publish a
+                            story, which will appear in the left sidebar.</p>
+                        <h3><strong>Allow external collaborators (optional)</strong></h3>
+                        <p>If you want to create an online environment where to allow external users
+                            to publish stories, you must add other parameters to the configuration file.</p>
+                        <code>
                                   <pre>
         melody_owner = 'the owner of the repository where external users can publish stories'
         melody_repo_name = 'the name of the repository where external users can publish stories'
         melody_sub_dir = 'if applicable, the name of the folder in the repository where stories are stored'
         melody_token = 'the bearer token of the admin of the repository'</pre>
                                 </code>
-                                <p>These parameters may be the same as the previous ones or may be different - so that stories published by external users are stored separately.</p>
-                                <p>So created stories are saved as HTML and JSON files on the chosen repository. To enable the publication as web pages, you need:</p>
-                                <ol class="list-group-numbered mb-4">
-                                  <li>copy <a class="text-green-500" target="_blank" href="https://github.com/melody-data/stories/tree/main/published_stories/static">this folder</a> into your repository.</li>
-                                  <li>activate github pages on the repository</li>
-                                </ol>
+                        <p>These parameters may be the same as the previous ones or may be different - so that stories
+                            published by external users are stored separately.</p>
+                        <p>So created stories are saved as HTML and JSON files on the chosen repository. To enable the
+                            publication as web pages, you need to:</p>
+                        <ol class="list-group-numbered mb-4">
+                            <li>copy <a class="text-green-500" target="_blank"
+                                    href="https://github.com/melody-data/stories/tree/main/published_stories/static">this
+                                    folder</a> into your repository.</li>
+                            <li>activate github pages on the repository</li>
+                        </ol>
 
 
                     </div>
@@ -207,7 +216,7 @@
                     <img src="../static/img/logopolifonia.svg" style="background-color: darkslategray;">
                 </a>
                 <p class="mt-2 text-sm text-gray-500">Polifonia has received funding from the European Union’s Horizon
-                    2020 research 
+                    2020 research
                     and innovation programme under grant agreement N. 101004746.</p>
             </div>
             <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left ">
@@ -240,61 +249,27 @@
 
                 </div>
                 <div class="lg:w-1/2 md:w-1/2 w-full px-4">
-                  <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
-                  <nav class="list-none mb-10">
-                      <li>
-                          <a class="text-gray-600 hover:text-pink-800" href="documentation/getting_started.html">Getting
-                              started</a>
-                      </li>
-                      <!-- <li>
-                          <a class="text-gray-600 hover:text-pink-800" href="documentation/examples.html">Examples</a>
-                      </li> -->
-                      <li>
-                          <a class="text-gray-600 hover:text-pink-800" href="documentation/user_guide.html">User
-                              Guide</a>
-                      </li>
-                      <li>
-                          <a class="text-gray-600 hover:text-pink-800"
-                              href="documentation/documentation.html">Documentation</a>
-                      </li>
-                  </nav>
-
-                    </div>
-
-                <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
                     <nav class="list-none mb-10">
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                            <a class="text-gray-600 hover:text-pink-800"
+                                href="documentation/getting_started.html">Getting
+                                started</a>
                         </li>
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                            <a class="text-gray-600 hover:text-pink-800" href="user_guide.html">User
+                                Guide</a>
                         </li>
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                            <a class="text-gray-600 hover:text-pink-800" href="documentation.html">Documentation</a>
                         </li>
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                            <a class="text-gray-600 hover:text-pink-800"
+                                href="https://melody-data.github.io/stories/#catalogue" target="_blank">Examples</a>
                         </li>
                     </nav>
-                </div> -->
-                <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
-                    <nav class="list-none mb-10">
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
-                        </li>
-                    </nav>
-                </div> -->
+
+                </div>
             </div>
         </div>
 

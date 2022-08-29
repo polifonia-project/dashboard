@@ -228,16 +228,6 @@
                     }
                 ]
             },
-            "try_the_switch": {
-                "sparql_endpoint": "https://query.wikidata.org/",
-                "template_mode": "map",
-                "title": "Try the switch for Map",
-                "color_code": [
-                    "#6e7e3a",
-                    "#79f1e9"
-                ],
-                "section_name": "Wikidata"
-            },
             "relations_between_museums": {
                 "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
                 "template_mode": "relations",
@@ -326,7 +316,7 @@
             }
         },
         "listening_experiences": {
-            "nurses'_listening_experiences_during_wwi_": {
+            "nurses_listening_experiences_during_wwi_": {
                 "sparql_endpoint": "http://data.open.ac.uk/sparql",
                 "template_mode": "Statistics",
                 "title": "Nurses' listening experiences during WWI ",
@@ -419,7 +409,8 @@
                         ],
                         "operations": []
                     }
-                ]
+                ],
+                "curator": ""
             }
         }
     }

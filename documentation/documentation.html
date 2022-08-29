@@ -13,8 +13,8 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -26,9 +26,9 @@
             </a>
             <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
                 <a class="mr-5 hover:text-gray-900" href="getting_started.html">Getting Started</a>
-                <!-- <a class="mr-5 hover:text-gray-900" href="examples.html">Examples</a> -->
                 <a class="mr-5 hover:text-gray-900" href="user_guide.html">User Guide</a>
                 <a class="mr-5 hover:text-gray-900" href="documentation.html">Documentation</a>
+                <a class="mr-5 hover:text-gray-900" href="https://melody-data.github.io/stories/#catalogue">Examples</a>
             </nav>
         </div>
     </header>
@@ -69,43 +69,34 @@
                 <div class="col-9">
                     <div class="flex flex-col w-full">
                         <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Documentation</h1>
-                        <p class="mb-3">MELODY, a web-based, extensible, reusable, and user-friendly software for
+                        <p class="mb-3">MELODY is a web-based, extensible, reusable, and user-friendly software for
                             retrieving, presenting, and publishing Linked Data in the form of Data Stories.</p>
                         <p><a href="../build/app.html" class="text-green-500">SEE METHODS</a></p>
-                        <h2 id="app" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">The Flask
+                        <h2 id="app" class="text-lg sm:text-xl text-gray-900 font-medium title-font">The Flask
                             Application
                         </h2>
                         <p class="mb-3">MELODY is developed with the <a
                                 href="https://flask.palletsprojects.com/en/2.1.x/" target="_blank"
-                                class="text-green-500">Flask framework</a> and serves two main functions:
+                                class="text-green-500">Flask framework</a> and serves three main functions:
                         </p>
                         <ol class="list-group-numbered pl-3 mb-3">
                             <li>manages incoming and outgoing data from the configuration file using methods;</li>
+                            <li>provides a user authentication system;</li>
                             <li>provides a web interface similar to a CMS rendered via routing.</li>
                         </ol>
-                        <h3 id="methods" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                        <h3 id="methods" class="text-lg sm:text-xl text-gray-900 font-medium title-font">
                             Configuration Methods
                         </h3>
-                        <p class="mb-3 ">Four methods have been defined to manage the data:</p>
-                        <ol class="list-group-numbered pl-3 mb-3">
-                            <li>The <i>read_json</i> method accesses the config.json file to retrieve configuration
-                                information.
-                            </li>
-                            <li>The <i>update_json</i> method updates the config.json file with any new incoming
-                                information from the user.</li>
-                            <li>The <i>access_data_sources</i> method accesses data of a specific data story based
-                                on the
-                                title and the name of the section. This is possible because these two parameters
-                                define the location of each data story within the config.json file, as we will see
-                                in the next sections.</li>
-                            <li>The <i>manage_datastory_data</i> method manages and stores in the config.json file
-                                the
-                                information involved in submitting the WYSIWYG form. This means that information
-                                about what and how an author wants content displayed in a data story is received,
-                                processed, and stored in a specific structure that we will analyze in the next
-                                section.</li>
-                        </ol>
-                        <h3 id="routing" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                        <p class="mb-3 ">You can check in detail each method in the dedicated <a
+                                href="data_methods.html" target="_blank" class="text-green-500"><i>data_methods.py</i>
+                            </a> module.</p>
+                        <h3 id="methods" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
+                            Authentication System
+                        </h3>
+                        <p class="mb-3 ">You can check in detail each method in the dedicated <a href="github_sync.html"
+                                target="_blank" class="text-green-500"><i>github_sync.py</i>
+                            </a> module.</p>
+                        <h3 id="routing" class="text-lg sm:text-xl text-gray-900 font-medium title-font">
                             Routing
                         </h3>
                         <p class="mb-3">Main routing functions are:</p>
@@ -151,6 +142,8 @@
                             <li>Types of operations.</li>
                             <li>List of data stories, organized as “section:datastory_list”.</li>
                         </ul>
+                        <img src="img/config_snippet.png" alt="">
+                        <p class="figcaption">A snippet from the configuration file representing data about a story.</p>
                         <p class="mb-3">In detail:</p>
                         <ul style="list-style: inside;" class="mb-3 pl-3">
                             <li>“sections” are the macro areas in which data stories can be organized. They are stored
@@ -178,7 +171,6 @@
     </div>
 
     <!-- footer -->
-    <!-- footer -->
     <footer class="text-gray-600 body-font mt-6">
         <div
             class="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
@@ -188,7 +180,7 @@
                     <img src="../static/img/logopolifonia.svg" style="background-color: darkslategray;">
                 </a>
                 <p class="mt-2 text-sm text-gray-500">Polifonia has received funding from the European Union’s Horizon
-                    2020 research 
+                    2020 research
                     and innovation programme under grant agreement N. 101004746.</p>
             </div>
             <div class="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left ">
@@ -221,61 +213,26 @@
 
                 </div>
                 <div class="lg:w-1/2 md:w-1/2 w-full px-4">
-                  <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
-                  <nav class="list-none mb-10">
-                      <li>
-                          <a class="text-gray-600 hover:text-pink-800" href="documentation/getting_started.html">Getting
-                              started</a>
-                      </li>
-                      <!-- <li>
-                          <a class="text-gray-600 hover:text-pink-800" href="documentation/examples.html">Examples</a>
-                      </li> -->
-                      <li>
-                          <a class="text-gray-600 hover:text-pink-800" href="documentation/user_guide.html">User
-                              Guide</a>
-                      </li>
-                      <li>
-                          <a class="text-gray-600 hover:text-pink-800"
-                              href="documentation/documentation.html">Documentation</a>
-                      </li>
-                  </nav>
-
-                    </div>
-
-                <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
+                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">LINKS</h2>
                     <nav class="list-none mb-10">
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
+                            <a class="text-gray-600 hover:text-pink-800" href="getting_started.html">Getting
+                                started</a>
                         </li>
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
+                            <a class="text-gray-600 hover:text-pink-800" href="user_guide.html">User
+                                Guide</a>
                         </li>
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
+                            <a class="text-gray-600 hover:text-pink-800" href="documentation.html">Documentation</a>
                         </li>
                         <li>
-                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
+                            <a class="text-gray-600 hover:text-pink-800"
+                                href="https://melody-data.github.io/stories/#catalogue" target="_blank">Examples</a>
                         </li>
                     </nav>
-                </div> -->
-                <!-- <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
-                    <nav class="list-none mb-10">
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">First Link</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">Second Link</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">Third Link</a>
-                        </li>
-                        <li>
-                            <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
-                        </li>
-                    </nav>
-                </div> -->
+
+                </div>
             </div>
         </div>
 
