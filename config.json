@@ -1,9 +1,9 @@
 {
     "sections": [
-        "Tests",
         "Listening Experiences",
+        "musoW",
         "Wikidata",
-        "musoW"
+        "Tests"
     ],
     "operations": [
         "Count",
@@ -313,6 +313,21 @@
                     }
                 ],
                 "curator": "Marilena Daquino"
+            },
+            "a_beautiful_map": {
+                "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
+                "template_mode": "maps",
+                "title": "a beautiful map",
+                "color_code": [
+                    "#7b219f",
+                    "#002e7a"
+                ],
+                "section_name": "Wikidata",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": []
             }
         },
         "listening_experiences": {
