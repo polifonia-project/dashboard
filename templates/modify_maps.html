@@ -4,7 +4,7 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
-<link rel="stylesheet" href="/melody/static/css/templates.css') }}">
+<link rel="stylesheet" href="/melody/static/css/templates.css">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -13,19 +13,12 @@
         <section class="secondarymenuinner" id="secondarymenuinner">
             <h3>Data source</h3>
             <p><a href="{{datastory_data.sparql_endpoint}}">SPARQL endpoint</a></p>
-            <h5 class="text-white op-7 pb-2">
-                {% if datastory_data.curator %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id=""
-                    cols="{{ datastory_data.curator|length }}" rows="1"
-                    placeholder="Authors">{{ datastory_data.curator }}</textarea>
-                {% else %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                    placeholder="Authors"></textarea>
-                {%endif%}
-            </h5>
+
         </section>
     </section>
+    <!-- MD <form action="send_data" method="post" class="card col-md-9 col-sm-12""> -->
     <form action="" method="post" class="card col-md-9 col-sm-12"">
+      <!-- title, subtitle and description -->
         <div class=" panel-header bg-primary-gradient">
         <div class="page-inner">
             <!-- color picker -->
@@ -38,12 +31,12 @@
 
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div>
-                    <h1 class="text-white pb-2 fw-bold">
+                    <h1 class="pb-2 fw-bold">
                         <textarea oninput='auto_grow(this)' name="title" type="text" id=""
                             cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
                             required>{{ datastory_data.title }}</textarea>
                     </h1>
-                    <h5 class="text-white mb-2 fw-bold">
+                    <h5 class="mb-2 fw-bold">
                         {% if datastory_data.subtitle %}
                         <textarea oninput='auto_grow(this)' name="subtitle" type="text" id=""
                             cols="{{ datastory_data.subtitle|length }}" rows="1"
@@ -51,6 +44,16 @@
                         {% else %}
                         <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1"
                             placeholder="Subtitle"></textarea>
+                        {%endif%}
+                    </h5>
+                    <h5 class="text-white op-7 pb-2">
+                        {% if datastory_data.curator %}
+                        <textarea oninput='auto_grow(this)' name="curator" type="text" id=""
+                            cols="{{ datastory_data.curator|length }}" rows="1"
+                            placeholder="Authors">{{ datastory_data.curator }}</textarea>
+                        {% else %}
+                        <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                            placeholder="Authors"></textarea>
                         {%endif%}
                     </h5>
 
@@ -61,13 +64,63 @@
             </div>
         </div>
 </div>
+<!-- interactive elements -->
+<div class="page-inner mt--5">
+    <div class="row row-card-no-pd">
+        <div class="col-md-12 nopaddingleft">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-head-row card-tools-still-right">
+                        <!-- <h4 class="card-title">About the Project</h4> -->
+                    </div>
+                    <p class="card-category">
+                        {% if datastory_data.description %}
+                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                            placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
+                        {% else %}
+                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                            placeholder="A brief introdution to the project."></textarea>
+                        {%endif%}
+                    </p>
+                </div>
+                <div class="card-body nopaddingleft" id="sortable">
+                    <span id='loader' class='lds-dual-ring hidden overlay'></span>
+                    {% for dict in datastory_data.dynamic_elements %}
+
+                      <p>hello</p>
+
+                    {% endfor %}
+
+                </div>
+                <!-- ADD buttons -->
+                <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
+                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="mapWithFilters">Add
+                        a map with filters</a>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- save buttons -->
 <div class="card-action" style="margin:auto;">
-    <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
+    <button type="submit" name="action" value="save" class="btn btn-success prevent_alert">Save</button>
     <button type="reset" class="btn btn-danger">Reset content</button>
     <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
 </div>
 </form>
 </div>
+{% if session['user_type'] == 'random' %}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+    data-notify-position="bottom-right"
+    style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+    data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+        style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+        class="flaticon-alarm-1"></span> <span data-notify="title">Remember</span>
+    <span data-notify="message">If you don't login, you can only download material, not
+        publish.</span><a href="#" target="_blank" data-notify="url"></a>
+</div>
+{% endif %}
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
@@ -77,5 +130,26 @@
 <script type="text/javascript">
 
 </script>
+{% if datastory_data.user_name %}
+<script>
+    let beforeUnloadAlert = true;
+    window.addEventListener('beforeunload', function (e) {
+        if (!beforeUnloadAlert) return;
+
+        // etc
+        e.preventDefault();
+        e.returnValue = '';
+    });
+
+    function myFunction() {
+        beforeUnloadAlert = false;
+    }
+    var myObj = document.getElementsByClassName('prevent_alert')
+    console.log(myObj);
+    for (el of myObj) {
+        el.addEventListener('click', myFunction);
+    }
+</script>
+{% endif %}
 
 {% endblock javascripts %}
