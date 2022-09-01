@@ -93,6 +93,16 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
     updateindex();
 });
 
+function rerunQuery(pos) {
+  $("a[data-id='"+pos+"_rerun_query']").on('click', function (e) {
+    console.log("click");
+    e.preventDefault();
+    $(this).data("run",true);
+    $('form').trigger('change');
+  });
+}
+
+
 // add box
 var counter = 0;
 function add_field(name, bind_query_id = "") {
@@ -236,6 +246,7 @@ function add_field(name, bind_query_id = "") {
         name='"+(counter + 1)+"__map_points_query' type='text'\
         id='"+(counter + 1)+"__map_points_query' rows='10'\
         required></textarea>\
+    <a onclick='rerunQuery("+(counter + 1)+")' data-id='"+(counter + 1)+"_rerun_query' data-run='true' href='#'>Rerun the query</a>\
     <!-- map preview -->\
     <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
     </div>\
@@ -417,6 +428,8 @@ $(function () {
             }
 
             );
+
+
 
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
@@ -868,7 +881,13 @@ $(function () {
 
             // map
             else if (points_query) {
-              createMap(sparqlEndpoint,encoded_points, idx+'__map_preview_container',idx,initialize=true);
+              // run the first time and then on demand
+              var rerun = $("a[data-id='"+(idx + 1)+"_rerun_query'");
+              if (rerun.data("run") == true) {
+                console.log("its true");
+                createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),initialize=true);
+                rerun.data("run",false);
+              } else {console.log("its false");}
             }
         });
 
@@ -877,11 +896,15 @@ $(function () {
     $('form').change(update);
 });
 
+
+
 const addQueryArea = () => {
     console.log('check');
 }
 
 //// MAPS TEMPLATE FUNCTIONS ////
+
+// initialize an empty map, used directly in templates
 function initMap(pos) {
   var map = L.map(pos+"__map_preview_container").setView([51.505, -0.09], 3);
   L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
@@ -891,6 +914,7 @@ function initMap(pos) {
   return map
 }
 
+// get geo data and send to map
 function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
 
   $.ajax({
@@ -918,7 +942,14 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
   });
 }
 
+// fill in an already initialized map (initMap()) with data points received from createMap()
 function setView(mapid,geoJSONdata) {
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.MarkerClusterGroup)
+        {
+            map.removeLayer(layer)
+        }
+    });
 
   var clusterStyle = "display: inline-block;background:"+datastory_data.color_code[0]+";\
     width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px;"
