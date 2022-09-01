@@ -238,7 +238,8 @@ function add_field(name, bind_query_id = "") {
         required></textarea>\
     <!-- map preview -->\
     <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
-    </div>";
+    </div>\
+    <script>var map = initMap("+(counter + 1)+");</script>";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
     <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
@@ -867,8 +868,7 @@ $(function () {
 
             // map
             else if (points_query) {
-              var map = $(".leaflet-container");
-              createMap(map,sparqlEndpoint,encoded_points,'1__map_preview_container',idx,initialize=true);
+              createMap(sparqlEndpoint,encoded_points,'1__map_preview_container',idx,initialize=true);
             }
         });
 
@@ -881,10 +881,17 @@ const addQueryArea = () => {
     console.log('check');
 }
 
-//// MAPS TEMPLATE FUNCTIONS //// sparqlEndpoint,encoded_points,'1__map_preview_container',idx
-function createMap(map,sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
-  //$("#"+mapid).html("").attr("class","map_preview_container").removeAttr('tabindex').removeAttr('style');
+//// MAPS TEMPLATE FUNCTIONS ////
+function initMap(pos) {
+  var map = L.map(pos+"__map_preview_container").setView([51.505, -0.09], 3);
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+  }).addTo(map);
+  return map
+}
 
+function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
 
   $.ajax({
       type: 'GET',
@@ -894,7 +901,8 @@ function createMap(map,sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true)
       success: function (returnedJson) {
         // preview map
         var geoJSONdata = creategeoJSON(returnedJson);
-        setView(mapid,geoJSONdata,initialize=true);
+        console.log(geoJSONdata);
+        setView(mapid,geoJSONdata);
       },
       complete: function () {
         $('#loader').addClass('hidden');
@@ -910,10 +918,11 @@ function createMap(map,sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true)
   });
 }
 
-function setView(mapid,geoJSONdata,initialize=true) {
-  map.invalidateSize();
+function setView(mapid,geoJSONdata) {
+
   var clusterStyle = "display: inline-block;background:"+datastory_data.color_code[0]+";\
     width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px;"
+
   var markers = L.markerClusterGroup({
     iconCreateFunction: function (cluster) {
       var markers = cluster.getAllChildMarkers();
