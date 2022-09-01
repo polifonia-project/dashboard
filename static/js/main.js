@@ -228,6 +228,17 @@ function add_field(name, bind_query_id = "") {
         name='tablecomboaction'>\
         Combine results</a>";
 
+    var map_field = "<input class='map_title' id='"+(counter + 1)+"__map_title' type='text'\
+        name='"+(counter + 1)+"__map_title'\
+        placeholder='The title of the map'>\
+    <!-- data points -->\
+    <textarea class='addplaceholder_points' oninput='auto_grow(this)'\
+        name='"+(counter + 1)+"__map_points_query' type='text'\
+        id='"+(counter + 1)+"__map_points_query' rows='10'\
+        required></textarea>\
+    <!-- map preview -->\
+    <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
+    </div>";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
     <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
@@ -259,6 +270,10 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
         var close_addons = "</div>";
         contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
+    } else if (name == 'mapWithFilters') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + map_field + close_addons;
     }
 
     if (name.includes('query-btn')) {
@@ -292,6 +307,33 @@ function add_field(name, bind_query_id = "") {
     LIMIT 10";
     $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
 
+    var placeholder_map = "Type a query that returns uris, their labels (optional) and their latitude (?lat) and longitude (?long). \n\
+    For instance \n\
+    PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+    PREFIX frbr: <http://purl.org/vocab/frbr/core#>\n\
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>\n\
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n\
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+    PREFIX psv: <http://www.wikidata.org/prop/statement/value/>\n\
+    PREFIX wikibase: <http://wikiba.se/ontology#>\n\
+    PREFIX p: <http://www.wikidata.org/prop/>\n\
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>\n\
+    SELECT DISTINCT ?artwork ?artworkLabel ?lat ?long WHERE {\n\
+      ?manif frbr:exemplar ?artwork .\n\
+      ?artwork crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\n\
+      ?keeper crm:P74_has_current_or_former_residence ?location .\n\
+      ?location owl:sameAs ?wdlocation .\n\
+      FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
+      FILTER(contains (str(?wdlocation), 'wikidata') )\n\
+      SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\n\
+       ?wdlocation p:P625 ?coords_stmt .\n\
+       ?coords_stmt ps:P625 ?coords;\n\
+          psv:P625 [ wikibase:geoLatitude ?lat;\n\
+                     wikibase:geoLongitude ?long ] .\n\
+     }\n\
+    }    LIMIT 100";
+
+    $(".addplaceholder_points").attr("placeholder", placeholder_map);
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
 }
@@ -313,6 +355,8 @@ const addQueryField = (name, idx) => {
     const afterElement = document.getElementById(name);
     afterElement.insertAdjacentHTML('beforebegin', content);
 }
+
+
 
 // preview content
 $(function () {
@@ -343,6 +387,7 @@ $(function () {
             var chart_series = '';
             var extra_queries = [];
             var extra_series = [];
+            var points_query = '';
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -365,6 +410,8 @@ $(function () {
                     extra_queries.push(element.value);
                 } else if (element.name.includes((idx + 1) + '__extra_series')) {
                     extra_series.push(element.value);
+                } else if (element.name.includes((idx + 1) + '__map_points_query')) {
+                    points_query = element.value;
                 }
             }
 
@@ -389,6 +436,7 @@ $(function () {
 
             var encoded_count = encodeURIComponent(count_query);
             var encoded_chart = encodeURIComponent(chart_query);
+            var encoded_points = encodeURIComponent(points_query);
 
 
             // call for the count
@@ -816,9 +864,37 @@ $(function () {
                 // empty the table with results
                 $("#" + idx + "__textsearchid tr").detach();
             }
+
+            // map
+            else if (points_query) {
+
+              $.ajax({
+                  type: 'GET',
+                  url: sparqlEndpoint + '?query=' + encoded_points,
+                  headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                  beforeSend: function () { $('#loader').removeClass('hidden') },
+                  success: function (returnedJson) {
+                    // preview map
+                    var geoJSONdata = creategeoJSON(returnedJson);
+                    setView('1__map_preview_container',geoJSONdata);
+                  },
+                  complete: function () {
+                    $('#loader').addClass('hidden');
+                  },
+                  error: function (xhr, ajaxOptions, thrownError) {
+                      //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+                      var c = document.getElementById((idx + 1) + "__map_preview_container");
+                      var p = document.createElement("p");
+                      var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+                      p.appendChild(error_text)
+                      c.after(p);
+                  }
+              });
+            }
         });
 
     };
+    $(".mycluster").css( {"background": datastory_data.color_code[0] });
     update();
     $('form').change(update);
 })
@@ -826,6 +902,62 @@ $(function () {
 const addQueryArea = () => {
     console.log('check');
 }
+
+//// MAPS TEMPLATE FUNCTIONS ////
+function setView(mapid,geoJSONdata) {
+  var map = L.map(mapid).setView([51.505, -0.09], 3);
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  var markers = L.markerClusterGroup({
+    iconCreateFunction: function (cluster) {
+      var markers = cluster.getAllChildMarkers();
+      var n = 0;
+      for (var i = 0; i < markers.length; i++) {
+        n += 1;
+      }
+      return L.divIcon({ html: n, className: 'mycluster', iconSize: L.point(40, 40) });
+    },
+    singleMarkerMode:true
+  });
+
+  for (var i = 0; i < geoJSONdata.length; i++) {
+    var a = geoJSONdata[i];
+    var title = a.properties.popupContent;
+    var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), { title: title });
+    marker.bindPopup(title);
+    markers.addLayer(marker);
+  }
+
+  map.addLayer(markers);
+}
+
+function onEachFeature(feature, layer) {
+    // does this feature have a property named popupContent?
+    if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+    }
+}
+
+function creategeoJSON(returnedJson) {
+  var geoJSONdata = [];
+
+  for (i = 0; i < returnedJson.results.bindings.length; i++) {
+    var queryResults = returnedJson.results.bindings;
+    pointObj = {};
+    pointObj.type = "Feature";
+    pointObj.properties = {};
+    pointObj.properties.popupContent = queryResults[i].artwork.value+', '+queryResults[i].keeperLabel.value;
+    pointObj.geometry = {};
+    pointObj.geometry.type = "Point";
+    // check first
+    pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
+    geoJSONdata.push(pointObj);
+  }
+  return geoJSONdata
+};
 
 //// RELATIONS TEMPLATE FUNCTIONS ////
 

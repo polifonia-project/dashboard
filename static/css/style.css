@@ -722,3 +722,14 @@ hr {
 .query-eg {
   color: #f2f2f2;
 }
+
+/**********************/
+/* MAPS template */
+/**********************/
+.map_preview_container {height: 400px;}
+.mycluster {
+  border-radius: 50%;
+  background-color: white;
+  text-align: center;
+  padding-top: 10px;
+}

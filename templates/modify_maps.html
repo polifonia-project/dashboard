@@ -5,6 +5,11 @@
 {% block stylesheets %}
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
 <link rel="stylesheet" href="/melody/static/css/templates.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+   crossorigin=""/>
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -86,8 +91,29 @@
                 <div class="card-body nopaddingleft" id="sortable">
                     <span id='loader' class='lds-dual-ring hidden overlay'></span>
                     {% for dict in datastory_data.dynamic_elements %}
+                      {% if dict.type == 'map' %}
+                        <div id="{{dict.position}}__block_field">
+                          <h4 class="block_title">Add map</h4>
+                          <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                              <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                          </a>
+                          <br>
+                          <!-- map title -->
+                          <input class='map_title' id='{{dict.position}}__map_title' type='text'
+                              name='{{dict.position}}__map_title' value='{{dict.map_title}}'
+                              placeholder='The title of the map'>
+                          <!-- data points -->
+                          <textarea class='addplaceholder_points' oninput='auto_grow(this)'
+                              name='{{dict.position}}__map_points_query' type='text'
+                              id='{{dict.position}}__map_points_query' rows='10'
+                              required>{{dict.map_points_query}}</textarea>
+                          <!-- map preview -->
+                          <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
+                          </div>
+                        </div>
 
-                      <p>hello</p>
+                      {% endif %}
+
 
                     {% endfor %}
 
@@ -127,9 +153,13 @@
 {% block javascripts %}
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
-<script type="text/javascript">
+<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+   integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+   crossorigin=""></script>
+<script type="text/javascript" src="/melody/static/js/leaflet.markercluster-src.js">
 
 </script>
+
 {% if datastory_data.user_name %}
 <script>
     let beforeUnloadAlert = true;
