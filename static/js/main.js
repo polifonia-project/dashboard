@@ -894,7 +894,7 @@ $(function () {
         });
 
     };
-    $(".mycluster").css( {"background": datastory_data.color_code[0] });
+
     update();
     $('form').change(update);
 })
@@ -910,7 +910,8 @@ function setView(mapid,geoJSONdata) {
       maxZoom: 19,
       attribution: '© OpenStreetMap'
   }).addTo(map);
-
+  var clusterStyle = "display: inline-block;background:"+datastory_data.color_code[0]+";\
+    width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px;"
   var markers = L.markerClusterGroup({
     iconCreateFunction: function (cluster) {
       var markers = cluster.getAllChildMarkers();
@@ -918,7 +919,7 @@ function setView(mapid,geoJSONdata) {
       for (var i = 0; i < markers.length; i++) {
         n += 1;
       }
-      return L.divIcon({ html: n, className: 'mycluster', iconSize: L.point(40, 40) });
+      return L.divIcon({ html: "<span style='"+ clusterStyle+";'>"+n+"</span>", className: 'mycluster', iconSize: L.point(40, 40) });
     },
     singleMarkerMode:true
   });
