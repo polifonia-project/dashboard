@@ -153,12 +153,7 @@
 {% block javascripts %}
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
-<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-   integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-   crossorigin=""></script>
-<script type="text/javascript" src="/melody/static/js/leaflet.markercluster-src.js">
 
-</script>
 
 {% if datastory_data.user_name %}
 <script>

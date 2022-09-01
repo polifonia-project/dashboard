@@ -867,34 +867,11 @@ $(function () {
 
             // map
             else if (points_query) {
-
-              $.ajax({
-                  type: 'GET',
-                  url: sparqlEndpoint + '?query=' + encoded_points,
-                  headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-                  beforeSend: function () { $('#loader').removeClass('hidden') },
-                  success: function (returnedJson) {
-                    // preview map
-                    var geoJSONdata = creategeoJSON(returnedJson);
-                    setView('1__map_preview_container',geoJSONdata);
-                  },
-                  complete: function () {
-                    $('#loader').addClass('hidden');
-                  },
-                  error: function (xhr, ajaxOptions, thrownError) {
-                      //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-                      var c = document.getElementById((idx + 1) + "__map_preview_container");
-                      var p = document.createElement("p");
-                      var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
-                      p.appendChild(error_text)
-                      c.after(p);
-                  }
-              });
+              createMap(sparqlEndpoint,encoded_points,'1__map_preview_container',idx);
             }
         });
 
     };
-
     update();
     $('form').change(update);
 })
@@ -903,7 +880,32 @@ const addQueryArea = () => {
     console.log('check');
 }
 
-//// MAPS TEMPLATE FUNCTIONS ////
+//// MAPS TEMPLATE FUNCTIONS //// sparqlEndpoint,encoded_points,'1__map_preview_container',idx
+function createMap(sparqlEndpoint,encoded_query,mapid,idx=0) {
+  $.ajax({
+      type: 'GET',
+      url: sparqlEndpoint + '?query=' + encoded_query,
+      headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+      beforeSend: function () { $('#loader').removeClass('hidden') },
+      success: function (returnedJson) {
+        // preview map
+        var geoJSONdata = creategeoJSON(returnedJson);
+        setView(mapid,geoJSONdata);
+      },
+      complete: function () {
+        $('#loader').addClass('hidden');
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+          //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+          var c = document.getElementById((idx + 1) + "__map_preview_container");
+          var p = document.createElement("p");
+          var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+          p.appendChild(error_text)
+          c.after(p);
+      }
+  });
+}
+
 function setView(mapid,geoJSONdata) {
   var map = L.map(mapid).setView([51.505, -0.09], 3);
   L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
