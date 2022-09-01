@@ -868,7 +868,7 @@ $(function () {
 
             // map
             else if (points_query) {
-              createMap(sparqlEndpoint,encoded_points,'1__map_preview_container',idx,initialize=true);
+              createMap(sparqlEndpoint,encoded_points, idx+'__map_preview_container',idx,initialize=true);
             }
         });
 

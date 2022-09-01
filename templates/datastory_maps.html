@@ -150,8 +150,8 @@
   {% if dict.type == 'map' %}
   <script type="text/javascript">
     var map = initMap("{{dict.position}}");
-    var q = $("#1__map_points_query").val();
-    createMap("{{datastory_data.sparql_endpoint}}",encodeURIComponent(q),"1__map_preview_container",0);
+    var q = $("#{{dict.position}}__map_points_query").val();
+    createMap("{{datastory_data.sparql_endpoint}}",encodeURIComponent(q),"{{dict.position}}__map_preview_container",0);
   </script>
   {% endif %}
 {% endfor %}
