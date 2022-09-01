@@ -867,21 +867,25 @@ $(function () {
 
             // map
             else if (points_query) {
-              createMap(sparqlEndpoint,encoded_points,'1__map_preview_container',idx);
+              var map = $(".leaflet-container");
+              createMap(map,sparqlEndpoint,encoded_points,'1__map_preview_container',idx,initialize=true);
             }
         });
 
     };
     update();
     $('form').change(update);
-})
+});
 
 const addQueryArea = () => {
     console.log('check');
 }
 
 //// MAPS TEMPLATE FUNCTIONS //// sparqlEndpoint,encoded_points,'1__map_preview_container',idx
-function createMap(sparqlEndpoint,encoded_query,mapid,idx=0) {
+function createMap(map,sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
+  //$("#"+mapid).html("").attr("class","map_preview_container").removeAttr('tabindex').removeAttr('style');
+
+
   $.ajax({
       type: 'GET',
       url: sparqlEndpoint + '?query=' + encoded_query,
@@ -890,7 +894,7 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0) {
       success: function (returnedJson) {
         // preview map
         var geoJSONdata = creategeoJSON(returnedJson);
-        setView(mapid,geoJSONdata);
+        setView(mapid,geoJSONdata,initialize=true);
       },
       complete: function () {
         $('#loader').addClass('hidden');
@@ -906,12 +910,8 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0) {
   });
 }
 
-function setView(mapid,geoJSONdata) {
-  var map = L.map(mapid).setView([51.505, -0.09], 3);
-  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-  }).addTo(map);
+function setView(mapid,geoJSONdata,initialize=true) {
+  map.invalidateSize();
   var clusterStyle = "display: inline-block;background:"+datastory_data.color_code[0]+";\
     width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px;"
   var markers = L.markerClusterGroup({

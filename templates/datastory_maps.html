@@ -69,7 +69,10 @@
           <!-- textsearch results -->
           {% for dict in datastory_data.dynamic_elements %}
             {% if dict.type == 'map' %}
-            <input class='addplaceholder_points'
+              {% if dict.map_title | length > 0 %}
+              <h2 class="text-white pb-2 fw-bold">{{dict.map_title}}</h2>
+              {% endif %}
+              <input class='addplaceholder_points'
                 name='{{dict.position}}__map_points_query' type='hidden'
                 id='{{dict.position}}__map_points_query'
                 value='{{dict.map_points_query}}'
