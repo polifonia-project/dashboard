@@ -95,7 +95,6 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
 
 function rerunQuery(pos) {
   $("a[data-id='"+pos+"_rerun_query']").on('click', function (e) {
-    console.log("click");
     e.preventDefault();
     $(this).data("run",true);
     $('form').trigger('change');
@@ -241,25 +240,32 @@ function add_field(name, bind_query_id = "") {
     var map_field = "<input class='map_title' id='"+(counter + 1)+"__map_title' type='text'\
         name='"+(counter + 1)+"__map_title'\
         placeholder='The title of the map'>\
-    <!-- data points -->\
-    <textarea class='addplaceholder_points' oninput='auto_grow(this)'\
-        name='"+(counter + 1)+"__map_points_query' type='text'\
-        id='"+(counter + 1)+"__map_points_query' rows='10'\
-        required></textarea>\
-    <a onclick='rerunQuery("+(counter + 1)+")' \
-        data-id='"+(counter + 1)+"_rerun_query' \
-        data-run='true' href='#"+(counter + 1)+"__map_points_query'>Rerun the query</a>\
-    <!-- map preview -->\
-    <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
-    </div>\
-    <script>var map = initMap("+(counter + 1)+");</script>\
-    <h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map</h4>\
-    <p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
-    <a class='btn btn-primary btn-border' \
-        onclick='add_field(name,\"" + (counter + 1).toString() + "__map_points_query\")' \
-        name='map_filter'>Add filter</a>";
+      <!-- data points -->\
+      <textarea class='addplaceholder_points' oninput='auto_grow(this)'\
+          name='"+(counter + 1)+"__map_points_query' type='text'\
+          id='"+(counter + 1)+"__map_points_query' rows='10'\
+          required></textarea>\
+      <a onclick='rerunQuery("+(counter + 1)+")' \
+          data-id='"+(counter + 1)+"_rerun_query' \
+          data-run='true' href='#"+(counter + 1)+"__map_points_query'>Rerun the query</a>\
+      <!-- map preview -->\
+      <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
+      </div>\
+      <script>var map = initMap("+(counter + 1)+");</script>\
+      <h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>\
+      <p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
+      <a class='btn btn-primary btn-border' \
+          onclick='add_field(name,\"" + (counter + 1).toString() + "__map_points_query\")' \
+          name='map_filter'>Add filter</a>";
 
-    var map_filter = "hello";
+    var map_filter = "<input class='map_filter_title' \
+        id='"+(counter + 1)+"__map_filter_title' type='text'\
+        name='"+(counter + 1)+"__map_filter_title'\
+        placeholder='The title of the filter'>\
+    <textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'\
+        name='"+(counter + 1)+"__map_filter_query' type='text'\
+        id='"+(counter + 1)+"__map_filter_query' rows='6'\
+        required></textarea>";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
     <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
@@ -366,8 +372,20 @@ function add_field(name, bind_query_id = "") {
                       wikibase:geoLongitude ?long ] .\n\
      }\n\
     } LIMIT 10";
-
     $(".addplaceholder_points").attr("placeholder", placeholder_map);
+
+    var placeholder_mapfilter = "Type a query where the variable \
+    ?point appears as subject/object of a pattern. Return two variables called\
+    ?filter and ?filterLabel. If the filter is a literal value, return only ?filterLabel. \n\
+    PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+    SELECT ?filter ?filterLabel\n\
+    WHERE {\n\
+    ?point crm:P50_has_current_keeper ?filter .\n\
+    ?filter refs:label ?filterLabel .\n\
+    FILTER(LANG(?filterLabel) = '' || LANGMATCHES(LANG(?filterLabel), 'en'))\n\
+    }";
+    $(".addplaceholder_mapfilter").attr("placeholder", placeholder_mapfilter);
+
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
 }
@@ -410,7 +428,6 @@ $(function () {
         colorSwitch(color_2, color_1);
 
         $('#sortable [id$="block_field"]').each(function (idx) {
-            console.log(fields);
             var count_query = '';
             var textsearch_query = '';
             var count_label = '';
@@ -422,6 +439,7 @@ $(function () {
             var extra_queries = [];
             var extra_series = [];
             var points_query = '';
+            var filter_query = '';
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -446,6 +464,8 @@ $(function () {
                     extra_series.push(element.value);
                 } else if (element.name.includes((idx + 1) + '__map_points_query')) {
                     points_query = element.value;
+                } else if (element.name.includes((idx + 1) + '__map_filter_query')) {
+                    filter_query = element.value;
                 }
             }
 
@@ -473,6 +493,7 @@ $(function () {
             var encoded_count = encodeURIComponent(count_query);
             var encoded_chart = encodeURIComponent(chart_query);
             var encoded_points = encodeURIComponent(points_query);
+            var encoded_filter = encodeURIComponent(filter_query);
 
 
             // call for the count
@@ -579,8 +600,8 @@ $(function () {
                         for (s of extra_series) {
                             seriesArray.push(s);
                         }
-                        console.log(queryArray);
-                        console.log(seriesArray);
+                        // console.log(queryArray);
+                        // console.log(seriesArray);
 
                         // generate colors based on number of queries
                         var colors = d3.quantize(d3.interpolateHcl(color_2, color_1), queryArray.length);
@@ -906,10 +927,14 @@ $(function () {
               // run the first time and then on demand
               var rerun = $("a[data-id='"+(idx + 1)+"_rerun_query'");
               if (rerun.data("run") == true) {
-                console.log("its true");
                 createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),initialize=true);
                 rerun.data("run",false);
-              } else {console.log("its false");}
+              }
+            }
+
+            // map filter
+            else if (filter_query) {
+
             }
         });
 
@@ -936,7 +961,7 @@ function initMap(pos) {
   return map
 }
 
-// get geo data and send to map
+// get geo data from SPARQL endpoint and send to map
 function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
 
   $.ajax({
@@ -947,7 +972,6 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
       success: function (returnedJson) {
         // preview map
         var geoJSONdata = creategeoJSON(returnedJson);
-        console.log(geoJSONdata);
         setView(mapid,geoJSONdata);
       },
       complete: function () {
@@ -964,30 +988,31 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
   });
 }
 
-// fill in an already initialized map (initMap()) with data points received from createMap()
+// fill in an already initialized map (initMap())
+// with data points received from createMap()
 function setView(mapid,geoJSONdata) {
-    map.eachLayer(function(layer) {
-        if (layer instanceof L.MarkerClusterGroup)
-        {
-            map.removeLayer(layer)
-        }
-    });
+  // remove markers if any
+  map.eachLayer(function(layer) {
+      if (layer instanceof L.MarkerClusterGroup) {
+        map.removeLayer(layer) }
+  });
+  // remove geoJSON
+  $('#dataMap').remove();
 
-  var clusterStyle = "display: inline-block; background:"+datastory_data.color_code[0]+";\
+  // style clusters
+  var innerClusterStyle = "display: inline-block; background:"+datastory_data.color_code[0]+";\
     width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
-
   var markers = L.markerClusterGroup({
     iconCreateFunction: function (cluster) {
       var markers = cluster.getAllChildMarkers();
       var n = 0;
-      for (var i = 0; i < markers.length; i++) {
-        n += 1;
-      }
-      return L.divIcon({ html: "<span style='"+ clusterStyle+";'>"+n+"</span>", className: 'mycluster', iconSize: L.point(40, 40) });
+      for (var i = 0; i < markers.length; i++) {  n += 1;}
+      return L.divIcon({ html: "<span style='"+ innerClusterStyle +";'>"+n+"</span>", className: 'mycluster', iconSize: L.point(40, 40) });
     },
     singleMarkerMode:true
   });
 
+  // add markers to clusters
   for (var i = 0; i < geoJSONdata.length; i++) {
     var a = geoJSONdata[i];
     var title = a.properties.popupContent;
@@ -995,45 +1020,36 @@ function setView(mapid,geoJSONdata) {
     marker.bindPopup(title);
     markers.addLayer(marker);
   }
-
+  // show clusters
   map.addLayer(markers);
-}
-
-function onEachFeature(feature, layer) {
-    // does this feature have a property named popupContent?
-    if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.popupContent);
-    }
+  // add geoJSONdata to DOM
+  var $body = $(document.body);
+  $body.append("<script id='dataMap' type='text/javascript'>var dataMap = " + JSON.stringify(geoJSONdata) + ";</script>");
 }
 
 function creategeoJSON(returnedJson) {
   var geoJSONdata = [];
-
+  // clean headings
   var headings = returnedJson.head.vars;
   var there_is_point = headings.indexOf('point');
-
-
   for (j = 0; j < headings.length; j++) {
       if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
-        headings.splice(j, 1);   j--;
-      }
+        headings.splice(j, 1);   j--; }
   }
-
+  // create geoJSON object
   for (i = 0; i < returnedJson.results.bindings.length; i++) {
     var queryResults = returnedJson.results.bindings;
     pointObj = {};
     pointObj.type = "Feature";
     pointObj.properties = {};
-    // add popup contents
     pointObj.properties.popupContent = "";
     for (j = 0; j < headings.length; j++) {
       pointObj.properties.popupContent += queryResults[i][headings[j]].value +'.\n\ '
     }
-
     if (there_is_point != -1) {
+      pointObj.properties.uri = queryResults[i]['point'].value;
       pointObj.properties.popupContent += "<br><a target='_blank' href='"+queryResults[i].point.value+"'>URI</a>"
     };
-
     pointObj.geometry = {};
     pointObj.geometry.type = "Point";
     // check first
@@ -1082,7 +1098,6 @@ function addActionButton(actions, heading, table_pos, uri_or_text_value, text_va
     var actionsHTML = "";
     if (actions.length) {
         actions.forEach(function (el, index) {
-            console.log(el);
             if (el.column == heading && el.column_2 == "") {
                 // normal action
                 actionsHTML += "<br/><span \
@@ -1101,7 +1116,6 @@ function addActionButton(actions, heading, table_pos, uri_or_text_value, text_va
               \""+ encodeURIComponent(el.title) + "\", \
               \"True\", \""+ other_heading + "\", \"" + el.table_2 + "\")'\
               class='action_button'>"+ el.title + "</span> ";
-                    console.log("combo button", other_heading, el.table_2);
                 }
             }
         });
@@ -1139,7 +1153,6 @@ function performActionQuery(actionpos, heading, table_pos, uri_or_text_value, te
         else { q2 = "\"" + other_field + "\""; };
         replaced_query = replaced_query.replace('<<' + heading_2 + '>>', q2);
         var reencoded_query = encodeURIComponent(replaced_query);
-        console.log("a combo!", q, q2, heading_2, table_2, replaced_query);
     }
 
     // send the query
@@ -1244,7 +1257,6 @@ function getActionsFromInputs(pos) {
             if (matches.length >= 2) { actiondata.column_2 = matches[1].replace("<<", "").replace(">>", ""); }
             actiondata.actionpos = actionpos;
             actions.push(actiondata);
-            console.log(actionquery, matches, actions);
         }
     });
     return actions;

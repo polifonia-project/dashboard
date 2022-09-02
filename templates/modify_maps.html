@@ -113,19 +113,38 @@
                           <!-- map preview -->
                           <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
                           </div>
-                          <h4 id='{{dict.position}}__addmapfilter' class='text-white'>Do you want to add a filter to the map</h4>
+                          <h4 id='{{dict.position}}__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>
                           <p>Filters appear on the left side of the map and allow you
                             to filter out points on the map based on a SPARQL query.</p>
                           <a class='btn btn-primary btn-border'
                               onclick='add_field(name,"{{dict.position}}__map_points_query")'
                               name='map_filter'>Add filter</a>
+
                         </div>
 
                       {% endif %}
                       {% if dict.type == 'map_filter' %}
                       <div id="{{dict.position}}__block_field">
                         <h4 class="block_title">Add map filter</h4>
-                        
+                        <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                            <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                        </a>
+                        <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                            <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                        </a>
+                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                        </a>
+                        <br>
+                        <input class='map_filter_title'
+                            id='{{dict.position}}__map_filter_title' type='text'
+                            name='{{dict.position}}__map_filter_title'
+                            placeholder='The title of the filter'
+                            value="{{dict.map_filter_title}}">
+                        <textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'
+                            name='{{dict.position}}__map_filter_query' type='text'
+                            id='{{dict.position}}__map_filter_query' rows='6'
+                            required>{{dict.map_filter_query}}</textarea>
                       </div>
                       {% endif %}
 

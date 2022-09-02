@@ -436,6 +436,14 @@
                         "map_points_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX psv: <http://www.wikidata.org/prop/statement/value/>\r\nPREFIX wikibase: <http://wikiba.se/ontology#>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\n \r\nSELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\r\n ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\r\n    fabio:hasManifestation ?manif .\r\n ?manif frbr:exemplar ?point .\r\n  ?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\r\n  \r\n ?keeper crm:P74_has_current_or_former_residence ?location .\r\n OPTIONAL {?keeper rdfs:label ?keeperLabel}\r\n ?location owl:sameAs ?wdlocation .\r\n FILTER(LANG(?artwork) = \"\" || LANGMATCHES(LANG(?artwork), \"en\"))\r\n FILTER(LANG(?keeperLabel) = \"\" || LANGMATCHES(LANG(?keeperLabel), \"en\"))\r\n FILTER(contains (str(?wdlocation), \"wikidata\") )\r\n  SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\r\n   ?wdlocation p:P625 ?coords_stmt .\r\n   ?coords_stmt ps:P625 ?coords;\r\n                psv:P625 [\r\n                  wikibase:geoLatitude ?lat;\r\n                  wikibase:geoLongitude ?long ] .\r\n }\r\n} LIMIT 10\r\n",
                         "extra_queries": [],
                         "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "map_filter",
+                        "map_filter_title": "keeper",
+                        "map_filter_query": "SELECT ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter refs:label ?filterLabel .\r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "extra_queries": [],
+                        "operations": []
                     }
                 ]
             }

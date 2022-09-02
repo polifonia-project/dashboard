@@ -142,8 +142,11 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'tablecomboaction' in k:
                                         elements_dict['type'] = 'tablecomboaction'
                                         elements_dict[k.split('__')[1]] = v
-                                    elif 'map' in k and 'simple' not in k:
+                                    elif 'map' in k and 'simple' not in k and 'filter' not in k:
                                         elements_dict['type'] = 'map'
+                                        elements_dict[k.split('__')[1]] = v
+                                    elif 'map' in k and 'simple' not in k and 'filter'  in k:
+                                        elements_dict['type'] = 'map_filter'
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'action' in k:
                                         op_list.append(v)

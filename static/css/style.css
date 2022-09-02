@@ -726,7 +726,7 @@ hr {
 /**********************/
 /* MAPS template */
 /**********************/
-.map_preview_container {height: 400px;}
+.map_preview_container {height: 400px; margin-bottom: 3em;}
 .mycluster {
   border-radius: 50%;
   /* background-color: white; */
