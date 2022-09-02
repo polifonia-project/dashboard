@@ -7,6 +7,7 @@ window.onload = function () {
     chartViz();
     disableKeypress();
     saveHTML(datastory_data.name);
+    var map_ready;
 }
 
 // disable selection of templates other than statistics
@@ -262,8 +263,14 @@ function add_field(name, bind_query_id = "") {
         id='"+(counter + 1)+"__map_filter_title' type='text'\
         name='"+(counter + 1)+"__map_filter_title'\
         placeholder='The title of the filter'>\
+    <input class='map_filter_bind_query' \
+          id='" + (counter + 1).toString() + "__map_filter_bind_query' \
+          type='hidden' \
+          name='" + (counter + 1).toString() + "__map_filter_bind_query' \
+          value='"+ bind_query_id + "'>\
     <textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'\
         name='"+(counter + 1)+"__map_filter_query' type='text'\
+        data-bind-query='"+bind_query_id+"'\
         id='"+(counter + 1)+"__map_filter_query' rows='6'\
         required></textarea>";
 
@@ -375,10 +382,10 @@ function add_field(name, bind_query_id = "") {
     $(".addplaceholder_points").attr("placeholder", placeholder_map);
 
     var placeholder_mapfilter = "Type a query where the variable \
-    ?point appears as subject/object of a pattern. Return two variables called\
-    ?filter and ?filterLabel. If the filter is a literal value, return only ?filterLabel. \n\
+    ?point appears as subject/object of a pattern. Return ?point and two variables called\
+    ?filter and ?filterLabel. If the filter is a literal value, return only ?point and ?filter. \n\
     PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
-    SELECT ?filter ?filterLabel\n\
+    SELECT DISTINCT ?point ?filter ?filterLabel\n\
     WHERE {\n\
     ?point crm:P50_has_current_keeper ?filter .\n\
     ?filter refs:label ?filterLabel .\n\
@@ -408,7 +415,7 @@ const addQueryField = (name, idx) => {
     afterElement.insertAdjacentHTML('beforebegin', content);
 }
 
-
+var sidebar , map ;
 
 // preview content
 $(function () {
@@ -438,8 +445,13 @@ $(function () {
             var chart_series = '';
             var extra_queries = [];
             var extra_series = [];
+            // map
             var points_query = '';
+            var filter_id = '';
             var filter_query = '';
+            var filter_title = 'Filter';
+            var map_filter_bind_query = '';
+            var other_filters = 0;
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -462,16 +474,19 @@ $(function () {
                     extra_queries.push(element.value);
                 } else if (element.name.includes((idx + 1) + '__extra_series')) {
                     extra_series.push(element.value);
-                } else if (element.name.includes((idx + 1) + '__map_points_query')) {
+                } else if (element.name == (idx + 1) + '__map_points_query' ) {
                     points_query = element.value;
-                } else if (element.name.includes((idx + 1) + '__map_filter_query')) {
+                    other_filters = $('textarea[id*="__map_filter_query"]').length;
+                } else if (element.name == (idx + 1) + '__map_filter_query' ) {
                     filter_query = element.value;
+                    map_filter_bind_query=$('#'+(idx + 1) + '__map_filter_query').map(function(){ return $(this).data('bind-query');}).get();
+                    other_filters = $('textarea[id*="__map_filter_query"]').length;
+                    filter_title = $( "#" + (idx + 1) + "__map_filter_title").val() ;
+                    filter_id = (idx + 1);
                 }
             }
 
             );
-
-
 
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
@@ -927,14 +942,21 @@ $(function () {
               // run the first time and then on demand
               var rerun = $("a[data-id='"+(idx + 1)+"_rerun_query'");
               if (rerun.data("run") == true) {
-                createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),initialize=true);
+
+                if (other_filters > 0) { var waitfilters = true
+                } else {var waitfilters = false };
+                map_ready = createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),waitfilters);
                 rerun.data("run",false);
+
               }
             }
 
             // map filter
             else if (filter_query) {
-
+              if (other_filters <= 1) { sidebar = initSidebar() };
+              if (map_ready != undefined && map_ready == true) {
+                addFilterMap(sparqlEndpoint,encoded_filter,map_filter_bind_query,filter_title,filter_id);
+              }
             }
         });
 
@@ -942,8 +964,6 @@ $(function () {
     update();
     $('form').change(update);
 });
-
-
 
 const addQueryArea = () => {
     console.log('check');
@@ -962,20 +982,20 @@ function initMap(pos) {
 }
 
 // get geo data from SPARQL endpoint and send to map
-function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
-
+function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true) {
   $.ajax({
-      type: 'GET',
+      type: 'POST',
       url: sparqlEndpoint + '?query=' + encoded_query,
       headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
       beforeSend: function () { $('#loader').removeClass('hidden') },
       success: function (returnedJson) {
         // preview map
         var geoJSONdata = creategeoJSON(returnedJson);
-        setView(mapid,geoJSONdata);
+        setView(mapid,geoJSONdata,waitfilters);
       },
       complete: function () {
         $('#loader').addClass('hidden');
+        return true;
       },
       error: function (xhr, ajaxOptions, thrownError) {
           //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
@@ -990,8 +1010,8 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,initialize=true) {
 
 // fill in an already initialized map (initMap())
 // with data points received from createMap()
-function setView(mapid,geoJSONdata) {
-  // remove markers if any
+function setView(mapid,geoJSONdata,waitfilters) {
+  // remove markers if any from a map already initialised
   map.eachLayer(function(layer) {
       if (layer instanceof L.MarkerClusterGroup) {
         map.removeLayer(layer) }
@@ -1024,7 +1044,12 @@ function setView(mapid,geoJSONdata) {
   map.addLayer(markers);
   // add geoJSONdata to DOM
   var $body = $(document.body);
-  $body.append("<script id='dataMap' type='text/javascript'>var dataMap = " + JSON.stringify(geoJSONdata) + ";</script>");
+  $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + ";</script>");
+  if (waitfilters == true) {
+    map_ready = true;
+    $('form').trigger('change');
+    console.log("trigger!");
+  }
 }
 
 function creategeoJSON(returnedJson) {
@@ -1058,6 +1083,77 @@ function creategeoJSON(returnedJson) {
   }
   return geoJSONdata
 };
+
+function initSidebar() {
+  var sidebar = L.control.sidebar({
+      autopan: false,       // whether to maintain the centered map point when opening the sidebar
+      closeButton: true,    // whether t add a close button to the panes
+      container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+      position: 'left',     // left or right
+  }).addTo(map);
+  //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
+  return sidebar;
+};
+
+function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_title,filter_id) {
+
+  // get the list of URIs from geoJSON
+  var dataMap = JSON.parse( document.getElementById('dataMap').innerHTML);
+  var values = "VALUES ?point {";
+  for (var i = 0; i < dataMap.length; i++) {
+    values += '<'+dataMap[i].properties.uri+'> ';
+  }
+  values += '}';
+
+  // restructure query with VALUES
+  // might have performance issues!
+  var decoded_query = decodeURIComponent(encoded_query);
+  var decoded_query_parts = decoded_query.split(/\{(.*)/s);
+  decoded_query = decoded_query_parts[0] + '{'+ values + decoded_query_parts[1];
+  encoded_query = encodeURIComponent(decoded_query);
+
+  // get the data
+  $.ajax({
+      type: 'POST',
+      url: sparqlEndpoint + '?query=' + encoded_query,
+      headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+      beforeSend: function () { $('#loader').removeClass('hidden') },
+      success: function (returnedJson) {
+        console.log(returnedJson);
+        for (i = 0; i < returnedJson.results.bindings.length; i++) {
+          // update geoJSON
+
+        }
+
+
+        // create list
+        // if filter or only filter
+
+        // add panel
+        var panelContent = {
+          id: filter_id+'_panel',
+          tab: 'o',
+          pane: "<p>hello panel</p>",
+          title: filter_title,
+          position: 'top'
+        };
+        sidebar.addPanel(panelContent);
+      },
+      complete: function () {
+        $('#loader').addClass('hidden');
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+          //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+          var c = document.getElementById((idx + 1) + "__map_filter_query");
+          var p = document.createElement("p");
+          var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+          p.appendChild(error_text)
+          c.after(p);
+      }
+  });
+
+};
+
 
 //// RELATIONS TEMPLATE FUNCTIONS ////
 
@@ -1350,16 +1446,28 @@ function colorSwitch(color_1, color_2) {
     var gradientEl = document.querySelector(".secondarymenuinner");
     var gradientPreview = document.querySelectorAll(".previewtextsearch");
     var counters = document.querySelectorAll(".count_result");
+    var mapSidebar = document.querySelectorAll(".leaflet-sidebar");
+    // var mapSidebarTab = document.querySelectorAll(".leaflet-sidebar-tabs");
     //var textsearch_buttons = document.querySelectorAll(".textsearch_button");
     //gradientEl.classList.remove("bg-primary-gradient");
     if (typeof (gradientEl) != undefined && gradientEl != null) { gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')'; }
 
+    function monchromebackground(el) {
+      el.style.background = color_2;
+    }
     function gradientbackground(el) {
         el.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
     }
     if (typeof (gradientPreview) != undefined && gradientPreview != null) {
         gradientPreview.forEach(gradientbackground);
     }
+    // does not work
+    if (typeof (mapSidebar) != undefined && mapSidebar != null) {
+        mapSidebar.forEach(gradientbackground);
+    }
+    // if (typeof (mapSidebarTab) != undefined && mapSidebarTab != null) {
+    //     mapSidebarTab.forEach(monchromebackground);
+    // }
 
     function borders(el) {
         el.style.border = "solid 2px " + color_1;

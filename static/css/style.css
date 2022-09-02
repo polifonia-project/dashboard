@@ -733,3 +733,5 @@ hr {
   text-align: center;
   padding-top: 10px;
 }
+
+.leaflet-sidebar-content, .leaflet-sidebar-tabs {background: transparent !important;}

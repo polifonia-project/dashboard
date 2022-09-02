@@ -151,7 +151,8 @@
   <script type="text/javascript">
     var map = initMap("{{dict.position}}");
     var q = $("#{{dict.position}}__map_points_query").val();
-    createMap("{{datastory_data.sparql_endpoint}}",encodeURIComponent(q),"{{dict.position}}__map_preview_container",0);
+    // TODO change waitfilters and idx 
+    createMap("{{datastory_data.sparql_endpoint}}",encodeURIComponent(q),"{{dict.position}}__map_preview_container",0,true);
   </script>
   {% endif %}
 {% endfor %}

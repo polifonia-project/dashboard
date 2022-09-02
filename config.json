@@ -440,8 +440,9 @@
                     {
                         "position": 2,
                         "type": "map_filter",
-                        "map_filter_title": "keeper",
-                        "map_filter_query": "SELECT ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter refs:label ?filterLabel .\r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "map_filter_title": "Keeper",
+                        "map_filter_bind_query": "1__map_points_query",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter rdfs:label ?filterLabel .\r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n} LIMIT 10",
                         "extra_queries": [],
                         "operations": []
                     }

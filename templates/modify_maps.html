@@ -10,6 +10,7 @@
    crossorigin=""/>
 <link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
 <link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
+<link rel="stylesheet" href="/melody/static/css/leaflet-sidebar.css">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -141,9 +142,15 @@
                             name='{{dict.position}}__map_filter_title'
                             placeholder='The title of the filter'
                             value="{{dict.map_filter_title}}">
+                        <input class='map_filter_bind_query'
+                              id='{{dict.position}}__map_filter_bind_query'
+                              type='hidden'
+                              name='{{dict.position}}__map_filter_bind_query'
+                              value='{{dict.map_filter_bind_query}}'>
                         <textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'
                             name='{{dict.position}}__map_filter_query' type='text'
                             id='{{dict.position}}__map_filter_query' rows='6'
+                            data-bind-query='{{dict.map_filter_bind_query}}'
                             required>{{dict.map_filter_query}}</textarea>
                       </div>
                       {% endif %}
