@@ -332,8 +332,8 @@ function add_field(name, bind_query_id = "") {
     LIMIT 10";
     $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
 
-    var placeholder_map = "Type a query that returns \
-    latitude (?lat) and longitude (?long) of points (?point). \n\
+    var placeholder_map = "Type a query that returns at least the mandatory variables: \
+    latitude (?lat), longitude (?long) and a URI identifying points (?point). \n\
     PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
     PREFIX fabio: <http://purl.org/spar/fabio/>\n\
     PREFIX frbr: <http://purl.org/vocab/frbr/core#>\n\
@@ -353,9 +353,11 @@ function add_field(name, bind_query_id = "") {
      ?keeper crm:P74_has_current_or_former_residence ?location .\n\
      OPTIONAL {?keeper rdfs:label ?keeperLabel}\n\
      ?location owl:sameAs ?wdlocation .\n\
+     \n\
      FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
      FILTER(LANG(?keeperLabel) = '' || LANGMATCHES(LANG(?keeperLabel), 'en'))\n\
      FILTER(contains (str(?wdlocation), 'wikidata') )\n\
+     \n\
       SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\n\
        ?wdlocation p:P625 ?coords_stmt .\n\
        ?coords_stmt ps:P625 ?coords;\n\
