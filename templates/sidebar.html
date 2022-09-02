@@ -16,17 +16,14 @@
 							{% if key == section|replace(' ', '_')|lower %}
 							<li class="menuitem row">
 								{% for k,v in value.items() %}
-								<a class="col-8"
-
-									href="/melody/{{section|replace(' ', '_')|lower}}/{{k}}">
+								<a class="col-8" href="/melody/{{section|replace(' ', '_')|lower}}/{{k}}">
 									<!-- href="{{ url_for('datastory', section_name=section|replace(' ', '_')|lower, datastory_name=k ) }}"> -->
 									{{v.title}}
 								</a>
 								{% if session['user_type'] == 'polifonia' %}
 								<a class="col-4 modifystoryicon"
 									href="/melody/modify/{{section|replace(' ', '_')|lower}}/{{k}}"><img
-										src="/melody/static/img/edit.png') }}" alt=""></a>
-								<!--/modify/{{section|replace(' ', '_')|lower}}/{{k}}-->
+										src="/melody/static/img/edit.png" alt=""></a>
 								{% endif %}
 								{% endfor %}
 							</li>
