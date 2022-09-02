@@ -246,7 +246,9 @@ function add_field(name, bind_query_id = "") {
         name='"+(counter + 1)+"__map_points_query' type='text'\
         id='"+(counter + 1)+"__map_points_query' rows='10'\
         required></textarea>\
-    <a onclick='rerunQuery("+(counter + 1)+")' data-id='"+(counter + 1)+"_rerun_query' data-run='true' href='#'>Rerun the query</a>\
+    <a onclick='rerunQuery("+(counter + 1)+")' \
+        data-id='"+(counter + 1)+"_rerun_query' \
+        data-run='true' href='#"+(counter + 1)+"__map_points_query'>Rerun the query</a>\
     <!-- map preview -->\
     <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
     </div>\
@@ -951,8 +953,8 @@ function setView(mapid,geoJSONdata) {
         }
     });
 
-  var clusterStyle = "display: inline-block;background:"+datastory_data.color_code[0]+";\
-    width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px;"
+  var clusterStyle = "display: inline-block; background:"+datastory_data.color_code[0]+";\
+    width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
 
   var markers = L.markerClusterGroup({
     iconCreateFunction: function (cluster) {
@@ -987,12 +989,24 @@ function onEachFeature(feature, layer) {
 function creategeoJSON(returnedJson) {
   var geoJSONdata = [];
 
+  var headings = returnedJson.head.vars;
+  for (j = 0; j < headings.length; j++) {
+      if (headings[j] == ('lat') || headings[j] == ('long')) {
+        headings.splice(j, 1);   j--;
+      }
+  }
+
   for (i = 0; i < returnedJson.results.bindings.length; i++) {
     var queryResults = returnedJson.results.bindings;
     pointObj = {};
     pointObj.type = "Feature";
     pointObj.properties = {};
-    pointObj.properties.popupContent = queryResults[i].artwork.value+', '+queryResults[i].keeperLabel.value;
+    pointObj.properties.popupContent = ""
+    for (j = 0; j < headings.length; j++) {
+      pointObj.properties.popupContent += queryResults[i][headings[j]].value +'.\n\ '
+    }
+
+    queryResults[i].artwork.value+', '+queryResults[i].keeperLabel.value;
     pointObj.geometry = {};
     pointObj.geometry.type = "Point";
     // check first
