@@ -252,7 +252,14 @@ function add_field(name, bind_query_id = "") {
     <!-- map preview -->\
     <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
     </div>\
-    <script>var map = initMap("+(counter + 1)+");</script>";
+    <script>var map = initMap("+(counter + 1)+");</script>\
+    <h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map</h4>\
+    <p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
+    <a class='btn btn-primary btn-border' \
+        onclick='add_field(name,\"" + (counter + 1).toString() + "__map_points_query\")' \
+        name='map_filter'>Add filter</a>";
+
+    var map_filter = "hello";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
     <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
@@ -284,10 +291,14 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
         var close_addons = "</div>";
         contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
-    } else if (name == 'mapWithFilters') {
+    } else if (name == 'map') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + map_field + close_addons;
+    } else if (name == 'map_filter') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + map_filter + close_addons;
     }
 
     if (name.includes('query-btn')) {
@@ -321,9 +332,10 @@ function add_field(name, bind_query_id = "") {
     LIMIT 10";
     $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
 
-    var placeholder_map = "Type a query that returns uris, their labels (optional) and their latitude (?lat) and longitude (?long). \n\
-    For instance \n\
+    var placeholder_map = "Type a query that returns \
+    latitude (?lat) and longitude (?long) of points (?point). \n\
     PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+    PREFIX fabio: <http://purl.org/spar/fabio/>\n\
     PREFIX frbr: <http://purl.org/vocab/frbr/core#>\n\
     PREFIX owl: <http://www.w3.org/2002/07/owl#>\n\
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n\
@@ -332,20 +344,26 @@ function add_field(name, bind_query_id = "") {
     PREFIX wikibase: <http://wikiba.se/ontology#>\n\
     PREFIX p: <http://www.wikidata.org/prop/>\n\
     PREFIX ps: <http://www.wikidata.org/prop/statement/>\n\
-    SELECT DISTINCT ?artwork ?artworkLabel ?lat ?long WHERE {\n\
-      ?manif frbr:exemplar ?artwork .\n\
-      ?artwork crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\n\
-      ?keeper crm:P74_has_current_or_former_residence ?location .\n\
-      ?location owl:sameAs ?wdlocation .\n\
-      FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
-      FILTER(contains (str(?wdlocation), 'wikidata') )\n\
+    \n\
+    SELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\n\
+     ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\n\
+        fabio:hasManifestation ?manif .\n\
+     ?manif frbr:exemplar ?point .\n\
+      ?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\n\
+     ?keeper crm:P74_has_current_or_former_residence ?location .\n\
+     OPTIONAL {?keeper rdfs:label ?keeperLabel}\n\
+     ?location owl:sameAs ?wdlocation .\n\
+     FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
+     FILTER(LANG(?keeperLabel) = '' || LANGMATCHES(LANG(?keeperLabel), 'en'))\n\
+     FILTER(contains (str(?wdlocation), 'wikidata') )\n\
       SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\n\
        ?wdlocation p:P625 ?coords_stmt .\n\
        ?coords_stmt ps:P625 ?coords;\n\
-          psv:P625 [ wikibase:geoLatitude ?lat;\n\
-                     wikibase:geoLongitude ?long ] .\n\
+                    psv:P625 [\n\
+                      wikibase:geoLatitude ?lat;\n\
+                      wikibase:geoLongitude ?long ] .\n\
      }\n\
-    }    LIMIT 100";
+    } LIMIT 10";
 
     $(".addplaceholder_points").attr("placeholder", placeholder_map);
     counter = $('#sortable [id$="block_field"]').length;
@@ -990,8 +1008,11 @@ function creategeoJSON(returnedJson) {
   var geoJSONdata = [];
 
   var headings = returnedJson.head.vars;
+  var there_is_point = headings.indexOf('point');
+
+
   for (j = 0; j < headings.length; j++) {
-      if (headings[j] == ('lat') || headings[j] == ('long')) {
+      if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
         headings.splice(j, 1);   j--;
       }
   }
@@ -1001,12 +1022,16 @@ function creategeoJSON(returnedJson) {
     pointObj = {};
     pointObj.type = "Feature";
     pointObj.properties = {};
-    pointObj.properties.popupContent = ""
+    // add popup contents
+    pointObj.properties.popupContent = "";
     for (j = 0; j < headings.length; j++) {
       pointObj.properties.popupContent += queryResults[i][headings[j]].value +'.\n\ '
     }
 
-    queryResults[i].artwork.value+', '+queryResults[i].keeperLabel.value;
+    if (there_is_point != -1) {
+      pointObj.properties.popupContent += "<br><a target='_blank' href='"+queryResults[i].point.value+"'>URI</a>"
+    };
+
     pointObj.geometry = {};
     pointObj.geometry.type = "Point";
     // check first

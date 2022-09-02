@@ -113,9 +113,20 @@
                           <!-- map preview -->
                           <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
                           </div>
-
+                          <h4 id='{{dict.position}}__addmapfilter' class='text-white'>Do you want to add a filter to the map</h4>
+                          <p>Filters appear on the left side of the map and allow you
+                            to filter out points on the map based on a SPARQL query.</p>
+                          <a class='btn btn-primary btn-border'
+                              onclick='add_field(name,"{{dict.position}}__map_points_query")'
+                              name='map_filter'>Add filter</a>
                         </div>
 
+                      {% endif %}
+                      {% if dict.type == 'map_filter' %}
+                      <div id="{{dict.position}}__block_field">
+                        <h4 class="block_title">Add map filter</h4>
+                        
+                      </div>
                       {% endif %}
 
 
