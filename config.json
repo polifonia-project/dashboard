@@ -1,10 +1,10 @@
 {
     "sections": [
-        "musoW",
-        "Zeri",
         "Listening Experiences",
+        "Tests",
+        "musoW",
         "Wikidata",
-        "Tests"
+        "Zeri"
     ],
     "operations": [
         "Count",
@@ -412,13 +412,33 @@
                     }
                 ],
                 "curator": ""
+            },
+            "check_the_map_preview": {
+                "sparql_endpoint": "http://data.fondazionezeri.unibo.it/sparql",
+                "template_mode": "maps",
+                "title": "Check the Map Preview",
+                "color_code": [
+                    "#6e7e3a",
+                    "#79f1e9"
+                ],
+                "section_name": "Tests"
+            },
+            "simple_map": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Simple Map",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Tests"
             }
         },
         "zeri": {
             "female_portraits_": {
                 "sparql_endpoint": "http://data.fondazionezeri.unibo.it/sparql",
                 "template_mode": "maps",
-                "title": "Female portraits ",
+                "title": "Female portraits",
                 "color_code": [
                     "#d357fe",
                     "#0042aa"
@@ -433,7 +453,7 @@
                         "position": 1,
                         "type": "map",
                         "map_title": "Female portraits over the world",
-                        "map_points_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX psv: <http://www.wikidata.org/prop/statement/value/>\r\nPREFIX wikibase: <http://wikiba.se/ontology#>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\n \r\nSELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\r\n ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\r\n    fabio:hasManifestation ?manif .\r\n ?manif frbr:exemplar ?point .\r\n  ?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\r\n  \r\n ?keeper crm:P74_has_current_or_former_residence ?location .\r\n OPTIONAL {?keeper rdfs:label ?keeperLabel}\r\n ?location owl:sameAs ?wdlocation .\r\n FILTER(LANG(?artwork) = \"\" || LANGMATCHES(LANG(?artwork), \"en\"))\r\n FILTER(LANG(?keeperLabel) = \"\" || LANGMATCHES(LANG(?keeperLabel), \"en\"))\r\n FILTER(contains (str(?wdlocation), \"wikidata\") )\r\n  SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\r\n   ?wdlocation p:P625 ?coords_stmt .\r\n   ?coords_stmt ps:P625 ?coords;\r\n                psv:P625 [\r\n                  wikibase:geoLatitude ?lat;\r\n                  wikibase:geoLongitude ?long ] .\r\n }\r\n} LIMIT 10\r\n",
+                        "map_points_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX fabio: <http://purl.org/spar/fabio/> PREFIX frbr: <http://purl.org/vocab/frbr/core#> PREFIX owl: <http://www.w3.org/2002/07/owl#> PREFIX wdt: <http://www.wikidata.org/prop/direct/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX psv: <http://www.wikidata.org/prop/statement/value/> PREFIX wikibase: <http://wikiba.se/ontology#> PREFIX p: <http://www.wikidata.org/prop/> PREFIX ps: <http://www.wikidata.org/prop/statement/> SELECT DISTINCT ?artwork ?keeper ?keeperLabel ?lat ?long WHERE {?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ; fabio:hasManifestation ?manif . ?manif frbr:exemplar ?item . ?item crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork. ?keeper crm:P74_has_current_or_former_residence ?location . OPTIONAL {?keeper rdfs:label ?keeperLabel} ?location owl:sameAs ?wdlocation . FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en')) FILTER(LANG(?keeperLabel) = '' || LANGMATCHES(LANG(?keeperLabel), 'en')) FILTER(contains (str(?wdlocation), 'wikidata') ) SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> { ?wdlocation p:P625 ?coords_stmt . ?coords_stmt ps:P625 ?coords; psv:P625 [wikibase:geoLatitude ?lat; wikibase:geoLongitude ?long] .}}",
                         "extra_queries": [],
                         "operations": []
                     },
