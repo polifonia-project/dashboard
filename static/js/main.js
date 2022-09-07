@@ -95,11 +95,11 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
 });
 
 function rerunQuery(pos) {
-  $("a[data-id='"+pos+"_rerun_query']").on('click', function (e) {
-    e.preventDefault();
-    $(this).data("run",true);
-    $('form').trigger('change');
-  });
+    $("a[data-id='" + pos + "_rerun_query']").on('click', function (e) {
+        e.preventDefault();
+        $(this).data("run", true);
+        $('form').trigger('change');
+    });
 }
 
 
@@ -238,21 +238,21 @@ function add_field(name, bind_query_id = "") {
         name='tablecomboaction'>\
         Combine results</a>";
 
-    var map_field = "<input class='map_title' id='"+(counter + 1)+"__map_title' type='text'\
-        name='"+(counter + 1)+"__map_title'\
+    var map_field = "<input class='map_title' id='" + (counter + 1) + "__map_title' type='text'\
+        name='"+ (counter + 1) + "__map_title'\
         placeholder='The title of the map'>\
       <!-- data points -->\
       <textarea class='addplaceholder_points' oninput='auto_grow(this)'\
-          name='"+(counter + 1)+"__map_points_query' type='text'\
-          id='"+(counter + 1)+"__map_points_query' rows='10'\
+          name='"+ (counter + 1) + "__map_points_query' type='text'\
+          id='"+ (counter + 1) + "__map_points_query' rows='10'\
           required></textarea>\
-      <a onclick='rerunQuery("+(counter + 1)+")' \
-          data-id='"+(counter + 1)+"_rerun_query' \
-          data-run='true' href='#"+(counter + 1)+"__map_points_query'>Rerun the query</a>\
+      <a onclick='rerunQuery("+ (counter + 1) + ")' \
+          data-id='"+ (counter + 1) + "_rerun_query' \
+          data-run='true' href='#"+ (counter + 1) + "__map_points_query'>Rerun the query</a>\
       <!-- map preview -->\
-      <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
+      <div class='map_preview_container' id='"+ (counter + 1) + "__map_preview_container'>\
       </div>\
-      <script>var map = initMap("+(counter + 1)+");</script>\
+      <script>var map = initMap("+ (counter + 1) + ");</script>\
       <h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>\
       <p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
       <a class='btn btn-primary btn-border' \
@@ -260,8 +260,8 @@ function add_field(name, bind_query_id = "") {
           name='map_filter'>Add filter</a>";
 
     var map_filter = "<input class='map_filter_title' \
-        id='"+(counter + 1)+"__map_filter_title' type='text'\
-        name='"+(counter + 1)+"__map_filter_title'\
+        id='"+ (counter + 1) + "__map_filter_title' type='text'\
+        name='"+ (counter + 1) + "__map_filter_title'\
         placeholder='The title of the filter'>\
     <input class='map_filter_bind_query' \
           id='" + (counter + 1).toString() + "__map_filter_bind_query' \
@@ -269,10 +269,26 @@ function add_field(name, bind_query_id = "") {
           name='" + (counter + 1).toString() + "__map_filter_bind_query' \
           value='"+ bind_query_id + "'>\
     <textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'\
-        name='"+(counter + 1)+"__map_filter_query' type='text'\
-        data-bind-query='"+bind_query_id+"'\
-        id='"+(counter + 1)+"__map_filter_query' rows='6'\
+        name='"+ (counter + 1) + "__map_filter_query' type='text'\
+        data-bind-query='"+ bind_query_id + "'\
+        id='"+ (counter + 1) + "__map_filter_query' rows='6'\
         required></textarea>";
+
+    var simple_map = "<input class='map_title' id='" + (counter + 1) + "__map_title' type='text'\
+        name='"+ (counter + 1) + "__map_title'\
+        placeholder='The title of the map'>\
+    <!-- data points -->\
+    <textarea class='addplaceholder_points' oninput='auto_grow(this)'\
+        name='"+ (counter + 1) + "__map_points_query' type='text'\
+        id='"+ (counter + 1) + "__map_points_query' rows='10'\
+        required></textarea>\
+    <a onclick='rerunQuery("+ (counter + 1) + ")' \
+        data-id='"+ (counter + 1) + "_rerun_query' \
+        data-run='true' href='#"+ (counter + 1) + "__map_points_query'>Rerun the query</a>\
+    <!-- map preview -->\
+    <div class='map_preview_container' id='"+ (counter + 1) + "__map_preview_container'>\
+    </div>\
+    <script>var map = initMap("+ (counter + 1) + ");</script>";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
     <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
@@ -312,6 +328,10 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + map_filter + close_addons;
+    } else if (name == 'simple_map') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + simple_map + close_addons;
     }
 
     if (name.includes('query-btn')) {
@@ -415,12 +435,13 @@ const addQueryField = (name, idx) => {
     afterElement.insertAdjacentHTML('beforebegin', content);
 }
 
-var sidebar , map ;
+var sidebar, map;
 
 // preview content
 $(function () {
     const update = function () {
         var fields = $('form').serializeArray();
+        console.log(fields);
         var color_1 = '';
         var color_2 = '';
         $('#colors').each(function () {
@@ -474,14 +495,14 @@ $(function () {
                     extra_queries.push(element.value);
                 } else if (element.name.includes((idx + 1) + '__extra_series')) {
                     extra_series.push(element.value);
-                } else if (element.name == (idx + 1) + '__map_points_query' ) {
+                } else if (element.name == (idx + 1) + '__map_points_query') {
                     points_query = element.value;
                     other_filters = $('textarea[id*="__map_filter_query"]').length;
-                } else if (element.name == (idx + 1) + '__map_filter_query' ) {
+                } else if (element.name == (idx + 1) + '__map_filter_query') {
                     filter_query = element.value;
-                    map_filter_bind_query=$('#'+(idx + 1) + '__map_filter_query').map(function(){ return $(this).data('bind-query');}).get();
+                    map_filter_bind_query = $('#' + (idx + 1) + '__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
                     other_filters = $('textarea[id*="__map_filter_query"]').length;
-                    filter_title = $( "#" + (idx + 1) + "__map_filter_title").val() ;
+                    filter_title = $("#" + (idx + 1) + "__map_filter_title").val();
                     filter_id = (idx + 1);
                 }
             }
@@ -939,24 +960,25 @@ $(function () {
 
             // map
             else if (points_query) {
-              // run the first time and then on demand
-              var rerun = $("a[data-id='"+(idx + 1)+"_rerun_query'");
-              if (rerun.data("run") == true) {
+                // run the first time and then on demand
+                var rerun = $("a[data-id='" + (idx + 1) + "_rerun_query'");
+                if (rerun.data("run") == true) {
 
-                if (other_filters > 0) { var waitfilters = true
-                } else {var waitfilters = false };
-                map_ready = createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),waitfilters);
-                rerun.data("run",false);
+                    if (other_filters > 0) {
+                        var waitfilters = true
+                    } else { var waitfilters = false };
+                    map_ready = createMap(sparqlEndpoint, encoded_points, (idx + 1) + '__map_preview_container', (idx + 1), waitfilters);
+                    rerun.data("run", false);
 
-              }
+                }
             }
 
             // map filter
             else if (filter_query) {
-              if (other_filters <= 1) { sidebar = initSidebar() };
-              if (map_ready != undefined && map_ready == true) {
-                addFilterMap(sparqlEndpoint,encoded_filter,map_filter_bind_query,filter_title,filter_id);
-              }
+                if (other_filters <= 1) { sidebar = initSidebar() };
+                if (map_ready != undefined && map_ready == true) {
+                    addFilterMap(sparqlEndpoint, encoded_filter, map_filter_bind_query, filter_title, filter_id);
+                }
             }
         });
 
@@ -973,184 +995,186 @@ const addQueryArea = () => {
 
 // initialize an empty map, used directly in templates
 function initMap(pos) {
-  var map = L.map(pos+"__map_preview_container").setView([51.505, -0.09], 3);
-  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-  }).addTo(map);
-  return map
+    var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    return map
 }
 
 // get geo data from SPARQL endpoint and send to map
-function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true) {
-  $.ajax({
-      type: 'POST',
-      url: sparqlEndpoint + '?query=' + encoded_query,
-      headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-      beforeSend: function () { $('#loader').removeClass('hidden') },
-      success: function (returnedJson) {
-        // preview map
-        var geoJSONdata = creategeoJSON(returnedJson);
-        setView(mapid,geoJSONdata,waitfilters);
-      },
-      complete: function () {
-        $('#loader').addClass('hidden');
-        return true;
-      },
-      error: function (xhr, ajaxOptions, thrownError) {
-          //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-          var c = document.getElementById((idx + 1) + "__map_preview_container");
-          var p = document.createElement("p");
-          var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
-          p.appendChild(error_text)
-          c.after(p);
-      }
-  });
+function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = true) {
+    $.ajax({
+        type: 'POST',
+        url: sparqlEndpoint + '?query=' + encoded_query,
+        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
+        success: function (returnedJson) {
+            // preview map
+            var geoJSONdata = creategeoJSON(returnedJson);
+            setView(mapid, geoJSONdata, waitfilters);
+        },
+        complete: function () {
+            $('#loader').addClass('hidden');
+            return true;
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+            var c = document.getElementById((idx + 1) + "__map_preview_container");
+            var p = document.createElement("p");
+            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+            p.appendChild(error_text)
+            c.after(p);
+        }
+    });
 }
 
 // fill in an already initialized map (initMap())
 // with data points received from createMap()
-function setView(mapid,geoJSONdata,waitfilters) {
-  // remove markers if any from a map already initialised
-  map.eachLayer(function(layer) {
-      if (layer instanceof L.MarkerClusterGroup) {
-        map.removeLayer(layer) }
-  });
-  // remove geoJSON
-  $('#dataMap').remove();
+function setView(mapid, geoJSONdata, waitfilters) {
+    // remove markers if any from a map already initialised
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.MarkerClusterGroup) {
+            map.removeLayer(layer)
+        }
+    });
+    // remove geoJSON
+    $('#dataMap').remove();
 
-  // style clusters
-  var innerClusterStyle = "display: inline-block; background:"+datastory_data.color_code[0]+";\
+    // style clusters
+    var innerClusterStyle = "display: inline-block; background:" + datastory_data.color_code[0] + ";\
     width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
-  var markers = L.markerClusterGroup({
-    iconCreateFunction: function (cluster) {
-      var markers = cluster.getAllChildMarkers();
-      var n = 0;
-      for (var i = 0; i < markers.length; i++) {  n += 1;}
-      return L.divIcon({ html: "<span style='"+ innerClusterStyle +";'>"+n+"</span>", className: 'mycluster', iconSize: L.point(40, 40) });
-    },
-    singleMarkerMode:true
-  });
+    var markers = L.markerClusterGroup({
+        iconCreateFunction: function (cluster) {
+            var markers = cluster.getAllChildMarkers();
+            var n = 0;
+            for (var i = 0; i < markers.length; i++) { n += 1; }
+            return L.divIcon({ html: "<span style='" + innerClusterStyle + ";'>" + n + "</span>", className: 'mycluster', iconSize: L.point(40, 40) });
+        },
+        singleMarkerMode: true
+    });
 
-  // add markers to clusters
-  for (var i = 0; i < geoJSONdata.length; i++) {
-    var a = geoJSONdata[i];
-    var title = a.properties.popupContent;
-    var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), { title: title });
-    marker.bindPopup(title);
-    markers.addLayer(marker);
-  }
-  // show clusters
-  map.addLayer(markers);
-  // add geoJSONdata to DOM
-  var $body = $(document.body);
-  $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + ";</script>");
-  if (waitfilters == true) {
-    map_ready = true;
-    $('form').trigger('change');
-    console.log("trigger!");
-  }
+    // add markers to clusters
+    for (var i = 0; i < geoJSONdata.length; i++) {
+        var a = geoJSONdata[i];
+        var title = a.properties.popupContent;
+        var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), { title: title });
+        marker.bindPopup(title);
+        markers.addLayer(marker);
+    }
+    // show clusters
+    map.addLayer(markers);
+    // add geoJSONdata to DOM
+    var $body = $(document.body);
+    $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + ";</script>");
+    if (waitfilters == true) {
+        map_ready = true;
+        $('form').trigger('change');
+        console.log("trigger!");
+    }
 }
 
 function creategeoJSON(returnedJson) {
-  var geoJSONdata = [];
-  // clean headings
-  var headings = returnedJson.head.vars;
-  var there_is_point = headings.indexOf('point');
-  for (j = 0; j < headings.length; j++) {
-      if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
-        headings.splice(j, 1);   j--; }
-  }
-  // create geoJSON object
-  for (i = 0; i < returnedJson.results.bindings.length; i++) {
-    var queryResults = returnedJson.results.bindings;
-    pointObj = {};
-    pointObj.type = "Feature";
-    pointObj.properties = {};
-    pointObj.properties.popupContent = "";
+    var geoJSONdata = [];
+    // clean headings
+    var headings = returnedJson.head.vars;
+    var there_is_point = headings.indexOf('point');
     for (j = 0; j < headings.length; j++) {
-      pointObj.properties.popupContent += queryResults[i][headings[j]].value +'.\n\ '
+        if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
+            headings.splice(j, 1); j--;
+        }
     }
-    if (there_is_point != -1) {
-      pointObj.properties.uri = queryResults[i]['point'].value;
-      pointObj.properties.popupContent += "<br><a target='_blank' href='"+queryResults[i].point.value+"'>URI</a>"
-    };
-    pointObj.geometry = {};
-    pointObj.geometry.type = "Point";
-    // check first
-    pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
-    geoJSONdata.push(pointObj);
-  }
-  return geoJSONdata
+    // create geoJSON object
+    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+        var queryResults = returnedJson.results.bindings;
+        pointObj = {};
+        pointObj.type = "Feature";
+        pointObj.properties = {};
+        pointObj.properties.popupContent = "";
+        for (j = 0; j < headings.length; j++) {
+            pointObj.properties.popupContent += queryResults[i][headings[j]].value + '.\n\ '
+        }
+        if (there_is_point != -1) {
+            pointObj.properties.uri = queryResults[i]['point'].value;
+            pointObj.properties.popupContent += "<br><a target='_blank' href='" + queryResults[i].point.value + "'>URI</a>"
+        };
+        pointObj.geometry = {};
+        pointObj.geometry.type = "Point";
+        // check first
+        pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
+        geoJSONdata.push(pointObj);
+    }
+    return geoJSONdata
 };
 
 function initSidebar() {
-  var sidebar = L.control.sidebar({
-      autopan: false,       // whether to maintain the centered map point when opening the sidebar
-      closeButton: true,    // whether t add a close button to the panes
-      container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
-      position: 'left',     // left or right
-  }).addTo(map);
-  //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
-  return sidebar;
+    var sidebar = L.control.sidebar({
+        autopan: false,       // whether to maintain the centered map point when opening the sidebar
+        closeButton: true,    // whether t add a close button to the panes
+        container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+        position: 'left',     // left or right
+    }).addTo(map);
+    //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
+    return sidebar;
 };
 
-function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_title,filter_id) {
+function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id) {
 
-  // get the list of URIs from geoJSON
-  var dataMap = JSON.parse( document.getElementById('dataMap').innerHTML);
-  var values = "VALUES ?point {";
-  for (var i = 0; i < dataMap.length; i++) {
-    values += '<'+dataMap[i].properties.uri+'> ';
-  }
-  values += '}';
+    // get the list of URIs from geoJSON
+    var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
+    var values = "VALUES ?point {";
+    for (var i = 0; i < dataMap.length; i++) {
+        values += '<' + dataMap[i].properties.uri + '> ';
+    }
+    values += '}';
 
-  // restructure query with VALUES
-  // might have performance issues!
-  var decoded_query = decodeURIComponent(encoded_query);
-  var decoded_query_parts = decoded_query.split(/\{(.*)/s);
-  decoded_query = decoded_query_parts[0] + '{'+ values + decoded_query_parts[1];
-  encoded_query = encodeURIComponent(decoded_query);
+    // restructure query with VALUES
+    // might have performance issues!
+    var decoded_query = decodeURIComponent(encoded_query);
+    var decoded_query_parts = decoded_query.split(/\{(.*)/s);
+    decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
+    encoded_query = encodeURIComponent(decoded_query);
 
-  // get the data
-  $.ajax({
-      type: 'POST',
-      url: sparqlEndpoint + '?query=' + encoded_query,
-      headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
-      beforeSend: function () { $('#loader').removeClass('hidden') },
-      success: function (returnedJson) {
-        console.log(returnedJson);
-        for (i = 0; i < returnedJson.results.bindings.length; i++) {
-          // update geoJSON
+    // get the data
+    $.ajax({
+        type: 'POST',
+        url: sparqlEndpoint + '?query=' + encoded_query,
+        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
+        success: function (returnedJson) {
+            console.log(returnedJson);
+            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                // update geoJSON
 
+            }
+
+
+            // create list
+            // if filter or only filter
+
+            // add panel
+            var panelContent = {
+                id: filter_id + '_panel',
+                tab: 'o',
+                pane: "<p>hello panel</p>",
+                title: filter_title,
+                position: 'top'
+            };
+            sidebar.addPanel(panelContent);
+        },
+        complete: function () {
+            $('#loader').addClass('hidden');
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+            var c = document.getElementById((idx + 1) + "__map_filter_query");
+            var p = document.createElement("p");
+            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+            p.appendChild(error_text)
+            c.after(p);
         }
-
-
-        // create list
-        // if filter or only filter
-
-        // add panel
-        var panelContent = {
-          id: filter_id+'_panel',
-          tab: 'o',
-          pane: "<p>hello panel</p>",
-          title: filter_title,
-          position: 'top'
-        };
-        sidebar.addPanel(panelContent);
-      },
-      complete: function () {
-        $('#loader').addClass('hidden');
-      },
-      error: function (xhr, ajaxOptions, thrownError) {
-          //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-          var c = document.getElementById((idx + 1) + "__map_filter_query");
-          var p = document.createElement("p");
-          var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
-          p.appendChild(error_text)
-          c.after(p);
-      }
-  });
+    });
 
 };
 
@@ -1453,7 +1477,7 @@ function colorSwitch(color_1, color_2) {
     if (typeof (gradientEl) != undefined && gradientEl != null) { gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')'; }
 
     function monchromebackground(el) {
-      el.style.background = color_2;
+        el.style.background = color_2;
     }
     function gradientbackground(el) {
         el.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
