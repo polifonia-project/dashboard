@@ -1119,15 +1119,49 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
       headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
       beforeSend: function () { $('#loader').removeClass('hidden') },
       success: function (returnedJson) {
-        console.log(returnedJson);
         for (i = 0; i < returnedJson.results.bindings.length; i++) {
+          var res = returnedJson.results.bindings[i];
+
+          // check if the filter is a string or a uri+string
+          var headings = returnedJson.head.vars;
+          var has_label = false;
+          if (headings.includes('filterLabel')) { has_label = true;}
+
+          // create list of checkboxes
+          var group= document.createElement("section");
+          
+          var label= document.createElement("label");
+          var checkbox = document.createElement("input");
+          checkbox.type = 'checkbox';
+
           // update geoJSON
+          for (var j = 0; j < dataMap.length; j++) {
+            if (dataMap[j].properties.uri == res.point.value) {
+
+              if (has_label == true) {
+                dataMap[j].properties[filter_title+"#label"] = res.filterLabel.value ;
+                dataMap[j].properties[filter_title+"#value"] = res.filter.value ;
+                checkbox.label = res.filterLabel.value ;
+                checkbox.value = [res.filterLabel.value,res.filter.value]
+              } else {
+                dataMap[j].properties[filter_title+"#label"] = res.filter.value ;
+                dataMap[j].properties[filter_title+"#value"] = res.filter.value ;
+                checkbox.label = res.filter.value ;
+                checkbox.value = [res.filter.value,res.filter.value]
+              }
+
+              checkbox.name = res.filter.value
+
+            }
+          }
 
         }
+        // update geoJSON in the DOM
+        $('#dataMap').remove();
+        var $body = $(document.body);
+        $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + ";</script>");
 
-
-        // create list
-        // if filter or only filter
+        // if filterLabel or only filter
 
         // add panel
         var panelContent = {
