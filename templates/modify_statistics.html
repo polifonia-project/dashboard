@@ -479,6 +479,30 @@
                         </div>
                     </div>
 
+                    <!-- MAP -->
+                    {% elif dict.type == 'map' %}
+                    <div id="{{dict.position}}__block_field">
+                        <h4 class="block_title">Add map</h4>
+                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                        </a>
+                        <br>
+                        <!-- map title -->
+                        <input class='map_title' id='{{dict.position}}__map_title' type='text'
+                            name='{{dict.position}}__map_title' value='{{dict.map_title}}'
+                            placeholder='The title of the map'>
+                        <!-- data points -->
+                        <textarea class='addplaceholder_points' oninput='auto_grow(this)'
+                            name='{{dict.position}}__map_points_query' type='text'
+                            id='{{dict.position}}__map_points_query' rows='10'
+                            required>{{dict.map_points_query}}</textarea>
+                        <a onclick='rerunQuery({{dict.position}})' data-id='{{dict.position}}_rerun_query'
+                            data-run='true' href="#{{dict.position}}__map_points_query">Rerun the query</a>
+                        <!-- map preview -->
+                        <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
+                        </div>
+                    </div>
+
                     {% endif %}
 
                     {% endfor %}
@@ -546,5 +570,13 @@
     }
 </script>
 {% endif %}
+
+{% for dict in datastory_data.dynamic_elements %}
+{% if dict.type == 'map' %}
+<script type="text/javascript">
+    var map = initMap("{{dict.position}}");
+</script>
+{% endif %}
+{% endfor %}
 
 {% endblock javascripts %}

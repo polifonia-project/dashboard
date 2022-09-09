@@ -113,14 +113,10 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                         op_list = []
                         elements_dict = {}
                         elements_dict['position'] = position
-                        #######################
-                        #######################
                         extra_set = set()
                         total_extra_dict = {}  # to store together extra data of one chart
                         extra_queries = []  # to store in separate dict extra data of one chart
-                        #######################
-                        #######################
-                        print(form_data)
+
                         for k, v in form_data.items():
                             if '__' in k:
                                 if position == int(k.split('__')[0]):
@@ -145,13 +141,11 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'map' in k and 'simple' not in k and 'filter' not in k:
                                         elements_dict['type'] = 'map'
                                         elements_dict[k.split('__')[1]] = v
-                                    elif 'map' in k and 'simple' not in k and 'filter'  in k:
+                                    elif 'map' in k and 'simple' not in k and 'filter' in k:
                                         elements_dict['type'] = 'map_filter'
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'action' in k:
                                         op_list.append(v)
-                        #######################
-                        #######################
                                     elif 'extra' in k:
                                         extra_set.add(int(k.split('_')[4]))
                                         total_extra_dict[k.split('__')[1]] = v
@@ -164,8 +158,6 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     extra_dict['extra_id'] = str(e)
                             extra_queries.append(extra_dict)
                         elements_dict['extra_queries'] = extra_queries
-                        #######################
-                        #######################
 
                         # create dicts with operations info
                         for op in op_list:

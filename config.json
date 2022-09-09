@@ -1,10 +1,10 @@
 {
     "sections": [
-        "Listening Experiences",
-        "Tests",
-        "musoW",
         "Wikidata",
-        "Zeri"
+        "Zeri",
+        "Tests",
+        "Listening Experiences",
+        "musoW"
     ],
     "operations": [
         "Count",
@@ -428,10 +428,72 @@
                 "template_mode": "statistics",
                 "title": "Simple Map",
                 "color_code": [
-                    "#39c6b4",
+                    "#39c6b5",
                     "#17cf31"
                 ],
-                "section_name": "Tests"
+                "section_name": "Tests",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "map",
+                        "map_title": "Museums in Brittany",
+                        "map_points_query": "SELECT DISTINCT ?museumLabel ?museumDescription ?villeId ?villeIdLabel (?villeIdLabel AS ?ville) ?coord ?lat ?long\r\nWHERE\r\n{\r\n  ?museum wdt:P539 ?museofile.\r\n  ?museum wdt:P131* wd:Q12130.\r\n  ?museum wdt:P131 ?villeId.\r\n  ?museum wdt:P856 ?link.\r\n  ?museum wdt:P625 ?coord .\r\n    ?museum p:P625 ?statement.\r\n    ?statement psv:P625 ?node.\r\n    ?node wikibase:geoLatitude ?lat.\r\n    ?node wikibase:geoLongitude ?long.\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"fr\". }\r\n}\r\nORDER BY  ?villeIdLabel",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "map",
+                        "map_title": "All museums in Barcelona with coordinates",
+                        "map_points_query": "SELECT DISTINCT ?item ?name ?coord ?lat ?long\r\nWHERE\r\n{\r\n hint:Query hint:optimizer \"None\" .\r\n ?item wdt:P131* wd:Q1492 .\r\n ?item wdt:P31/wdt:P279* wd:Q33506 .\r\n ?item wdt:P625 ?coord .\r\n ?item p:P625 ?coordinate .\r\n ?coordinate psv:P625 ?coordinate_node .\r\n ?coordinate_node wikibase:geoLatitude ?lat .\r\n ?coordinate_node wikibase:geoLongitude ?long .\r\n SERVICE wikibase:label {\r\n bd:serviceParam wikibase:language \"ca\" .\r\n ?item rdfs:label ?name\r\n }\r\n}\r\nORDER BY ASC (?name)",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "map",
+                        "map_title": "Museums in Antwerp",
+                        "map_points_query": "SELECT ?item ?itemLabel ?coordinate ?lat ?long\r\nWHERE\r\n{\r\n  ?item wdt:P31/wdt:P279* wd:Q33506 ;\r\n        wdt:P131 wd:Q12892 ;\r\n        wdt:P625 ?coordinate .\r\n  ?item p:P625 ?coordinates .\r\n   ?coordinates psv:P625 ?coordinate_node .\r\n ?coordinate_node wikibase:geoLatitude ?lat .\r\n ?coordinate_node wikibase:geoLongitude ?long .\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"nl, en\" }\r\n  }",
+                        "extra_queries": [],
+                        "operations": []
+                    }
+                ]
+            },
+            "everything_works": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "maps",
+                "title": "Everything Works",
+                "color_code": [
+                    "#6e7e3a",
+                    "#79f1e9"
+                ],
+                "section_name": "Tests",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "SELECT DISTINCT ?item ?name ?coord ?lat ?long\r\nWHERE\r\n{\r\n hint:Query hint:optimizer \"None\" .\r\n ?item wdt:P131* wd:Q1492 .\r\n ?item wdt:P31/wdt:P279* wd:Q33506 .\r\n ?item wdt:P625 ?coord .\r\n ?item p:P625 ?coordinate .\r\n ?coordinate psv:P625 ?coordinate_node .\r\n ?coordinate_node wikibase:geoLatitude ?lat .\r\n ?coordinate_node wikibase:geoLongitude ?long .\r\n SERVICE wikibase:label {\r\n bd:serviceParam wikibase:language \"ca\" .\r\n ?item rdfs:label ?name\r\n }\r\n}\r\nORDER BY ASC (?name)",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "SELECT DISTINCT ?museumLabel ?museumDescription ?villeId ?villeIdLabel (?villeIdLabel AS ?ville) ?coord ?lat ?long\r\nWHERE\r\n{\r\n  ?museum wdt:P539 ?museofile.\r\n  ?museum wdt:P131* wd:Q12130.\r\n  ?museum wdt:P131 ?villeId.\r\n  ?museum wdt:P856 ?link.\r\n  ?museum wdt:P625 ?coord .\r\n    ?museum p:P625 ?statement.\r\n    ?statement psv:P625 ?node.\r\n    ?node wikibase:geoLatitude ?lat.\r\n    ?node wikibase:geoLongitude ?long.\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"fr\". }\r\n}\r\nORDER BY  ?villeIdLabel",
+                        "extra_queries": [],
+                        "operations": []
+                    }
+                ]
             }
         },
         "zeri": {
