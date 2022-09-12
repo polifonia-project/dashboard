@@ -47,6 +47,8 @@ function updateindex() {
         for (var i = 0; i < everyChild.length; i++) {
             var childid = everyChild[i].id;
             var childname = everyChild[i].name;
+            var childhref = everyChild[i].href;
+            var childdataid = everyChild[i].dataset.id;
             if (childid != undefined) {
                 if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
                 else { everyChild[i].id = idx + '__' + childid; }
@@ -54,6 +56,10 @@ function updateindex() {
             if (childname != undefined) {
                 if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
                 else { everyChild[i].name = idx + '__' + childname; }
+            };
+            if (childdataid != undefined) {
+                if (!isNaN(+childdataid.charAt(0))) { everyChild[i].dataset.id = idx + '__' + childdataid.split(/__(.+)/)[1] }
+                else { everyChild[i].dataset.id = idx + '__' + childdataid; }
             };
         };
     });
@@ -94,7 +100,8 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
     updateindex();
 });
 
-function rerunQuery(pos) {
+function rerunQuery(el) {
+  var pos = el.dataset.id.split('__')[0];
   $("a[data-id='"+pos+"_rerun_query']").on('click', function (e) {
     e.preventDefault();
     $(this).data("run",true);
@@ -106,6 +113,7 @@ function rerunQuery(pos) {
 // add box
 var counter = 0;
 function add_field(name, bind_query_id = "") {
+    updateindex();
     var contents = "";
 
     var text_field = "<textarea rows='3' oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
@@ -246,13 +254,14 @@ function add_field(name, bind_query_id = "") {
           name='"+(counter + 1)+"__map_points_query' type='text'\
           id='"+(counter + 1)+"__map_points_query' rows='10'\
           required></textarea>\
-      <a onclick='rerunQuery("+(counter + 1)+")' \
-          data-id='"+(counter + 1)+"_rerun_query' \
-          data-run='true' href='#"+(counter + 1)+"__map_points_query'>Rerun the query</a>\
+          <p id='"+(counter + 1)+"__map_p'>Hello "+(counter + 1).toString()+"</p>\
+      <a onclick='rerunQuery(this)' \
+          data-id='"+(counter + 1).toString()+"__rerun_query' \
+          data-run='true' href='#'>Rerun the query</a>\
       <!-- map preview -->\
-      <div class='map_preview_container' id='"+(counter + 1)+"__map_preview_container'>\
+      <div class='map_preview_container' id='"+(counter + 1).toString()+"__map_preview_container'>\
       </div>\
-      <script>var map = initMap("+(counter + 1)+");</script>\
+      <script>var map = initMap("+(counter + 1).toString()+");</script>\
       <h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>\
       <p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
       <a class='btn btn-primary btn-border' \
@@ -307,7 +316,7 @@ function add_field(name, bind_query_id = "") {
     } else if (name == 'map') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
         var close_addons = "</div>";
-        contents += open_addons + up_down + map_field + close_addons;
+        contents += open_addons + no_up_down + map_field + close_addons;
     } else if (name == 'map_filter') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
         var close_addons = "</div>";
@@ -940,7 +949,7 @@ $(function () {
             // map
             else if (points_query) {
               // run the first time and then on demand
-              var rerun = $("a[data-id='"+(idx + 1)+"_rerun_query'");
+              var rerun = $("a[data-id='"+(idx + 1)+"__rerun_query'");
               if (rerun.data("run") == true) {
 
                 if (other_filters > 0) { var waitfilters = true
@@ -1129,7 +1138,7 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 
           // create list of checkboxes
           var group= document.createElement("section");
-          
+
           var label= document.createElement("label");
           var checkbox = document.createElement("input");
           checkbox.type = 'checkbox';

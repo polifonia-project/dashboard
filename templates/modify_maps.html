@@ -108,8 +108,8 @@
                               name='{{dict.position}}__map_points_query' type='text'
                               id='{{dict.position}}__map_points_query' rows='10'
                               required>{{dict.map_points_query}}</textarea>
-                          <a onclick='rerunQuery({{dict.position}})'
-                              data-id='{{dict.position}}_rerun_query'
+                          <a onclick='rerunQuery(this)'
+                              data-id='{{dict.position}}__rerun_query'
                               data-run='true' href="#{{dict.position}}__map_points_query">Rerun the query</a>
                           <!-- map preview -->
                           <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
