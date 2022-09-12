@@ -1,10 +1,10 @@
 {
     "sections": [
-        "Wikidata",
-        "Zeri",
         "Tests",
+        "Zeri",
         "Listening Experiences",
-        "musoW"
+        "musoW",
+        "Wikidata"
     ],
     "operations": [
         "Count",
@@ -413,20 +413,34 @@
                 ],
                 "curator": ""
             },
-            "check_the_map_preview": {
-                "sparql_endpoint": "http://data.fondazionezeri.unibo.it/sparql",
-                "template_mode": "maps",
-                "title": "Check the Map Preview",
-                "color_code": [
-                    "#6e7e3a",
-                    "#79f1e9"
-                ],
-                "section_name": "Tests"
-            },
-            "simple_map": {
+            "one_simple_map": {
                 "sparql_endpoint": "https://query.wikidata.org/sparql",
                 "template_mode": "statistics",
-                "title": "Simple Map",
+                "title": "One Simple Map",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Tests",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "map",
+                        "map_title": "All museums in Barcelona",
+                        "map_points_query": "SELECT DISTINCT ?item ?name ?coord ?lat ?long\r\nWHERE\r\n{\r\n hint:Query hint:optimizer \"None\" .\r\n ?item wdt:P131* wd:Q1492 .\r\n ?item wdt:P31/wdt:P279* wd:Q33506 .\r\n ?item wdt:P625 ?coord .\r\n ?item p:P625 ?coordinate .\r\n ?coordinate psv:P625 ?coordinate_node .\r\n ?coordinate_node wikibase:geoLatitude ?lat .\r\n ?coordinate_node wikibase:geoLongitude ?long .\r\n SERVICE wikibase:label {\r\n bd:serviceParam wikibase:language \"ca\" .\r\n ?item rdfs:label ?name\r\n }\r\n}\r\nORDER BY ASC (?name)",
+                        "extra_queries": [],
+                        "operations": []
+                    }
+                ]
+            },
+            "several_simple_maps": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Several Simple Maps",
                 "color_code": [
                     "#39c6b5",
                     "#17cf31"
@@ -463,10 +477,10 @@
                     }
                 ]
             },
-            "everything_works": {
+            "maps": {
                 "sparql_endpoint": "https://query.wikidata.org/sparql",
                 "template_mode": "maps",
-                "title": "Everything Works",
+                "title": "Maps",
                 "color_code": [
                     "#3a457e",
                     "#79f1e9"
