@@ -50,6 +50,8 @@ scheduler.start()
 
 PREFIX = '/melody/'
 # access the home page
+
+
 @app.route(PREFIX+"")
 @app.route(PREFIX+"index.html")
 def home():
@@ -386,11 +388,11 @@ def modify_datastory(section_name, datastory_name):
                                     datastory_title, 'None')
                                 data_methods.update_json(
                                     'config.json', general_data)
-                                return redirect('/')
+                                return redirect(PREFIX)
                             elif session['user_type'] == 'extra' or session['user_type'] == 'random':
                                 os.remove('static/temp/config_' +
                                           section_name+'.json')
-                                return redirect('/')
+                                return redirect(PREFIX)
         except:
             retrieved_config = data_methods.get_raw_json(
                 branch='main', absolute_file_path='config_' + section_name + '.json')
