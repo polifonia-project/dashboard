@@ -220,8 +220,9 @@ def setup():
                         new_datastory['color_code'] = color_code
                         new_datastory['section_name'] = section_name
                         # add to config file
-                        clean_title = datastory_title.lower().replace(" ", "_")
-                        clean_section = section_name.lower().replace(" ", "_")
+                        clean_title = data_methods.clean_string(
+                            datastory_title)
+                        clean_section = data_methods.clean_string(section_name)
                         if clean_section in general_data['data_sources']:
                             general_data['data_sources'][clean_section][clean_title] = new_datastory
                         else:
@@ -266,7 +267,8 @@ def setup():
                         config_data['user_name'] = session['name']
                         config_data['id'] = str(ts)
 
-                        clean_title = datastory_title.lower().replace(" ", "_")
+                        clean_title = data_methods.clean_string(
+                            datastory_title)
                         # add to config file
                         data_methods.update_json(
                             'static/temp/config_' + str(ts) + '.json', config_data)

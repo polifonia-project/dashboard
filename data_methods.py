@@ -1,8 +1,11 @@
 import json
+import re
 from flask import request
 from datetime import datetime
 import requests
 import conf
+import string
+import re
 
 
 def read_json(file_name):
@@ -59,6 +62,29 @@ def access_data_sources(section_name, datastory_name, file_name):
     for source, details in read_json(file_name)['data_sources'][section_name].items():
         if datastory_name == source:
             return details
+
+
+def clean_string(dirty_string):
+    '''
+    This function deals with data story titles to transform them into clean alpha numeric string with no white spaces.
+
+    Args:
+        datastory_title (str): a string that can contain any type of character.
+
+    Returns:
+        clean_title (str): an alpha numeric string in which white spaces are replaced by '_'. 
+    '''
+
+    pattern = r'[' + string.punctuation + ']'
+
+    # remove white spaces at beginning and end
+    cleaned_string = dirty_string.strip()
+    cleaned_string = re.sub(pattern, '', cleaned_string)  # remove special ch
+    # remove multiple white spaces
+    cleaned_string = " ".join(cleaned_string.split())
+    cleaned_string = cleaned_string.lower().replace(
+        " ", "_")  # lower and replace spaces with _
+    return cleaned_string
 
 
 def manage_datastory_data(general_data, file, section_name, datastory_name):
