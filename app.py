@@ -382,10 +382,8 @@ def modify_datastory(section_name, datastory_name):
                         elif request.form['action'] == 'delete':
                             print(section_name, datastory_name, request.form)
                             if session['user_type'] == 'polifonia':
-                                datastory_title = request.form['title'].lower().replace(
-                                    " ", "_")
                                 general_data['data_sources'][section_name].pop(
-                                    datastory_title, 'None')
+                                    datastory_name, 'None')
                                 data_methods.update_json(
                                     'config.json', general_data)
                                 return redirect(PREFIX)
