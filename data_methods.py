@@ -6,6 +6,7 @@ import requests
 import conf
 import string
 import re
+import unidecode
 
 
 def read_json(file_name):
@@ -81,9 +82,10 @@ def clean_string(dirty_string):
     cleaned_string = dirty_string.strip()
     cleaned_string = re.sub(pattern, '', cleaned_string)  # remove special ch
     # remove multiple white spaces
+    clean_title = unidecode.unidecode(clean_title)  # remove accents
     cleaned_string = " ".join(cleaned_string.split())
     cleaned_string = cleaned_string.lower().replace(
-        " ", "_")  # lower and replace spaces with _
+        " ", "_")  # lower and replace spaces with '_'
     return cleaned_string
 
 
