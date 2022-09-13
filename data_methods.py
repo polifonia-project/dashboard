@@ -82,7 +82,7 @@ def clean_string(dirty_string):
     cleaned_string = dirty_string.strip()
     cleaned_string = re.sub(pattern, '', cleaned_string)  # remove special ch
     # remove multiple white spaces
-    clean_title = unidecode.unidecode(clean_title)  # remove accents
+    cleaned_string = unidecode.unidecode(cleaned_string)  # remove accents
     cleaned_string = " ".join(cleaned_string.split())
     cleaned_string = cleaned_string.lower().replace(
         " ", "_")  # lower and replace spaces with '_'
