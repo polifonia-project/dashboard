@@ -279,20 +279,6 @@ def setup():
         return 'something went wrong, try again'
 
 
-# @app.route(PREFIX+"send_data/<string:section_name>", methods=['POST', 'GET'])
-# def send_data(section_name):
-#     general_data = data_methods.read_json('config.json')
-#     if request.method == 'POST':
-#         if session.get('name') is not None:
-#             if session['name']:
-#                 try:
-#                     datastory_name = data_methods.manage_datastory_data(
-#                         general_data, 'config.json', section_name)
-#                     return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
-#                 except:
-#                     return 'Something went wrong'
-
-
 @app.route(PREFIX+"modify/<string:section_name>/<string:datastory_name>", methods=['POST', 'GET'])
 def modify_datastory(section_name, datastory_name):
     while True:
@@ -376,7 +362,8 @@ def modify_datastory(section_name, datastory_name):
                                     datastory_data['dynamic_elements'] = dynamic_elements
                                     data_methods.update_json(
                                         'static/temp/config_'+section_name+'.json', datastory_data)
-                                    datastory_name = data_methods.clean_string(datastory_title)
+                                    datastory_name = data_methods.clean_string(
+                                        datastory_title)
                                     return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
                             except:
                                 return 'Something went wrong'
