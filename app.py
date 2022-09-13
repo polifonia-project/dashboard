@@ -376,7 +376,7 @@ def modify_datastory(section_name, datastory_name):
                                     datastory_data['dynamic_elements'] = dynamic_elements
                                     data_methods.update_json(
                                         'static/temp/config_'+section_name+'.json', datastory_data)
-                                    datastory_name = datastory_title.lower().replace(" ", "_")
+                                    datastory_name = data_methods.clean_string(datastory_title)
                                     return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
                             except:
                                 return 'Something went wrong'
