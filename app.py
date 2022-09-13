@@ -137,13 +137,13 @@ def datastory(section_name, datastory_name):
         # open and create html file
         data_methods.create_html(r, datastory_name, section_name)
 
-        story_title = data_methods.read_json(
+        story_data = data_methods.read_json(
             'static/temp/config_'+section_name+'.json')
 
         new_story = {
             'user_name': session['name'],
             'id': section_name,
-            'title': story_title['title']
+            'title': story_data['title']
         }
 
         stories_list = data_methods.get_raw_json(
@@ -154,10 +154,18 @@ def datastory(section_name, datastory_name):
                 'static/temp/stories_list.json', stories_list)
             if new_story in stories_list:
                 pass
-            else:
-                stories_list.append(new_story)
-                data_methods.update_json(
-                    'static/temp/stories_list.json', stories_list)
+            elif new_story not in stories_list:
+                for story in stories_list:
+                    # check if story id is present
+                    if new_story['id'] in story.values():
+                        # update title
+                        story['title'] = new_story['title']
+                        break
+                else:
+                    # append new story
+                    stories_list.append(new_story)
+                    data_methods.update_json(
+                        'static/temp/stories_list.json', stories_list)
         else:
             stories_list = []
             stories_list.append(new_story)
