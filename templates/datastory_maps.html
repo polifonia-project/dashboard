@@ -6,8 +6,8 @@
 {% block stylesheets %}
 <link rel="stylesheet" href="/melody/static/css/templates.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-   crossorigin=""/>
+  integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+  crossorigin="" />
 <link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
 <link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
 
@@ -68,19 +68,16 @@
           <span id='loader' class='lds-dual-ring hidden overlay'></span>
           <!-- textsearch results -->
           {% for dict in datastory_data.dynamic_elements %}
-            {% if dict.type == 'map' %}
-              {% if dict.map_title | length > 0 %}
-              <h2 class="text-white pb-2 fw-bold">{{dict.map_title}}</h2>
-              {% endif %}
-              <input class='addplaceholder_points'
-                name='{{dict.position}}__map_points_query' type='hidden'
-                id='{{dict.position}}__map_points_query'
-                value='{{dict.map_points_query}}'
-                ></input>
-            <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
-            </div>
+          {% if dict.type == 'map' %}
+          {% if dict.map_title | length > 0 %}
+          <h2 class="text-white pb-2 fw-bold">{{dict.map_title}}</h2>
+          {% endif %}
+          <input class='addplaceholder_points' name='{{dict.position}}__map_points_query' type='hidden'
+            id='{{dict.position}}__map_points_query' value='{{dict.map_points_query}}'></input>
+          <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
+          </div>
 
-            {% endif %}
+          {% endif %}
 
           {% endfor %}
         </div>
@@ -147,14 +144,14 @@
 {% endif %}
 
 {% for dict in datastory_data.dynamic_elements %}
-  {% if dict.type == 'map' %}
-  <script type="text/javascript">
-    var map = initMap("{{dict.position}}");
-    var q = $("#{{dict.position}}__map_points_query").val();
-    // TODO change waitfilters and idx 
-    createMap("{{datastory_data.sparql_endpoint}}",encodeURIComponent(q),"{{dict.position}}__map_preview_container",0,true);
-  </script>
-  {% endif %}
+{% if dict.type == 'map' %}
+<script type="text/javascript">
+  var map = initMap("{{dict.position}}");
+  var q = $("#{{dict.position}}__map_points_query").val();
+  // TODO change waitfilters and idx 
+  createMap("{{datastory_data.sparql_endpoint}}", encodeURIComponent(q), "{{dict.position}}__map_preview_container", 0, true, datastory_data.color_code[0]);
+</script>
+{% endif %}
 {% endfor %}
 
 {% endblock javascripts %}
