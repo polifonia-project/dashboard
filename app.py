@@ -153,6 +153,7 @@ def datastory(section_name, datastory_name):
             data_methods.update_json(
                 'static/temp/stories_list.json', stories_list)
             if new_story in stories_list:
+                print('True')
                 pass
             elif new_story not in stories_list:
                 for story in stories_list:
@@ -160,6 +161,8 @@ def datastory(section_name, datastory_name):
                     if new_story['id'] in story.values():
                         # update title
                         story['title'] = new_story['title']
+                        data_methods.update_json(
+                            'static/temp/stories_list.json', stories_list)
                         break
                 else:
                     # append new story
