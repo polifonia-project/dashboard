@@ -132,8 +132,8 @@ def datastory(section_name, datastory_name):
         else:
             return render_template('page-404.html')
     elif request.method == 'POST':
-        r = requests.get('http://localhost:5000/'+section_name +
-                         '/'+datastory_name)
+        r = requests.get('http://localhost:5000' + PREFIX + section_name +
+                         '/' + datastory_name)
         # open and create html file
         data_methods.create_html(r, datastory_name, section_name)
 

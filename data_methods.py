@@ -210,10 +210,9 @@ def create_html(r, datastory_name, section_name):
         datastory_name (str): a string that identifies the data story name.
         section_name (str): a string that identify the name of the section.
     '''
-    html = r.text.replace('/static', 'static')  # replace
+    html = r.text.replace('/melody/static', 'static')  # replace
     temp_html_file = open('static/temp/'+datastory_name +
                           '_'+section_name+'.html', 'w')
-    # print(temp_html_file)
     temp_html_file.write(html)
     temp_html_file.close()
 
