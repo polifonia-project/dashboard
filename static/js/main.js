@@ -2034,9 +2034,24 @@ const newListElement = (title, id) => {
     const a = document.createElement('a');
     const text = title;
     const aContent = document.createTextNode(text);
-    let file_name = title.replace(/[^\w]/g, '_').toLowerCase();
+    let file_name = cleanString(title);
     a.setAttribute('class', 'dropdown-item');
     a.setAttribute('href', 'modify/' + id + '/' + file_name);
     a.appendChild(aContent);
     return a;
+}
+
+const cleanString = (dirtyString) => {
+    let cleanedString;
+    // remove extra white spaces at beginning and end
+    cleanedString = dirtyString.trim();
+    // remove special characters
+    cleanedString = cleanedString.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, '');
+    // replace accented letters
+    cleanedString = cleanedString.normalize("NFD").replace(/\p{Diacritic}/gu, '');
+    // remove multiple white spaces
+    cleanedString = cleanedString.replace(/\s+/g, ' ');
+    // replace white space with '_' and lowercase
+    cleanedString = cleanedString.replace(/[^\w]/g, '_').toLowerCase();
+    return cleanedString;
 }
