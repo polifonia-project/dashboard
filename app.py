@@ -178,7 +178,7 @@ def datastory(section_name, datastory_name):
         # commit config and html to repo
         github_sync.push('static/temp/config_'+section_name+'.json', 'main', 'melodyeditor',
                          'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
-        github_sync.push('static/temp/'+datastory_name+'_'+section_name+'.html', 'main', 'melodyeditor',
+        github_sync.push('static/temp/story_'+section_name+'.html', 'main', 'melodyeditor',
                          'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
 
         # commit stories list to repo
@@ -187,7 +187,7 @@ def datastory(section_name, datastory_name):
 
         # remove the files
         os.remove('static/temp/config_'+section_name+'.json')
-        os.remove('static/temp/'+datastory_name+'_'+section_name+'.html')
+        os.remove('static/temp/story_'+section_name+'.html')
         os.remove('static/temp/stories_list.json')
 
         return redirect('https://melody-data.github.io/stories/published_stories/' + datastory_name + '_' + section_name + '.html')
