@@ -107,7 +107,7 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
     form_data = request.form.to_dict(flat=True)
     print(form_data)
     datastory_title = form_data['title']
-    datastory_title_clean = datastory_title.lower().replace(" ", "_")
+    datastory_title_clean = clean_string(datastory_title)
     print("datastory_title_clean", datastory_title_clean,
           '\ndatastory_name', datastory_name)
     dynamic_elements = []
