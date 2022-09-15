@@ -316,8 +316,27 @@
                     </div>
 
                     {% for dict in datastory_data.dynamic_elements %}
+                    <!-- SECTION TITLE -->
+                    {% if dict.type == 'section_title' %}
+                    <div id="{{dict.position}}__block_field">
+                        <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                            <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                        </a>
+                        <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                            <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                        </a>
+                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                        </a>
+                        <br>
+                        <!-- preview -->
+                        <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
+                            id="{{dict.position}}__{{dict.type}}"
+                            placeholder="{{dict.section_title}}">{{dict.text}}</textarea>
+                    </div>
+
                     <!-- TEXT -->
-                    {% if dict.type == 'text' %}
+                    {% elif dict.type == 'text' %}
                     <!-- buttons -->
                     <div id="{{dict.position}}__block_field">
                         <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
@@ -479,6 +498,8 @@
 
                 </div>
                 <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
+                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="section_title">Add
+                        Title</a>
                     <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
                         Textbox</a>
                     <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add

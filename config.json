@@ -169,6 +169,7 @@
                         "position": 1,
                         "type": "text",
                         "text": "",
+                        "extra_queries": [],
                         "operations": []
                     },
                     {
@@ -176,6 +177,7 @@
                         "type": "count",
                         "count_query": "SELECT (COUNT(?s) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
                         "count_label": "Repositories",
+                        "extra_queries": [],
                         "operations": []
                     },
                     {
@@ -183,7 +185,9 @@
                         "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . } ",
+                        "chart_series": "",
                         "chart_title": "Music resources on the web",
+                        "extra_queries": [],
                         "operations": [
                             {
                                 "action": "count",
@@ -196,10 +200,13 @@
                         "type": "chart",
                         "chart_type": "barchart",
                         "chart_query": "SELECT DISTINCT ?label (COUNT(DISTINCT ?content) AS ?count) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?label .\r\n } GROUP BY ?label ?count",
+                        "chart_series": "",
                         "chart_title": "Music resources on the web",
+                        "extra_queries": [],
                         "operations": []
                     }
-                ]
+                ],
+                "curator": ""
             }
         },
         "wikidata": {

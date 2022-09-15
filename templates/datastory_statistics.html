@@ -64,8 +64,14 @@
 					<div class="card-body row">
 
 						{% for dict in datastory_data.dynamic_elements %}
+						<!-- section title -->
+						{% if dict.type == 'section_title' %}
+						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
+							<h2 class="card-title">{{dict.section_title}}</h2>
+						</div>
+
 						<!-- text -->
-						{% if dict.type == 'text' %}
+						{% elif dict.type == 'text' %}
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
 							<p>{{dict.text}}</p>
 						</div>
