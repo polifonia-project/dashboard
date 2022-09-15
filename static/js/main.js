@@ -434,7 +434,7 @@ const addQueryField = (name, idx) => {
 		afterElement.insertAdjacentHTML('beforebegin', content);
 }
 
-var sidebar , map ;
+var sidebar, map;
 
 // preview content
 $(function () {
