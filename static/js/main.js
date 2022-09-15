@@ -1,5 +1,6 @@
 var checked_filters ;
 var markers;
+var allMarkers;
 var sidebar;
 addEventListener("DOMContentLoaded", function () {
 		if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
@@ -24,7 +25,7 @@ $(document).ready(function () {
 		var form = document.querySelector('form');
 		form.addEventListener('change', function(e) {
 			var map_chechbox = $(this).find('input[class="map_chechbox"]');
-			if (map_chechbox != undefined && $('input[class="map_chechbox"]:checked').length) {
+			if (map_chechbox != undefined) {
 				e.preventDefault();
 				checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
 				addRemoveMarkers(checked_filters);
@@ -262,7 +263,6 @@ function add_field(name, bind_query_id = "") {
 					name='"+(counter + 1)+"__map_points_query' type='text'\
 					id='"+(counter + 1)+"__map_points_query' rows='10'\
 					required></textarea>\
-					<p id='"+(counter + 1)+"__map_p'>Hello "+(counter + 1).toString()+"</p>\
 			<a onclick='rerunQuery(\""+(counter + 1).toString()+"\",this)' \
 					data-id='"+(counter + 1).toString()+"__rerun_query' \
 					data-run='true' href='#'>Rerun the query</a>\
@@ -976,6 +976,7 @@ $(function () {
 							var rerun = $("a[data-id='1__rerun_query'");
 							if (other_filters <= 1) { sidebar = initSidebar() };
 							if (map_ready != undefined && map_ready == true) {
+								console.log("calling add filter");
 								addFilterMap(sparqlEndpoint,encoded_filter,map_filter_bind_query,filter_title,filter_id,checked_filters);
 							}
 						}
@@ -995,9 +996,7 @@ const addQueryArea = () => {
 // rerun maps query on demand
 function rerunQuery(pos,el) {
 	$("a[data-id='"+pos+"__rerun_query']").data("run",true);
-	console.log($("a[data-id='"+pos+"__rerun_query']").data("run"));
 	$('form').trigger('change');
-	console.log($("a[data-id='"+pos+"__rerun_query']").data("run"));
 }
 
 // initialize an empty map, used directly in templates
@@ -1007,12 +1006,12 @@ function initMap(pos) {
 			maxZoom: 19,
 			attribution: '© OpenStreetMap'
 	}).addTo(map);
+
 	return map
 }
 
 // get geo data from SPARQL endpoint and send to map
 function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true, color_code) {
-
 	$.ajax({
 			type: 'POST',
 			url: sparqlEndpoint + '?query=' + encoded_query,
@@ -1022,6 +1021,7 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true, co
 				// preview map
 				var geoJSONdata = creategeoJSON(returnedJson);
 				markers = setView(mapid,geoJSONdata,waitfilters,color_code);
+				allMarkers = setView(mapid,geoJSONdata,waitfilters,color_code);
 			},
 			complete: function () {
 				$('#loader').addClass('hidden');
@@ -1135,7 +1135,6 @@ function initSidebar() {
 };
 
 function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_title,filter_id,checked_filters) {
-
 	// get the list of URIs from geoJSON
 	var dataMap = JSON.parse( document.getElementById('dataMap').innerHTML);
 	var values = "VALUES ?point {";
@@ -1167,7 +1166,7 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 					var headings = returnedJson.head.vars;
 					var has_label = false;
 					if (headings.includes('filterLabel')) { has_label = true;}
-					// update geoJSON object
+					// update geoJSON object in DOM
 					for (var j = 0; j < dataMap.length; j++) {
 						if (dataMap[j].properties.uri == res.point.value) {
 							if (has_label == true) {
@@ -1189,22 +1188,35 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 							}
 						}
 					}
+					// update geoJSON in DOM
+					$('#dataMap').remove();
+					var $body = $(document.body);
+					$body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + ";</script>");
+
+					// update markers
+					markers.eachLayer(layer => {
+						if (layer.feature.properties.uri == res.point.value) {
+							if (has_label == true) {
+								layer.feature.properties[filter_title+"#label"] = res.filterLabel.value ;
+							} else {
+								layer.feature.properties[filter_title+"#label"] = res.filter.value ;
+							}
+							layer.feature.properties[filter_title+"#value"] = res.filter.value ;
+						}
+					});
 				}
 
-				// update geoJSON in DOM
-				$('#dataMap').remove();
-				var $body = $(document.body);
-				$body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + ";</script>");
 
-				// update markers
 				// get markers from geoJSON, bind popupContent
 				var data_layers = L.geoJSON(dataMap, {
 			    onEachFeature: onEachFeature
 				});
+				//console.log("addFilterMap "+filter_title+" - markers");
 
 				// add markers to clusters
-				markers = L.markerClusterGroup();
-				markers.addLayer(data_layers);
+				//markers = L.markerClusterGroup();
+				//markers.addLayer(data_layers);
+				//logMarkers(markers);
 
 				// add panel
 				createPanel(filter_id,filter_title,labels_values_count,checked_filters);
@@ -1212,6 +1224,7 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 			},
 			complete: function () {
 				$('#loader').addClass('hidden');
+				sortPanels();
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 					//$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
@@ -1227,8 +1240,10 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 
 function createPanel(filter_id,filter_title,labels_values_count,checked_filters) {
 	// empty panel if exists
-	console.log("createPanel",filter_title);
+	console.log("createPanel - START",filter_title);
+	//if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
 	if ($("#"+filter_id+'_panel') != undefined) {
+		sidebar.removePanel(filter_id+'_panel');
 		$("#"+filter_id+'_panel').detach();
 		$('a[href="#'+filter_id+'_panel"]').detach();
 	} ;
@@ -1267,8 +1282,18 @@ function createPanel(filter_id,filter_title,labels_values_count,checked_filters)
 		title: filter_title,
 		position: 'top'
 	};
-	//if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
 	sidebar.addPanel(panelContent);
+}
+
+function sortPanels() {
+	// var ps = document.querySelectorAll( ".leaflet-sidebar-content section" );
+	// var sortedPs = Array.from( ps ).sort( (a, b) => a.id.localeCompare( b.id ) ); //sort the ps
+	// //document.querySelector( ".leaflet-sidebar-content" ).innerHTML = sortedPs.map( s => s.outerHTML ).join(""); //recreate the markup
+	// var tags = document.querySelector( ".leaflet-sidebar-content" );
+	// var dupTags = tags.cloneNode(false);
+	// sortedPs.forEach( s => dupTags.appendChild ( s ) );
+	// //replace old with new tags
+	// tags.parentNode.replaceChild(dupTags ,tags);
 }
 
 function checkvalue(checkbox,checked_filters) {
@@ -1282,7 +1307,23 @@ function checkvalue(checkbox,checked_filters) {
 }
 
 function addRemoveMarkers(checked_filters) {
-	console.log("checked_filters",checked_filters);
+	console.log("addRemoveMarkers: checked_filters",checked_filters);
+	// dataMap = JSON.parse( document.getElementById('dataMap').innerHTML);
+	//
+	// // recreate all clusters
+	// var data_layers = L.geoJSON(dataMap, {
+	// 	onEachFeature: onEachFeature
+	// });
+
+	// add markers to clusters
+	//markers = allMarkers;
+	//markers.addLayer(data_layers);
+	markers.clearLayers();
+	allMarkers.eachLayer(layer => {
+			markers.addLayer(layer);
+	});
+	console.log("addRemoveMarkers: recreate all markers");
+	logMarkers(markers);
 
 	// get the filter names
 	var filternames = [];
@@ -1305,34 +1346,56 @@ function addRemoveMarkers(checked_filters) {
 			filternames_values[value.dataset.filter].push(value.value)
 		}
 	}
-
+	console.log("filternames_values",filternames_values);
 	if (Object.keys(filternames_values).length ) {
 		for (const [key, value] of Object.entries(filternames_values)) {
 			markers.eachLayer(layer => {
-			  //if (layer.feature.properties[key+'#value'] != value ) {
-				// if property value not in the list of checked-checkboxes values remove
-				console.log("markers",layer.feature.properties);
+			  // if property value not in the list of checked-checkboxes values remove marker
 				var prop_key = key+'#value';
 				var prop_value = layer.feature.properties[prop_key];
 				if (!value.includes(prop_value)) {
+					console.log("remove this",layer.feature.properties);
 			    markers.removeLayer(layer);
 				}
 			});
 		}
-
+		console.log("addRemoveMarkers: removed markers");
+		//logMarkers(markers);
 		// clear map
 		map.eachLayer(function(layer) {
 				if (layer instanceof L.MarkerClusterGroup) {
 					map.removeLayer(layer) }
 		});
-
 		map.addLayer(markers);
 
 	}
 	// else put them all back!
+	else {
+		console.log("put all markers back");
+		// var data_layers = L.geoJSON(dataMap, {
+		// 	onEachFeature: onEachFeature
+		// });
+
+		map.eachLayer(function(layer) {
+				if (layer instanceof L.MarkerClusterGroup) {
+					map.removeLayer(layer) }
+		});
+		markers.clearLayers();
+		allMarkers.eachLayer(layer => {
+				markers.addLayer(layer);
+		});
+		map.addLayer(markers);
+	}
+
 
 }
 
+
+function logMarkers(markers) {
+	markers.eachLayer(layer => {
+		console.log(layer.feature.properties);
+	});
+}
 //// RELATIONS TEMPLATE FUNCTIONS ////
 
 // text search

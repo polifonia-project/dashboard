@@ -458,7 +458,16 @@
                         "type": "map_filter",
                         "map_filter_title": "artist",
                         "map_filter_bind_query": "1__map_points_query",
-                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point ^frbr:exemplar / ^fabio:hasManifestation / crm:P94i_was_created_by / crm:P14_carried_out_by  ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point ^frbr:exemplar / ^fabio:hasManifestation / crm:P94i_was_created_by / crm:P14_carried_out_by  ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"it\"))\r\n}",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 4,
+                        "type": "map_filter",
+                        "map_filter_title": "technique",
+                        "map_filter_bind_query": "1__map_points_query",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P108i_was_produced_by ?prod .\r\n?prod crm:P32_used_general_technique ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
                         "extra_queries": [],
                         "operations": []
                     }

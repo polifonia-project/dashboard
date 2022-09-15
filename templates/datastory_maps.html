@@ -148,8 +148,9 @@
 <script type="text/javascript">
   var map = initMap("{{dict.position}}");
   var q = $("#{{dict.position}}__map_points_query").val();
-  // TODO change waitfilters and idx 
+  // TODO change waitfilters and idx
   createMap("{{datastory_data.sparql_endpoint}}", encodeURIComponent(q), "{{dict.position}}__map_preview_container", 0, true, datastory_data.color_code[0]);
+  var sidebar = initSidebar();
 </script>
 {% endif %}
 {% endfor %}
