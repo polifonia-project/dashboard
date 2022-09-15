@@ -136,7 +136,6 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                     # dynamic_elements list
                     for position in position_set:
                         extra_set = set()
-                        total_extra_dict = {}
                         operations = []
                         op_list = []
                         elements_dict = {}

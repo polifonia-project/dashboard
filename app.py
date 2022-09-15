@@ -337,15 +337,24 @@ def modify_datastory(section_name, datastory_name):
                                     # we create as many dicts as there are positions, to store each type of element and append to
                                     # dynamic_elements list
                                     for position in position_set:
+                                        extra_set = set()
                                         operations = []
                                         op_list = []
                                         elements_dict = {}
                                         elements_dict['position'] = position
+                                        extra_set = set()
+                                        total_extra_dict = {}
+                                        extra_queries = []
+
                                         for k, v in form_data.items():
                                             if '__' in k:
                                                 if position == int(k.split('__')[0]):
                                                     if 'text' in k:
                                                         elements_dict['type'] = 'text'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'textsearch' in k:
+                                                        elements_dict['type'] = 'textsearch'
                                                         elements_dict[k.split('__')[
                                                             1]] = v
                                                     elif 'count' in k:
@@ -356,8 +365,32 @@ def modify_datastory(section_name, datastory_name):
                                                         elements_dict['type'] = 'chart'
                                                         elements_dict[k.split('__')[
                                                             1]] = v
+                                                    elif 'tablevalueaction' in k:
+                                                        elements_dict['type'] = 'tablevalueaction'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'tablecomboaction' in k:
+                                                        elements_dict['type'] = 'tablecomboaction'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
                                                     elif 'action' in k:
                                                         op_list.append(v)
+                                                    elif 'extra' in k:
+                                                        extra_set.add(
+                                                            int(k.split('_')[4]))
+                                                        total_extra_dict[k.split('__')[
+                                                            1]] = v
+                                        for e in extra_set:
+                                            extra_dict = {}
+                                            for k, v in total_extra_dict.items():
+                                                if str(e) in k:
+                                                    extra_dict[k.strip(
+                                                        '_'+str(e))] = v
+                                                    extra_dict['extra_id'] = str(
+                                                        e)
+                                            extra_queries.append(extra_dict)
+                                        elements_dict['extra_queries'] = extra_queries
+
                                         # create dicts with operations info
                                         for op in op_list:
                                             op_dict = {}
@@ -367,6 +400,7 @@ def modify_datastory(section_name, datastory_name):
                                             elif op == 'sort':
                                                 op_dict['param'] = 'another'
                                             operations.append(op_dict)
+
                                         elements_dict['operations'] = operations
                                         dynamic_elements.append(elements_dict)
 
