@@ -380,6 +380,9 @@ def modify_datastory(section_name, datastory_name):
                                                             int(k.split('_')[4]))
                                                         total_extra_dict[k.split('__')[
                                                             1]] = v
+                                                    elif 'section_title' in k:
+                                                        elements_dict['type'] = 'section_title'
+                                                        elements_dict[k.split('__')[1]] = v
                                         for e in extra_set:
                                             extra_dict = {}
                                             for k, v in total_extra_dict.items():
