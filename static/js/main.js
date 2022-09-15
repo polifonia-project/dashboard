@@ -365,11 +365,11 @@ $(function () {
                     chart_type = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
-                } else if (element.name.includes((idx + 1) + '__chart_series')) {
+                } else if (element.name == ((idx + 1) + '__chart_series')) {
                     chart_series = element.value;
-                } else if (element.name.includes((idx + 1) + '__extra_query')) {
+                } else if (element.name == ((idx + 1) + '__extra_query')) {
                     extra_queries.push(element.value);
-                } else if (element.name.includes((idx + 1) + '__extra_series')) {
+                } else if (element.name == ((idx + 1) + '__extra_series')) {
                     extra_series.push(element.value);
                 }
             }
