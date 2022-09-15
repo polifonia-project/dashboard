@@ -98,6 +98,8 @@ var counter = 0;
 function add_field(name, bind_query_id = "") {
     var contents = "";
 
+    var title_field = "<textarea rows='2' oninput='auto_grow(this)' name='section_title' type='text' id='" + (counter + 1) + "__section_title' placeholder='Write the title of a new section.'></textarea>";
+
     var text_field = "<textarea rows='3' oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
 
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
@@ -239,6 +241,10 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + text_field + close_addons;
+    } else if (name === 'section_title') {
+        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add title</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + title_field + close_addons;
     } else if (name == 'countbox') {
         var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
         var close_addons = "</div>";
