@@ -132,7 +132,8 @@ def datastory(section_name, datastory_name):
         else:
             return render_template('page-404.html')
     elif request.method == 'POST':
-        r = requests.get('http://localhost:5000' + PREFIX + section_name +
+        host = request.host_url
+        r = requests.get(host + PREFIX[1:] + section_name +
                          '/' + datastory_name)
         # open and create html file
         data_methods.create_html(r, datastory_name, section_name)
@@ -153,7 +154,6 @@ def datastory(section_name, datastory_name):
             data_methods.update_json(
                 'static/temp/stories_list.json', stories_list)
             if new_story in stories_list:
-                print('True')
                 pass
             elif new_story not in stories_list:
                 for story in stories_list:
