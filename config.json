@@ -452,8 +452,26 @@
                         "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
                         "extra_queries": [],
                         "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "map_filter",
+                        "map_filter_title": "artist",
+                        "map_filter_bind_query": "1__map_points_query",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point ^frbr:exemplar / ^fabio:hasManifestation / crm:P94i_was_created_by / crm:P14_carried_out_by  ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "extra_queries": [],
+                        "operations": []
                     }
-                ]
+                ],
+                "https://w3id.org/zericatalog/galleria-borghese-roma": "https://w3id.org/zericatalog/galleria-borghese-roma",
+                "https://w3id.org/zericatalog/collezione-privata-roma": "https://w3id.org/zericatalog/collezione-privata-roma",
+                "https://w3id.org/zericatalog/asta-lantonina-roma": "https://w3id.org/zericatalog/asta-lantonina-roma",
+                "https://w3id.org/zericatalog/palazzo-pitti-galleria-palatina-e-appartamenti-reali-firenze": "https://w3id.org/zericatalog/palazzo-pitti-galleria-palatina-e-appartamenti-reali-firenze",
+                "https://w3id.org/zericatalog/alte-pinakothek-bayerische-staatsgemaldesammlungen-monaco-di-baviera": "https://w3id.org/zericatalog/alte-pinakothek-bayerische-staatsgemaldesammlungen-monaco-di-baviera",
+                "https://w3id.org/zericatalog/collezione-privata-napoli": "https://w3id.org/zericatalog/collezione-privata-napoli",
+                "https://w3id.org/zericatalog/mercato-antiquario-roma": "https://w3id.org/zericatalog/mercato-antiquario-roma",
+                "https://w3id.org/zericatalog/collezione-privata-firenze": "https://w3id.org/zericatalog/collezione-privata-firenze",
+                "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma": "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma"
             }
         }
     }

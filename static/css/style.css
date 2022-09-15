@@ -732,6 +732,7 @@ hr {
   /* background-color: white; */
   text-align: center;
   padding-top: 10px;
+  color: black;
 }
 
 .leaflet-sidebar-content, .leaflet-sidebar-tabs {background: transparent !important;}

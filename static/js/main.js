@@ -1,5 +1,6 @@
 var checked_filters ;
 var markers;
+var sidebar;
 addEventListener("DOMContentLoaded", function () {
 		if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
@@ -116,8 +117,6 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
 // remove add map after click or if any map is already available
 $("a[name='map']").on('click', function() { $(this).detach(); });
 if ($("#1__map_points_query") != undefined ) { $("a[name='map']").detach(); }
-
-
 
 // add box
 var counter = 0;
@@ -960,13 +959,19 @@ $(function () {
 							var rerun = $("a[data-id='"+(idx + 1)+"__rerun_query'");
 							if (rerun.data("run") == true) {
 								if (other_filters > 0) { var waitfilters = true } else {var waitfilters = false };
-								map_ready = createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),waitfilters);
+								map_ready = createMap(sparqlEndpoint,encoded_points, (idx + 1)+'__map_preview_container',(idx + 1),waitfilters, color_2);
 								rerun.data("run",false);
+							} else {
+								// update color
+								let mapContainer = document.getElementById((idx + 1) + '__map_preview_container');
+								let spanColorElements = mapContainer.getElementsByClassName('pointer-color');
+								for (singleColorElement of spanColorElements) {
+										singleColorElement.style.background = color_2;
+								}
 							}
 						}
-
 						// map filter
-						else if (filter_query) {
+					 	else if (filter_query) {
 							// TODO fix this in case multiple maps are allowed
 							var rerun = $("a[data-id='1__rerun_query'");
 							if (other_filters <= 1) { sidebar = initSidebar() };
@@ -978,8 +983,6 @@ $(function () {
 
 		};
 		update();
-
-
 		$('form').change(update);
 });
 
@@ -1008,7 +1011,7 @@ function initMap(pos) {
 }
 
 // get geo data from SPARQL endpoint and send to map
-function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true) {
+function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true, color_code) {
 
 	$.ajax({
 			type: 'POST',
@@ -1018,7 +1021,7 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true) {
 			success: function (returnedJson) {
 				// preview map
 				var geoJSONdata = creategeoJSON(returnedJson);
-				markers = setView(mapid,geoJSONdata,waitfilters);
+				markers = setView(mapid,geoJSONdata,waitfilters,color_code);
 			},
 			complete: function () {
 				$('#loader').addClass('hidden');
@@ -1035,9 +1038,16 @@ function createMap(sparqlEndpoint,encoded_query,mapid,idx=0,waitfilters=true) {
 	});
 }
 
+function onEachFeature(feature, layer) {
+    // does this feature have a property named popupContent?
+    if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+    }
+}
+
 // fill in an already initialized map (initMap())
 // with data points received from createMap()
-function setView(mapid,geoJSONdata,waitfilters) {
+function setView(mapid,geoJSONdata,waitfilters, color_code) {
 	// remove markers if any from a map already initialised
 	map.eachLayer(function(layer) {
 			if (layer instanceof L.MarkerClusterGroup) {
@@ -1047,28 +1057,30 @@ function setView(mapid,geoJSONdata,waitfilters) {
 	$('#dataMap').remove();
 
 	// style clusters
-	var innerClusterStyle = "display: inline-block; background:"+datastory_data.color_code[0]+";\
+	var innerClusterStyle = "display: inline-block; background:"+color_code+";\
 		width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
+
 	var markers = L.markerClusterGroup({
 		iconCreateFunction: function (cluster) {
 			var markers = cluster.getAllChildMarkers();
 			var n = 0;
 			for (var i = 0; i < markers.length; i++) {  n += 1;}
-			return L.divIcon({ html: "<span style='"+ innerClusterStyle +";'>"+n+"</span>", className: 'mycluster', iconSize: L.point(40, 40) });
+			return L.divIcon({ html: "<span style='"+ innerClusterStyle +";'>"+n+"</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
 		},
 		singleMarkerMode:true
 	});
 
+	// get markers from geoJSON, bind popupContent
+	var data_layers = L.geoJSON(geoJSONdata, {
+    onEachFeature: onEachFeature
+	});
+
 	// add markers to clusters
-	for (var i = 0; i < geoJSONdata.length; i++) {
-		var a = geoJSONdata[i];
-		var title = a.properties.popupContent;
-		var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), { title: title });
-		marker.bindPopup(title);
-		markers.addLayer(marker);
-	}
+	markers.addLayer(data_layers);
+
 	// show clusters
 	map.addLayer(markers);
+
 	// add geoJSONdata to DOM
 	var $body = $(document.body);
 	$body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + ";</script>");
@@ -1112,7 +1124,7 @@ function creategeoJSON(returnedJson) {
 };
 
 function initSidebar() {
-	var sidebar = L.control.sidebar({
+	sidebar = L.control.sidebar({
 			autopan: false,       // whether to maintain the centered map point when opening the sidebar
 			closeButton: true,    // whether t add a close button to the panes
 			container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
@@ -1178,10 +1190,21 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 						}
 					}
 				}
+
 				// update geoJSON in DOM
 				$('#dataMap').remove();
 				var $body = $(document.body);
 				$body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + ";</script>");
+
+				// update markers
+				// get markers from geoJSON, bind popupContent
+				var data_layers = L.geoJSON(dataMap, {
+			    onEachFeature: onEachFeature
+				});
+
+				// add markers to clusters
+				markers = L.markerClusterGroup();
+				markers.addLayer(data_layers);
 
 				// add panel
 				createPanel(filter_id,filter_title,labels_values_count,checked_filters);
@@ -1204,8 +1227,10 @@ function addFilterMap(sparqlEndpoint,encoded_query,map_filter_bind_query,filter_
 
 function createPanel(filter_id,filter_title,labels_values_count,checked_filters) {
 	// empty panel if exists
+	console.log("createPanel",filter_title);
 	if ($("#"+filter_id+'_panel') != undefined) {
 		$("#"+filter_id+'_panel').detach();
+		$('a[href="#'+filter_id+'_panel"]').detach();
 	} ;
 
 	var groupCheckboxes = document.createElement("section");
@@ -1226,6 +1251,7 @@ function createPanel(filter_id,filter_title,labels_values_count,checked_filters)
 		checkbox.value = key;
 		checkbox.name = key;
 		checkbox.className = "map_chechbox";
+		checkbox.setAttribute("data-filter",filter_title);
 		checkbox.checked = checkvalue(checkbox,checked_filters);
 		label.append(document.createTextNode(checkbox.label));
 		singlecheckbox.append(checkbox);
@@ -1236,12 +1262,12 @@ function createPanel(filter_id,filter_title,labels_values_count,checked_filters)
 	// add panel
 	var panelContent = {
 		id: filter_id+'_panel',
-		tab: '>',
+		tab: '',
 		pane: groupCheckboxes,
 		title: filter_title,
 		position: 'top'
 	};
-	if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
+	//if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
 	sidebar.addPanel(panelContent);
 }
 
@@ -1256,7 +1282,55 @@ function checkvalue(checkbox,checked_filters) {
 }
 
 function addRemoveMarkers(checked_filters) {
-	console.log(checked_filters,markers);
+	console.log("checked_filters",checked_filters);
+
+	// get the filter names
+	var filternames = [];
+	if (checked_filters.length) {
+		for (const value of checked_filters.values()) {
+			filternames.push(value.dataset.filter);
+		}
+	}
+	// [ filter1, filter2 ...]
+	filternames = [...new Set(filternames)];
+
+	// add values checked
+	var filternames_values = {};
+	filternames.forEach(function (el, index) {
+		filternames_values[el] = [];
+	});
+	// { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
+	if (checked_filters.length) {
+		for (const value of checked_filters.values()) {
+			filternames_values[value.dataset.filter].push(value.value)
+		}
+	}
+
+	if (Object.keys(filternames_values).length ) {
+		for (const [key, value] of Object.entries(filternames_values)) {
+			markers.eachLayer(layer => {
+			  //if (layer.feature.properties[key+'#value'] != value ) {
+				// if property value not in the list of checked-checkboxes values remove
+				console.log("markers",layer.feature.properties);
+				var prop_key = key+'#value';
+				var prop_value = layer.feature.properties[prop_key];
+				if (!value.includes(prop_value)) {
+			    markers.removeLayer(layer);
+				}
+			});
+		}
+
+		// clear map
+		map.eachLayer(function(layer) {
+				if (layer instanceof L.MarkerClusterGroup) {
+					map.removeLayer(layer) }
+		});
+
+		map.addLayer(markers);
+
+	}
+	// else put them all back!
+
 }
 
 //// RELATIONS TEMPLATE FUNCTIONS ////
