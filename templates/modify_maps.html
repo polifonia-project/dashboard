@@ -108,7 +108,7 @@
                               name='{{dict.position}}__map_points_query' type='text'
                               id='{{dict.position}}__map_points_query' rows='10'
                               required>{{dict.map_points_query}}</textarea>
-                          <a onclick='rerunQuery(this)'
+                          <a onclick='rerunQuery({{dict.position}},this)'
                               data-id='{{dict.position}}__rerun_query'
                               data-run='true' href="#{{dict.position}}__map_points_query">Rerun the query</a>
                           <!-- map preview -->
@@ -152,6 +152,7 @@
                             id='{{dict.position}}__map_filter_query' rows='6'
                             data-bind-query='{{dict.map_filter_bind_query}}'
                             required>{{dict.map_filter_query}}</textarea>
+                        <p>Rerun the query to add the filter to the map</p>
                       </div>
                       {% endif %}
 

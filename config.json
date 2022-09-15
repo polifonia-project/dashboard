@@ -1,10 +1,10 @@
 {
     "sections": [
-        "musoW",
+        "Tests",
         "Zeri",
         "Listening Experiences",
         "Wikidata",
-        "Tests"
+        "musoW"
     ],
     "operations": [
         "Count",
@@ -170,6 +170,7 @@
                         "position": 1,
                         "type": "text",
                         "text": "",
+                        "extra_queries": [],
                         "operations": []
                     },
                     {
@@ -177,6 +178,7 @@
                         "type": "count",
                         "count_query": "SELECT (COUNT(?s) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
                         "count_label": "Repositories",
+                        "extra_queries": [],
                         "operations": []
                     },
                     {
@@ -184,7 +186,9 @@
                         "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . } ",
+                        "chart_series": "",
                         "chart_title": "Music resources on the web",
+                        "extra_queries": [],
                         "operations": [
                             {
                                 "action": "count",
@@ -197,10 +201,13 @@
                         "type": "chart",
                         "chart_type": "barchart",
                         "chart_query": "SELECT DISTINCT ?label (COUNT(DISTINCT ?content) AS ?count) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?label .\r\n } GROUP BY ?label ?count",
+                        "chart_series": "",
                         "chart_title": "Music resources on the web",
+                        "extra_queries": [],
                         "operations": []
                     }
-                ]
+                ],
+                "curator": ""
             }
         },
         "wikidata": {
@@ -440,9 +447,9 @@
                     {
                         "position": 2,
                         "type": "map_filter",
-                        "map_filter_title": "Keeper",
+                        "map_filter_title": "keeper",
                         "map_filter_bind_query": "1__map_points_query",
-                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter rdfs:label ?filterLabel .\r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n} LIMIT 10",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
                         "extra_queries": [],
                         "operations": []
                     }
