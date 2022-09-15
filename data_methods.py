@@ -172,6 +172,9 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'extra' in k:
                                         extra_set.add(int(k.split('_')[4]))
                                         total_extra_dict[k.split('__')[1]] = v
+                                    elif 'section_title' in k:
+                                        elements_dict['type'] = 'section_title'
+                                        elements_dict[k.split('__')[1]] = v
 
                         for e in extra_set:
                             extra_dict = {}
