@@ -2042,7 +2042,7 @@ const newListElement = (title, id) => {
     const aContent = document.createTextNode(text);
     let file_name = cleanString(title);
     a.setAttribute('class', 'dropdown-item');
-    a.setAttribute('href', 'modify/' + id + '/' + file_name);
+    a.setAttribute('href', '/melody/modify/' + id + '/' + file_name);
     a.appendChild(aContent);
     return a;
 }
