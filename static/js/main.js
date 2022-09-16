@@ -459,6 +459,7 @@ $(function () {
                 }
             })
         });
+        console.log(fields);
         colorSwitch(color_2, color_1);
 
         $('#sortable [id$="block_field"]').each(function (idx) {
@@ -497,9 +498,9 @@ $(function () {
                     operations.push(element.value);
                 } else if (element.name == ((idx + 1) + '__chart_series')) {
                     chart_series = element.value;
-                } else if (element.name == ((idx + 1) + '__extra_query')) {
+                } else if (element.name.includes((idx + 1) + '__extra_query')) {
                     extra_queries.push(element.value);
-                } else if (element.name == ((idx + 1) + '__extra_series')) {
+                } else if (element.name.includes((idx + 1) + '__extra_series')) {
                     extra_series.push(element.value);
                 } else if (element.name == (idx + 1) + '__map_points_query') {
                     points_query = element.value;
@@ -1320,76 +1321,76 @@ function checkvalue(checkbox, checked_filters) {
 function addRemoveMarkers(checked_filters) {
     console.log("addRemoveMarkers: checked_filters", checked_filters);
     if (markers != undefined) {
-      markers.clearLayers();
-      allMarkers.eachLayer(layer => {
-          markers.addLayer(layer);
-      });
-      console.log("addRemoveMarkers: recreate all markers");
-      logMarkers(markers);
+        markers.clearLayers();
+        allMarkers.eachLayer(layer => {
+            markers.addLayer(layer);
+        });
+        console.log("addRemoveMarkers: recreate all markers");
+        logMarkers(markers);
 
-      // get the filter names
-      var filternames = [];
-      if (checked_filters.length) {
-          for (const value of checked_filters.values()) {
-              filternames.push(value.dataset.filter);
-          }
-      }
-      // [ filter1, filter2 ...]
-      filternames = [...new Set(filternames)];
+        // get the filter names
+        var filternames = [];
+        if (checked_filters.length) {
+            for (const value of checked_filters.values()) {
+                filternames.push(value.dataset.filter);
+            }
+        }
+        // [ filter1, filter2 ...]
+        filternames = [...new Set(filternames)];
 
-      // add values checked
-      var filternames_values = {};
-      filternames.forEach(function (el, index) {
-          filternames_values[el] = [];
-      });
-      // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
-      if (checked_filters.length) {
-          for (const value of checked_filters.values()) {
-              filternames_values[value.dataset.filter].push(value.value)
-          }
-      }
-      console.log("filternames_values", filternames_values);
-      if (Object.keys(filternames_values).length) {
-          for (const [key, value] of Object.entries(filternames_values)) {
-              markers.eachLayer(layer => {
-                  // if property value not in the list of checked-checkboxes values remove marker
-                  var prop_key = key + '#value';
-                  var prop_value = layer.feature.properties[prop_key];
-                  if (!value.includes(prop_value)) {
-                      console.log("remove this", layer.feature.properties);
-                      markers.removeLayer(layer);
-                  }
-              });
-          }
-          console.log("addRemoveMarkers: removed markers");
-          //logMarkers(markers);
-          // clear map
-          map.eachLayer(function (layer) {
-              if (layer instanceof L.MarkerClusterGroup) {
-                  map.removeLayer(layer)
-              }
-          });
-          map.addLayer(markers);
+        // add values checked
+        var filternames_values = {};
+        filternames.forEach(function (el, index) {
+            filternames_values[el] = [];
+        });
+        // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
+        if (checked_filters.length) {
+            for (const value of checked_filters.values()) {
+                filternames_values[value.dataset.filter].push(value.value)
+            }
+        }
+        console.log("filternames_values", filternames_values);
+        if (Object.keys(filternames_values).length) {
+            for (const [key, value] of Object.entries(filternames_values)) {
+                markers.eachLayer(layer => {
+                    // if property value not in the list of checked-checkboxes values remove marker
+                    var prop_key = key + '#value';
+                    var prop_value = layer.feature.properties[prop_key];
+                    if (!value.includes(prop_value)) {
+                        console.log("remove this", layer.feature.properties);
+                        markers.removeLayer(layer);
+                    }
+                });
+            }
+            console.log("addRemoveMarkers: removed markers");
+            //logMarkers(markers);
+            // clear map
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.MarkerClusterGroup) {
+                    map.removeLayer(layer)
+                }
+            });
+            map.addLayer(markers);
 
-      }
-      // else put them all back!
-      else {
-          console.log("put all markers back");
-          // var data_layers = L.geoJSON(dataMap, {
-          // 	onEachFeature: onEachFeature
-          // });
+        }
+        // else put them all back!
+        else {
+            console.log("put all markers back");
+            // var data_layers = L.geoJSON(dataMap, {
+            // 	onEachFeature: onEachFeature
+            // });
 
-          map.eachLayer(function (layer) {
-              if (layer instanceof L.MarkerClusterGroup) {
-                  map.removeLayer(layer)
-              }
-          });
-          markers.clearLayers();
-          allMarkers.eachLayer(layer => {
-              markers.addLayer(layer);
-          });
-          map.addLayer(markers);
-      }
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.MarkerClusterGroup) {
+                    map.removeLayer(layer)
+                }
+            });
+            markers.clearLayers();
+            allMarkers.eachLayer(layer => {
+                markers.addLayer(layer);
+            });
+            map.addLayer(markers);
+        }
     }
 
 
