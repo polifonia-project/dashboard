@@ -347,7 +347,6 @@ function add_field(name, bind_query_id = "") {
         $("#sortable").append(contents);
     }
 
-<<<<<<< HEAD
     if (name == 'textbox') {
         var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
         var close_addons = "</div>";
@@ -393,10 +392,6 @@ function add_field(name, bind_query_id = "") {
     }
 
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
-=======
-		colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
->>>>>>> maps
-
 
 
     // add multiline placeholder
