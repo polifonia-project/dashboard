@@ -100,10 +100,7 @@
               <a onclick='showFilters({{count}})' href="#">Show sidebar</a>
               <script type="text/javascript">
                 function showFilters(count) {
-
                   for (let step = 2; step < count+1; step++) {
-                    console.log("{{count}}",count, step,$("#"+step+"__map_filter_query"));
-
                     var qf = $("#"+step+"__map_filter_query").val().replace('\n', '');
                     var encoded_filter = encodeURIComponent(qf);
                     var map_filter_bind_query = $('#1__map_filter_query').map(function(){ return $(this).data('bind-query');}).get();
@@ -111,9 +108,12 @@
                     var filter_id = step;
                     var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
                     addFilterMap("{{datastory_data.sparql_endpoint}}",encoded_filter,map_filter_bind_query,filter_title,filter_id,checked_filters);
+
                   }
+
                   };
               </script>
+
               {% endif %}
             {% endif %}
 
@@ -194,6 +194,16 @@
       var sidebar = initSidebar();
     </script>
     <script type="text/javascript" id="dataMap"></script>
+    <script type="text/javascript">
+      $("#sidebar").on('click', function() {
+        if ($("#maps_datastory_final") != undefined && $("#sidebar") != undefined) {
+          console.log("there we are");
+          checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+          addRemoveMarkers(checked_filters);
+        }
+       });
+
+    </script>
   {% endif %}
 {% endfor %}
 

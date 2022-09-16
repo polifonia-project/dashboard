@@ -33,12 +33,7 @@ $(document).ready(function () {
 				}
 			});
 
-		} else {
-			if ($("#maps_datastory_final") != undefined && $("input[class='map_chechbox']").length) {
-				checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
-				addRemoveMarkers(checked_filters);
-			}
-		}
+		} 
 
 });
 
