@@ -383,7 +383,16 @@ def modify_datastory(section_name, datastory_name):
                                                             1]] = v
                                                     elif 'section_title' in k:
                                                         elements_dict['type'] = 'section_title'
-                                                        elements_dict[k.split('__')[1]] = v
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'map' in k and 'simple' not in k and 'filter' not in k:
+                                                        elements_dict['type'] = 'map'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'map' in k and 'simple' not in k and 'filter' in k:
+                                                        elements_dict['type'] = 'map_filter'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
                                         for e in extra_set:
                                             extra_dict = {}
                                             for k, v in total_extra_dict.items():
