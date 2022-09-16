@@ -2,6 +2,7 @@ var checked_filters;
 var markers;
 var allMarkers;
 var sidebar;
+var myScatterChart;
 addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
@@ -347,50 +348,6 @@ function add_field(name, bind_query_id = "") {
         $("#sortable").append(contents);
     }
 
-    if (name == 'textbox') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + text_field + close_addons;
-    } else if (name === 'section_title') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add title</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + title_field + close_addons;
-    } else if (name == 'countbox') {
-        var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + count_field + close_addons;
-    } else if (name == 'chart_box') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + chart_field + close_addons;
-    } else if (name == 'textsearch') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + text_search_field + close_addons;
-    } else if (name.includes('tablevalueaction')) {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Add action</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + no_up_down + tablevalueaction_field + close_addons;
-    } else if (name.includes('tablecomboaction')) {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
-    } else if (name == 'map') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + no_up_down + map_field + close_addons;
-    } else if (name == 'map_filter') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + map_filter + close_addons;
-    }
-
-    if (name.includes('query-btn')) {
-        addQueryField(name, (counter + 1));
-    } else {
-        $("#sortable").append(contents);
-    }
-
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
 
 
@@ -646,7 +603,7 @@ $(function () {
                                     var chartId = $("#" + (idx + 1) + "__chartid");
                                     var chartColor = color_2;
                                     // graph plotting
-                                    var myScatterChart = new Chart(chartId, {
+                                    myScatterChart = new Chart(chartId, {
                                         type: 'scatter',
                                         data: {
                                             datasets: [{
@@ -736,7 +693,7 @@ $(function () {
                         var chartId = $("#" + (idx + 1) + "__chartid");
 
                         // graph plotting
-                        var myScatterChart = new Chart(chartId, {
+                        myScatterChart = new Chart(chartId, {
                             type: 'scatter',
                             data: data = {
                                 datasets: datasetArray
@@ -1362,86 +1319,79 @@ function checkvalue(checkbox, checked_filters) {
 
 function addRemoveMarkers(checked_filters) {
     console.log("addRemoveMarkers: checked_filters", checked_filters);
-    // dataMap = JSON.parse( document.getElementById('dataMap').innerHTML);
-    //
-    // // recreate all clusters
-    // var data_layers = L.geoJSON(dataMap, {
-    // 	onEachFeature: onEachFeature
-    // });
+    if (markers != undefined) {
+      markers.clearLayers();
+      allMarkers.eachLayer(layer => {
+          markers.addLayer(layer);
+      });
+      console.log("addRemoveMarkers: recreate all markers");
+      logMarkers(markers);
 
-    // add markers to clusters
-    //markers = allMarkers;
-    //markers.addLayer(data_layers);
-    markers.clearLayers();
-    allMarkers.eachLayer(layer => {
-        markers.addLayer(layer);
-    });
-    console.log("addRemoveMarkers: recreate all markers");
-    logMarkers(markers);
+      // get the filter names
+      var filternames = [];
+      if (checked_filters.length) {
+          for (const value of checked_filters.values()) {
+              filternames.push(value.dataset.filter);
+          }
+      }
+      // [ filter1, filter2 ...]
+      filternames = [...new Set(filternames)];
 
-    // get the filter names
-    var filternames = [];
-    if (checked_filters.length) {
-        for (const value of checked_filters.values()) {
-            filternames.push(value.dataset.filter);
-        }
+      // add values checked
+      var filternames_values = {};
+      filternames.forEach(function (el, index) {
+          filternames_values[el] = [];
+      });
+      // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
+      if (checked_filters.length) {
+          for (const value of checked_filters.values()) {
+              filternames_values[value.dataset.filter].push(value.value)
+          }
+      }
+      console.log("filternames_values", filternames_values);
+      if (Object.keys(filternames_values).length) {
+          for (const [key, value] of Object.entries(filternames_values)) {
+              markers.eachLayer(layer => {
+                  // if property value not in the list of checked-checkboxes values remove marker
+                  var prop_key = key + '#value';
+                  var prop_value = layer.feature.properties[prop_key];
+                  if (!value.includes(prop_value)) {
+                      console.log("remove this", layer.feature.properties);
+                      markers.removeLayer(layer);
+                  }
+              });
+          }
+          console.log("addRemoveMarkers: removed markers");
+          //logMarkers(markers);
+          // clear map
+          map.eachLayer(function (layer) {
+              if (layer instanceof L.MarkerClusterGroup) {
+                  map.removeLayer(layer)
+              }
+          });
+          map.addLayer(markers);
+
+      }
+      // else put them all back!
+      else {
+          console.log("put all markers back");
+          // var data_layers = L.geoJSON(dataMap, {
+          // 	onEachFeature: onEachFeature
+          // });
+
+          map.eachLayer(function (layer) {
+              if (layer instanceof L.MarkerClusterGroup) {
+                  map.removeLayer(layer)
+              }
+          });
+          markers.clearLayers();
+          allMarkers.eachLayer(layer => {
+              markers.addLayer(layer);
+          });
+          map.addLayer(markers);
+      }
     }
-    // [ filter1, filter2 ...]
-    filternames = [...new Set(filternames)];
 
-    // add values checked
-    var filternames_values = {};
-    filternames.forEach(function (el, index) {
-        filternames_values[el] = [];
-    });
-    // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
-    if (checked_filters.length) {
-        for (const value of checked_filters.values()) {
-            filternames_values[value.dataset.filter].push(value.value)
-        }
-    }
-    console.log("filternames_values", filternames_values);
-    if (Object.keys(filternames_values).length) {
-        for (const [key, value] of Object.entries(filternames_values)) {
-            markers.eachLayer(layer => {
-                // if property value not in the list of checked-checkboxes values remove marker
-                var prop_key = key + '#value';
-                var prop_value = layer.feature.properties[prop_key];
-                if (!value.includes(prop_value)) {
-                    console.log("remove this", layer.feature.properties);
-                    markers.removeLayer(layer);
-                }
-            });
-        }
-        console.log("addRemoveMarkers: removed markers");
-        //logMarkers(markers);
-        // clear map
-        map.eachLayer(function (layer) {
-            if (layer instanceof L.MarkerClusterGroup) {
-                map.removeLayer(layer)
-            }
-        });
-        map.addLayer(markers);
-
-    }
-    // else put them all back!
-    else {
-        console.log("put all markers back");
-        // var data_layers = L.geoJSON(dataMap, {
-        // 	onEachFeature: onEachFeature
-        // });
-
-        map.eachLayer(function (layer) {
-            if (layer instanceof L.MarkerClusterGroup) {
-                map.removeLayer(layer)
-            }
-        });
-        markers.clearLayers();
-        allMarkers.eachLayer(layer => {
-            markers.addLayer(layer);
-        });
-        map.addLayer(markers);
-    }
 
 
 }
@@ -2346,7 +2296,7 @@ function scatterplot(element) {
                     var chartId = "chart_" + element.position;
                     var chartColor = datastory_data.color_code[0];
                     // graph plotting
-                    var myScatterChart = new Chart(chartId, {
+                    myScatterChart = new Chart(chartId, {
                         type: 'scatter',
                         data: {
                             datasets: [{
@@ -2440,7 +2390,7 @@ function scatterplot(element) {
         var chartId = "chart_" + element.position;
 
         // graph plotting
-        var myScatterChart = new Chart(chartId, {
+        myScatterChart = new Chart(chartId, {
             type: 'scatter',
             data: data = {
                 datasets: datasetArray
