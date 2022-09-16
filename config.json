@@ -1,8 +1,6 @@
 {
     "sections": [
-        "Tests",
         "Zeri",
-        "Listening Experiences",
         "Wikidata",
         "musoW"
     ],
@@ -152,90 +150,9 @@
                     }
                 ],
                 "action": "save"
-            },
-            "music_datasets": {
-                "sparql_endpoint": "https://projects.dharc.unibo.it/musow/sparql",
-                "template_mode": "statistics",
-                "title": "Music datasets",
-                "color_code": [
-                    "#39c6b4",
-                    "#2c1376"
-                ],
-                "section_name": "musoW",
-                "subtitle": "",
-                "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.\r\n\r\nUsually scholars and creatives need to combine diverse resources (music scores, audiovisual materials, data) from digital music libraries and audiovisual archives. \r\n\r\nIn musoW we support users in searching over hundreds of online resources, including digital libraries, archives, datasets, and related technologies.",
-                "action": "save",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "text",
-                        "text": "",
-                        "extra_queries": [],
-                        "operations": []
-                    },
-                    {
-                        "position": 2,
-                        "type": "count",
-                        "count_query": "SELECT (COUNT(?s) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
-                        "count_label": "Repositories",
-                        "extra_queries": [],
-                        "operations": []
-                    },
-                    {
-                        "position": 3,
-                        "type": "chart",
-                        "chart_type": "doughnutchart",
-                        "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . } ",
-                        "chart_series": "",
-                        "chart_title": "Music resources on the web",
-                        "extra_queries": [],
-                        "operations": [
-                            {
-                                "action": "count",
-                                "param": "label"
-                            }
-                        ]
-                    },
-                    {
-                        "position": 4,
-                        "type": "chart",
-                        "chart_type": "barchart",
-                        "chart_query": "SELECT DISTINCT ?label (COUNT(DISTINCT ?content) AS ?count) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?label .\r\n } GROUP BY ?label ?count",
-                        "chart_series": "",
-                        "chart_title": "Music resources on the web",
-                        "extra_queries": [],
-                        "operations": []
-                    }
-                ],
-                "curator": ""
             }
         },
         "wikidata": {
-            "explore_another_possibility": {
-                "iri_base": "https://www.wikidata.org/",
-                "query_method": "sparql_endpoint",
-                "github": "",
-                "sparql_endpoint": "https://query.wikidata.org/",
-                "rest_api": "",
-                "color_code": [
-                    "#54e8e7",
-                    "#48ce48"
-                ],
-                "logo_path": "",
-                "template_mode": "map",
-                "section_name": "Wikidata",
-                "title": "Explore Another Possibility",
-                "subtitle": "",
-                "curator": "Giulia Renda",
-                "description": "Wikidata is a free and open knowledge base that can be read and edited by both humans and machines.\r\n\r\nWikidata acts as central storage for the structured data of its Wikimedia sister projects including Wikipedia, Wikivoyage, Wiktionary, Wikisource, and others.\r\nWikidata also provides support to many other sites and services beyond just Wikimedia projects! The content of Wikidata is available under a free license, exported using standard formats, and can be interlinked to other open data sets on the linked data web.",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "text",
-                        "text": "akjbbbbbbbbbb hjbbbbbbbbbb yyyyyyyyyyyyyyyyyyyyyy"
-                    }
-                ]
-            },
             "relations_between_museums": {
                 "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
                 "template_mode": "relations",
@@ -321,10 +238,7 @@
                     }
                 ],
                 "curator": "Marilena Daquino"
-            }
-        },
-        "listening_experiences": {},
-        "tests": {
+            },
             "single_scatter_plot": {
                 "sparql_endpoint": "https://query.wikidata.org/sparql",
                 "template_mode": "statistics",
