@@ -1,3 +1,7 @@
+var checked_filters;
+var markers;
+var allMarkers;
+var sidebar;
 addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
@@ -7,6 +11,7 @@ window.onload = function () {
     chartViz();
     disableKeypress();
     saveHTML(datastory_data.name);
+    var map_ready;
 }
 
 // disable selection of templates other than statistics
@@ -16,6 +21,20 @@ $(document).ready(function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
     }
+
+    var form = document.querySelector('form');
+    if (form != undefined) {
+        form.addEventListener('change', function (e) {
+            var map_chechbox = $(this).find('input[class="map_chechbox"]');
+            if (map_chechbox != undefined) {
+                e.preventDefault();
+                checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+                addRemoveMarkers(checked_filters);
+            }
+        });
+
+    }
+
 });
 
 // check for drop down story list and call function
@@ -46,6 +65,8 @@ function updateindex() {
         for (var i = 0; i < everyChild.length; i++) {
             var childid = everyChild[i].id;
             var childname = everyChild[i].name;
+            var childhref = everyChild[i].href;
+            var childdataid = everyChild[i].dataset.id;
             if (childid != undefined) {
                 if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
                 else { everyChild[i].id = idx + '__' + childid; }
@@ -53,6 +74,10 @@ function updateindex() {
             if (childname != undefined) {
                 if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
                 else { everyChild[i].name = idx + '__' + childname; }
+            };
+            if (childdataid != undefined) {
+                if (!isNaN(+childdataid.charAt(0))) { everyChild[i].dataset.id = idx + '__' + childdataid.split(/__(.+)/)[1] }
+                else { everyChild[i].dataset.id = idx + '__' + childdataid; }
             };
         };
     });
@@ -93,9 +118,14 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
     updateindex();
 });
 
+// remove add map after click or if any map is already available
+$("a[name='map']").on('click', function () { $(this).detach(); });
+if ($("#1__map_points_query") != undefined) { $("a[name='map']").detach(); }
+
 // add box
 var counter = 0;
 function add_field(name, bind_query_id = "") {
+    updateindex();
     var contents = "";
 
     var title_field = "<textarea rows='2' oninput='auto_grow(this)' name='section_title' type='text' id='" + (counter + 1) + "__section_title' placeholder='Write the title of a new section.'></textarea>";
@@ -105,138 +135,219 @@ function add_field(name, bind_query_id = "") {
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
     var help = 'True';
     var chart_field = "<div class='chart-container'>\
-      <canvas id='" + (counter + 1) + "__chartid'></canvas>\
-      </div>\
-      <div class='form-group' id='" + (counter + 1) + "__form_group'>\
-        <label for='exampleFormControlSelect2'>Chart Type</label>\
-        <select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'>\
-          <option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
-          <option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
-          <option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
-          <option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
-        </select><br/>\
-        <label for='largeInput'>SPARQL query</label><br/>\
-        <textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
-        <input style='display: none;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
-        <a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
-        <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
-        <label for='largeInput'>Chart Title</label><br/>\
-        <input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
-        <br/><label>Operations</label><br/>\
-        <input type='checkbox' id='count' name='action1' value='count'>\
-        <label for='count'>Count</label><br/>\
-        <input type='checkbox' id='sort' name='action2' value='sort'>\
-        <label for='count'>Sort</label><br/>\
-        </div>";
+			<canvas id='" + (counter + 1) + "__chartid'></canvas>\
+			</div>\
+			<div class='form-group' id='" + (counter + 1) + "__form_group'>\
+				<label for='exampleFormControlSelect2'>Chart Type</label>\
+				<select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'>\
+					<option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
+					<option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
+					<option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
+					<option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
+				</select><br/>\
+				<label for='largeInput'>SPARQL query</label><br/>\
+				<textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
+				<input style='display: none;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
+				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
+				<a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
+				<label for='largeInput'>Chart Title</label><br/>\
+				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
+				<br/><label>Operations</label><br/>\
+				<input type='checkbox' id='count' name='action1' value='count'>\
+				<label for='count'>Count</label><br/>\
+				<input type='checkbox' id='sort' name='action2' value='sort'>\
+				<label for='count'>Sort</label><br/>\
+				</div>";
 
     var text_search_field = "\
-    <input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
-    <textarea class='addplaceholder_textsearch' \
-      oninput='auto_grow(this)' \
-      name='" + (counter + 1) + "__textsearch_query' \
-      type='text' \
-      id='" + (counter + 1) + "__textsearch_query' \
-      rows='6' required></textarea>\
-    <div class='table-container textsearch_result'>\
-      <div class='previewtextsearch col-4' style='background-image: linear-gradient(-45deg, "+ datastory_data.color_code[0] + ", " + datastory_data.color_code[1] + ";'>\
-        <input class='textsearch_userinput modifydatastory' id='" + (counter + 1).toString() + "__textsearch_userinput' type='text' name='" + (counter + 1).toString() + "__textsearch_userinput' value=''>\
-        <a id='" + (counter + 1).toString() + "__textsearch_button' class='textsearch_button' onclick='perform_textsearch(\"" + (counter + 1).toString() + "__textsearch_userinput\")' name='" + (counter + 1).toString() + "__textsearch'>Search</a>\
-      </div>\
-      <table class='col-12' id='" + (counter + 1).toString() + "__textsearchid'>\
-        <!-- TODO add rows-->\
-      </table>\
-    </div>\
-    <h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
-    <p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>\
-    <a class='btn btn-primary btn-border' \
-        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-        name='tablevalueaction'>Add\
-        action to results</a>";
+		<input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
+		<textarea class='addplaceholder_textsearch' \
+			oninput='auto_grow(this)' \
+			name='" + (counter + 1) + "__textsearch_query' \
+			type='text' \
+			id='" + (counter + 1) + "__textsearch_query' \
+			rows='6' required></textarea>\
+		<div class='table-container textsearch_result'>\
+			<div class='previewtextsearch col-4' style='background-image: linear-gradient(-45deg, "+ datastory_data.color_code[0] + ", " + datastory_data.color_code[1] + ";'>\
+				<input class='textsearch_userinput modifydatastory' id='" + (counter + 1).toString() + "__textsearch_userinput' type='text' name='" + (counter + 1).toString() + "__textsearch_userinput' value=''>\
+				<a id='" + (counter + 1).toString() + "__textsearch_button' class='textsearch_button' onclick='perform_textsearch(\"" + (counter + 1).toString() + "__textsearch_userinput\")' name='" + (counter + 1).toString() + "__textsearch'>Search</a>\
+			</div>\
+			<table class='col-12' id='" + (counter + 1).toString() + "__textsearchid'>\
+				<!-- TODO add rows-->\
+			</table>\
+		</div>\
+		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
+		<p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>\
+		<a class='btn btn-primary btn-border' \
+				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+				name='tablevalueaction'>Add\
+				action to results</a>";
 
     var tablevalueaction_field = "\
-    <input class='tablevalueaction_title' \
-      id='" + (counter + 1).toString() + "__tablevalueaction_title' \
-      type='text' \
-      name='" + (counter + 1).toString() + "__tablevalueaction_title' \
-      placeholder='A title, e.g. Show similar tunes'>\
-    <input class='tablevalueaction_column' \
-      id='" + (counter + 1).toString() + "__tablevalueaction_column' \
-      type='text' \
-      name='" + (counter + 1).toString() + "__tablevalueaction_column' \
-      placeholder='The name of the column'>\
-    <input class='tablevalueaction_table' \
-      id='" + (counter + 1).toString() + "__tablevalueaction_table' \
-      type='hidden' \
-      name='" + (counter + 1).toString() + "__tablevalueaction_table' \
-      value='"+ bind_query_id + "'>\
-    <textarea class='addplaceholder_tablevalueaction'  \
-      oninput='auto_grow(this)' \
-      name='" + (counter + 1) + "__tablevalueaction_query' \
-      type='text' \
-      id='" + (counter + 1) + "__tablevalueaction_query' \
-      rows='6' required></textarea>\
-    <p><em>Type your query and perform a new search above to see the result</em></p>\
-    <h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
-    <p>Row values can be subject of new queries and return tables or charts. \
-    For each action a button will appear in the table. You can also combine value results of this action with value results of a prior action or search.</p>\
-    <a class='btn btn-primary btn-border' \
-        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-        name='tablevalueaction'>Add\
-        action to results</a>\
-    <a class='btn btn-primary btn-border' \
-        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-        name='tablecomboaction'>\
-        Combine value results</a>";
+		<input class='tablevalueaction_title' \
+			id='" + (counter + 1).toString() + "__tablevalueaction_title' \
+			type='text' \
+			name='" + (counter + 1).toString() + "__tablevalueaction_title' \
+			placeholder='A title, e.g. Show similar tunes'>\
+		<input class='tablevalueaction_column' \
+			id='" + (counter + 1).toString() + "__tablevalueaction_column' \
+			type='text' \
+			name='" + (counter + 1).toString() + "__tablevalueaction_column' \
+			placeholder='The name of the column'>\
+		<input class='tablevalueaction_table' \
+			id='" + (counter + 1).toString() + "__tablevalueaction_table' \
+			type='hidden' \
+			name='" + (counter + 1).toString() + "__tablevalueaction_table' \
+			value='"+ bind_query_id + "'>\
+		<textarea class='addplaceholder_tablevalueaction'  \
+			oninput='auto_grow(this)' \
+			name='" + (counter + 1) + "__tablevalueaction_query' \
+			type='text' \
+			id='" + (counter + 1) + "__tablevalueaction_query' \
+			rows='6' required></textarea>\
+		<p><em>Type your query and perform a new search above to see the result</em></p>\
+		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
+		<p>Row values can be subject of new queries and return tables or charts. \
+		For each action a button will appear in the table. You can also combine value results of this action with value results of a prior action or search.</p>\
+		<a class='btn btn-primary btn-border' \
+				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+				name='tablevalueaction'>Add\
+				action to results</a>\
+		<a class='btn btn-primary btn-border' \
+				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+				name='tablecomboaction'>\
+				Combine value results</a>";
 
     var tablecomboaction_field = "\
-    <input class='tablevalueaction_title' \
-        id='" + (counter + 1).toString() + "__tablevalueaction_title' type='text' \
-        name='" + (counter + 1).toString() + "__tablevalueaction_title' \
-        placeholder='A title, e.g. Show tunes in common'>\
-    <input class='tablevalueaction_table' \
-      id='" + (counter + 1).toString() + "__tablevalueaction_table' \
-      type='hidden' \
-      name='" + (counter + 1).toString() + "__tablevalueaction_table' \
-      value='"+ bind_query_id + "'>\
-    <input class='tablevalueaction_column' \
-        id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' \
-        name='" + (counter + 1).toString() + "__tablevalueaction_column' \
-        placeholder='The name of the column to combine'>\
-    <input class='tablevalueaction_column' \
-        id='" + (counter + 1).toString() + "__tablevalueaction_table_2' type='text' \
-        name='" + (counter + 1).toString() + "__tablevalueaction_table_2' \
-        placeholder='The name of other table to combine'>\
-    <input class='tablevalueaction_column' \
-        id='" + (counter + 1).toString() + "__tablevalueaction_column_2' type='text' \
-        name='" + (counter + 1).toString() + "__tablevalueaction_column_2' \
-        placeholder='The name of the column to combine'>\
-    <textarea class='addplaceholder_tablecomboaction' \
-        oninput='auto_grow(this)' \
-        name='" + (counter + 1) + "__tablecomboaction_query' type='text' \
-        id='" + (counter + 1) + "__tablecomboaction_query' \
-        rows='6' required></textarea>\
-    <p><em>Type your query and perform a new search above to see the result</em></p>\
-    <h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle'\
-        class='text-white'>Do you want to add an action to your results?</h4>\
-    <p>Row values can be subject of new queries and return tables or charts. \
-    For each action a button will appear in the table. You can also combine results of this \
-    action with results of a prior action or search.</p>\
-    <a class='btn btn-primary btn-border' \
-        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-        name='tablevalueaction'>Add\
-        action to results</a>\
-    <a class='btn btn-primary btn-border' \
-        onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-        name='tablecomboaction'>\
-        Combine results</a>";
+		<input class='tablevalueaction_title' \
+				id='" + (counter + 1).toString() + "__tablevalueaction_title' type='text' \
+				name='" + (counter + 1).toString() + "__tablevalueaction_title' \
+				placeholder='A title, e.g. Show tunes in common'>\
+		<input class='tablevalueaction_table' \
+			id='" + (counter + 1).toString() + "__tablevalueaction_table' \
+			type='hidden' \
+			name='" + (counter + 1).toString() + "__tablevalueaction_table' \
+			value='"+ bind_query_id + "'>\
+		<input class='tablevalueaction_column' \
+				id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' \
+				name='" + (counter + 1).toString() + "__tablevalueaction_column' \
+				placeholder='The name of the column to combine'>\
+		<input class='tablevalueaction_column' \
+				id='" + (counter + 1).toString() + "__tablevalueaction_table_2' type='text' \
+				name='" + (counter + 1).toString() + "__tablevalueaction_table_2' \
+				placeholder='The name of other table to combine'>\
+		<input class='tablevalueaction_column' \
+				id='" + (counter + 1).toString() + "__tablevalueaction_column_2' type='text' \
+				name='" + (counter + 1).toString() + "__tablevalueaction_column_2' \
+				placeholder='The name of the column to combine'>\
+		<textarea class='addplaceholder_tablecomboaction' \
+				oninput='auto_grow(this)' \
+				name='" + (counter + 1) + "__tablecomboaction_query' type='text' \
+				id='" + (counter + 1) + "__tablecomboaction_query' \
+				rows='6' required></textarea>\
+		<p><em>Type your query and perform a new search above to see the result</em></p>\
+		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle'\
+				class='text-white'>Do you want to add an action to your results?</h4>\
+		<p>Row values can be subject of new queries and return tables or charts. \
+		For each action a button will appear in the table. You can also combine results of this \
+		action with results of a prior action or search.</p>\
+		<a class='btn btn-primary btn-border' \
+				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+				name='tablevalueaction'>Add\
+				action to results</a>\
+		<a class='btn btn-primary btn-border' \
+				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+				name='tablecomboaction'>\
+				Combine results</a>";
 
+    var map_field = "<input class='map_title' id='" + (counter + 1) + "__map_title' type='text'\
+				name='"+ (counter + 1) + "__map_title'\
+				placeholder='The title of the map'>\
+			<!-- data points -->\
+			<textarea class='addplaceholder_points' oninput='auto_grow(this)'\
+					name='"+ (counter + 1) + "__map_points_query' type='text'\
+					id='"+ (counter + 1) + "__map_points_query' rows='10'\
+					required></textarea>\
+			<a onclick='rerunQuery(\""+ (counter + 1).toString() + "\",this)' \
+					data-id='"+ (counter + 1).toString() + "__rerun_query' \
+					data-run='true' href='#'>Rerun the query</a>\
+			<!-- map preview -->\
+			<div class='map_preview_container' id='"+ (counter + 1).toString() + "__map_preview_container'>\
+			</div>\
+			<script>var map = initMap("+ (counter + 1).toString() + ");</script>\
+			<h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>\
+			<p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
+			<a class='btn btn-primary btn-border' \
+					onclick='add_field(name,\"" + (counter + 1).toString() + "__map_points_query\")' \
+					name='map_filter'>Add filter</a>";
+
+    var map_filter = "<input class='map_filter_title' \
+				id='"+ (counter + 1) + "__map_filter_title' type='text'\
+				name='"+ (counter + 1) + "__map_filter_title'\
+				placeholder='The title of the filter'>\
+		<input class='map_filter_bind_query' \
+					id='" + (counter + 1).toString() + "__map_filter_bind_query' \
+					type='hidden' \
+					name='" + (counter + 1).toString() + "__map_filter_bind_query' \
+					value='"+ bind_query_id + "'>\
+		<textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'\
+				name='"+ (counter + 1) + "__map_filter_query' type='text'\
+				data-bind-query='"+ bind_query_id + "'\
+				id='"+ (counter + 1) + "__map_filter_query' rows='6'\
+				required></textarea>\
+				<p>Rerun the query to add the filter to the map</p>";
 
     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
-    <a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
-    <a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
+		<a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
+		<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
     var no_up_down = '<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
 
 
+    if (name == 'textbox') {
+        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + text_field + close_addons;
+    } else if (name === 'section_title') {
+        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add title</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + title_field + close_addons;
+    } else if (name == 'countbox') {
+        var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + count_field + close_addons;
+    } else if (name == 'chart_box') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + chart_field + close_addons;
+    } else if (name == 'textsearch') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + text_search_field + close_addons;
+    } else if (name.includes('tablevalueaction')) {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Add action</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + no_up_down + tablevalueaction_field + close_addons;
+    } else if (name.includes('tablecomboaction')) {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
+    } else if (name == 'map') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + no_up_down + map_field + close_addons;
+    } else if (name == 'map_filter') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + map_filter + close_addons;
+    }
+
+    if (name.includes('query-btn')) {
+        addQueryField(name, (counter + 1));
+    } else {
+        $("#sortable").append(contents);
+    }
+
+<<<<<<< HEAD
     if (name == 'textbox') {
         var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
         var close_addons = "</div>";
@@ -274,29 +385,80 @@ function add_field(name, bind_query_id = "") {
     }
 
     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+=======
+		colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+>>>>>>> maps
 
 
 
     // add multiline placeholder
     var placeholder_t = "Type an example text search query using the placeholder <<searchterm>>,\n\
-    prefix bds: <http://www.bigdata.com/rdf/search#>\n\
-    SELECT DISTINCT ?s ?o \n\
-    WHERE { ?o bds:search '<<searchterm>>' . ?s rdfs:label ?o . } LIMIT 10 \nWe will replace the placeholder with the user input";
+		prefix bds: <http://www.bigdata.com/rdf/search#>\n\
+		SELECT DISTINCT ?s ?o \n\
+		WHERE { ?o bds:search '<<searchterm>>' . ?s rdfs:label ?o . } LIMIT 10 \nWe will replace the placeholder with the user input";
     $(".addplaceholder_textsearch").attr("placeholder", placeholder_t);
 
     var placeholder_action = "Type a query based on the entity selected in the table. \n\
-    Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
-    SELECT DISTINCT ?o ?oLabel \n\
-    WHERE { <<item>> ?p ?o . ?o rdfs:label ?oLabel .} \n\
-    LIMIT 10";
+		Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
+		SELECT DISTINCT ?o ?oLabel \n\
+		WHERE { <<item>> ?p ?o . ?o rdfs:label ?oLabel .} \n\
+		LIMIT 10";
     $(".addplaceholder_tablevalueaction").attr("placeholder", placeholder_action);
 
     var placeholder_combo = "Type a query based on the entities of the two tables. \n\
-    Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
-    SELECT DISTINCT ?o ?oLabel \n\
-    WHERE { <<item>> ?p ?o . <<other>> ?p ?o .} \n\
-    LIMIT 10";
+		Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
+		SELECT DISTINCT ?o ?oLabel \n\
+		WHERE { <<item>> ?p ?o . <<other>> ?p ?o .} \n\
+		LIMIT 10";
     $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
+
+    var placeholder_map = "Type a query that returns at least the mandatory variables: \
+		latitude (?lat), longitude (?long) and a URI identifying points (?point). \n\
+		PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+		PREFIX fabio: <http://purl.org/spar/fabio/>\n\
+		PREFIX frbr: <http://purl.org/vocab/frbr/core#>\n\
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>\n\
+		PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n\
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+		PREFIX psv: <http://www.wikidata.org/prop/statement/value/>\n\
+		PREFIX wikibase: <http://wikiba.se/ontology#>\n\
+		PREFIX p: <http://www.wikidata.org/prop/>\n\
+		PREFIX ps: <http://www.wikidata.org/prop/statement/>\n\
+		\n\
+		SELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\n\
+		 ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\n\
+				fabio:hasManifestation ?manif .\n\
+		 ?manif frbr:exemplar ?point .\n\
+			?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\n\
+		 ?keeper crm:P74_has_current_or_former_residence ?location .\n\
+		 OPTIONAL {?keeper rdfs:label ?keeperLabel}\n\
+		 ?location owl:sameAs ?wdlocation .\n\
+		 \n\
+		 FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
+		 FILTER(LANG(?keeperLabel) = '' || LANGMATCHES(LANG(?keeperLabel), 'en'))\n\
+		 FILTER(contains (str(?wdlocation), 'wikidata') )\n\
+		 \n\
+			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\n\
+			 ?wdlocation p:P625 ?coords_stmt .\n\
+			 ?coords_stmt ps:P625 ?coords;\n\
+										psv:P625 [\n\
+											wikibase:geoLatitude ?lat;\n\
+											wikibase:geoLongitude ?long ] .\n\
+		 }\n\
+		} LIMIT 10";
+    $(".addplaceholder_points").attr("placeholder", placeholder_map);
+
+    var placeholder_mapfilter = "Type a query where the variable \
+		?point appears as subject/object of a pattern. Return ?point and two variables called\
+		?filter and ?filterLabel. If the filter is a literal value, return only ?point and ?filter. \n\
+		PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+		SELECT DISTINCT ?point ?filter ?filterLabel\n\
+		WHERE {\n\
+		?point crm:P50_has_current_keeper ?filter .\n\
+		?filter refs:label ?filterLabel .\n\
+		FILTER(LANG(?filterLabel) = '' || LANGMATCHES(LANG(?filterLabel), 'en'))\n\
+		}";
+    $(".addplaceholder_mapfilter").attr("placeholder", placeholder_mapfilter);
 
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
@@ -311,14 +473,16 @@ const addQueryField = (name, idx) => {
     const openDiv = '<div class="query-div">'
     const closeDiv = '</div>'
     const query_field = "<label for='largeInput'>SPARQL query</label><br/>\
-    <textarea oninput='auto_grow(this)' id='" + idx + "__extra_query_" + timestamp + "' name='" + idx + "__extra_query_" + timestamp + "' type='text' placeholder='Type your query' required></textarea><br/>\
-    <input class='form-control' type='text' id='" + idx + "__extra_series_" + timestamp + "' name='" + idx + "__extra_series_" + timestamp + "' placeholder='The label for the data series'><br/>";
+		<textarea oninput='auto_grow(this)' id='" + idx + "__extra_query_" + timestamp + "' name='" + idx + "__extra_query_" + timestamp + "' type='text' placeholder='Type your query' required></textarea><br/>\
+		<input class='form-control' type='text' id='" + idx + "__extra_series_" + timestamp + "' name='" + idx + "__extra_series_" + timestamp + "' placeholder='The label for the data series'><br/>";
     const trash = '<a href="#" class="trash" id="trash" name="trash"><i class="far fa-trash-alt" id="bin"></i></a><br/>';
     content = openDiv + trash + query_field + closeDiv;
 
     const afterElement = document.getElementById(name);
     afterElement.insertAdjacentHTML('beforebegin', content);
 }
+
+var sidebar, map;
 
 // preview content
 $(function () {
@@ -338,7 +502,6 @@ $(function () {
         colorSwitch(color_2, color_1);
 
         $('#sortable [id$="block_field"]').each(function (idx) {
-            console.log(fields);
             var count_query = '';
             var textsearch_query = '';
             var count_label = '';
@@ -349,6 +512,13 @@ $(function () {
             var chart_series = '';
             var extra_queries = [];
             var extra_series = [];
+            // map
+            var points_query = '';
+            var filter_id = '';
+            var filter_query = '';
+            var filter_title = 'Filter';
+            var map_filter_bind_query = '';
+            var other_filters = 0;
             fields.forEach(element => {
                 if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
@@ -371,6 +541,15 @@ $(function () {
                     extra_queries.push(element.value);
                 } else if (element.name == ((idx + 1) + '__extra_series')) {
                     extra_series.push(element.value);
+                } else if (element.name == (idx + 1) + '__map_points_query') {
+                    points_query = element.value;
+                    other_filters = $('textarea[id*="__map_filter_query"]').length;
+                } else if (element.name == (idx + 1) + '__map_filter_query') {
+                    filter_query = element.value;
+                    map_filter_bind_query = $('#' + (idx + 1) + '__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
+                    other_filters = $('textarea[id*="__map_filter_query"]').length;
+                    filter_title = $("#" + (idx + 1) + "__map_filter_title").val();
+                    filter_id = (idx + 1);
                 }
             }
 
@@ -395,6 +574,8 @@ $(function () {
 
             var encoded_count = encodeURIComponent(count_query);
             var encoded_chart = encodeURIComponent(chart_query);
+            var encoded_points = encodeURIComponent(points_query);
+            var encoded_filter = encodeURIComponent(filter_query);
 
 
             // call for the count
@@ -501,8 +682,6 @@ $(function () {
                         for (s of extra_series) {
                             seriesArray.push(s);
                         }
-                        console.log(queryArray);
-                        console.log(seriesArray);
 
                         // generate colors based on number of queries
                         var colors = d3.quantize(d3.interpolateHcl(color_2, color_1), queryArray.length);
@@ -822,17 +1001,454 @@ $(function () {
                 // empty the table with results
                 $("#" + idx + "__textsearchid tr").detach();
             }
+
+            // map
+            else if (points_query) {
+                // run the first time and then on demand
+                var rerun = $("a[data-id='" + (idx + 1) + "__rerun_query'");
+                if (rerun.data("run") == true) {
+                    if (other_filters > 0) { var waitfilters = true } else { var waitfilters = false };
+                    map_ready = createMap(sparqlEndpoint, encoded_points, (idx + 1) + '__map_preview_container', (idx + 1), waitfilters, color_2);
+                    rerun.data("run", false);
+                } else {
+                    // update color
+                    let mapContainer = document.getElementById((idx + 1) + '__map_preview_container');
+                    let spanColorElements = mapContainer.getElementsByClassName('pointer-color');
+                    for (singleColorElement of spanColorElements) {
+                        singleColorElement.style.background = color_2;
+                    }
+                }
+            }
+            // map filter
+            else if (filter_query) {
+                // TODO fix this in case multiple maps are allowed
+                var rerun = $("a[data-id='1__rerun_query'");
+                if (other_filters <= 1) { sidebar = initSidebar() };
+                if (map_ready != undefined && map_ready == true) {
+                    console.log("calling add filter");
+                    addFilterMap(sparqlEndpoint, encoded_filter, map_filter_bind_query, filter_title, filter_id, checked_filters);
+                }
+            }
         });
 
     };
     update();
     $('form').change(update);
-})
+});
 
 const addQueryArea = () => {
     console.log('check');
 }
 
+//// MAPS TEMPLATE FUNCTIONS ////
+
+// rerun maps query on demand
+function rerunQuery(pos, el) {
+    $("a[data-id='" + pos + "__rerun_query']").data("run", true);
+    $('form').trigger('change');
+}
+
+// initialize an empty map, used directly in templates
+function initMap(pos) {
+    var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    return map
+}
+
+// get geo data from SPARQL endpoint and send to map
+function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = true, color_code) {
+    $.ajax({
+        type: 'POST',
+        url: sparqlEndpoint + '?query=' + encoded_query,
+        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
+        success: function (returnedJson) {
+            // preview map
+            var geoJSONdata = creategeoJSON(returnedJson);
+            markers = setView(mapid, geoJSONdata, waitfilters, color_code);
+            allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
+        },
+        complete: function () {
+            $('#loader').addClass('hidden');
+            return true;
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+            var c = document.getElementById((idx + 1) + "__map_preview_container");
+            var p = document.createElement("p");
+            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+            p.appendChild(error_text)
+            c.after(p);
+        }
+    });
+}
+
+function onEachFeature(feature, layer) {
+    // does this feature have a property named popupContent?
+    if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+    }
+}
+
+// fill in an already initialized map (initMap())
+// with data points received from createMap()
+function setView(mapid, geoJSONdata, waitfilters, color_code) {
+    // remove markers if any from a map already initialised
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.MarkerClusterGroup) {
+            map.removeLayer(layer)
+        }
+    });
+    // remove geoJSON
+    $('#dataMap').remove();
+
+    // style clusters
+    var innerClusterStyle = "display: inline-block; background:" + color_code + ";\
+		width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
+
+    var markers = L.markerClusterGroup({
+        iconCreateFunction: function (cluster) {
+            var markers = cluster.getAllChildMarkers();
+            var n = 0;
+            for (var i = 0; i < markers.length; i++) { n += 1; }
+            return L.divIcon({ html: "<span style='" + innerClusterStyle + ";'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
+        },
+        singleMarkerMode: true
+    });
+
+    // get markers from geoJSON, bind popupContent
+    var data_layers = L.geoJSON(geoJSONdata, {
+        onEachFeature: onEachFeature
+    });
+
+    // add markers to clusters
+    markers.addLayer(data_layers);
+
+    // show clusters
+    map.addLayer(markers);
+
+    // add geoJSONdata to DOM
+    var $body = $(document.body);
+    $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + ";</script>");
+    if (waitfilters == true) {
+        map_ready = true;
+        $('form').trigger('change');
+    }
+    return markers;
+}
+
+function creategeoJSON(returnedJson) {
+    var geoJSONdata = [];
+    // clean headings
+    var headings = returnedJson.head.vars;
+    var there_is_point = headings.indexOf('point');
+    for (j = 0; j < headings.length; j++) {
+        if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
+            headings.splice(j, 1); j--;
+        }
+    }
+    // create geoJSON object
+    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+        var queryResults = returnedJson.results.bindings;
+        pointObj = {};
+        pointObj.type = "Feature";
+        pointObj.properties = {};
+        pointObj.properties.popupContent = "";
+        for (j = 0; j < headings.length; j++) {
+            pointObj.properties.popupContent += queryResults[i][headings[j]].value + '.\n\ '
+        }
+        if (there_is_point != -1) {
+            pointObj.properties.uri = queryResults[i]['point'].value;
+            pointObj.properties.popupContent += "<br><a target='_blank' href='" + queryResults[i].point.value + "'>URI</a>"
+        };
+        pointObj.geometry = {};
+        pointObj.geometry.type = "Point";
+        // check first
+        pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
+        geoJSONdata.push(pointObj);
+    }
+    return geoJSONdata
+};
+
+function initSidebar() {
+    sidebar = L.control.sidebar({
+        autopan: false,       // whether to maintain the centered map point when opening the sidebar
+        closeButton: true,    // whether t add a close button to the panes
+        container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+        position: 'left',     // left or right
+    }).addTo(map);
+    //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
+    return sidebar;
+};
+
+function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id, checked_filters) {
+    // get the list of URIs from geoJSON
+    var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
+    var values = "VALUES ?point {";
+    for (var i = 0; i < dataMap.length; i++) {
+        values += '<' + dataMap[i].properties.uri + '> ';
+    }
+    values += '}';
+
+    // restructure query with VALUES
+    // might have performance issues!
+    var decoded_query = decodeURIComponent(encoded_query);
+    var decoded_query_parts = decoded_query.split(/\{(.*)/s);
+    decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
+    encoded_query = encodeURIComponent(decoded_query);
+
+    // get the data
+    $.ajax({
+        type: 'POST',
+        url: sparqlEndpoint + '?query=' + encoded_query,
+        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
+        success: function (returnedJson) {
+            // modify geoJSON and create list
+            var labels_values_count = {};
+
+            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                var res = returnedJson.results.bindings[i];
+                // check if the filter is a string or a uri+string
+                var headings = returnedJson.head.vars;
+                var has_label = false;
+                if (headings.includes('filterLabel')) { has_label = true; }
+                // update geoJSON object in DOM
+                for (var j = 0; j < dataMap.length; j++) {
+                    if (dataMap[j].properties.uri == res.point.value) {
+                        if (has_label == true) {
+                            dataMap[j].properties[filter_title + "#label"] = res.filterLabel.value;
+                            dataMap[j].properties[filter_title + "#value"] = res.filter.value;
+                            if (labels_values_count[res.filter.value] == undefined) {
+                                labels_values_count[res.filter.value] = [res.filterLabel.value, 1]
+                            } else {
+                                labels_values_count[res.filter.value] = [res.filterLabel.value, labels_values_count[res.filter.value][1] + 1]
+                            }
+                        } else {
+                            dataMap[j].properties[filter_title + "#label"] = res.filter.value;
+                            dataMap[j].properties[filter_title + "#value"] = res.filter.value;
+                            if (labels_values_count[res.filter.value] == undefined) {
+                                labels_values_count[res.filter.value] = [res.filter.value, 1]
+                            } else {
+                                labels_values_count[res.filter.value] = [res.filter.value, labels_values_count[res.filter.value][1] + 1]
+                            }
+                        }
+                    }
+                }
+                // update geoJSON in DOM
+                $('#dataMap').remove();
+                var $body = $(document.body);
+                $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + ";</script>");
+
+                // update markers
+                markers.eachLayer(layer => {
+                    if (layer.feature.properties.uri == res.point.value) {
+                        if (has_label == true) {
+                            layer.feature.properties[filter_title + "#label"] = res.filterLabel.value;
+                        } else {
+                            layer.feature.properties[filter_title + "#label"] = res.filter.value;
+                        }
+                        layer.feature.properties[filter_title + "#value"] = res.filter.value;
+                    }
+                });
+            }
+
+
+            // get markers from geoJSON, bind popupContent
+            var data_layers = L.geoJSON(dataMap, {
+                onEachFeature: onEachFeature
+            });
+            //console.log("addFilterMap "+filter_title+" - markers");
+
+            // add markers to clusters
+            //markers = L.markerClusterGroup();
+            //markers.addLayer(data_layers);
+            //logMarkers(markers);
+
+            // add panel
+            createPanel(filter_id, filter_title, labels_values_count, checked_filters);
+
+        },
+        complete: function () {
+            $('#loader').addClass('hidden');
+            sortPanels();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
+            var c = document.getElementById((idx + 1) + "__map_filter_query");
+            var p = document.createElement("p");
+            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
+            p.appendChild(error_text)
+            c.after(p);
+        }
+    });
+
+};
+
+function createPanel(filter_id, filter_title, labels_values_count, checked_filters) {
+    // empty panel if exists
+    console.log("createPanel - START", filter_title);
+    //if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
+    if ($("#" + filter_id + '_panel') != undefined) {
+        sidebar.removePanel(filter_id + '_panel');
+        $("#" + filter_id + '_panel').detach();
+        $('a[href="#' + filter_id + '_panel"]').detach();
+    };
+
+    var groupCheckboxes = document.createElement("section");
+    groupCheckboxes.id = filter_id + "_panel";
+    var group_title = document.createElement("h3");
+    group_title.append(document.createTextNode(filter_title));
+    groupCheckboxes.appendChild(group_title);
+
+    // create list of checkboxes
+    for (const [key, value] of Object.entries(labels_values_count)) {
+        // create elements
+        var label = document.createElement("label");
+        var checkbox = document.createElement("input");
+        var singlecheckbox = document.createElement("p");
+
+        checkbox.type = 'checkbox';
+        checkbox.label = value[0] + " (" + value[1] + ")";
+        checkbox.value = key;
+        checkbox.name = key;
+        checkbox.className = "map_chechbox";
+        checkbox.setAttribute("data-filter", filter_title);
+        checkbox.checked = checkvalue(checkbox, checked_filters);
+        label.append(document.createTextNode(checkbox.label));
+        singlecheckbox.append(checkbox);
+        singlecheckbox.append(label);
+        groupCheckboxes.appendChild(singlecheckbox);
+    }
+
+    // add panel
+    var panelContent = {
+        id: filter_id + '_panel',
+        tab: '',
+        pane: groupCheckboxes,
+        title: filter_title,
+        position: 'top'
+    };
+    sidebar.addPanel(panelContent);
+}
+
+function sortPanels() {
+    // var ps = document.querySelectorAll( ".leaflet-sidebar-content section" );
+    // var sortedPs = Array.from( ps ).sort( (a, b) => a.id.localeCompare( b.id ) ); //sort the ps
+    // //document.querySelector( ".leaflet-sidebar-content" ).innerHTML = sortedPs.map( s => s.outerHTML ).join(""); //recreate the markup
+    // var tags = document.querySelector( ".leaflet-sidebar-content" );
+    // var dupTags = tags.cloneNode(false);
+    // sortedPs.forEach( s => dupTags.appendChild ( s ) );
+    // //replace old with new tags
+    // tags.parentNode.replaceChild(dupTags ,tags);
+}
+
+function checkvalue(checkbox, checked_filters) {
+    var checked = false;
+    if (checked_filters != undefined && checked_filters.length) {
+        for (const value of checked_filters.values()) {
+            if (checkbox.name == value.name) { checked = true; break; }
+        }
+    }
+    return checked;
+}
+
+function addRemoveMarkers(checked_filters) {
+    console.log("addRemoveMarkers: checked_filters", checked_filters);
+    // dataMap = JSON.parse( document.getElementById('dataMap').innerHTML);
+    //
+    // // recreate all clusters
+    // var data_layers = L.geoJSON(dataMap, {
+    // 	onEachFeature: onEachFeature
+    // });
+
+    // add markers to clusters
+    //markers = allMarkers;
+    //markers.addLayer(data_layers);
+    markers.clearLayers();
+    allMarkers.eachLayer(layer => {
+        markers.addLayer(layer);
+    });
+    console.log("addRemoveMarkers: recreate all markers");
+    logMarkers(markers);
+
+    // get the filter names
+    var filternames = [];
+    if (checked_filters.length) {
+        for (const value of checked_filters.values()) {
+            filternames.push(value.dataset.filter);
+        }
+    }
+    // [ filter1, filter2 ...]
+    filternames = [...new Set(filternames)];
+
+    // add values checked
+    var filternames_values = {};
+    filternames.forEach(function (el, index) {
+        filternames_values[el] = [];
+    });
+    // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
+    if (checked_filters.length) {
+        for (const value of checked_filters.values()) {
+            filternames_values[value.dataset.filter].push(value.value)
+        }
+    }
+    console.log("filternames_values", filternames_values);
+    if (Object.keys(filternames_values).length) {
+        for (const [key, value] of Object.entries(filternames_values)) {
+            markers.eachLayer(layer => {
+                // if property value not in the list of checked-checkboxes values remove marker
+                var prop_key = key + '#value';
+                var prop_value = layer.feature.properties[prop_key];
+                if (!value.includes(prop_value)) {
+                    console.log("remove this", layer.feature.properties);
+                    markers.removeLayer(layer);
+                }
+            });
+        }
+        console.log("addRemoveMarkers: removed markers");
+        //logMarkers(markers);
+        // clear map
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.MarkerClusterGroup) {
+                map.removeLayer(layer)
+            }
+        });
+        map.addLayer(markers);
+
+    }
+    // else put them all back!
+    else {
+        console.log("put all markers back");
+        // var data_layers = L.geoJSON(dataMap, {
+        // 	onEachFeature: onEachFeature
+        // });
+
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.MarkerClusterGroup) {
+                map.removeLayer(layer)
+            }
+        });
+        markers.clearLayers();
+        allMarkers.eachLayer(layer => {
+            markers.addLayer(layer);
+        });
+        map.addLayer(markers);
+    }
+
+
+}
+
+
+function logMarkers(markers) {
+    markers.eachLayer(layer => {
+        console.log(layer.feature.properties);
+    });
+}
 //// RELATIONS TEMPLATE FUNCTIONS ////
 
 // text search
@@ -872,26 +1488,24 @@ function addActionButton(actions, heading, table_pos, uri_or_text_value, text_va
     var actionsHTML = "";
     if (actions.length) {
         actions.forEach(function (el, index) {
-            console.log(el);
             if (el.column == heading && el.column_2 == "") {
                 // normal action
                 actionsHTML += "<br/><span \
-        onclick='performActionQuery(\""+ el.actionpos + "\",\"" + heading + "\",\"" + table_pos + "\", \"" + escape(encodeURIComponent(uri_or_text_value)) + "\", \"" + escape(encodeURIComponent(text_value)) + "\", \"" + encodeURIComponent(el.query) + "\", \"" + encodeURIComponent(el.title) + "\")' class='action_button' \
-           >"+ el.title + "</span> ";
+				onclick='performActionQuery(\""+ el.actionpos + "\",\"" + heading + "\",\"" + table_pos + "\", \"" + escape(encodeURIComponent(uri_or_text_value)) + "\", \"" + escape(encodeURIComponent(text_value)) + "\", \"" + encodeURIComponent(el.query) + "\", \"" + encodeURIComponent(el.title) + "\")' class='action_button' \
+					 >"+ el.title + "</span> ";
             } else {
                 // combo action
                 if (el.column == heading || el.column_2 == heading) {
                     var other_heading = compareStrings(heading, el.column, el.column_2);
                     actionsHTML += "<br/><span \
-          onclick='performActionQuery(\""+ el.actionpos + "\",\
-              \""+ heading + "\",\"" + table_pos + "\",\
-              \""+ escape(encodeURIComponent(uri_or_text_value)) + "\",\
-              \""+ escape(encodeURIComponent(text_value)) + "\", \
-              \""+ encodeURIComponent(el.query) + "\", \
-              \""+ encodeURIComponent(el.title) + "\", \
-              \"True\", \""+ other_heading + "\", \"" + el.table_2 + "\")'\
-              class='action_button'>"+ el.title + "</span> ";
-                    console.log("combo button", other_heading, el.table_2);
+					onclick='performActionQuery(\""+ el.actionpos + "\",\
+							\""+ heading + "\",\"" + table_pos + "\",\
+							\""+ escape(encodeURIComponent(uri_or_text_value)) + "\",\
+							\""+ escape(encodeURIComponent(text_value)) + "\", \
+							\""+ encodeURIComponent(el.query) + "\", \
+							\""+ encodeURIComponent(el.title) + "\", \
+							\"True\", \""+ other_heading + "\", \"" + el.table_2 + "\")'\
+							class='action_button'>"+ el.title + "</span> ";
                 }
             }
         });
@@ -929,7 +1543,6 @@ function performActionQuery(actionpos, heading, table_pos, uri_or_text_value, te
         else { q2 = "\"" + other_field + "\""; };
         replaced_query = replaced_query.replace('<<' + heading_2 + '>>', q2);
         var reencoded_query = encodeURIComponent(replaced_query);
-        console.log("a combo!", q, q2, heading_2, table_2, replaced_query);
     }
 
     // send the query
@@ -963,10 +1576,10 @@ function manageSelectedValue(table_pos, table_id, text_value, color) {
 
     // selected value button
     var selected_button = "<span id='" + table_pos + "__selected_text_value' \
-    style='background-color: "+ color + ";' \
-    data-table='"+ table_id + "' \
-    class='selected_text_value'\
-    onclick='removeAllFrom("+ table_pos.toString() + "," + (parseInt(table_pos) + 1).toString() + ")'>" + text_value + "</span>";
+		style='background-color: "+ color + ";' \
+		data-table='"+ table_id + "' \
+		class='selected_text_value'\
+		onclick='removeAllFrom("+ table_pos.toString() + "," + (parseInt(table_pos) + 1).toString() + ")'>" + text_value + "</span>";
 
     // var prev_show_button = document.getElementById(table_pos+"__textsearchid__show_table");
     // // add show results button
@@ -1034,7 +1647,6 @@ function getActionsFromInputs(pos) {
             if (matches.length >= 2) { actiondata.column_2 = matches[1].replace("<<", "").replace(">>", ""); }
             actiondata.actionpos = actionpos;
             actions.push(actiondata);
-            console.log(actionquery, matches, actions);
         }
     });
     return actions;
@@ -1042,12 +1654,12 @@ function getActionsFromInputs(pos) {
 
 function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_title = "search", text_value = "", uri_or_text_value = "") {
     var tabletoappend = "<caption class='resulttable_caption' \
-  style='color: white'>"+ decodeURIComponent(action_title) + "\
-  <span class='caret' onclick='collapseTable(\""+ pos + "__textsearchid\")'></span>\
-  <span class='closetable' onclick='detachTable(\""+ pos + "__textsearchid\")'>x</span>\
-  <br/><span id='"+ pos + "__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='" + decodeURIComponent(uri_or_text_value) + "'>" + decodeURIComponent(text_value) + "</span>\
-  </caption>\
-  <tr>";
+	style='color: white'>"+ decodeURIComponent(action_title) + "\
+	<span class='caret' onclick='collapseTable(\""+ pos + "__textsearchid\")'></span>\
+	<span class='closetable' onclick='detachTable(\""+ pos + "__textsearchid\")'>x</span>\
+	<br/><span id='"+ pos + "__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='" + decodeURIComponent(uri_or_text_value) + "'>" + decodeURIComponent(text_value) + "</span>\
+	</caption>\
+	<tr>";
     // exclude headings with Label
     var headings = returnedJson.head.vars;
     for (j = 0; j < headings.length; j++) {
@@ -1092,7 +1704,7 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
     }
     if (!$("#" + pos + "__textsearchid").length) {
         var new_table = "<table class='col-12' id='" + pos + "__textsearchid'>\
-    "+ tabletoappend + "</table>";
+		"+ tabletoappend + "</table>";
         // WYSIWYG
         if (!$("#relation_datastory") === null) {
             $("#relation_datastory").append(new_table);
@@ -1128,16 +1740,28 @@ function colorSwitch(color_1, color_2) {
     var gradientEl = document.querySelector(".secondarymenuinner");
     var gradientPreview = document.querySelectorAll(".previewtextsearch");
     var counters = document.querySelectorAll(".count_result");
+    var mapSidebar = document.querySelectorAll(".leaflet-sidebar");
+    // var mapSidebarTab = document.querySelectorAll(".leaflet-sidebar-tabs");
     //var textsearch_buttons = document.querySelectorAll(".textsearch_button");
     //gradientEl.classList.remove("bg-primary-gradient");
     if (typeof (gradientEl) != undefined && gradientEl != null) { gradientEl.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')'; }
 
+    function monchromebackground(el) {
+        el.style.background = color_2;
+    }
     function gradientbackground(el) {
         el.style.background = 'linear-gradient(-45deg,' + color_1 + ',' + color_2 + ')';
     }
     if (typeof (gradientPreview) != undefined && gradientPreview != null) {
         gradientPreview.forEach(gradientbackground);
     }
+    // does not work
+    if (typeof (mapSidebar) != undefined && mapSidebar != null) {
+        mapSidebar.forEach(gradientbackground);
+    }
+    // if (typeof (mapSidebarTab) != undefined && mapSidebarTab != null) {
+    //     mapSidebarTab.forEach(monchromebackground);
+    // }
 
     function borders(el) {
         el.style.border = "solid 2px " + color_1;

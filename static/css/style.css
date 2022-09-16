@@ -722,3 +722,23 @@ hr {
 .query-eg {
   color: #f2f2f2;
 }
+
+/**********************/
+/* MAPS template */
+/**********************/
+.map_preview_container {height: 400px; margin-bottom: 3em;}
+.mycluster {
+  border-radius: 50%;
+  /* background-color: white; */
+  text-align: center;
+  padding-top: 10px;
+  color: black;
+}
+#sidebar {max-width: 250px;}
+.leaflet-sidebar-content, .leaflet-sidebar-tabs {background: transparent !important;}
+.leaflet-sidebar.leaflet-touch {border: none !important;border-right: none !important;}
+.leaflet-sidebar-tabs > li.active, .leaflet-sidebar-tabs > ul > li.active, .leaflet-sidebar-header {background: transparent !important;}
+.leaflet-sidebar-content p { margin-bottom: 0.2rem !important; max-width: 200px;}
+.leaflet-sidebar-content label {margin-left: 0.5em;}
+.leaflet-sidebar-content input[type='checkbox'] {}
+.leaflet-sidebar-content h3 {margin-top: 0.5em; color: #fff;}

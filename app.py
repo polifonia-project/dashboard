@@ -12,6 +12,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__, static_url_path='/melody/static')
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 100

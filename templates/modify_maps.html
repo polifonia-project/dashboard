@@ -4,7 +4,13 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
-<link rel="stylesheet" href="/melody/static/css/templates.css') }}">
+<link rel="stylesheet" href="/melody/static/css/templates.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+   crossorigin=""/>
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
+<link rel="stylesheet" href="/melody/static/css/leaflet-sidebar.css">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -13,19 +19,12 @@
         <section class="secondarymenuinner" id="secondarymenuinner">
             <h3>Data source</h3>
             <p><a href="{{datastory_data.sparql_endpoint}}">SPARQL endpoint</a></p>
-            <h5 class="text-white op-7 pb-2">
-                {% if datastory_data.curator %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id=""
-                    cols="{{ datastory_data.curator|length }}" rows="1"
-                    placeholder="Authors">{{ datastory_data.curator }}</textarea>
-                {% else %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                    placeholder="Authors"></textarea>
-                {%endif%}
-            </h5>
+
         </section>
     </section>
+    <!-- MD <form action="send_data" method="post" class="card col-md-9 col-sm-12""> -->
     <form action="" method="post" class="card col-md-9 col-sm-12"">
+      <!-- title, subtitle and description -->
         <div class=" panel-header bg-primary-gradient">
         <div class="page-inner">
             <!-- color picker -->
@@ -38,12 +37,12 @@
 
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                 <div>
-                    <h1 class="text-white pb-2 fw-bold">
+                    <h1 class="pb-2 fw-bold">
                         <textarea oninput='auto_grow(this)' name="title" type="text" id=""
                             cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
                             required>{{ datastory_data.title }}</textarea>
                     </h1>
-                    <h5 class="text-white mb-2 fw-bold">
+                    <h5 class="mb-2 fw-bold">
                         {% if datastory_data.subtitle %}
                         <textarea oninput='auto_grow(this)' name="subtitle" type="text" id=""
                             cols="{{ datastory_data.subtitle|length }}" rows="1"
@@ -51,6 +50,16 @@
                         {% else %}
                         <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1"
                             placeholder="Subtitle"></textarea>
+                        {%endif%}
+                    </h5>
+                    <h5 class="text-white op-7 pb-2">
+                        {% if datastory_data.curator %}
+                        <textarea oninput='auto_grow(this)' name="curator" type="text" id=""
+                            cols="{{ datastory_data.curator|length }}" rows="1"
+                            placeholder="Authors">{{ datastory_data.curator }}</textarea>
+                        {% else %}
+                        <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                            placeholder="Authors"></textarea>
                         {%endif%}
                     </h5>
 
@@ -61,21 +70,167 @@
             </div>
         </div>
 </div>
+<!-- interactive elements -->
+<div class="page-inner mt--5">
+    <div class="row row-card-no-pd">
+        <div class="col-md-12 nopaddingleft">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-head-row card-tools-still-right">
+                        <!-- <h4 class="card-title">About the Project</h4> -->
+                    </div>
+                    <p class="card-category">
+                        {% if datastory_data.description %}
+                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                            placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
+                        {% else %}
+                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                            placeholder="A brief introdution to the project."></textarea>
+                        {%endif%}
+                    </p>
+                </div>
+                <div class="card-body nopaddingleft" id="sortable">
+                    <span id='loader' class='lds-dual-ring hidden overlay'></span>
+                    {% for dict in datastory_data.dynamic_elements %}
+                      {% if dict.type == 'map' %}
+                        <div id="{{dict.position}}__block_field">
+                          <h4 class="block_title">Add map</h4>
+                          <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                              <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                          </a>
+                          <br>
+                          <!-- map title -->
+                          <input class='map_title' id='{{dict.position}}__map_title' type='text'
+                              name='{{dict.position}}__map_title' value='{{dict.map_title}}'
+                              placeholder='The title of the map'>
+                          <!-- data points -->
+                          <textarea class='addplaceholder_points' oninput='auto_grow(this)'
+                              name='{{dict.position}}__map_points_query' type='text'
+                              id='{{dict.position}}__map_points_query' rows='10'
+                              required>{{dict.map_points_query}}</textarea>
+                          <a onclick='rerunQuery({{dict.position}},this)'
+                              data-id='{{dict.position}}__rerun_query'
+                              data-run='true' href="#{{dict.position}}__map_points_query">Rerun the query</a>
+                          <!-- map preview -->
+                          <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
+                          </div>
+                          <h4 id='{{dict.position}}__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>
+                          <p>Filters appear on the left side of the map and allow you
+                            to filter out points on the map based on a SPARQL query.</p>
+                          <a class='btn btn-primary btn-border'
+                              onclick='add_field(name,"{{dict.position}}__map_points_query")'
+                              name='map_filter'>Add filter</a>
+
+                        </div>
+
+                      {% endif %}
+                      {% if dict.type == 'map_filter' %}
+                      <div id="{{dict.position}}__block_field">
+                        <h4 class="block_title">Add map filter</h4>
+                        <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
+                            <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
+                        </a>
+                        <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
+                            <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
+                        </a>
+                        <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
+                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
+                        </a>
+                        <br>
+                        <input class='map_filter_title'
+                            id='{{dict.position}}__map_filter_title' type='text'
+                            name='{{dict.position}}__map_filter_title'
+                            placeholder='The title of the filter'
+                            value="{{dict.map_filter_title}}">
+                        <input class='map_filter_bind_query'
+                              id='{{dict.position}}__map_filter_bind_query'
+                              type='hidden'
+                              name='{{dict.position}}__map_filter_bind_query'
+                              value='{{dict.map_filter_bind_query}}'>
+                        <textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'
+                            name='{{dict.position}}__map_filter_query' type='text'
+                            id='{{dict.position}}__map_filter_query' rows='6'
+                            data-bind-query='{{dict.map_filter_bind_query}}'
+                            required>{{dict.map_filter_query}}</textarea>
+                        <p>Rerun the query to add the filter to the map</p>
+                      </div>
+                      {% endif %}
+
+
+                    {% endfor %}
+
+                </div>
+                <!-- ADD buttons -->
+                <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
+                    <a class="btn btn-primary btn-border" onclick="add_field(name)" name="map">Add
+                        a map with filters</a>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- save buttons -->
 <div class="card-action" style="margin:auto;">
-    <button type="submit" name="action" value="save" class="btn btn-success">Save</button>
+    <button type="submit" name="action" value="save" class="btn btn-success prevent_alert">Save</button>
     <button type="reset" class="btn btn-danger">Reset content</button>
     <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
 </div>
 </form>
 </div>
+{% if session['user_type'] == 'random' %}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+    data-notify-position="bottom-right"
+    style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+    data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+        style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+        class="flaticon-alarm-1"></span> <span data-notify="title">Remember</span>
+    <span data-notify="message">If you don't login, you can only download material, not
+        publish.</span><a href="#" target="_blank" data-notify="url"></a>
+</div>
+{% endif %}
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
-<script type="text/javascript">
 
+
+{% if datastory_data.user_name %}
+<script>
+    let beforeUnloadAlert = true;
+    window.addEventListener('beforeunload', function (e) {
+        if (!beforeUnloadAlert) return;
+
+        // etc
+        e.preventDefault();
+        e.returnValue = '';
+    });
+
+    function myFunction() {
+        beforeUnloadAlert = false;
+    }
+    var myObj = document.getElementsByClassName('prevent_alert')
+    console.log(myObj);
+    for (el of myObj) {
+        el.addEventListener('click', myFunction);
+    }
 </script>
+{% endif %}
+
+<script type="text/javascript">
+  var map = initMap("1");
+  var sidebar = initSidebar();
+</script>
+<!-- {% for dict in datastory_data.dynamic_elements %}
+  {% if dict.type == 'map' %}
+  <script type="text/javascript">
+    var map = initMap("{{dict.position}}");
+    var sidebar = initSidebar();
+  </script>
+  {% endif %}
+
+{% endfor %} -->
 
 {% endblock javascripts %}
