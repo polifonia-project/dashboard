@@ -1,6 +1,7 @@
 {
     "sections": [
         "Tests",
+        "Zeri",
         "Listening Experiences",
         "Wikidata",
         "musoW"
@@ -169,6 +170,7 @@
                         "position": 1,
                         "type": "text",
                         "text": "",
+                        "extra_queries": [],
                         "operations": []
                     },
                     {
@@ -176,6 +178,7 @@
                         "type": "count",
                         "count_query": "SELECT (COUNT(?s) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
                         "count_label": "Repositories",
+                        "extra_queries": [],
                         "operations": []
                     },
                     {
@@ -183,7 +186,9 @@
                         "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_query": "SELECT ?label WHERE { ?content <https://schema.org/additionalType> ?type . ?type rdfs:label ?label . } ",
+                        "chart_series": "",
                         "chart_title": "Music resources on the web",
+                        "extra_queries": [],
                         "operations": [
                             {
                                 "action": "count",
@@ -196,10 +201,13 @@
                         "type": "chart",
                         "chart_type": "barchart",
                         "chart_query": "SELECT DISTINCT ?label (COUNT(DISTINCT ?content) AS ?count) \r\nWHERE { \r\n?content <https://schema.org/additionalType> ?type. \r\n?type rdfs:label ?label .\r\n } GROUP BY ?label ?count",
+                        "chart_series": "",
                         "chart_title": "Music resources on the web",
+                        "extra_queries": [],
                         "operations": []
                     }
-                ]
+                ],
+                "curator": ""
             }
         },
         "wikidata": {
@@ -315,45 +323,7 @@
                 "curator": "Marilena Daquino"
             }
         },
-        "listening_experiences": {
-            "nurses_listening_experiences_during_wwi_": {
-                "sparql_endpoint": "http://data.open.ac.uk/sparql",
-                "template_mode": "Statistics",
-                "title": "Nurses' listening experiences during WWI ",
-                "color_code": [
-                    "#39c6b4",
-                    "#17cf31"
-                ],
-                "section_name": "Listening Experiences",
-                "subtitle": "An overview from the LED database",
-                "curator": "Marilena Daquino, Giulia Renda",
-                "description": "An overview of nurses' listening experiences during WWI, including those in which they participated and those that nurses recorded in their journals. Data source: The Listening experience database.",
-                "dynamic_elements": [
-                    {
-                        "position": 1,
-                        "type": "count",
-                        "count_query": "PREFIX led: <http://led.kmi.open.ac.uk/term/> \r\nPREFIX event: <http://purl.org/NET/c4dm/event.owl#>\r\nPREFIX dc: <http://purl.org/dc/terms/>\r\nPREFIX schema: <http://schema.org/>\r\nSELECT DISTINCT (COUNT(?nurse) AS ?count) \r\nWHERE {\r\nVALUES ?nocc { \r\n      <http://data.open.ac.uk/led/occupation/nurse> \r\n      <http://data.open.ac.uk/led/thing/QAIMNS+nurse> \r\n      <http://data.open.ac.uk/led/thing/VAD+nurse> \r\n   }\r\n   . ?nurse <http://dbpedia.org/ontology/occupation> ?nocc .\r\n}",
-                        "count_label": "Nurses",
-                        "operations": []
-                    },
-                    {
-                        "position": 2,
-                        "type": "count",
-                        "count_query": "PREFIX dc: <http://purl.org/dc/terms/> \r\nPREFIX edtf: <http://data.open.ac.uk/edtf/ontology/>\r\nPREFIX edtfdata: <http://data.open.ac.uk/time/edtf/>\r\nPREFIX event: <http://purl.org/NET/c4dm/event.owl#>\r\nPREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX schema: <http://schema.org/>\r\nSELECT (COUNT(DISTINCT ?lexp) AS ?count) \r\nWHERE {\r\n   ?lexp event:time [ rdfs:label ?when ; edtf:century edtfdata:Century.19 ; edtf:yearOfCentury/rdf:value ?yoc ]\r\n   VALUES ?nocc { \r\n      <http://data.open.ac.uk/led/occupation/nurse> \r\n      <http://data.open.ac.uk/led/thing/QAIMNS+nurse> \r\n      <http://data.open.ac.uk/led/thing/VAD+nurse> \r\n   }\r\n   ?lexp ?p ?nurse\r\n   . ?nurse <http://dbpedia.org/ontology/occupation> ?nocc\r\n   FILTER ( ?yoc >= 14 && ?yoc <= 18 )\r\n} \r\nORDER BY ?lexp ?nurse\r\n",
-                        "count_label": "Listening experiences",
-                        "operations": []
-                    },
-                    {
-                        "position": 3,
-                        "type": "count",
-                        "count_query": "PREFIX dc: <http://purl.org/dc/terms/> \r\nPREFIX edtf: <http://data.open.ac.uk/edtf/ontology/>\r\nPREFIX edtfdata: <http://data.open.ac.uk/time/edtf/>\r\nPREFIX event: <http://purl.org/NET/c4dm/event.owl#>\r\nPREFIX led: <http://led.kmi.open.ac.uk/term/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX schema: <http://schema.org/>\r\nSELECT (COUNT(DISTINCT ?place) AS ?count) \r\nWHERE {\r\n   ?lexp event:time [ rdfs:label ?when ; edtf:century edtfdata:Century.19 ; edtf:yearOfCentury/rdf:value ?yoc ]\r\n   VALUES ?nocc { \r\n      <http://data.open.ac.uk/led/occupation/nurse> \r\n      <http://data.open.ac.uk/led/thing/QAIMNS+nurse> \r\n      <http://data.open.ac.uk/led/thing/VAD+nurse> \r\n   }\r\n   ?lexp <http://purl.org/NET/c4dm/event.owl#place> ?place ; ?p ?nurse\r\n   . ?nurse <http://dbpedia.org/ontology/occupation> ?nocc\r\n   FILTER ( ?yoc >= 14 && ?yoc <= 18 )\r\n\r\n} \r\nORDER BY ?lexp ?nurse\r\n\r\n",
-                        "count_label": "Places",
-                        "operations": []
-                    }
-                ],
-                "action": "save"
-            }
-        },
+        "listening_experiences": {},
         "tests": {
             "single_scatter_plot": {
                 "sparql_endpoint": "https://query.wikidata.org/sparql",
@@ -411,6 +381,68 @@
                     }
                 ],
                 "curator": ""
+            }
+        },
+        "zeri": {
+            "female_portraits_": {
+                "sparql_endpoint": "http://data.fondazionezeri.unibo.it/sparql",
+                "template_mode": "maps",
+                "title": "Female portraits ",
+                "color_code": [
+                    "#d357fe",
+                    "#0042aa"
+                ],
+                "section_name": "Zeri",
+                "subtitle": "All the female portraits studied by Federico Zeri",
+                "curator": "",
+                "description": "",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 1,
+                        "type": "map",
+                        "map_title": "Female portraits over the world",
+                        "map_points_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX psv: <http://www.wikidata.org/prop/statement/value/>\r\nPREFIX wikibase: <http://wikiba.se/ontology#>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\n \r\nSELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\r\n ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\r\n    fabio:hasManifestation ?manif .\r\n ?manif frbr:exemplar ?point .\r\n  ?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\r\n  \r\n ?keeper crm:P74_has_current_or_former_residence ?location .\r\n OPTIONAL {?keeper rdfs:label ?keeperLabel}\r\n ?location owl:sameAs ?wdlocation .\r\n FILTER(LANG(?artwork) = \"\" || LANGMATCHES(LANG(?artwork), \"en\"))\r\n FILTER(LANG(?keeperLabel) = \"\" || LANGMATCHES(LANG(?keeperLabel), \"en\"))\r\n FILTER(contains (str(?wdlocation), \"wikidata\") )\r\n  SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\r\n   ?wdlocation p:P625 ?coords_stmt .\r\n   ?coords_stmt ps:P625 ?coords;\r\n                psv:P625 [\r\n                  wikibase:geoLatitude ?lat;\r\n                  wikibase:geoLongitude ?long ] .\r\n }\r\n} LIMIT 10\r\n",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 2,
+                        "type": "map_filter",
+                        "map_filter_title": "keeper",
+                        "map_filter_bind_query": "1__map_points_query",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 3,
+                        "type": "map_filter",
+                        "map_filter_title": "artist",
+                        "map_filter_bind_query": "1__map_points_query",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point ^frbr:exemplar / ^fabio:hasManifestation / crm:P94i_was_created_by / crm:P14_carried_out_by  ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"it\"))\r\n}",
+                        "extra_queries": [],
+                        "operations": []
+                    },
+                    {
+                        "position": 4,
+                        "type": "map_filter",
+                        "map_filter_title": "technique",
+                        "map_filter_bind_query": "1__map_points_query",
+                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P108i_was_produced_by ?prod .\r\n?prod crm:P32_used_general_technique ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "extra_queries": [],
+                        "operations": []
+                    }
+                ],
+                "https://w3id.org/zericatalog/galleria-borghese-roma": "https://w3id.org/zericatalog/galleria-borghese-roma",
+                "https://w3id.org/zericatalog/collezione-privata-roma": "https://w3id.org/zericatalog/collezione-privata-roma",
+                "https://w3id.org/zericatalog/asta-lantonina-roma": "https://w3id.org/zericatalog/asta-lantonina-roma",
+                "https://w3id.org/zericatalog/palazzo-pitti-galleria-palatina-e-appartamenti-reali-firenze": "https://w3id.org/zericatalog/palazzo-pitti-galleria-palatina-e-appartamenti-reali-firenze",
+                "https://w3id.org/zericatalog/alte-pinakothek-bayerische-staatsgemaldesammlungen-monaco-di-baviera": "https://w3id.org/zericatalog/alte-pinakothek-bayerische-staatsgemaldesammlungen-monaco-di-baviera",
+                "https://w3id.org/zericatalog/collezione-privata-napoli": "https://w3id.org/zericatalog/collezione-privata-napoli",
+                "https://w3id.org/zericatalog/mercato-antiquario-roma": "https://w3id.org/zericatalog/mercato-antiquario-roma",
+                "https://w3id.org/zericatalog/collezione-privata-firenze": "https://w3id.org/zericatalog/collezione-privata-firenze",
+                "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma": "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma"
             }
         }
     }

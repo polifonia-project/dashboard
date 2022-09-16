@@ -12,6 +12,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__, static_url_path='/melody/static')
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config['SESSION_FILE_THRESHOLD'] = 100
@@ -50,6 +51,8 @@ scheduler.start()
 
 PREFIX = '/melody/'
 # access the home page
+
+
 @app.route(PREFIX+"")
 @app.route(PREFIX+"index.html")
 def home():
@@ -130,18 +133,19 @@ def datastory(section_name, datastory_name):
         else:
             return render_template('page-404.html')
     elif request.method == 'POST':
-        r = requests.get('http://localhost:5000/'+section_name +
-                         '/'+datastory_name)
+        host = request.host_url
+        r = requests.get(host + PREFIX[1:] + section_name +
+                         '/' + datastory_name)
         # open and create html file
         data_methods.create_html(r, datastory_name, section_name)
 
-        story_title = data_methods.read_json(
+        story_data = data_methods.read_json(
             'static/temp/config_'+section_name+'.json')
 
         new_story = {
             'user_name': session['name'],
             'id': section_name,
-            'title': story_title['title']
+            'title': story_data['title']
         }
 
         stories_list = data_methods.get_raw_json(
@@ -152,10 +156,20 @@ def datastory(section_name, datastory_name):
                 'static/temp/stories_list.json', stories_list)
             if new_story in stories_list:
                 pass
-            else:
-                stories_list.append(new_story)
-                data_methods.update_json(
-                    'static/temp/stories_list.json', stories_list)
+            elif new_story not in stories_list:
+                for story in stories_list:
+                    # check if story id is present
+                    if new_story['id'] in story.values():
+                        # update title
+                        story['title'] = new_story['title']
+                        data_methods.update_json(
+                            'static/temp/stories_list.json', stories_list)
+                        break
+                else:
+                    # append new story
+                    stories_list.append(new_story)
+                    data_methods.update_json(
+                        'static/temp/stories_list.json', stories_list)
         else:
             stories_list = []
             stories_list.append(new_story)
@@ -165,7 +179,7 @@ def datastory(section_name, datastory_name):
         # commit config and html to repo
         github_sync.push('static/temp/config_'+section_name+'.json', 'main', 'melodyeditor',
                          'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
-        github_sync.push('static/temp/'+datastory_name+'_'+section_name+'.html', 'main', 'melodyeditor',
+        github_sync.push('static/temp/story_'+section_name+'.html', 'main', 'melodyeditor',
                          'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
 
         # commit stories list to repo
@@ -174,10 +188,10 @@ def datastory(section_name, datastory_name):
 
         # remove the files
         os.remove('static/temp/config_'+section_name+'.json')
-        os.remove('static/temp/'+datastory_name+'_'+section_name+'.html')
+        os.remove('static/temp/story_'+section_name+'.html')
         os.remove('static/temp/stories_list.json')
 
-        return redirect('https://melody-data.github.io/stories/published_stories/' + datastory_name + '_' + section_name + '.html')
+        return redirect('https://melody-data.github.io/stories/#catalogue')
 
 
 @app.route(PREFIX+"setup", methods=['POST', 'GET'])
@@ -218,8 +232,9 @@ def setup():
                         new_datastory['color_code'] = color_code
                         new_datastory['section_name'] = section_name
                         # add to config file
-                        clean_title = datastory_title.lower().replace(" ", "_")
-                        clean_section = section_name.lower().replace(" ", "_")
+                        clean_title = data_methods.clean_string(
+                            datastory_title)
+                        clean_section = data_methods.clean_string(section_name)
                         if clean_section in general_data['data_sources']:
                             general_data['data_sources'][clean_section][clean_title] = new_datastory
                         else:
@@ -264,7 +279,8 @@ def setup():
                         config_data['user_name'] = session['name']
                         config_data['id'] = str(ts)
 
-                        clean_title = datastory_title.lower().replace(" ", "_")
+                        clean_title = data_methods.clean_string(
+                            datastory_title)
                         # add to config file
                         data_methods.update_json(
                             'static/temp/config_' + str(ts) + '.json', config_data)
@@ -273,20 +289,6 @@ def setup():
                     return str(e)+'did not save to database'
     else:
         return 'something went wrong, try again'
-
-
-# @app.route(PREFIX+"send_data/<string:section_name>", methods=['POST', 'GET'])
-# def send_data(section_name):
-#     general_data = data_methods.read_json('config.json')
-#     if request.method == 'POST':
-#         if session.get('name') is not None:
-#             if session['name']:
-#                 try:
-#                     datastory_name = data_methods.manage_datastory_data(
-#                         general_data, 'config.json', section_name)
-#                     return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
-#                 except:
-#                     return 'Something went wrong'
 
 
 @app.route(PREFIX+"modify/<string:section_name>/<string:datastory_name>", methods=['POST', 'GET'])
@@ -336,15 +338,24 @@ def modify_datastory(section_name, datastory_name):
                                     # we create as many dicts as there are positions, to store each type of element and append to
                                     # dynamic_elements list
                                     for position in position_set:
+                                        extra_set = set()
                                         operations = []
                                         op_list = []
                                         elements_dict = {}
                                         elements_dict['position'] = position
+                                        extra_set = set()
+                                        total_extra_dict = {}
+                                        extra_queries = []
+
                                         for k, v in form_data.items():
                                             if '__' in k:
                                                 if position == int(k.split('__')[0]):
                                                     if 'text' in k:
                                                         elements_dict['type'] = 'text'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'textsearch' in k:
+                                                        elements_dict['type'] = 'textsearch'
                                                         elements_dict[k.split('__')[
                                                             1]] = v
                                                     elif 'count' in k:
@@ -355,8 +366,44 @@ def modify_datastory(section_name, datastory_name):
                                                         elements_dict['type'] = 'chart'
                                                         elements_dict[k.split('__')[
                                                             1]] = v
+                                                    elif 'tablevalueaction' in k:
+                                                        elements_dict['type'] = 'tablevalueaction'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'tablecomboaction' in k:
+                                                        elements_dict['type'] = 'tablecomboaction'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
                                                     elif 'action' in k:
                                                         op_list.append(v)
+                                                    elif 'extra' in k:
+                                                        extra_set.add(
+                                                            int(k.split('_')[4]))
+                                                        total_extra_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'section_title' in k:
+                                                        elements_dict['type'] = 'section_title'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'map' in k and 'simple' not in k and 'filter' not in k:
+                                                        elements_dict['type'] = 'map'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                                    elif 'map' in k and 'simple' not in k and 'filter' in k:
+                                                        elements_dict['type'] = 'map_filter'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
+                                        for e in extra_set:
+                                            extra_dict = {}
+                                            for k, v in total_extra_dict.items():
+                                                if str(e) in k:
+                                                    extra_dict[k.strip(
+                                                        '_'+str(e))] = v
+                                                    extra_dict['extra_id'] = str(
+                                                        e)
+                                            extra_queries.append(extra_dict)
+                                        elements_dict['extra_queries'] = extra_queries
+
                                         # create dicts with operations info
                                         for op in op_list:
                                             op_dict = {}
@@ -366,13 +413,15 @@ def modify_datastory(section_name, datastory_name):
                                             elif op == 'sort':
                                                 op_dict['param'] = 'another'
                                             operations.append(op_dict)
+
                                         elements_dict['operations'] = operations
                                         dynamic_elements.append(elements_dict)
 
                                     datastory_data['dynamic_elements'] = dynamic_elements
                                     data_methods.update_json(
                                         'static/temp/config_'+section_name+'.json', datastory_data)
-                                    datastory_name = datastory_title.lower().replace(" ", "_")
+                                    datastory_name = data_methods.clean_string(
+                                        datastory_title)
                                     return redirect(url_for('datastory', section_name=section_name, datastory_name=datastory_name))
                             except:
                                 return 'Something went wrong'
@@ -380,17 +429,15 @@ def modify_datastory(section_name, datastory_name):
                         elif request.form['action'] == 'delete':
                             print(section_name, datastory_name, request.form)
                             if session['user_type'] == 'polifonia':
-                                datastory_title = request.form['title'].lower().replace(
-                                    " ", "_")
                                 general_data['data_sources'][section_name].pop(
-                                    datastory_title, 'None')
+                                    datastory_name, 'None')
                                 data_methods.update_json(
                                     'config.json', general_data)
-                                return redirect('/')
+                                return redirect(PREFIX)
                             elif session['user_type'] == 'extra' or session['user_type'] == 'random':
                                 os.remove('static/temp/config_' +
                                           section_name+'.json')
-                                return redirect('/')
+                                return redirect(PREFIX)
         except:
             retrieved_config = data_methods.get_raw_json(
                 branch='main', absolute_file_path='config_' + section_name + '.json')

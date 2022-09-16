@@ -1,8 +1,12 @@
 import json
+import re
 from flask import request
 from datetime import datetime
 import requests
 import conf
+import string
+import re
+import unidecode
 
 
 def read_json(file_name):
@@ -61,6 +65,30 @@ def access_data_sources(section_name, datastory_name, file_name):
             return details
 
 
+def clean_string(dirty_string):
+    '''
+    This function deals with data story titles to transform them into clean alpha numeric string with no white spaces.
+
+    Args:
+        datastory_title (str): a string that can contain any type of character.
+
+    Returns:
+        clean_title (str): an alpha numeric string in which white spaces are replaced by '_'. 
+    '''
+
+    pattern = r'[' + string.punctuation + ']'
+
+    # remove white spaces at beginning and end
+    cleaned_string = dirty_string.strip()
+    cleaned_string = re.sub(pattern, '', cleaned_string)  # remove special ch
+    # remove multiple white spaces
+    cleaned_string = unidecode.unidecode(cleaned_string)  # remove accents
+    cleaned_string = " ".join(cleaned_string.split())
+    cleaned_string = cleaned_string.lower().replace(
+        " ", "_")  # lower and replace spaces with '_'
+    return cleaned_string
+
+
 def manage_datastory_data(general_data, file, section_name, datastory_name):
     '''
     This function deals with data story data after the submission of the WYSIWYG form.
@@ -79,7 +107,7 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
     form_data = request.form.to_dict(flat=True)
     print(form_data)
     datastory_title = form_data['title']
-    datastory_title_clean = datastory_title.lower().replace(" ", "_")
+    datastory_title_clean = clean_string(datastory_title)
     print("datastory_title_clean", datastory_title_clean,
           '\ndatastory_name', datastory_name)
     dynamic_elements = []
@@ -108,18 +136,14 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                     # dynamic_elements list
                     for position in position_set:
                         extra_set = set()
-                        total_extra_dict = {}
                         operations = []
                         op_list = []
                         elements_dict = {}
                         elements_dict['position'] = position
-                        #######################
-                        #######################
+
                         extra_set = set()
                         total_extra_dict = {}  # to store together extra data of one chart
                         extra_queries = []  # to store in separate dict extra data of one chart
-                        #######################
-                        #######################
 
                         for k, v in form_data.items():
                             if '__' in k:
@@ -142,13 +166,20 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'tablecomboaction' in k:
                                         elements_dict['type'] = 'tablecomboaction'
                                         elements_dict[k.split('__')[1]] = v
+                                    elif 'map' in k and 'simple' not in k and 'filter' not in k:
+                                        elements_dict['type'] = 'map'
+                                        elements_dict[k.split('__')[1]] = v
+                                    elif 'map' in k and 'simple' not in k and 'filter' in k:
+                                        elements_dict['type'] = 'map_filter'
+                                        elements_dict[k.split('__')[1]] = v
                                     elif 'action' in k:
                                         op_list.append(v)
-                        #######################
-                        #######################
                                     elif 'extra' in k:
                                         extra_set.add(int(k.split('_')[4]))
                                         total_extra_dict[k.split('__')[1]] = v
+                                    elif 'section_title' in k:
+                                        elements_dict['type'] = 'section_title'
+                                        elements_dict[k.split('__')[1]] = v
 
                         for e in extra_set:
                             extra_dict = {}
@@ -158,8 +189,6 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     extra_dict['extra_id'] = str(e)
                             extra_queries.append(extra_dict)
                         elements_dict['extra_queries'] = extra_queries
-                        #######################
-                        #######################
 
                         # create dicts with operations info
                         for op in op_list:
@@ -189,10 +218,8 @@ def create_html(r, datastory_name, section_name):
         datastory_name (str): a string that identifies the data story name.
         section_name (str): a string that identify the name of the section.
     '''
-    html = r.text.replace('/static', 'static')  # replace
-    temp_html_file = open('static/temp/'+datastory_name +
-                          '_'+section_name+'.html', 'w')
-    # print(temp_html_file)
+    html = r.text.replace('/melody/static', 'static')  # replace
+    temp_html_file = open('static/temp/story_'+section_name+'.html', 'w')
     temp_html_file.write(html)
     temp_html_file.close()
 
