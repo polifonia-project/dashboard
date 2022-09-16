@@ -376,6 +376,14 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
         var close_addons = "</div>";
         contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
+    } else if (name == 'map') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + no_up_down + map_field + close_addons;
+    } else if (name == 'map_filter') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + map_filter + close_addons;
     }
 
     if (name.includes('query-btn')) {
