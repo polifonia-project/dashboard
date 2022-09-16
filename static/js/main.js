@@ -23,14 +23,22 @@ $(document).ready(function () {
 		}
 
 		var form = document.querySelector('form');
-		form.addEventListener('change', function(e) {
-			var map_chechbox = $(this).find('input[class="map_chechbox"]');
-			if (map_chechbox != undefined) {
-				e.preventDefault();
+		if (form != undefined) {
+			form.addEventListener('change', function(e) {
+				var map_chechbox = $(this).find('input[class="map_chechbox"]');
+				if (map_chechbox != undefined) {
+					e.preventDefault();
+					checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+					addRemoveMarkers(checked_filters);
+				}
+			});
+
+		} else {
+			if ($("#maps_datastory_final") != undefined && $("input[class='map_chechbox']").length) {
 				checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
 				addRemoveMarkers(checked_filters);
 			}
-		});
+		}
 
 });
 
