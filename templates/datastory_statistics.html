@@ -62,7 +62,7 @@
 					{%endif%}
 
 					<div class="card-body row">
-
+						<span id='loader' class='lds-dual-ring hidden overlay'></span>
 						{% for dict in datastory_data.dynamic_elements %}
 						<!-- section title -->
 						{% if dict.type == 'section_title' %}
