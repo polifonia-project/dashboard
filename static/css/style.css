@@ -734,7 +734,6 @@ hr {
   padding-top: 10px;
   color: black;
 }
-
 .leaflet-sidebar-content, .leaflet-sidebar-tabs {background: transparent !important;}
 .leaflet-sidebar.leaflet-touch {border: none !important;border-right: none !important;}
 .leaflet-sidebar-tabs > li.active, .leaflet-sidebar-tabs > ul > li.active, .leaflet-sidebar-header {background: transparent !important;}
