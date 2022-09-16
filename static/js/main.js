@@ -1136,7 +1136,7 @@ function setView(mapid, geoJSONdata, waitfilters, color_code) {
 
     // add geoJSONdata to DOM
     var $body = $(document.body);
-    $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + ";</script>");
+    $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + "</script>");
     if (waitfilters == true) {
         map_ready = true;
         $('form').trigger('change');
@@ -1245,7 +1245,7 @@ function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filt
                 // update geoJSON in DOM
                 $('#dataMap').remove();
                 var $body = $(document.body);
-                $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + ";</script>");
+                $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
 
                 // update markers
                 markers.eachLayer(layer => {
