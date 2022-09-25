@@ -120,8 +120,8 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
 });
 
 // remove add map after click or if any map is already available
-$("a[name='map']").on('click', function () { $(this).detach(); });
-if ($("#1__map_points_query") != undefined) { $("a[name='map']").detach(); }
+//$("a[name='map']").on('click', function () { $(this).detach(); });
+//if ($("#1__map_points_query") != undefined) { $("a[name='map']").detach(); }
 
 // add box
 var counter = 0;
@@ -544,7 +544,7 @@ $(function () {
                 $.ajax({
                     type: 'GET',
                     url: sparqlEndpoint + '?query=' + encoded_count,
-                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                    headers: { Accept: 'application/sparql-results+json' },
                     success: function (returnedJson) {
                         for (i = 0; i < returnedJson.results.bindings.length; i++) {
                             var count = returnedJson.results.bindings[i].count.value;
@@ -589,7 +589,7 @@ $(function () {
                             $.ajax({
                                 type: 'GET',
                                 url: sparqlEndpoint + '?query=' + encoded,
-                                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                                headers: { Accept: 'application/sparql-results+json' },
                                 beforeSend: function () { $('#loader').removeClass('hidden') },
                                 success: function (returnedJson) {
                                     const queryResults = returnedJson.results.bindings;
@@ -675,7 +675,7 @@ $(function () {
                                 $.ajax({
                                     type: 'GET',
                                     url: sparqlEndpoint + '?query=' + encoded,
-                                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                                    headers: { Accept: 'application/sparql-results+json' },
                                     beforeSend: function () { $('#loader').removeClass('hidden') },
                                     success: function (returnedJson) {
                                         const queryResults = returnedJson.results.bindings;
@@ -727,7 +727,7 @@ $(function () {
                     $.ajax({
                         type: 'GET',
                         url: sparqlEndpoint + '?query=' + encoded_chart,
-                        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                        headers: { Accept: 'application/sparql-results+json' },
                         beforeSend: function () { $('#loader').removeClass('hidden') },
                         success: function (returnedJson) {
                             if (chart_type == 'barchart') {
@@ -1027,7 +1027,7 @@ function rerunQuery(pos, el) {
 // initialize an empty map, used directly in templates
 function initMap(pos) {
     var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
-    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map);
@@ -1040,7 +1040,7 @@ function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = 
     $.ajax({
         type: 'POST',
         url: sparqlEndpoint + '?query=' + encoded_query,
-        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        headers: { Accept: 'application/sparql-results+json' },
         beforeSend: function () { $('#loader').removeClass('hidden') },
         success: function (returnedJson) {
             // preview map
@@ -1181,7 +1181,7 @@ function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filt
     $.ajax({
         type: 'POST',
         url: sparqlEndpoint + '?query=' + encoded_query,
-        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        headers: { Accept: 'application/sparql-results+json' },
         beforeSend: function () { $('#loader').removeClass('hidden') },
         success: function (returnedJson) {
             // modify geoJSON and create list
@@ -1437,7 +1437,7 @@ function perform_textsearch(elid, textsearch_query) {
     $.ajax({
         type: 'GET',
         url: sparqlEndpoint + '?query=' + encoded_textsearch,
-        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        headers: { Accept: 'application/sparql-results+json' },
         success: function (returnedJson) {
             // lookup actions in the DOM
             var actions = getActionsFromInputs(pos);
@@ -1518,7 +1518,7 @@ function performActionQuery(actionpos, heading, table_pos, uri_or_text_value, te
     $.ajax({
         type: 'GET',
         url: datastory_data.sparql_endpoint + '?query=' + reencoded_query,
-        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+        headers: { Accept: 'application/sparql-results+json' },
         beforeSend: function () { $('#loader').removeClass('hidden') },
         success: function (returnedJson) {
             // lookup actions in the DOM
@@ -1765,7 +1765,7 @@ function queryCounter() {
                     $.ajax({
                         type: 'GET',
                         url: sparqlEndpoint + '?query=' + encoded,
-                        headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                        headers: { Accept: 'application/sparql-results+json' },
                         success: function (returnedJson) {
                             for (i = 0; i < returnedJson.results.bindings.length; i++) {
                                 var count = returnedJson.results.bindings[i].count.value;
@@ -1934,7 +1934,7 @@ function barchart(element) {
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+            headers: { Accept: 'application/sparql-results+json' },
             beforeSend: function () { $('#loader').removeClass('hidden') },
             success: function (returnedJson) {
 
@@ -2049,7 +2049,7 @@ function linechart(element) {
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+            headers: { Accept: 'application/sparql-results+json' },
             beforeSend: function () { $('#loader').removeClass('hidden') },
             success: function (returnedJson) {
 
@@ -2186,7 +2186,7 @@ function doughnutchart(element) {
         $.ajax({
             type: 'GET',
             url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+            headers: { Accept: 'application/sparql-results+json' },
             beforeSend: function () { $('#loader').removeClass('hidden') },
             success: function (returnedJson) {
 
@@ -2310,7 +2310,7 @@ function scatterplot(element) {
             $.ajax({
                 type: 'GET',
                 url: sparqlEndpoint + '?query=' + encoded,
-                headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                headers: { Accept: 'application/sparql-results+json' },
                 beforeSend: function () { $('#loader').removeClass('hidden') },
                 success: function (returnedJson) {
                     const queryResults = returnedJson.results.bindings;
@@ -2401,7 +2401,7 @@ function scatterplot(element) {
                 $.ajax({
                     type: 'GET',
                     url: sparqlEndpoint + '?query=' + encoded,
-                    headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+                    headers: { Accept: 'application/sparql-results+json' },
                     beforeSend: function () { $('#loader').removeClass('hidden') },
                     success: function (returnedJson) {
                         const queryResults = returnedJson.results.bindings;
@@ -2486,7 +2486,7 @@ function scatterplot(element) {
 //         $.ajax({
 //             type: 'GET',
 //             url: sparqlEndpoint + '?query=' + encoded,
-//             headers: { Accept: 'application/sparql-results+json; charset=utf-8' },
+//             headers: { Accept: 'application/sparql-results+json' },
 //             success: function (returnedJson) {
 
 //                 const dataElements = [];
