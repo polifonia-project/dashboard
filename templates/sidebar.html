@@ -4,25 +4,24 @@
 		<div class="sidebar-content">
 			<ul class="nav nav-primary">
 				{% if general_data %}
-				{% for section in general_data.sections|sort() %}
+				{% for clean_section, section_title in general_data.sections.items() %}
 				<li class="nav-item submenu">
 					<a data-toggle="collapse" href="#submenu{{loop.index}}" aria-expanded="true">
-						<p>{{section}}</p>
+						<p>{{section_title}}</p>
 						<span class="caret"></span>
 					</a>
 					<div class="collapse" id="submenu{{loop.index}}">
 						<ul class="nav nav-collapse">
 							{% for key, value in general_data.data_sources.items() %}
-							{% if key == section|replace(' ', '_')|lower %}
+							{% if key == clean_section %}
 							<li class="menuitem row">
 								{% for k,v in value.items() %}
-								<a class="col-8" href="/melody/{{section|replace(' ', '_')|lower}}/{{k}}">
+								<a class="col-8" href="/melody/{{clean_section}}/{{k}}">
 									<!-- href="{{ url_for('datastory', section_name=section|replace(' ', '_')|lower, datastory_name=k ) }}"> -->
 									{{v.title}}
 								</a>
 								{% if session['user_type'] == 'polifonia' %}
-								<a class="col-4 modifystoryicon"
-									href="/melody/modify/{{section|replace(' ', '_')|lower}}/{{k}}"><img
+								<a class="col-4 modifystoryicon" href="/melody/modify/{{clean_section}}/{{k}}"><img
 										src="/melody/static/img/edit.png" alt=""></a>
 								{% endif %}
 								{% endfor %}
