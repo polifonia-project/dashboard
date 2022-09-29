@@ -922,7 +922,11 @@ $(function () {
                                 // chart colors
                                 // Don't understand why, function chartColors can't be read. So I extracted the content and applied directly
                                 // var chartColors = chartColor(color_1, color_2, chartLabels.length);
-                                var chartColors = d3.quantize(d3.interpolateHcl(color_2, color_1), chartLabels.length);
+                                if (chartLabels.length === 1) {
+                                    var chartColors = color_2;
+                                } else {
+                                    var chartColors = d3.quantize(d3.interpolateHcl(color_2, color_1), chartLabels.length);
+                                }
 
 
                                 // chart plotting
@@ -2234,7 +2238,11 @@ function doughnutchart(element) {
                 var chartId = "chart_" + element.position;
 
                 // chart colors
-                var colors = chartColor(datastory_data.color_code[0], datastory_data.color_code[1], chartLabels.length);
+                if (chartLabels.length === 1) {
+                    var colors = datastory_data.color_code[0];
+                } else {
+                    var colors = chartColor(datastory_data.color_code[0], datastory_data.color_code[1], chartLabels.length);
+                }
 
                 // chart plotting
                 var myDoughnutChart = new Chart(chartId, {
