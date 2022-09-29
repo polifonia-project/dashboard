@@ -246,7 +246,7 @@ def get_raw_json(branch='main', absolute_file_path=None):
     return data
 
 
-def delete_empty_section(general_data, section_name, section_title):
+def delete_empty_section(general_data, section_name):
     '''
     This function delete a section if it does not contain any story.
     Args:
@@ -260,5 +260,5 @@ def delete_empty_section(general_data, section_name, section_title):
     '''
 
     general_data['data_sources'].pop(section_name, 'None')
-    general_data['sections'].remove(section_title)
+    general_data['sections'].pop(section_name)
     return general_data
