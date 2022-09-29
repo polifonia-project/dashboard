@@ -1,8 +1,8 @@
 {
     "sections": [
         "Zeri",
-        "Wikidata",
-        "musoW"
+        "musoW",
+        "Wikidata"
     ],
     "operations": [
         "Count",
@@ -358,6 +358,7 @@
                 "https://w3id.org/zericatalog/collezione-privata-firenze": "https://w3id.org/zericatalog/collezione-privata-firenze",
                 "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma": "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma"
             }
-        }
+        },
+        "test": {}
     }
 }

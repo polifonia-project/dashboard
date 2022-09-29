@@ -429,8 +429,13 @@ def modify_datastory(section_name, datastory_name):
                         elif request.form['action'] == 'delete':
                             print(section_name, datastory_name, request.form)
                             if session['user_type'] == 'polifonia':
+                                section_title = general_data['data_sources'][section_name][datastory_name]['section_name']
                                 general_data['data_sources'][section_name].pop(
                                     datastory_name, 'None')
+                                # if section is now empty, delete it
+                                if len(general_data['data_sources'][section_name]) == 0:
+                                    general_data = data_methods.delete_empty_section(
+                                        general_data, section_name, section_title)
                                 data_methods.update_json(
                                     'config.json', general_data)
                                 return redirect(PREFIX)
