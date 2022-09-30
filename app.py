@@ -246,10 +246,13 @@ def setup():
 
                         # upload the sections list
                         sections = set()
+                        sections_dict = {}
                         for story in general_data['data_sources'].values():
                             for el in story.values():
                                 sections.add(el['section_name'])
-                        general_data['sections'] = list(sections)
+                        for s in sections:
+                            sections_dict[data_methods.clean_string(s)] = s
+                        general_data['sections'] = sections_dict
                         data_methods.update_json('config.json', general_data)
                         general_data = data_methods.read_json('config.json')
 
@@ -429,8 +432,13 @@ def modify_datastory(section_name, datastory_name):
                         elif request.form['action'] == 'delete':
                             print(section_name, datastory_name, request.form)
                             if session['user_type'] == 'polifonia':
+                                section_title = general_data['data_sources'][section_name][datastory_name]['section_name']
                                 general_data['data_sources'][section_name].pop(
                                     datastory_name, 'None')
+                                # if section is now empty, delete it
+                                if len(general_data['data_sources'][section_name]) == 0:
+                                    general_data = data_methods.delete_empty_section(
+                                        general_data, section_name)
                                 data_methods.update_json(
                                     'config.json', general_data)
                                 return redirect(PREFIX)

@@ -244,3 +244,21 @@ def get_raw_json(branch='main', absolute_file_path=None):
     except:
         data = None
     return data
+
+
+def delete_empty_section(general_data, section_name):
+    '''
+    This function delete a section if it does not contain any story.
+    Args:
+        general_data (dict): a dictionary containing data of the json fiile.
+        section_name (str): a string that identify the name of the section.
+        section_title (str): a string that identify the name of the section as it appears in its unlean form.
+
+    Returns:
+        general_data (dict): the updated version provided in input.
+
+    '''
+
+    general_data['data_sources'].pop(section_name, 'None')
+    general_data['sections'].pop(section_name)
+    return general_data
