@@ -772,7 +772,6 @@ $(function () {
                                     data: {
                                         labels: chartLabels,
                                         datasets: [{
-                                            label: 'Quantity',
                                             backgroundColor: chartColor,
                                             borderColor: chartColor,
                                             data: chartData,
@@ -788,6 +787,16 @@ $(function () {
                                                 }
                                             }]
                                         },
+                                        legend: {
+                                            display: false
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function (tooltipItem) {
+                                                    return tooltipItem.yLabel;
+                                                }
+                                            }
+                                        }
                                     }
                                 });
                             } else if (chart_type == 'linechart') {
@@ -1986,7 +1995,6 @@ function barchart(element) {
                     data: {
                         labels: chartLabels,
                         datasets: [{
-                            label: 'Quantity',
                             backgroundColor: chartColor,
                             borderColor: chartColor,
                             data: chartData,
@@ -2001,6 +2009,16 @@ function barchart(element) {
                                     beginAtZero: true
                                 }
                             }]
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.yLabel;
+                                }
+                            }
                         },
                         animation: {
                             onComplete: function () {
