@@ -706,7 +706,7 @@ $(function () {
 
                         //  retrieve the chart id
                         var chartId = $("#" + (idx + 1) + "__chartid");
-
+                        console.log(datasetArray)
                         // graph plotting
                         myScatterChart = new Chart(chartId, {
                             type: 'scatter',
@@ -715,14 +715,8 @@ $(function () {
                             },
                             options: {
                                 responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: chart_title
-                                    }
+                                legend: {
+                                    position: 'top',
                                 }
                             }
                         });
@@ -776,7 +770,7 @@ $(function () {
                                     data: {
                                         labels: chartLabels,
                                         datasets: [{
-                                            label: 'Quantity',
+                                            label: chart_series,
                                             backgroundColor: chartColor,
                                             borderColor: chartColor,
                                             data: chartData,
@@ -786,12 +780,16 @@ $(function () {
                                         responsive: true,
                                         maintainAspectRatio: true,
                                         scales: {
-                                            yAxes: [{
-                                                ticks: {
-                                                    beginAtZero: true
-                                                }
-                                            }]
+                                            y: {
+                                                beginAtZero: true
+                                            }
                                         },
+                                        legend: {
+                                            labels: {
+                                                boxWidth: 20,
+                                                padding: 10,
+                                            }
+                                        }
                                     }
                                 });
                             } else if (chart_type == 'linechart') {
@@ -836,7 +834,7 @@ $(function () {
                                     data: {
                                         labels: chartLabels,
                                         datasets: [{
-                                            label: "New Entries",
+                                            label: chart_series,
                                             borderColor: chartColor,
                                             pointBorderColor: "#FFF",
                                             pointBackgroundColor: chartColor,
@@ -855,18 +853,15 @@ $(function () {
                                         maintainAspectRatio: true,
                                         spanGaps: true,
                                         legend: {
-                                            position: 'bottom',
                                             labels: {
-                                                padding: 10,
-                                                fontColor: chartColor,
+                                                boxWidth: 20,
+                                                padding: 10
                                             }
                                         },
                                         scales: {
-                                            yAxes: [{
-                                                ticks: {
-                                                    beginAtZero: true
-                                                }
-                                            }]
+                                            y: {
+                                                beginAtZero: true
+                                            }
                                         },
                                         tooltips: {
                                             bodySpacing: 4,
@@ -948,7 +943,7 @@ $(function () {
                                         responsive: true,
                                         maintainAspectRatio: true,
                                         legend: {
-                                            position: 'bottom'
+                                            position: 'right'
                                         },
                                         layout: {
                                             padding: {
@@ -1990,7 +1985,7 @@ function barchart(element) {
                     data: {
                         labels: chartLabels,
                         datasets: [{
-                            label: 'Quantity',
+                            label: element.chart_series,
                             backgroundColor: chartColor,
                             borderColor: chartColor,
                             data: chartData,
@@ -2000,11 +1995,15 @@ function barchart(element) {
                         responsive: true,
                         maintainAspectRatio: true,
                         scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                boxWidth: 20,
+                                padding: 10,
+                            }
                         },
                         animation: {
                             onComplete: function () {
@@ -2103,7 +2102,7 @@ function linechart(element) {
                     data: {
                         labels: chartLabels,
                         datasets: [{
-                            label: "New Entries",
+                            label: element.chart_series,
                             borderColor: chartColor,
                             pointBorderColor: "#FFF",
                             pointBackgroundColor: chartColor,
@@ -2122,18 +2121,23 @@ function linechart(element) {
                         maintainAspectRatio: true,
                         spanGaps: true,
                         legend: {
-                            position: 'bottom',
                             labels: {
+                                boxWidth: 20,
                                 padding: 10,
-                                fontColor: chartColor,
                             }
                         },
+                        // plugins: {
+                        //     legend: {
+                        //         labels: {
+                        //             color: 'rgb(255, 99, 132)',
+                        //             boxWidth: 1,
+                        //         }
+                        //     }
+                        // },
                         scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
+                            y: {
+                                beginAtZero: true
+                            }
                         },
                         tooltips: {
                             bodySpacing: 4,
@@ -2263,7 +2267,7 @@ function doughnutchart(element) {
                         responsive: true,
                         maintainAspectRatio: true,
                         legend: {
-                            position: 'bottom'
+                            position: 'right'
                         },
                         layout: {
                             padding: {
@@ -2351,14 +2355,8 @@ function scatterplot(element) {
                         },
                         options: {
                             responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: element.chart_title
-                                }
+                            legend: {
+                                position: 'top',
                             },
                             animation: {
                                 onComplete: function () {
