@@ -2024,8 +2024,8 @@ function barchart(element) {
                             onComplete: function () {
                                 image = myBarChart.toBase64Image();
                                 printChart(image, element.position);
-                                labels = arrayToString(chartLabels);
-                                exportChart(element.position, 'bar', labels, chartData, 'Quantity');
+                                var labels = arrayToString(chartLabels);
+                                exportChart(element.position, 'bar', labels, chartData);
                             }
                         }
                     }
