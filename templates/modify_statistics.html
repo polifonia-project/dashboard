@@ -446,10 +446,23 @@
                                     placeholder='{{extra.extra_series}}' value='{{extra.extra_series}}' required><br />
                             </div>
                             {% endfor %}
-                            {% else %}
+                            {% elif dict.chart_type == 'doughnutchart' %}
                             <input style='display: none;' class='form-control' type='text'
                                 name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
                                 placeholder='The label for the data series'><br />
+                            <a id='{{dict.position}}__query-btn' style='display: none;'
+                                class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
+                                name='{{dict.position}}__query-btn'>Add another query</a><br />
+                            {% else %}
+                            {% if dict.chart_series %}
+                            <input style='display: block;' class='form-control' type='text'
+                                name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
+                                placeholder='{{dict.chart_series}}' value='{{dict.chart_series}}' required><br />
+                            {% else %}
+                            <input style='display: block;' class='form-control' type='text'
+                                name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
+                                placeholder='The label for the data series'><br />
+                            {% endif %}
                             <a id='{{dict.position}}__query-btn' style='display: none;'
                                 class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
                                 name='{{dict.position}}__query-btn'>Add another query</a><br />
