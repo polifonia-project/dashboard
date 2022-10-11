@@ -868,12 +868,7 @@ $(function () {
                                         scales: {
                                             y: {
                                                 beginAtZero: true
-                                            },
-                                            xAxes: [{
-                                                ticks: {
-                                                    autoSkip: false
-                                                }
-                                            }]
+                                            }
                                         },
                                         tooltips: {
                                             bodySpacing: 4,
@@ -2148,12 +2143,7 @@ function linechart(element) {
                         scales: {
                             y: {
                                 beginAtZero: true
-                            },
-                            xAxes: [{
-                                ticks: {
-                                    autoSkip: false
-                                }
-                            }]
+                            }
                         },
                         tooltips: {
                             bodySpacing: 4,
