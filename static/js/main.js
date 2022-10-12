@@ -779,10 +779,16 @@ $(function () {
                                     options: {
                                         responsive: true,
                                         maintainAspectRatio: true,
+                                        scaleShowValues: true,
                                         scales: {
                                             y: {
-                                                beginAtZero: true
-                                            }
+                                                beginAtZero: true,
+                                            },
+                                            xAxes: [{
+                                                ticks: {
+                                                    autoSkip: false
+                                                }
+                                            }]
                                         },
                                         legend: {
                                             labels: {
@@ -858,6 +864,7 @@ $(function () {
                                                 padding: 10
                                             }
                                         },
+                                        scaleShowValues: true,
                                         scales: {
                                             y: {
                                                 beginAtZero: true
@@ -1994,10 +2001,16 @@ function barchart(element) {
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
+                        scaleShowValues: true,
                         scales: {
                             y: {
-                                beginAtZero: true
-                            }
+                                beginAtZero: true,
+                            },
+                            xAxes: [{
+                                ticks: {
+                                    autoSkip: false
+                                }
+                            }]
                         },
                         legend: {
                             labels: {
@@ -2126,14 +2139,7 @@ function linechart(element) {
                                 padding: 10,
                             }
                         },
-                        // plugins: {
-                        //     legend: {
-                        //         labels: {
-                        //             color: 'rgb(255, 99, 132)',
-                        //             boxWidth: 1,
-                        //         }
-                        //     }
-                        // },
+                        scaleShowValues: true,
                         scales: {
                             y: {
                                 beginAtZero: true
