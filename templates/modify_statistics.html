@@ -374,8 +374,8 @@
                         </div>
 
                         <!-- input -->
-                        <textarea oninput='auto_grow(this)' name='{{dict.position}}__count_query' type='text'
-                            id='{{dict.position}}__count_query' value="{{dict.count_query}}"
+                        <textarea spellcheck='false' oninput='auto_grow(this)' name='{{dict.position}}__count_query'
+                            type='text' id='{{dict.position}}__count_query' value="{{dict.count_query}}"
                             placeholder="Write the SPARQL query for the count." required>{{dict.count_query}}</textarea>
                         <input name='{{dict.position}}__count_label' type='text' id='{{dict.position}}__count_label'
                             value="{{dict.count_label}}" required>
@@ -417,8 +417,8 @@
                                 {% endfor %}
                             </select>
                             <label>SPARQL query</label>
-                            <textarea oninput='auto_grow(this)' name='{{dict.position}}__chart_query' type='text'
-                                id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
+                            <textarea spellcheck='false' oninput='auto_grow(this)' name='{{dict.position}}__chart_query'
+                                type='text' id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
                                 required>{{dict.chart_query}}</textarea>
                             {% if dict.chart_type == 'scatterplot' %}
                             <input style='display: block;' class='form-control' type='text'
@@ -435,7 +435,7 @@
                                 <br />
                                 <label>SPARQL query</label>
                                 <br />
-                                <textarea oninput='auto_grow(this)'
+                                <textarea spellcheck='false' oninput='auto_grow(this)'
                                     name='{{dict.position}}__extra_query_{{extra.extra_id}}' type='text'
                                     id='{{dict.position}}__extra_query_{{extra.extra_id}}'
                                     placeholder="{{extra.extra_query}}" required>{{extra.extra_query}}</textarea>
