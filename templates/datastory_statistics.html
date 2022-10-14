@@ -87,17 +87,37 @@
 						</div>
 						<div class="exportchart card-tools col-md-12 col-sm-12">
 							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								<span class="btn-label">
-									<i class="fa fa-pencil"></i>
-								</span>
 								Embed
 							</a>
-							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
 								<span class="btn-label">
 									<i class="fa fa-print"></i>
 								</span>
 								Save picture
 							</a>
+							<a href="#" role="button" data-toggle="modal" data-target="#queryModal"
+								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+								See query
+							</a>
+						</div>
+						<!-- SPARQL query modal -->
+						<div class="modal fade" id="queryModal" tabindex="-1" role="dialog"
+							aria-labelledby="queryModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content card">
+									<div class="modal-header">
+										<h4 class="card-title" id="queryModalLabel">Chart SPARQL query</h4>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="container">
+											<p>{{dict.chart_query}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 						{% endif %}
 
