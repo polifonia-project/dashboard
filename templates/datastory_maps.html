@@ -22,9 +22,9 @@
 
 
 {% if "map_filter" in datastory_data.dynamic_elements|map(attribute="type")%}
-  {% set with_filter = 'yes' %}
+{% set with_filter = 'yes' %}
 {% else %}
-  {% set with_filter = 'no' %}
+{% set with_filter = 'no' %}
 {% endif %}
 {% set count = datastory_data.dynamic_elements|length %}
 
@@ -42,6 +42,8 @@
       <button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
       <button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
           download="{{datastory_data.title}}.html">HTML</a></button>
+      <button class="exportbutton" type="button"><a href="#" data-toggle="modal" data-target="#queryModal"
+          id="sparqlQuery">QUERIES</a></button>
       <!-- publish button -->
       {% if datastory_data.id and session['user_type'] == 'extra' %}
       <hr>
@@ -77,49 +79,75 @@
           <span id='loader' class='lds-dual-ring hidden overlay'></span>
           <!-- textsearch results -->
           {% for dict in datastory_data.dynamic_elements %}
-            {% if dict.type == 'map_filter' %}
-            <input class='inputinvisible'
-                id='{{dict.position}}__map_filter_title' type='hidden'
-                name='{{dict.position}}__map_filter_title'
-                placeholder='The title of the filter'
-                value="{{dict.map_filter_title}}">
-            <textarea class='inputinvisible' oninput='auto_grow(this)'
-                name='{{dict.position}}__map_filter_query' type='hidden'
-                id='{{dict.position}}__map_filter_query' rows='6'
-                data-bind-query='{{dict.map_filter_bind_query}}'
-                required>{{dict.map_filter_query}}</textarea>
-            {% endif %}
-            {% if dict.type == 'map' %}
-              {% if dict.map_title | length > 0 %}
-              <h2 class="text-white pb-2 fw-bold">{{dict.map_title}}</h2>
-              {% endif %}
-            <input class='addplaceholder_points' name='{{dict.position}}__map_points_query' type='hidden'
-              id='{{dict.position}}__map_points_query' value='{{dict.map_points_query}}'></input>
-            <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
-            </div>
-              {% if with_filter == 'yes' %}
-              <a onclick='showFilters({{count}})' href="#">Show sidebar</a>
-              <script type="text/javascript">
-                function showFilters(count) {
-                  for (let step = 2; step < count+1; step++) {
-                    var qf = $("#"+step+"__map_filter_query").val().replace('\n', '');
-                    var encoded_filter = encodeURIComponent(qf);
-                    var map_filter_bind_query = $('#1__map_filter_query').map(function(){ return $(this).data('bind-query');}).get();
-                    var filter_title = $("#"+step+"__map_filter_title").val();
-                    var filter_id = step;
-                    var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
-                    addFilterMap("{{datastory_data.sparql_endpoint}}",encoded_filter,map_filter_bind_query,filter_title,filter_id,checked_filters);
+          {% if dict.type == 'map_filter' %}
+          <input class='inputinvisible' id='{{dict.position}}__map_filter_title' type='hidden'
+            name='{{dict.position}}__map_filter_title' placeholder='The title of the filter'
+            value="{{dict.map_filter_title}}">
+          <textarea class='inputinvisible' oninput='auto_grow(this)' name='{{dict.position}}__map_filter_query'
+            type='hidden' id='{{dict.position}}__map_filter_query' rows='6'
+            data-bind-query='{{dict.map_filter_bind_query}}' required>{{dict.map_filter_query}}</textarea>
+          {% endif %}
+          {% if dict.type == 'map' %}
+          {% if dict.map_title | length > 0 %}
+          <h2 class="text-white pb-2 fw-bold">{{dict.map_title}}</h2>
+          {% endif %}
+          <input class='addplaceholder_points' name='{{dict.position}}__map_points_query' type='hidden'
+            id='{{dict.position}}__map_points_query' value='{{dict.map_points_query}}'></input>
+          <div class="map_preview_container" id="{{dict.position}}__map_preview_container">
+          </div>
+          {% if with_filter == 'yes' %}
+          <a onclick='showFilters({{count}})' href="#">Show sidebar</a>
+          <script type="text/javascript">
+            function showFilters(count) {
+              for (let step = 2; step < count + 1; step++) {
+                var qf = $("#" + step + "__map_filter_query").val().replace('\n', '');
+                var encoded_filter = encodeURIComponent(qf);
+                var map_filter_bind_query = $('#1__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
+                var filter_title = $("#" + step + "__map_filter_title").val();
+                var filter_id = step;
+                var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+                addFilterMap("{{datastory_data.sparql_endpoint}}", encoded_filter, map_filter_bind_query, filter_title, filter_id, checked_filters);
 
-                  }
+              }
 
-                  };
-              </script>
+            };
+          </script>
 
-              {% endif %}
-            {% endif %}
+          {% endif %}
+          {% endif %}
 
 
           {% endfor %}
+
+          <!-- SPARQL query modal -->
+          <div class="modal fade" id="queryModal" tabindex="-1" role="dialog" aria-labelledby="queryModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content card">
+                <div class="modal-header">
+                  <h4 class="card-title" id="queryModalLabel">SPARQL query</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="typography-line col-md-12 col-sm-12">
+                    {% for dict in datastory_data.dynamic_elements %}
+                    {% for k,v in dict.items() %}
+                    {% if 'title' in k %}
+                    <h3 class="text-white">{{v[0]|upper}}{{v[1:]}}</h3>
+                    {% endif %}
+                    {% if 'query' in k and 'bind' not in k %}
+                    <p>{{v}}</p>
+                    <hr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -186,25 +214,25 @@
 
 
 {% for dict in datastory_data.dynamic_elements %}
-  {% if dict.type == 'map' %}
-    <script type="text/javascript">
-      var map = initMap("{{dict.position}}");
-      var q = $("#{{dict.position}}__map_points_query").val();
-      // TODO change waitfilters and idx
-      createMap("{{datastory_data.sparql_endpoint}}", encodeURIComponent(q), "{{dict.position}}__map_preview_container", 0, false, datastory_data.color_code[0]);
-      var sidebar = initSidebar();
-    </script>
-    <script type="text/javascript" id="dataMap"></script>
-    <script type="text/javascript">
-      $("#sidebar").on('click', function() {
-        if ($("#maps_datastory_final") != undefined && $("#sidebar") != undefined) {
-          console.log("there we are");
-          checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
-          addRemoveMarkers(checked_filters);
-        }
-       });
-    </script>
-  {% endif %}
+{% if dict.type == 'map' %}
+<script type="text/javascript">
+  var map = initMap("{{dict.position}}");
+  var q = $("#{{dict.position}}__map_points_query").val();
+  // TODO change waitfilters and idx
+  createMap("{{datastory_data.sparql_endpoint}}", encodeURIComponent(q), "{{dict.position}}__map_preview_container", 0, false, datastory_data.color_code[0]);
+  var sidebar = initSidebar();
+</script>
+<script type="text/javascript" id="dataMap"></script>
+<script type="text/javascript">
+  $("#sidebar").on('click', function () {
+    if ($("#maps_datastory_final") != undefined && $("#sidebar") != undefined) {
+      console.log("there we are");
+      checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+      addRemoveMarkers(checked_filters);
+    }
+  });
+</script>
+{% endif %}
 {% endfor %}
 
 
