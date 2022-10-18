@@ -145,6 +145,8 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                         total_extra_dict = {}  # to store together extra data of one chart
                         extra_queries = []  # to store in separate dict extra data of one chart
 
+                        legend = {}  # data for chart axes labels
+
                         for k, v in form_data.items():
                             if '__' in k:
                                 if position == int(k.split('__')[0]):
@@ -157,9 +159,12 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'count' in k:
                                         elements_dict['type'] = 'count'
                                         elements_dict[k.split('__')[1]] = v
-                                    elif 'chart' in k:
+                                    elif 'chart' in k and 'label' not in k:
                                         elements_dict['type'] = 'chart'
                                         elements_dict[k.split('__')[1]] = v
+                                    elif 'chart_label' in k:
+                                        key = k.split('__')[1].split('_')[2]
+                                        legend[key] = v
                                     elif 'tablevalueaction' in k:
                                         elements_dict['type'] = 'tablevalueaction'
                                         elements_dict[k.split('__')[1]] = v
@@ -189,6 +194,7 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     extra_dict['extra_id'] = str(e)
                             extra_queries.append(extra_dict)
                         elements_dict['extra_queries'] = extra_queries
+                        elements_dict['chart_legend'] = legend
 
                         # create dicts with operations info
                         for op in op_list:
