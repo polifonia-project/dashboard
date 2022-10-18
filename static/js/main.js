@@ -480,6 +480,8 @@ $(function () {
             var chart_series = '';
             var extra_queries = [];
             var extra_series = [];
+            var x_label = [];
+            var y_label = [];
             // map
             var points_query = '';
             var filter_id = '';
@@ -501,6 +503,10 @@ $(function () {
                     chart_title = element.value;
                 } else if (element.name == (idx + 1) + '__chart_type') {
                     chart_type = element.value;
+                } else if (element.name == (idx + 1) + '__chart_label_x') {
+                    x_label = element.value;
+                } else if (element.name == (idx + 1) + '__chart_label_y') {
+                    y_label = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
                 } else if (element.name == ((idx + 1) + '__chart_series')) {
@@ -634,11 +640,21 @@ $(function () {
                                             plugins: {
                                                 legend: {
                                                     position: 'top',
-                                                },
-                                                title: {
-                                                    display: true,
-                                                    text: chart_title
                                                 }
+                                            },
+                                            scales: {
+                                                yAxes: [{
+                                                    scaleLabel: {
+                                                        display: true,
+                                                        labelString: y_label
+                                                    }
+                                                }],
+                                                xAxes: [{
+                                                    scaleLabel: {
+                                                        display: true,
+                                                        labelString: x_label
+                                                    }
+                                                }]
                                             }
                                         }
                                     });
@@ -728,6 +744,20 @@ $(function () {
                                 responsive: true,
                                 legend: {
                                     position: 'top',
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: y_label
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: x_label
+                                        }
+                                    }]
                                 }
                             }
                         });
@@ -792,10 +822,18 @@ $(function () {
                                         maintainAspectRatio: true,
                                         scaleShowValues: true,
                                         scales: {
-                                            y: {
-                                                beginAtZero: true,
-                                            },
+                                            yAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: y_label
+                                                },
+                                                beginAtZero: true
+                                            }],
                                             xAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: x_label
+                                                },
                                                 ticks: {
                                                     autoSkip: false
                                                 }
@@ -877,9 +915,22 @@ $(function () {
                                         },
                                         scaleShowValues: true,
                                         scales: {
-                                            y: {
+                                            yAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: y_label
+                                                },
                                                 beginAtZero: true
-                                            }
+                                            }],
+                                            xAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: x_label
+                                                },
+                                                ticks: {
+                                                    autoSkip: false
+                                                }
+                                            }]
                                         },
                                         tooltips: {
                                             bodySpacing: 4,
@@ -2014,10 +2065,18 @@ function barchart(element) {
                         maintainAspectRatio: true,
                         scaleShowValues: true,
                         scales: {
-                            y: {
-                                beginAtZero: true,
-                            },
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.y
+                                },
+                                beginAtZero: true
+                            }],
                             xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.x
+                                },
                                 ticks: {
                                     autoSkip: false
                                 }
@@ -2152,9 +2211,22 @@ function linechart(element) {
                         },
                         scaleShowValues: true,
                         scales: {
-                            y: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.y
+                                },
                                 beginAtZero: true
-                            }
+                            }],
+                            xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.x
+                                },
+                                ticks: {
+                                    autoSkip: false
+                                }
+                            }]
                         },
                         tooltips: {
                             bodySpacing: 4,
@@ -2375,6 +2447,24 @@ function scatterplot(element) {
                             legend: {
                                 position: 'top',
                             },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: element.chart_legend.y
+                                    },
+                                    beginAtZero: true
+                                }],
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: element.chart_legend.x
+                                    },
+                                    ticks: {
+                                        autoSkip: false
+                                    }
+                                }]
+                            },
                             animation: {
                                 onComplete: function () {
                                     image = myScatterChart.toBase64Image();
@@ -2473,6 +2563,24 @@ function scatterplot(element) {
                         display: true,
                         text: element.chart_title
                     }
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: element.chart_legend.y
+                        },
+                        beginAtZero: true
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: element.chart_legend.x
+                        },
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
                 },
                 animation: {
                     onComplete: function () {
