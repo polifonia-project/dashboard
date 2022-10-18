@@ -145,13 +145,20 @@ function add_field(name, bind_query_id = "") {
 					<option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
 					<option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
 					<option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
-				</select><br/>\
+				</select>\
+                <a href='#' class='form-text' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
 				<label for='largeInput'>SPARQL query</label><br/>\
 				<textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
 				<input style='display: block;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
-				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
-				<a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
-				<label for='largeInput'>Chart Title</label><br/>\
+				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a>\
+				<div class='form-group row' id='" + (counter + 1) + "__axes_label' style='display: flex;'><div class='col-6'>\
+                <label>x label</label>\
+                <input name='" + (counter + 1) + "__chart_label_x' type='text' id='" + (counter + 1) + "__chart_label_x' placeholder='The label for the x axis'></div>\
+                <div class='col-6'>\
+                <label>y label</label>\
+                <input name='" + (counter + 1) + "__chart_label_y' type='text' id='" + (counter + 1) + "__chart_label_y' placeholder='The label for the y axis'>\
+                </div> </div>\
+                <label for='largeInput'>Chart Title</label><br/>\
 				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
 				<br/><label>Operations</label><br/>\
 				<input type='checkbox' id='count' name='action1' value='count'>\
@@ -473,6 +480,8 @@ $(function () {
             var chart_series = '';
             var extra_queries = [];
             var extra_series = [];
+            var x_label = [];
+            var y_label = [];
             // map
             var points_query = '';
             var filter_id = '';
@@ -494,6 +503,10 @@ $(function () {
                     chart_title = element.value;
                 } else if (element.name == (idx + 1) + '__chart_type') {
                     chart_type = element.value;
+                } else if (element.name == (idx + 1) + '__chart_label_x') {
+                    x_label = element.value;
+                } else if (element.name == (idx + 1) + '__chart_label_y') {
+                    y_label = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
                 } else if (element.name == ((idx + 1) + '__chart_series')) {
@@ -518,20 +531,24 @@ $(function () {
 
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
-            const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But hten I have to delete the else, and when I change the chart they remain visible
+            const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But then I have to delete the else, and when I change the chart they remain visible
+            const axes_label = document.getElementById((idx + 1) + '__axes_label');
             if (queryButton) {
                 if (chart_type == 'scatterplot') {
                     // show
                     queryButton.style.display = "block";
                     querySeries.style.display = "block";
+                    axes_label.style.display = "flex";
                 } else if (chart_type == 'doughnutchart') {
                     // hide both
                     queryButton.style.display = "none";
                     querySeries.style.display = "none";
+                    axes_label.style.display = "none";
                 } else {
                     // hide
                     queryButton.style.display = "none";
                     querySeries.style.display = "block";
+                    axes_label.style.display = "flex";
                 }
             }
 
@@ -623,11 +640,21 @@ $(function () {
                                             plugins: {
                                                 legend: {
                                                     position: 'top',
-                                                },
-                                                title: {
-                                                    display: true,
-                                                    text: chart_title
                                                 }
+                                            },
+                                            scales: {
+                                                yAxes: [{
+                                                    scaleLabel: {
+                                                        display: true,
+                                                        labelString: y_label
+                                                    }
+                                                }],
+                                                xAxes: [{
+                                                    scaleLabel: {
+                                                        display: true,
+                                                        labelString: x_label
+                                                    }
+                                                }]
                                             }
                                         }
                                     });
@@ -717,6 +744,20 @@ $(function () {
                                 responsive: true,
                                 legend: {
                                     position: 'top',
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: y_label
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: x_label
+                                        }
+                                    }]
                                 }
                             }
                         });
@@ -781,10 +822,18 @@ $(function () {
                                         maintainAspectRatio: true,
                                         scaleShowValues: true,
                                         scales: {
-                                            y: {
-                                                beginAtZero: true,
-                                            },
+                                            yAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: y_label
+                                                },
+                                                beginAtZero: true
+                                            }],
                                             xAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: x_label
+                                                },
                                                 ticks: {
                                                     autoSkip: false
                                                 }
@@ -866,9 +915,22 @@ $(function () {
                                         },
                                         scaleShowValues: true,
                                         scales: {
-                                            y: {
+                                            yAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: y_label
+                                                },
                                                 beginAtZero: true
-                                            }
+                                            }],
+                                            xAxes: [{
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: x_label
+                                                },
+                                                ticks: {
+                                                    autoSkip: false
+                                                }
+                                            }]
                                         },
                                         tooltips: {
                                             bodySpacing: 4,
@@ -2003,10 +2065,18 @@ function barchart(element) {
                         maintainAspectRatio: true,
                         scaleShowValues: true,
                         scales: {
-                            y: {
-                                beginAtZero: true,
-                            },
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.y
+                                },
+                                beginAtZero: true
+                            }],
                             xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.x
+                                },
                                 ticks: {
                                     autoSkip: false
                                 }
@@ -2141,9 +2211,22 @@ function linechart(element) {
                         },
                         scaleShowValues: true,
                         scales: {
-                            y: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.y
+                                },
                                 beginAtZero: true
-                            }
+                            }],
+                            xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: element.chart_legend.x
+                                },
+                                ticks: {
+                                    autoSkip: false
+                                }
+                            }]
                         },
                         tooltips: {
                             bodySpacing: 4,
@@ -2364,6 +2447,24 @@ function scatterplot(element) {
                             legend: {
                                 position: 'top',
                             },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: element.chart_legend.y
+                                    },
+                                    beginAtZero: true
+                                }],
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: element.chart_legend.x
+                                    },
+                                    ticks: {
+                                        autoSkip: false
+                                    }
+                                }]
+                            },
                             animation: {
                                 onComplete: function () {
                                     image = myScatterChart.toBase64Image();
@@ -2462,6 +2563,24 @@ function scatterplot(element) {
                         display: true,
                         text: element.chart_title
                     }
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: element.chart_legend.y
+                        },
+                        beginAtZero: true
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: element.chart_legend.x
+                        },
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
                 },
                 animation: {
                     onComplete: function () {
