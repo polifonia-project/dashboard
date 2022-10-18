@@ -474,19 +474,30 @@
                             <div class='form-group row' id='{{dict.position}}__axes_label' style='display: none;'>
                                 {% else %}
                                 <div class='form-group row' id='{{dict.position}}__axes_label' style='display: flex;'>
-
                                     {% endif %}
                                     <div class='col-6'>
                                         <label>x label</label>
+                                        {% if dict.chart_legend %}
                                         <input name='{{dict.position}}__chart_label_x' type='text'
                                             id='{{dict.position}}__chart_label_x' placeholder='The label for the x axis'
-                                            value=''>
+                                            value='{{dict.chart_legend.x}}'>
+                                        {% else %}
+                                        <input name='{{dict.position}}__chart_label_x' type='text'
+                                            id='{{dict.position}}__chart_label_x'
+                                            placeholder='The label for the x axis'>
+                                        {% endif %}
                                     </div>
                                     <div class='col-6'>
                                         <label>y label</label>
+                                        {% if dict.chart_legend %}
                                         <input name='{{dict.position}}__chart_label_y' type='text'
                                             id='{{dict.position}}__chart_label_y' placeholder='The label for the y axis'
-                                            value=''>
+                                            value='{{dict.chart_legend.y}}'>
+                                        {% else %}
+                                        <input name='{{dict.position}}__chart_label_y' type='text'
+                                            id='{{dict.position}}__chart_label_y'
+                                            placeholder='The label for the y axis'>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <label>Chart Title</label>
