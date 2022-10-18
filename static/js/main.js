@@ -150,14 +150,14 @@ function add_field(name, bind_query_id = "") {
 				<label for='largeInput'>SPARQL query</label><br/>\
 				<textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
 				<input style='display: block;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
-				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
-				<div class='form-group row'><div class='col-6'>\
+				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a>\
+				<div class='form-group row' id='" + (counter + 1) + "__axes_label' style='display: flex;'><div class='col-6'>\
                 <label>x label</label>\
                 <input name='" + (counter + 1) + "__chart_label_x' type='text' id='" + (counter + 1) + "__chart_label_x' placeholder='The label for the x axis'></div>\
                 <div class='col-6'>\
                 <label>y label</label>\
                 <input name='" + (counter + 1) + "__chart_label_y' type='text' id='" + (counter + 1) + "__chart_label_y' placeholder='The label for the y axis'>\
-                </div> </div><br />\
+                </div> </div>\
                 <label for='largeInput'>Chart Title</label><br/>\
 				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
 				<br/><label>Operations</label><br/>\
@@ -525,20 +525,24 @@ $(function () {
 
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
-            const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But hten I have to delete the else, and when I change the chart they remain visible
+            const querySeries = document.getElementById((idx + 1) + '__chart_series'); // But then I have to delete the else, and when I change the chart they remain visible
+            const axes_label = document.getElementById((idx + 1) + '__axes_label');
             if (queryButton) {
                 if (chart_type == 'scatterplot') {
                     // show
                     queryButton.style.display = "block";
                     querySeries.style.display = "block";
+                    axes_label.style.display = "flex";
                 } else if (chart_type == 'doughnutchart') {
                     // hide both
                     queryButton.style.display = "none";
                     querySeries.style.display = "none";
+                    axes_label.style.display = "none";
                 } else {
                     // hide
                     queryButton.style.display = "none";
                     querySeries.style.display = "block";
+                    axes_label.style.display = "flex";
                 }
             }
 
