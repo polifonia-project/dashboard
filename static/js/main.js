@@ -145,13 +145,20 @@ function add_field(name, bind_query_id = "") {
 					<option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
 					<option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
 					<option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
-				</select><br/>\
+				</select>\
+                <a href='#' class='form-text' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
 				<label for='largeInput'>SPARQL query</label><br/>\
 				<textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
 				<input style='display: block;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
 				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a><br/>\
-				<a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
-				<label for='largeInput'>Chart Title</label><br/>\
+				<div class='form-group row'><div class='col-6'>\
+                <label>x label</label>\
+                <input name='" + (counter + 1) + "__chart_label_x' type='text' id='" + (counter + 1) + "__chart_label_x' placeholder='The label for the x axis'></div>\
+                <div class='col-6'>\
+                <label>y label</label>\
+                <input name='" + (counter + 1) + "__chart_label_y' type='text' id='" + (counter + 1) + "__chart_label_y' placeholder='The label for the y axis'>\
+                </div> </div><br />\
+                <label for='largeInput'>Chart Title</label><br/>\
 				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
 				<br/><label>Operations</label><br/>\
 				<input type='checkbox' id='count' name='action1' value='count'>\

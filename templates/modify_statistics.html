@@ -416,6 +416,9 @@
                                 {% endif %}
                                 {% endfor %}
                             </select>
+                            <a href='#' class='form-text' role='button' data-toggle='modal'
+                                data-target='#chartsModalLong'>Discover more
+                                about query and charts.</a><br />
                             <label>SPARQL query</label>
                             <textarea spellcheck='false' oninput='auto_grow(this)' name='{{dict.position}}__chart_query'
                                 type='text' id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
@@ -465,14 +468,27 @@
                             {% endif %}
                             <a id='{{dict.position}}__query-btn' style='display: none;'
                                 class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
-                                name='{{dict.position}}__query-btn'>Add another query</a><br />
+                                name='{{dict.position}}__query-btn'>Add another query</a>
                             {% endif %}
-                            <a href='#' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more
-                                about query and charts.</a><br />
+                            <div class='form-group row'>
+                                <div class='col-6'>
+                                    <label>x label</label>
+                                    <input name='{{dict.position}}__chart_label_x' type='text'
+                                        id='{{dict.position}}__chart_label_x' placeholder='The label for the x axis'
+                                        value=''>
+                                </div>
+                                <div class='col-6'>
+                                    <label>y label</label>
+                                    <input name='{{dict.position}}__chart_label_y' type='text'
+                                        id='{{dict.position}}__chart_label_y' placeholder='The label for the y axis'
+                                        value=''>
+                                </div>
+                            </div>
+                            <br />
                             <label>Chart Title</label>
                             <input name='{{dict.position}}__chart_title' type='text' id='{{dict.position}}__chart_title'
-                                value="{{dict.chart_title}}" required>
-                            <label>Operations</label><br>
+                                value="{{dict.chart_title}}" required><br /><br /><br />
+                            <label>Operations</label><br />
 
 
                             <!-- no operation present -->
