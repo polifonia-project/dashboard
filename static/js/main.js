@@ -167,6 +167,15 @@ function add_field(name, bind_query_id = "") {
 				<label for='count'>Sort</label><br/>\
 				</div>";
 
+    var simple_table_field = "<table class='col-12' id='" + (counter + 1) + "__table'></table>\
+            <div class='form-group'>\
+                <label for='" + (counter + 1) + "__table_title'>Table title</label>\
+                <input name='" + (counter + 1) + "__table_title' type='text' id='" + (counter + 1) + "__table_title' placeholder='The title of your table' required></div>\
+            <div class='form-group'>\
+                <label for='" + (counter + 1) + "__table_query'>SPARQL query</label>\
+                <textarea spellcheck='false' oninput='auto_grow(this)' name='" + (counter + 1) + "__table_query' type='text' id='" + (counter + 1) + "__table_query' placeholder='The query for your table results' required></textarea>\
+            </div></div>";
+
     var text_search_field = "\
 		<input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
 		<textarea class='addplaceholder_textsearch' \
@@ -327,6 +336,10 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
+    } else if ((name == 'table_box')) {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add tabel</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + simple_table_field + close_addons;
     } else if (name == 'textsearch') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
         var close_addons = "</div>";
