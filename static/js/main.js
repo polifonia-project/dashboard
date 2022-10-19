@@ -599,6 +599,21 @@ $(function () {
                 });
             }
 
+            // call for the simple table 
+            else if (table_query) {
+                $.ajax({
+                    type: 'GET',
+                    url: sparqlEndpoint + '?query=' + encoded_table,
+                    headers: { Accept: 'application/sparql-results+json' },
+                    success: function (returnedJson) {
+                        createSimpleTable(table_title, returnedJson, pos = (idx + 1));
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $("#" + (idx + 1) + "__table").text(xhr.statusText + ' in the query, check and try again.');
+                    }
+                });
+            }
+
             // call for the charts
             else if (chart_query) {
                 // scatter plot
