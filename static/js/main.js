@@ -495,6 +495,8 @@ $(function () {
             var extra_series = [];
             var x_label = [];
             var y_label = [];
+            var table_title = '';
+            var table_query = '';
             // map
             var points_query = '';
             var filter_id = '';
@@ -520,6 +522,10 @@ $(function () {
                     x_label = element.value;
                 } else if (element.name == (idx + 1) + '__chart_label_y') {
                     y_label = element.value;
+                } else if (element.name == (idx + 1) + '__table_title') {
+                    table_title = element.value;
+                } else if (element.name == (idx + 1) + '__table_query') {
+                    table_query = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
                 } else if (element.name == ((idx + 1) + '__chart_series')) {
@@ -571,6 +577,7 @@ $(function () {
             var encoded_chart = encodeURIComponent(chart_query);
             var encoded_points = encodeURIComponent(points_query);
             var encoded_filter = encodeURIComponent(filter_query);
+            var encoded_table = encodeURIComponent(table_query);
 
 
             // call for the count
@@ -2710,6 +2717,60 @@ function scatterplot(element) {
 //     }
 
 // }
+
+
+// STATISTICS TABLE
+function createSimpleTable(table_title, returnedJson, pos) {
+    var tabletoappend = "<caption class='resulttable_caption' \
+	style='color: white'>"+ decodeURIComponent(table_title) + "\
+	</caption>\
+	<tr>";
+    // exclude headings with Label
+    var headings = returnedJson.head.vars;
+    for (j = 0; j < headings.length; j++) {
+        if (!headings[j].includes('Label')) {
+            tabletoappend += "<th>" + headings[j] + "</th>";
+        } else {
+            headings.splice(j, 1);
+            j--;
+        }
+    }
+
+    // format table
+    tabletoappend += "</tr>";
+    //if (returnedJson.length >= 1) {
+    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+        tabletoappend += "<tr>";
+        for (j = 0; j < headings.length; j++) {
+
+            var res_value = "";
+            if (returnedJson.results.bindings[i][headings[j]] !== undefined) {
+                res_value = returnedJson.results.bindings[i][headings[j]].value;
+            };
+
+            if (returnedJson.results.bindings[i][headings[j] + 'Label'] != undefined) {
+                var res_label = ""
+                if (returnedJson.results.bindings[i][headings[j] + 'Label'].value.length) {
+                    res_label = returnedJson.results.bindings[i][headings[j] + 'Label'].value;
+                }
+                tabletoappend += "<td>";
+                tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+                // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
+                tabletoappend += "</td>";
+            }
+            else {
+                tabletoappend += "<td>";
+                tabletoappend += "<span class='table_result'>" + res_value + "</span>";
+                // var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
+                tabletoappend += "</td>";
+            }
+        }
+        tabletoappend += "</tr>";
+    }
+    $("#" + pos + "__table tr").detach();
+    $("#" + pos + "__table").append(tabletoappend);
+
+}
 
 // autoresize textarea
 function auto_grow(element) {
