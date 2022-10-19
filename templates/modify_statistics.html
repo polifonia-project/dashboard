@@ -425,6 +425,8 @@
                             </div>
 
 
+                            <!-- TABLE -->
+
                             {% elif dict.type == 'chart' %}
                             <!-- CHART -->
                             <div class="col-12" id="{{dict.position}}__block_field">
@@ -438,7 +440,7 @@
                                 <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
                                     <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
                                 </a>
-                                <br>
+                                <br />
                                 <!-- preview -->
                                 <div class="chart-container">
                                     <canvas id="{{dict.position}}__chartid"></canvas>
@@ -604,6 +606,8 @@
                                     Count</a>
                                 <a class="btn btn-primary btn-border" onclick="add_field(name)" name="chart_box">Add
                                     Chart</a>
+                                <a class="btn btn-primary btn-border" onclick="add_field(name)" name="table_box">Add
+                                    Table</a>
                             </section>
                         </div>
                     </div>
