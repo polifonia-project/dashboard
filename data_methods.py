@@ -165,6 +165,9 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     elif 'chart_label' in k:
                                         key = k.split('__')[1].split('_')[2]
                                         legend[key] = v
+                                    elif 'table_' in k:
+                                        elements_dict['type'] = 'table'
+                                        elements_dict[k.split('__')[1]] = v
                                     elif 'tablevalueaction' in k:
                                         elements_dict['type'] = 'tablevalueaction'
                                         elements_dict[k.split('__')[1]] = v

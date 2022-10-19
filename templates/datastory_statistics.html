@@ -64,24 +64,44 @@
 					<div class="card-body row">
 						<span id='loader' class='lds-dual-ring hidden overlay'></span>
 						{% for dict in datastory_data.dynamic_elements %}
-						<!-- section title -->
+
 						{% if dict.type == 'section_title' %}
+						<!-- section title -->
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
 							<h2 class="card-title">{{dict.section_title}}</h2>
 						</div>
 
-						<!-- text -->
 						{% elif dict.type == 'text' %}
+						<!-- text -->
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
 							<p>{{dict.text}}</p>
 						</div>
 
-						<!-- count -->
 						{% elif dict.type == 'count' %}
+						<!-- count -->
 						<div class="count_result col-md-3 col-sm-12" id="{{dict.position}}"></div>
 
-						<!-- chart -->
+						{% elif dict.type == 'table' %}
+						<!-- table -->
+						<table class='col-12' id='{{dict.position}}__table'></table>
+						<div class="exportchart card-tools col-md-12 col-sm-12">
+							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+								Embed
+							</a>
+							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+								<span class="btn-label">
+									<i class="fa fa-print"></i>
+								</span>
+								Save picture
+							</a>
+							<a href="#" role="button" data-toggle="modal" data-target="#queryModal_{{dict.position}}"
+								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+								See query
+							</a>
+						</div>
+
 						{% elif dict.type == 'chart' %}
+						<!-- chart -->
 						<div class="chartstory col-md-12 col-sm-12" id="{{dict.position}}">
 
 						</div>

@@ -374,6 +374,10 @@ def modify_datastory(section_name, datastory_name):
                                                         key = k.split('__')[
                                                             1].split('_')[2]
                                                         legend[key] = v
+                                                    elif 'table_' in k:
+                                                        elements_dict['type'] = 'table'
+                                                        elements_dict[k.split('__')[
+                                                            1]] = v
                                                     elif 'tablevalueaction' in k:
                                                         elements_dict['type'] = 'tablevalueaction'
                                                         elements_dict[k.split('__')[

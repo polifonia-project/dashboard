@@ -167,6 +167,15 @@ function add_field(name, bind_query_id = "") {
 				<label for='count'>Sort</label><br/>\
 				</div>";
 
+    var simple_table_field = "<table class='col-12' id='" + (counter + 1) + "__table'></table>\
+            <div class='form-group'>\
+                <label for='" + (counter + 1) + "__table_title'>Table title</label>\
+                <input name='" + (counter + 1) + "__table_title' type='text' id='" + (counter + 1) + "__table_title' placeholder='The title of your table' required></div>\
+            <div class='form-group'>\
+                <label for='" + (counter + 1) + "__table_query'>SPARQL query</label>\
+                <textarea spellcheck='false' oninput='auto_grow(this)' name='" + (counter + 1) + "__table_query' type='text' id='" + (counter + 1) + "__table_query' placeholder='The query for your table results' required></textarea>\
+            </div></div>";
+
     var text_search_field = "\
 		<input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
 		<textarea class='addplaceholder_textsearch' \
@@ -327,6 +336,10 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
+    } else if (name == 'table_box') {
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add tabel</h4>";
+        var close_addons = "</div>";
+        contents += open_addons + up_down + simple_table_field + close_addons;
     } else if (name == 'textsearch') {
         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
         var close_addons = "</div>";
@@ -482,6 +495,8 @@ $(function () {
             var extra_series = [];
             var x_label = [];
             var y_label = [];
+            var table_title = '';
+            var table_query = '';
             // map
             var points_query = '';
             var filter_id = '';
@@ -507,6 +522,10 @@ $(function () {
                     x_label = element.value;
                 } else if (element.name == (idx + 1) + '__chart_label_y') {
                     y_label = element.value;
+                } else if (element.name == (idx + 1) + '__table_title') {
+                    table_title = element.value;
+                } else if (element.name == (idx + 1) + '__table_query') {
+                    table_query = element.value;
                 } else if (element.name.includes((idx + 1) + '__action')) {
                     operations.push(element.value);
                 } else if (element.name == ((idx + 1) + '__chart_series')) {
@@ -559,7 +578,6 @@ $(function () {
             var encoded_points = encodeURIComponent(points_query);
             var encoded_filter = encodeURIComponent(filter_query);
 
-
             // call for the count
             if (count_query) {
                 $.ajax({
@@ -577,6 +595,11 @@ $(function () {
                         $("#" + (idx + 1) + "__num").text(xhr.statusText + ' in the query, check and try again.');
                     }
                 });
+            }
+
+            // call for the simple table 
+            else if (table_query) {
+                simpleTableViz(sparqlEndpoint, table_query, table_title, (idx + 1));
             }
 
             // call for the charts
@@ -1881,10 +1904,11 @@ function chartViz() {
                     linechart(element);
                 } else if (chart === "doughnutchart") {
                     doughnutchart(element);
-                }
-                else if (chart === 'scatterplot') {
+                } else if (chart === 'scatterplot') {
                     scatterplot(element);
                 }
+            } else if (element.type === 'table') {
+                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position);
             }
         }
         )
@@ -2697,6 +2721,76 @@ function scatterplot(element) {
 //     }
 
 // }
+
+
+// STATISTICS TABLE
+function createSimpleTable(table_title, returnedJson, pos) {
+    var tabletoappend = "<caption class='resulttable_caption' \
+	style='color: white'>"+ decodeURIComponent(table_title) + "\
+	</caption>\
+	<tr>";
+    // exclude headings with Label
+    var headings = returnedJson.head.vars;
+    for (j = 0; j < headings.length; j++) {
+        if (!headings[j].includes('Label')) {
+            tabletoappend += "<th>" + headings[j] + "</th>";
+        } else {
+            headings.splice(j, 1);
+            j--;
+        }
+    }
+
+    // format table
+    tabletoappend += "</tr>";
+    //if (returnedJson.length >= 1) {
+    for (i = 0; i < returnedJson.results.bindings.length; i++) {
+        tabletoappend += "<tr>";
+        for (j = 0; j < headings.length; j++) {
+
+            var res_value = "";
+            if (returnedJson.results.bindings[i][headings[j]] !== undefined) {
+                res_value = returnedJson.results.bindings[i][headings[j]].value;
+            };
+
+            if (returnedJson.results.bindings[i][headings[j] + 'Label'] != undefined) {
+                var res_label = ""
+                if (returnedJson.results.bindings[i][headings[j] + 'Label'].value.length) {
+                    res_label = returnedJson.results.bindings[i][headings[j] + 'Label'].value;
+                }
+                tabletoappend += "<td>";
+                tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+                // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
+                tabletoappend += "</td>";
+            }
+            else {
+                tabletoappend += "<td>";
+                tabletoappend += "<span class='table_result'>" + res_value + "</span>";
+                // var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
+                tabletoappend += "</td>";
+            }
+        }
+        tabletoappend += "</tr>";
+    }
+    $("#" + pos + "__table tr").detach();
+    $("#" + pos + "__table").append(tabletoappend);
+
+}
+
+function simpleTableViz(sparqlEndpoint, table_query, table_title, pos) {
+    var encoded_table = encodeURIComponent(table_query);
+    $.ajax({
+        type: 'GET',
+        url: sparqlEndpoint + '?query=' + encoded_table,
+        headers: { Accept: 'application/sparql-results+json' },
+        success: function (returnedJson) {
+            createSimpleTable(table_title, returnedJson, pos);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
+        }
+    });
+
+}
 
 // autoresize textarea
 function auto_grow(element) {
