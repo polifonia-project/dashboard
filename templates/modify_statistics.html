@@ -424,8 +424,39 @@
                                     id='{{dict.position}}__count_label' value="{{dict.count_label}}" required>
                             </div>
 
-
+                            {% elif dict.type == 'table' %}
                             <!-- TABLE -->
+                            <div class='col-12' id='{{dict.position}}__block_field'>
+                                <!-- buttons -->
+                                <a href='#' class='up' id='{{dict.position}}__up' name='{{dict.position}}__up'>
+                                    <i class='fas fa-arrow-up' id='{{dict.position}}__arrow-up'></i>
+                                </a>
+                                <a href='#' class='down' id='{{dict.position}}__down' name='{{dict.position}}__down'>
+                                    <i class='fas fa-arrow-down' id='{{dict.position}}__arrow-down'></i>
+                                </a>
+                                <a href='#' class='trash' id='{{dict.position}}__trash' name='{{dict.position}}__trash'>
+                                    <i class='far fa-trash-alt' id='{{dict.position}}__bin'></i>
+                                </a>
+                                <br />
+                                <!-- preview -->
+                                <table class='col-12' id='{{dict.position}}__table'>
+                                </table>
+                                <!-- input -->
+                                <div class='form-group'>
+                                    <label for='{{dict.position}}__table_title'>Table title</label>
+                                    <input name='{{dict.position}}__table_title' type='text'
+                                        id='{{dict.position}}__table_title' placeholder='The title of your table'
+                                        value='{{dict.table_title}}' required>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='{{dict.position}}__table_query'>SPARQL query</label>
+                                    <textarea spellcheck='false' oninput='auto_grow(this)'
+                                        name='{{dict.position}}__table_query' type='text'
+                                        id='{{dict.position}}__table_query'
+                                        placeholder='The query for your table results' value='{{dict.table_query}}'
+                                        required></textarea>
+                                </div>
+                            </div>
 
                             {% elif dict.type == 'chart' %}
                             <!-- CHART -->
