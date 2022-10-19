@@ -577,8 +577,6 @@ $(function () {
             var encoded_chart = encodeURIComponent(chart_query);
             var encoded_points = encodeURIComponent(points_query);
             var encoded_filter = encodeURIComponent(filter_query);
-            var encoded_table = encodeURIComponent(table_query);
-
 
             // call for the count
             if (count_query) {
@@ -601,17 +599,7 @@ $(function () {
 
             // call for the simple table 
             else if (table_query) {
-                $.ajax({
-                    type: 'GET',
-                    url: sparqlEndpoint + '?query=' + encoded_table,
-                    headers: { Accept: 'application/sparql-results+json' },
-                    success: function (returnedJson) {
-                        createSimpleTable(table_title, returnedJson, pos = (idx + 1));
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        $("#" + (idx + 1) + "__table").text(xhr.statusText + ' in the query, check and try again.');
-                    }
-                });
+                simpleTableViz(sparqlEndpoint, table_query, table_title, (idx + 1));
             }
 
             // call for the charts
@@ -1916,10 +1904,11 @@ function chartViz() {
                     linechart(element);
                 } else if (chart === "doughnutchart") {
                     doughnutchart(element);
-                }
-                else if (chart === 'scatterplot') {
+                } else if (chart === 'scatterplot') {
                     scatterplot(element);
                 }
+            } else if (element.type === 'table') {
+                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position);
             }
         }
         )
@@ -2784,6 +2773,22 @@ function createSimpleTable(table_title, returnedJson, pos) {
     }
     $("#" + pos + "__table tr").detach();
     $("#" + pos + "__table").append(tabletoappend);
+
+}
+
+function simpleTableViz(sparqlEndpoint, table_query, table_title, pos) {
+    var encoded_table = encodeURIComponent(table_query);
+    $.ajax({
+        type: 'GET',
+        url: sparqlEndpoint + '?query=' + encoded_table,
+        headers: { Accept: 'application/sparql-results+json' },
+        success: function (returnedJson) {
+            createSimpleTable(table_title, returnedJson, pos);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
+        }
+    });
 
 }
 
