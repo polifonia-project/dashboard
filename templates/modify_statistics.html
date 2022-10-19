@@ -438,9 +438,6 @@
                                     <i class='far fa-trash-alt' id='{{dict.position}}__bin'></i>
                                 </a>
                                 <br />
-                                <!-- preview -->
-                                <table class='col-12' id='{{dict.position}}__table'>
-                                </table>
                                 <!-- input -->
                                 <div class='form-group'>
                                     <label for='{{dict.position}}__table_title'>Table title</label>
@@ -453,9 +450,11 @@
                                     <textarea spellcheck='false' oninput='auto_grow(this)'
                                         name='{{dict.position}}__table_query' type='text'
                                         id='{{dict.position}}__table_query'
-                                        placeholder='The query for your table results' value='{{dict.table_query}}'
-                                        required></textarea>
+                                        placeholder='The query for your table results'
+                                        required>{{dict.table_query}}</textarea>
                                 </div>
+                                <!-- preview -->
+                                <table class='col-12' id='{{dict.position}}__table'></table>
                             </div>
 
                             {% elif dict.type == 'chart' %}
