@@ -2772,6 +2772,7 @@ function createSimpleTable(table_title, returnedJson, pos) {
         tabletoappend += "</tr>";
     }
     $("#" + pos + "__table tr").detach();
+    $("#" + pos + "__table caption").detach();
     $("#" + pos + "__table").append(tabletoappend);
 
 }
