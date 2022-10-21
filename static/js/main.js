@@ -1720,10 +1720,13 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
     var tabletoappend = "<caption class='resulttable_caption' \
 	style='color: white'>"+ decodeURIComponent(action_title) + "\
 	<span class='caret' onclick='collapseTable(\""+ pos + "__textsearchid\")'></span>\
+    <a id='export_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export HTML</a>\
+    <a id='csv_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export CSV</a>\
 	<span class='closetable' onclick='detachTable(\""+ pos + "__textsearchid\")'>x</span>\
 	<br/><span id='"+ pos + "__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='" + decodeURIComponent(uri_or_text_value) + "'>" + decodeURIComponent(text_value) + "</span>\
 	</caption>\
 	<tr>";
+
     // exclude headings with Label
     var headings = returnedJson.head.vars;
     for (j = 0; j < headings.length; j++) {
@@ -1782,6 +1785,8 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
         $("#" + pos + "__textsearchid tr").detach();
         $("#" + pos + "__textsearchid").append(tabletoappend);
     }
+    exportTableHtml(pos, 'textsearch');
+    exportTableCsv(pos, 'textsearch', action_title);
 
 }
 
@@ -1908,7 +1913,7 @@ function chartViz() {
                     scatterplot(element);
                 }
             } else if (element.type === 'table') {
-                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position);
+                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position, element.type);
             }
         }
         )
@@ -2724,7 +2729,7 @@ function scatterplot(element) {
 
 
 // STATISTICS TABLE
-function createSimpleTable(table_title, returnedJson, pos) {
+function createSimpleTable(table_title, returnedJson, pos, type) {
     var tabletoappend = "<caption class='resulttable_caption' \
 	style='color: white'>"+ decodeURIComponent(table_title) + "\
 	</caption>\
@@ -2774,23 +2779,95 @@ function createSimpleTable(table_title, returnedJson, pos) {
     $("#" + pos + "__table tr").detach();
     $("#" + pos + "__table caption").detach();
     $("#" + pos + "__table").append(tabletoappend);
+    exportTableHtml(pos, type);
+    exportTableCsv(pos, type, table_title);
 
 }
 
-function simpleTableViz(sparqlEndpoint, table_query, table_title, pos) {
+function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
     var encoded_table = encodeURIComponent(table_query);
     $.ajax({
         type: 'GET',
         url: sparqlEndpoint + '?query=' + encoded_table,
         headers: { Accept: 'application/sparql-results+json' },
         success: function (returnedJson) {
-            createSimpleTable(table_title, returnedJson, pos);
+            createSimpleTable(table_title, returnedJson, pos, type);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
         }
     });
 
+}
+
+// export table HTML
+function exportTableHtml(position, type) {
+    var export_btn;
+    var tableHtml;
+    if (type && type.includes('table')) {
+        export_btn = document.getElementById('export_' + position);
+        table = document.getElementById(position + '__table');
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        tableHtml = cloneTable.innerHTML;
+    } else if (type && type.includes('textsearch')) {
+        export_btn = document.getElementById('export_' + position);
+        table = document.getElementById(position + '__textsearchid');
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        // remove action buttons
+        var uselessEl = cloneTable.querySelectorAll('.action_button');
+        uselessEl.forEach(el => {
+            el.remove();
+        })
+        // remove span buttons
+        cloneTable.querySelector('.caret').remove();
+        cloneTable.querySelector('.closetable').remove();
+        cloneTable.querySelector('#export_' + position).remove();
+        tableHtml = cloneTable.innerHTML;
+    }
+    export_btn.onclick = function () {
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
+    }
+}
+
+// export table CSV
+// reference: https://stackoverflow.com/questions/15547198/export-html-table-to-csv-using-vanilla-javascript
+function exportTableCsv(position, type, title, separator = ',') {
+    export_btn = document.getElementById('csv_' + position);
+    var table_id = '';
+    if (type && type.includes('table')) {
+        table_id = position + '__table';
+    } else if (type && type.includes('textsearch')) {
+        table_id = position + '__textsearchid';
+    }
+
+    // Select rows from table_id
+    var rows = $('#' + table_id + ' tr');
+    // Construct csv
+    var csv = [];
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+    }
+
+    var csv_string = csv.join('\n');
+    var cleanTitle = decodeURIComponent(title);
+    // Download it
+    var filename = 'export_' + cleanString(cleanTitle) + '.csv';
+    export_btn.onclick = function () {
+        export_btn.setAttribute('target', '_blank');
+        export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+        export_btn.setAttribute('download', filename);
+    }
 }
 
 // autoresize textarea

@@ -83,17 +83,16 @@
 
 						{% elif dict.type == 'table' %}
 						<!-- table -->
-						<table class='col-12' id='{{dict.position}}__table'></table>
+						<div class='col-md-12 col-sm-12' id='{{dict.position}}'>
+							<table class='col-12' id='{{dict.position}}__table'></table>
+						</div>
 						<div class="exportchart card-tools col-md-12 col-sm-12">
-							<!-- <a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								Embed
+							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+								Export HTML
 							</a>
-							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								<span class="btn-label">
-									<i class="fa fa-print"></i>
-								</span>
-								Save picture
-							</a> -->
+							<a id="csv_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+								Export CSV
+							</a>
 							<a href="#" role="button" data-toggle="modal" data-target="#queryModal_{{dict.position}}"
 								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
 								See query
