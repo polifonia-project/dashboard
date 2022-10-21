@@ -1784,6 +1784,7 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
         $("#" + pos + "__textsearchid tr").detach();
         $("#" + pos + "__textsearchid").append(tabletoappend);
     }
+    exportTableHtml(pos, 'textsearch');
 
 }
 
@@ -1910,7 +1911,7 @@ function chartViz() {
                     scatterplot(element);
                 }
             } else if (element.type === 'table') {
-                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position);
+                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position, element.type);
             }
         }
         )
@@ -2726,7 +2727,7 @@ function scatterplot(element) {
 
 
 // STATISTICS TABLE
-function createSimpleTable(table_title, returnedJson, pos) {
+function createSimpleTable(table_title, returnedJson, pos, type) {
     var tabletoappend = "<caption class='resulttable_caption' \
 	style='color: white'>"+ decodeURIComponent(table_title) + "\
 	</caption>\
@@ -2776,19 +2777,19 @@ function createSimpleTable(table_title, returnedJson, pos) {
     $("#" + pos + "__table tr").detach();
     $("#" + pos + "__table caption").detach();
     $("#" + pos + "__table").append(tabletoappend);
-    exportTableHtml(pos);
+    exportTableHtml(pos, type);
 
 
 }
 
-function simpleTableViz(sparqlEndpoint, table_query, table_title, pos) {
+function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
     var encoded_table = encodeURIComponent(table_query);
     $.ajax({
         type: 'GET',
         url: sparqlEndpoint + '?query=' + encoded_table,
         headers: { Accept: 'application/sparql-results+json' },
         success: function (returnedJson) {
-            createSimpleTable(table_title, returnedJson, pos);
+            createSimpleTable(table_title, returnedJson, pos, type);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
@@ -2798,9 +2799,31 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos) {
 }
 
 // export table
-function exportTableHtml(position) {
-    var export_btn = document.getElementById('export_' + position);
-    var tableHtml = document.getElementById(position + '__table').innerHTML;
+function exportTableHtml(position, type) {
+    var export_btn;
+    var tableHtml;
+    if (type && type.includes('table')) {
+        export_btn = document.getElementById('export_' + position);
+        table = document.getElementById(position + '__table');
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        tableHtml = cloneTable.innerHTML;
+    } else if (type && type.includes('textsearch')) {
+        export_btn = document.getElementById('export_' + position);
+        table = document.getElementById(position + '__textsearchid');
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        // remove action buttons
+        var uselessEl = cloneTable.querySelectorAll('.action_button');
+        uselessEl.forEach(el => {
+            el.remove();
+        })
+        // remove span buttons
+        cloneTable.querySelector('.caret').remove();
+        cloneTable.querySelector('.closetable').remove();
+        cloneTable.querySelector('#export_' + position).remove();
+        tableHtml = cloneTable.innerHTML;
+    }
     export_btn.onclick = function () {
         window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
     }
