@@ -2774,6 +2774,8 @@ function createSimpleTable(table_title, returnedJson, pos) {
     $("#" + pos + "__table tr").detach();
     $("#" + pos + "__table caption").detach();
     $("#" + pos + "__table").append(tabletoappend);
+    exportTableHtml(pos);
+
 
 }
 
@@ -2791,6 +2793,15 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos) {
         }
     });
 
+}
+
+// export table
+function exportTableHtml(position) {
+    var export_btn = document.getElementById('export_' + position);
+    var tableHtml = document.getElementById(position + '__table').innerHTML;
+    export_btn.onclick = function () {
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
+    }
 }
 
 // autoresize textarea
