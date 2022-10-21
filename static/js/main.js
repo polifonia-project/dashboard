@@ -1720,7 +1720,8 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
     var tabletoappend = "<caption class='resulttable_caption' \
 	style='color: white'>"+ decodeURIComponent(action_title) + "\
 	<span class='caret' onclick='collapseTable(\""+ pos + "__textsearchid\")'></span>\
-    <a id='export_"+ pos + "' class='btn'> Export HTML</a>\
+    <a id='export_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export HTML</a>\
+    <a id='export_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export CSV</a>\
 	<span class='closetable' onclick='detachTable(\""+ pos + "__textsearchid\")'>x</span>\
 	<br/><span id='"+ pos + "__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='" + decodeURIComponent(uri_or_text_value) + "'>" + decodeURIComponent(text_value) + "</span>\
 	</caption>\
