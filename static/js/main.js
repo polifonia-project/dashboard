@@ -1721,7 +1721,7 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
 	style='color: white'>"+ decodeURIComponent(action_title) + "\
 	<span class='caret' onclick='collapseTable(\""+ pos + "__textsearchid\")'></span>\
     <a id='export_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export HTML</a>\
-    <a id='export_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export CSV</a>\
+    <a id='csv_"+ pos + "' class='btn btn-info btn-border btn-round btn-sm mr-2'> Export CSV</a>\
 	<span class='closetable' onclick='detachTable(\""+ pos + "__textsearchid\")'>x</span>\
 	<br/><span id='"+ pos + "__selected_text_value' class='resulttable_caption_searchedvalue' data-uri='" + decodeURIComponent(uri_or_text_value) + "'>" + decodeURIComponent(text_value) + "</span>\
 	</caption>\
@@ -1786,6 +1786,7 @@ function createResultsTable(returnedJson, actions, pos, table_pos = pos, action_
         $("#" + pos + "__textsearchid").append(tabletoappend);
     }
     exportTableHtml(pos, 'textsearch');
+    exportTableCsv(pos, 'textsearch', action_title);
 
 }
 
@@ -2779,7 +2780,7 @@ function createSimpleTable(table_title, returnedJson, pos, type) {
     $("#" + pos + "__table caption").detach();
     $("#" + pos + "__table").append(tabletoappend);
     exportTableHtml(pos, type);
-
+    exportTableCsv(pos, type, table_title);
 
 }
 
@@ -2799,7 +2800,7 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
 
 }
 
-// export table
+// export table HTML
 function exportTableHtml(position, type) {
     var export_btn;
     var tableHtml;
@@ -2827,6 +2828,45 @@ function exportTableHtml(position, type) {
     }
     export_btn.onclick = function () {
         window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
+    }
+}
+
+// export table CSV
+// reference: https://stackoverflow.com/questions/15547198/export-html-table-to-csv-using-vanilla-javascript
+function exportTableCsv(position, type, title, separator = ',') {
+    export_btn = document.getElementById('csv_' + position);
+    var table_id = '';
+    if (type && type.includes('table')) {
+        table_id = position + '__table';
+    } else if (type && type.includes('textsearch')) {
+        table_id = position + '__textsearchid';
+    }
+
+    // Select rows from table_id
+    var rows = $('#' + table_id + ' tr');
+    // Construct csv
+    var csv = [];
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+    }
+
+    var csv_string = csv.join('\n');
+    var cleanTitle = decodeURIComponent(title);
+    // Download it
+    var filename = 'export_' + cleanString(cleanTitle) + '.csv';
+    export_btn.onclick = function () {
+        export_btn.setAttribute('target', '_blank');
+        export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+        export_btn.setAttribute('download', filename);
     }
 }
 
