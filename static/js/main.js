@@ -701,6 +701,9 @@ $(function () {
                                 complete: function () {
                                     $('#loader').addClass('hidden');
                                     return true;
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    queryError(xhr, ajaxOptions, thrownError);
                                 }
                             })
                         }
@@ -780,6 +783,9 @@ $(function () {
                                     complete: function () {
                                         $('#loader').addClass('hidden');
                                         return true;
+                                    },
+                                    error: function (xhr, ajaxOptions, thrownError) {
+                                        queryError(xhr, ajaxOptions, thrownError);
                                     }
                                 });
                             }
@@ -1176,12 +1182,7 @@ $(function () {
                             return true;
                         },
                         error: function (xhr, ajaxOptions, thrownError) {
-                            // $("#" + idx + "__chartid").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-                            var c = document.getElementById((idx + 1) + "__chartid");
-                            var p = document.createElement("p");
-                            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
-                            p.appendChild(error_text)
-                            c.after(p);
+                            queryError(xhr, ajaxOptions, thrownError);
                         }
                     });
                 }
@@ -1232,6 +1233,13 @@ const addQueryArea = () => {
     console.log('check');
 }
 
+// function for errors in sparql queries
+const queryError = (xhr, ajaxOptions, thrownError) => {
+    var error_text = 'There is an ' + xhr.statusText + ' in the query, check and try again.';
+    alert(error_text);
+    console.log(xhr);
+}
+
 //// MAPS TEMPLATE FUNCTIONS ////
 
 // rerun maps query on demand
@@ -1269,12 +1277,7 @@ function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = 
             return true;
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-            var c = document.getElementById((idx + 1) + "__map_preview_container");
-            var p = document.createElement("p");
-            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
-            p.appendChild(error_text)
-            c.after(p);
+            queryError(xhr, ajaxOptions, thrownError);
         }
     });
 }
@@ -1470,12 +1473,7 @@ function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filt
             sortPanels();
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            //$("#" + idx + "__map_preview_container").text('There is an ' + xhr.statusText + 'in the query, check and try again.');
-            var c = document.getElementById((idx + 1) + "__map_filter_query");
-            var p = document.createElement("p");
-            var error_text = document.createTextNode('There is an ' + xhr.statusText + ' in the query,\n check and try again.');
-            p.appendChild(error_text)
-            c.after(p);
+            queryError(xhr, ajaxOptions, thrownError);
         }
     });
 
@@ -2011,6 +2009,9 @@ function queryCounter() {
                                 var container = document.getElementById(element.position);
                                 container.appendChild(generalDiv);
                             }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            queryError(xhr, ajaxOptions, thrownError);
                         }
                     })
                 }
@@ -2253,6 +2254,9 @@ function barchart(element) {
             complete: function () {
                 $('#loader').addClass('hidden');
                 return true;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                queryError(xhr, ajaxOptions, thrownError);
             }
         })
 
@@ -2404,6 +2408,9 @@ function linechart(element) {
             complete: function () {
                 $('#loader').addClass('hidden');
                 return true;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                queryError(xhr, ajaxOptions, thrownError);
             }
         })
     }
@@ -2530,6 +2537,9 @@ function doughnutchart(element) {
             complete: function () {
                 $('#loader').addClass('hidden');
                 return true;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                queryError(xhr, ajaxOptions, thrownError);
             }
         })
     }
@@ -2628,6 +2638,9 @@ function scatterplot(element) {
                 complete: function () {
                     $('#loader').addClass('hidden');
                     return true;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    queryError(xhr, ajaxOptions, thrownError);
                 }
             })
         }
@@ -2687,6 +2700,9 @@ function scatterplot(element) {
                     complete: function () {
                         $('#loader').addClass('hidden');
                         return true;
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        queryError(xhr, ajaxOptions, thrownError);
                     }
                 });
             }
@@ -2922,7 +2938,7 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type = ''
             return true;
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
+            queryError(xhr, ajaxOptions, thrownError);
         }
     });
 
