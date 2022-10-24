@@ -2911,8 +2911,13 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
         type: 'GET',
         url: sparqlEndpoint + '?query=' + encoded_table,
         headers: { Accept: 'application/sparql-results+json' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
         success: function (returnedJson) {
             createSimpleTable(table_title, returnedJson, pos, type);
+        },
+        complete: function () {
+            $('#loader').addClass('hidden');
+            return true;
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
