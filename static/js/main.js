@@ -2900,12 +2900,14 @@ function createSimpleTable(table_title, returnedJson, pos, type) {
     $("#" + pos + "__table tr").detach();
     $("#" + pos + "__table caption").detach();
     $("#" + pos + "__table").append(tabletoappend);
-    exportTableHtml(pos, type);
-    exportTableCsv(pos, type, table_title);
+    if (type.length > 0) {
+        exportTableHtml(pos, type);
+        exportTableCsv(pos, type, table_title);
+    }
 
 }
 
-function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
+function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type = '') {
     var encoded_table = encodeURIComponent(table_query);
     $.ajax({
         type: 'GET',
@@ -2930,33 +2932,32 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
 function exportTableHtml(position, type) {
     var export_btn;
     var tableHtml;
-    if (export_btn) {
-        if (type && type.includes('table')) {
-            export_btn = document.getElementById('export_' + position);
-            table = document.getElementById(position + '__table');
-            var cloneTable = table.cloneNode(true);
-            cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-            tableHtml = cloneTable.innerHTML;
-        } else if (type && type.includes('textsearch')) {
-            export_btn = document.getElementById('export_' + position);
-            table = document.getElementById(position + '__textsearchid');
-            var cloneTable = table.cloneNode(true);
-            cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-            // remove action buttons
-            var uselessEl = cloneTable.querySelectorAll('.action_button');
-            uselessEl.forEach(el => {
-                el.remove();
-            })
-            // remove span buttons
-            cloneTable.querySelector('.caret').remove();
-            cloneTable.querySelector('.closetable').remove();
-            cloneTable.querySelector('#export_' + position).remove();
-            tableHtml = cloneTable.innerHTML;
-        }
-        export_btn.onclick = function () {
-            window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
-        }
+    if (type && type.includes('table')) {
+        export_btn = document.getElementById('export_' + position);
+        table = document.getElementById(position + '__table');
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        tableHtml = cloneTable.innerHTML;
+    } else if (type && type.includes('textsearch')) {
+        export_btn = document.getElementById('export_' + position);
+        table = document.getElementById(position + '__textsearchid');
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        // remove action buttons
+        var uselessEl = cloneTable.querySelectorAll('.action_button');
+        uselessEl.forEach(el => {
+            el.remove();
+        })
+        // remove span buttons
+        cloneTable.querySelector('.caret').remove();
+        cloneTable.querySelector('.closetable').remove();
+        cloneTable.querySelector('#export_' + position).remove();
+        tableHtml = cloneTable.innerHTML;
     }
+    export_btn.onclick = function () {
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
+    }
+
 }
 
 // export table CSV
