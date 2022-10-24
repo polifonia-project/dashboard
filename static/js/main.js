@@ -637,12 +637,28 @@ $(function () {
                                 beforeSend: function () { $('#loader').removeClass('hidden') },
                                 success: function (returnedJson) {
                                     const queryResults = returnedJson.results.bindings;
-                                    for (entry in queryResults) {
-                                        const xValue = parseInt(queryResults[entry].x.value);
-                                        const yValue = parseInt(queryResults[entry].y.value);
-                                        const entryObj = { x: xValue, y: yValue }
-                                        tempLabels.push(xValue);
-                                        chartData.push(entryObj);
+                                    const varNumb = returnedJson.head.vars.length;
+                                    if (varNumb <= 1) {
+                                        alert('This query does not return enough variables. Remember that you only need "x" and "y". Check and try again.');
+                                        console.log('Not enough variables.')
+                                    } else if (varNumb > 2) {
+                                        alert('This query returns too many variables. Remember that you only need "x" and "y". Check and try again.');
+                                        console.log('Too many variables.')
+                                    } else if (varNumb === 2) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('x') && queryVars.includes('x')) {
+                                            for (entry in queryResults) {
+                                                const xValue = parseInt(queryResults[entry].x.value);
+                                                const yValue = parseInt(queryResults[entry].y.value);
+                                                const entryObj = { x: xValue, y: yValue }
+                                                tempLabels.push(xValue);
+                                                chartData.push(entryObj);
+                                            }
+                                        } else {
+                                            alert('This query may return wrong variable names. Remember that you need "x" and "y". Check and try again.');
+                                            console.log('Wrong variables.')
+                                        }
                                     }
 
                                     //  retrieve the chart id
@@ -733,17 +749,33 @@ $(function () {
                                     beforeSend: function () { $('#loader').removeClass('hidden') },
                                     success: function (returnedJson) {
                                         const queryResults = returnedJson.results.bindings;
-                                        for (entry in queryResults) {
-                                            const xValue = parseInt(queryResults[entry].x.value);
-                                            const yValue = parseInt(queryResults[entry].y.value);
-                                            const entryObj = { x: xValue, y: yValue }
-                                            chartData.push(entryObj);
+                                        const varNumb = returnedJson.head.vars.length;
+                                        if (varNumb <= 1) {
+                                            alert('This query does not return enough variables. Remember that you only need "x" and "y". Check and try again.');
+                                            console.log('Not enough variables.')
+                                        } else if (varNumb > 2) {
+                                            alert('This query returns too many variables. Remember that you only need "count" and "label". Check and try again.');
+                                            console.log('Too many variables.')
+                                        } else if (varNumb === 2) {
+                                            // check if var names are correct
+                                            const queryVars = returnedJson.head.vars;
+                                            if (queryVars.includes('x') && queryVars.includes('x')) {
+                                                for (entry in queryResults) {
+                                                    const xValue = parseInt(queryResults[entry].x.value);
+                                                    const yValue = parseInt(queryResults[entry].y.value);
+                                                    const entryObj = { x: xValue, y: yValue }
+                                                    chartData.push(entryObj);
+                                                }
+                                                dataDict.data = chartData;
+                                                dataDict.label = seriesArray[i];
+                                                dataDict.backgroundColor = colors[i];
+                                                datasetArray.push(dataDict);
+                                                myScatterChart.update();
+                                            } else {
+                                                alert('This query may return wrong variable names. Remember that you need "x" and "y". Check and try again.');
+                                                console.log('Wrong variables.')
+                                            }
                                         }
-                                        dataDict.data = chartData;
-                                        dataDict.label = seriesArray[i];
-                                        dataDict.backgroundColor = colors[i];
-                                        datasetArray.push(dataDict);
-                                        myScatterChart.update();
                                     },
                                     complete: function () {
                                         $('#loader').addClass('hidden');
@@ -795,34 +827,64 @@ $(function () {
                             if (chart_type == 'barchart') {
                                 var chartData = [];
                                 var chartLabels = [];
+                                var varNumber = returnedJson.head.vars.length;
                                 // with operations
                                 if (operations.length > 0) {
-                                    var label = [];
-                                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                        if (returnedJson.results.bindings[i].label.value == '') {
-                                            label[i] = 'Unknown'
+                                    if (varNumber === 1) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                            var label = [];
+                                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                                if (returnedJson.results.bindings[i].label.value == '') {
+                                                    label[i] = 'Unknown'
+                                                } else {
+                                                    label[i] = returnedJson.results.bindings[i].label.value;
+                                                }
+
+                                            }
+                                            operations.forEach(o => {
+                                                var action = o
+                                                if (action == 'count') {
+                                                    var param = 'label';
+                                                    // activate the operations on the data
+                                                    var elCount = eval(action + '(' + param + ')');
+                                                    // where I'll store the data necessary for the chart
+                                                    chartData = Object.values(elCount);
+                                                    chartLabels = Object.keys(elCount);
+                                                }
+                                            })
                                         } else {
-                                            label[i] = returnedJson.results.bindings[i].label.value;
+                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            console.log('Wrong variables.')
                                         }
-
+                                    } else if (varNumber === 2) {
+                                        alert('This query may NOT require the "Count" operation. Please check and try again.');
+                                        console.log('Count not required.')
+                                    } else if (varNumber > 2) {
+                                        alert('This query returns too many variables. Remember that you only need "count" and "label". Check and try again.');
+                                        console.log('Too many variables.')
                                     }
-
-                                    operations.forEach(o => {
-                                        var action = o
-                                        if (action == 'count') {
-                                            var param = 'label';
-                                            // activate the operations on the data
-                                            var elCount = eval(action + '(' + param + ')');
-                                            // where I'll store the data necessary for the chart
-                                            chartData = Object.values(elCount);
-                                            chartLabels = Object.keys(elCount);
-                                        }
-                                    })
                                 } else if (operations.length == 0) {
                                     // without operations
-                                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
-                                        chartData[i] = returnedJson.results.bindings[i].count.value;
+                                    if (varNumber === 1) {
+                                        alert('This query may require the "Count" operation. Please check and try again.');
+                                        console.log('Count required.')
+                                    } else if (varNumber === 2) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                                chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                                chartData[i] = returnedJson.results.bindings[i].count.value;
+                                            }
+                                        } else {
+                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            console.log('Wrong variables.')
+                                        }
+                                    } else if (varNumber > 2) {
+                                        alert('This query returns too many variables. Remember that you only need "count" and "label". Check and try again.');
+                                        console.log('Too many variables.')
                                     }
                                 }
 
@@ -873,34 +935,65 @@ $(function () {
                             } else if (chart_type == 'linechart') {
                                 var chartData = [];
                                 var chartLabels = [];
+                                var varNumber = returnedJson.head.vars.length;
                                 // with operations
                                 if (operations.length > 0) {
-                                    var label = [];
-                                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                        if (returnedJson.results.bindings[i].label.value == '') {
-                                            label[i] = 'Unknown'
+                                    if (varNumber === 1) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                            var label = [];
+                                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                                if (returnedJson.results.bindings[i].label.value == '') {
+                                                    label[i] = 'Unknown'
+                                                } else {
+                                                    label[i] = returnedJson.results.bindings[i].label.value;
+                                                }
+
+                                            }
+
+                                            operations.forEach(o => {
+                                                var action = o
+                                                if (action == 'count') {
+                                                    var param = 'label';
+                                                    // activate the operations on the data
+                                                    var elCount = eval(action + '(' + param + ')');
+                                                    // where I'll store the data necessary for the chart
+                                                    chartData = Object.values(elCount);
+                                                    chartLabels = Object.keys(elCount);
+                                                }
+                                            })
                                         } else {
-                                            label[i] = returnedJson.results.bindings[i].label.value;
+                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            console.log('Wrong variables.')
                                         }
-
+                                    } else if (varNumber === 2) {
+                                        alert('This query may NOT require the "Count" operation. Please check and try again.');
+                                        console.log('Count required.')
+                                    } else if (varNumber > 2) {
+                                        alert('This query returns too many variables. Remember that you only need "count" and "label". Check and try again.');
+                                        console.log('Too many variables.')
                                     }
-
-                                    operations.forEach(o => {
-                                        var action = o
-                                        if (action == 'count') {
-                                            var param = 'label';
-                                            // activate the operations on the data
-                                            var elCount = eval(action + '(' + param + ')');
-                                            // where I'll store the data necessary for the chart
-                                            chartData = Object.values(elCount);
-                                            chartLabels = Object.keys(elCount);
-                                        }
-                                    })
                                 } else if (operations.length == 0) {
                                     // without operations
-                                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
-                                        chartData[i] = returnedJson.results.bindings[i].count.value;
+                                    if (varNumber === 1) {
+                                        alert('This query may require the "Count" operation. Please check and try again.');
+                                        console.log('Count required.')
+                                    } else if (varNumber === 2) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                                chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                                chartData[i] = returnedJson.results.bindings[i].count.value;
+                                            }
+                                        } else {
+                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            console.log('Wrong variables.')
+                                        }
+                                    } else if (varNumber > 2) {
+                                        alert('This query returns too many variables. Remember that you only need "count" and "label". Check and try again.');
+                                        console.log('Too many variables.')
                                     }
                                 }
                                 //  retrieve the chart id
@@ -972,38 +1065,66 @@ $(function () {
                             } else if (chart_type == 'doughnutchart') {
                                 var chartData = [];
                                 var chartLabels = [];
+                                var varNumber = returnedJson.head.vars.length;
 
                                 // with operations
                                 if (operations.length > 0) {
-                                    var label = [];
-                                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                        if (returnedJson.results.bindings[i].label.value == '') {
-                                            label[i] = 'Unknown'
+                                    if (varNumber === 1) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                            var label = [];
+                                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                                if (returnedJson.results.bindings[i].label.value == '') {
+                                                    label[i] = 'Unknown'
+                                                } else {
+                                                    label[i] = returnedJson.results.bindings[i].label.value;
+                                                }
+
+                                            }
+
+                                            operations.forEach(o => {
+                                                var action = o
+                                                if (action == 'count') {
+                                                    var param = 'label';
+                                                    // activate the operations on the data
+                                                    var elCount = eval(action + '(' + param + ')');
+                                                    // where I'll store the data necessary for the chart
+                                                    chartData = Object.values(elCount);
+                                                    chartLabels = Object.keys(elCount);
+                                                }
+                                            })
                                         } else {
-                                            label[i] = returnedJson.results.bindings[i].label.value;
+                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            console.log('Wrong variables.')
                                         }
-
+                                    } else if (varNumber === 2) {
+                                        alert('This query may NOT require the "Count" operation. Please check and try again.');
+                                        console.log('Count required.')
+                                    } else if (varNumber > 2) {
+                                        alert('This query returns too many variables. Remember that you only need "count" and "label". Check and try again.');
+                                        console.log('Too many variables.')
                                     }
-
-                                    operations.forEach(o => {
-                                        var action = o
-                                        if (action == 'count') {
-                                            var param = 'label';
-                                            // activate the operations on the data
-                                            var elCount = eval(action + '(' + param + ')');
-                                            // where I'll store the data necessary for the chart
-                                            chartData = Object.values(elCount);
-                                            chartLabels = Object.keys(elCount);
-                                        }
-                                    })
                                 } else if (operations.length == 0) {
                                     // without operations
-                                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                        chartData[i] = returnedJson.results.bindings[i].count.value;
-                                        if (returnedJson.results.bindings[i].label.value == '') {
-                                            chartLabels[i] = 'Unknown'
+                                    if (varNumber === 1) {
+                                        alert('This query may require the "Count" operation. Please check and try again.');
+                                        console.log('Count required.')
+                                    } else if (varNumber === 2) {
+                                        // check if var names are correct
+                                        const queryVars = returnedJson.head.vars;
+                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                                chartData[i] = returnedJson.results.bindings[i].count.value;
+                                                if (returnedJson.results.bindings[i].label.value == '') {
+                                                    chartLabels[i] = 'Unknown'
+                                                } else {
+                                                    chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                                }
+                                            }
                                         } else {
-                                            chartLabels[i] = returnedJson.results.bindings[i].label.value;
+                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            console.log('Wrong variables.')
                                         }
                                     }
                                 }
@@ -2790,8 +2911,13 @@ function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type) {
         type: 'GET',
         url: sparqlEndpoint + '?query=' + encoded_table,
         headers: { Accept: 'application/sparql-results+json' },
+        beforeSend: function () { $('#loader').removeClass('hidden') },
         success: function (returnedJson) {
             createSimpleTable(table_title, returnedJson, pos, type);
+        },
+        complete: function () {
+            $('#loader').addClass('hidden');
+            return true;
         },
         error: function (xhr, ajaxOptions, thrownError) {
             $("#" + pos + "__table").text(xhr.statusText + ' in the query, check and try again.');
