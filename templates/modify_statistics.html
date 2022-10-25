@@ -69,15 +69,21 @@
                             </div>
                             <p class="card-category">
                                 {% if datastory_data.description %}
-                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                                <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
                                     placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
                                 {% else %}
-                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                                <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
                                     placeholder="A brief introdution to the project."></textarea>
                                 {%endif%}
                             </p>
                         </div>
                         <div class="card-body" id="sortable">
+                            <!-- Create the editor container -->
+                            <div id="editor">
+                                <p>Hello World!</p>
+                                <p>Some initial <strong>bold</strong> text</p>
+                                <p><br></p>
+                            </div>
                             <!-- Button trigger modal -->
                             <span id='loader' class='lds-dual-ring hidden overlay'></span>
 
@@ -368,8 +374,8 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
-                                    id="{{dict.position}}__{{dict.type}}"
+                                <textarea class='editor' oninput='auto_grow(this)' type="text"
+                                    name="{{dict.position}}__{{dict.type}}" id="{{dict.position}}__{{dict.type}}"
                                     placeholder="{{dict.section_title}}">{{dict.text}}</textarea>
                             </div>
 
@@ -388,8 +394,8 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
-                                    id="{{dict.position}}__{{dict.type}}"
+                                <textarea class='editor' oninput='auto_grow(this)' type="text"
+                                    name="{{dict.position}}__{{dict.type}}" id="{{dict.position}}__{{dict.type}}"
                                     placeholder="{{dict.text}}">{{dict.text}}</textarea>
                             </div>
 

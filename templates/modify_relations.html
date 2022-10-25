@@ -75,10 +75,10 @@
                     </div>
                     <p class="card-category">
                         {% if datastory_data.description %}
-                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                        <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
                             placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
                         {% else %}
-                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                        <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
                             placeholder="A brief introdution to the project."></textarea>
                         {%endif%}
                     </p>
