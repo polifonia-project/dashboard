@@ -26,7 +26,6 @@ def empty_temp():
     in the folder "temp" that were created more than 1 day before, and delete them.
     '''
     now = datetime.today().timetuple()
-    # print(f'Today: {now}')
     file_list = os.listdir('static/temp')
     if len(file_list) > 0:
         for f in file_list:
@@ -34,7 +33,6 @@ def empty_temp():
             creation_timestamp = os.path.getmtime(file_path)
             creation_date = datetime.fromtimestamp(
                 creation_timestamp).timetuple()
-            # print(f'Creation: {creation_date}')
             if abs(now[3] - creation_date[3] > 3):
                 print(now[3] - creation_date[3])
                 os.remove(file_path)
@@ -46,7 +44,7 @@ def empty_temp():
 
 
 scheduler = BackgroundScheduler()
-job = scheduler.add_job(empty_temp, 'interval', minutes=60)
+job = scheduler.add_job(empty_temp, 'interval', minutes=720)
 scheduler.start()
 
 # In case 2 prints are shown see
