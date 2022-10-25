@@ -839,7 +839,7 @@ $(function () {
                                     if (varNumber === 1) {
                                         // check if var names are correct
                                         const queryVars = returnedJson.head.vars;
-                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                        if (queryVars.includes('label')) {
                                             var label = [];
                                             for (i = 0; i < returnedJson.results.bindings.length; i++) {
                                                 if (returnedJson.results.bindings[i].label.value == '') {
@@ -861,7 +861,7 @@ $(function () {
                                                 }
                                             })
                                         } else {
-                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            alert('This query may return wrong variable names. Remember that you need only "label" if you use the Count operation. Check and try again.');
                                             console.log('Wrong variables.')
                                         }
                                     } else if (varNumber === 2) {
@@ -947,7 +947,7 @@ $(function () {
                                     if (varNumber === 1) {
                                         // check if var names are correct
                                         const queryVars = returnedJson.head.vars;
-                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                        if (queryVars.includes('label')) {
                                             var label = [];
                                             for (i = 0; i < returnedJson.results.bindings.length; i++) {
                                                 if (returnedJson.results.bindings[i].label.value == '') {
@@ -970,7 +970,7 @@ $(function () {
                                                 }
                                             })
                                         } else {
-                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            alert('This query may return wrong variable names. Remember that you need only "label" if you use the Count operation. Check and try again.');
                                             console.log('Wrong variables.')
                                         }
                                     } else if (varNumber === 2) {
@@ -1078,7 +1078,7 @@ $(function () {
                                     if (varNumber === 1) {
                                         // check if var names are correct
                                         const queryVars = returnedJson.head.vars;
-                                        if (queryVars.includes('count') && queryVars.includes('label')) {
+                                        if (queryVars.includes('label')) {
                                             var label = [];
                                             for (i = 0; i < returnedJson.results.bindings.length; i++) {
                                                 if (returnedJson.results.bindings[i].label.value == '') {
@@ -1101,7 +1101,7 @@ $(function () {
                                                 }
                                             })
                                         } else {
-                                            alert('This query may return wrong variable names. Remember that you need "count" and "label". Check and try again.');
+                                            alert('This query may return wrong variable names. Remember that you need only "label" if you use the Count operation. Check and try again.');
                                             console.log('Wrong variables.')
                                         }
                                     } else if (varNumber === 2) {
