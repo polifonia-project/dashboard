@@ -25,15 +25,18 @@ def empty_temp():
     This function checks every 12 hours if there are files
     in the folder "temp" that were created more than 1 day before, and delete them.
     '''
-    today = datetime.today().isocalendar()
+    now = datetime.today().timetuple()
+    # print(f'Today: {now}')
     file_list = os.listdir('static/temp')
     if len(file_list) > 0:
         for f in file_list:
             file_path = 'static/temp/' + f
             creation_timestamp = os.path.getmtime(file_path)
             creation_date = datetime.fromtimestamp(
-                creation_timestamp).date().isocalendar()
-            if creation_date[2] != today[2]:
+                creation_timestamp).timetuple()
+            # print(f'Creation: {creation_date}')
+            if abs(now[3] - creation_date[3] > 3):
+                print(now[3] - creation_date[3])
                 os.remove(file_path)
                 print(f'Removed {f}.')
             else:
@@ -43,7 +46,7 @@ def empty_temp():
 
 
 scheduler = BackgroundScheduler()
-job = scheduler.add_job(empty_temp, 'interval', hours=12)
+job = scheduler.add_job(empty_temp, 'interval', minutes=60)
 scheduler.start()
 
 # In case 2 prints are shown see
