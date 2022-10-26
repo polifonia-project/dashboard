@@ -2978,30 +2978,29 @@ function exportTableHtml(position, type) {
 
 // export table CSV
 // reference: https://stackoverflow.com/questions/15547198/export-html-table-to-csv-using-vanilla-javascript
-function exportTableCsv(position, type, title, separator = ',') {
+function exportTableCsv(position, type, title) {
     export_btn = document.getElementById('csv_' + position);
     var table_id = '';
+    var csv = [];
     if (type && type.includes('table')) {
         table_id = position + '__table';
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        csv = createCsv(cloneTable);
     } else if (type && type.includes('textsearch')) {
         table_id = position + '__textsearchid';
-    }
-
-    // Select rows from table_id
-    var rows = $('#' + table_id + ' tr');
-    // Construct csv
-    var csv = [];
-    for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll('td, th');
-        for (var j = 0; j < cols.length; j++) {
-            // Clean innertext to remove multiple spaces and jumpline (break csv)
-            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
-            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
-            data = data.replace(/"/g, '""');
-            // Push escaped string
-            row.push('"' + data + '"');
-        }
-        csv.push(row.join(separator));
+        var cloneTable = table.cloneNode(true);
+        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+        // remove action buttons
+        var uselessEl = cloneTable.querySelectorAll('.action_button');
+        uselessEl.forEach(el => {
+            el.remove();
+        })
+        // remove span buttons
+        cloneTable.querySelector('.caret').remove();
+        cloneTable.querySelector('.closetable').remove();
+        cloneTable.querySelector('#export_' + position).remove();
+        csv = createCsv(cloneTable);
     }
 
     var csv_string = csv.join('\n');
@@ -3013,6 +3012,27 @@ function exportTableCsv(position, type, title, separator = ',') {
         export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
         export_btn.setAttribute('download', filename);
     }
+}
+
+// construct csv
+function createCsv(table, separator = ',') {
+    // Select rows from table_id
+    var rows = table.rows;
+    // Construct csv
+    var csv = [];
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+    }
+    return csv;
 }
 
 // autoresize textarea
