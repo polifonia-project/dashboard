@@ -13,7 +13,6 @@ window.onload = function () {
     disableKeypress();
     saveHTML(datastory_data.name);
     var map_ready;
-    createTextEditor();
 }
 
 // disable selection of templates other than statistics
@@ -482,6 +481,7 @@ $(function () {
         });
         console.log(fields);
         colorSwitch(color_2, color_1);
+        createTextEditor();
 
         $('#sortable [id$="block_field"]').each(function (idx) {
             var count_query = '';
@@ -3136,10 +3136,11 @@ const cleanString = (dirtyString) => {
 ////// TEXT EDITOR
 // Initialize Quill editor
 const createTextEditor = () => {
+    var quill;
     var editors = document.querySelectorAll('.editor');
     for (const [key, value] of Object.entries(editors)) {
         // console.log(editor.innerHTML);
-        var quill = new Quill(value, {
+        quill = new Quill(value, {
             theme: 'snow'
         });
     }

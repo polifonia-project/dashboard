@@ -69,21 +69,19 @@
                             </div>
                             <p class="card-category">
                                 {% if datastory_data.description %}
-                                <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
-                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
-                                {% else %}
-                                <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
-                                    placeholder="A brief introdution to the project."></textarea>
-                                {%endif%}
+                                <!-- <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
+                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea> -->
+                                <input name="description" type="hidden">
+                            <div class='editor'>{{ datastory_data.description|safe }}</div>
+                            {% else %}
+                            <!-- <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
+                                    placeholder="A brief introdution to the project."></textarea> -->
+                            <input name="description" type="hidden">
+                            <div class='editor'></div>
+                            {%endif%}
                             </p>
                         </div>
                         <div class="card-body" id="sortable">
-                            <!-- Create the editor container -->
-                            <div id="editor">
-                                <p>Hello World!</p>
-                                <p>Some initial <strong>bold</strong> text</p>
-                                <p><br></p>
-                            </div>
                             <!-- Button trigger modal -->
                             <span id='loader' class='lds-dual-ring hidden overlay'></span>
 
