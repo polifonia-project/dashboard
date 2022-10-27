@@ -131,7 +131,7 @@ function add_field(name, bind_query_id = "") {
 
     var title_field = "<textarea rows='2' oninput='auto_grow(this)' name='section_title' type='text' id='" + (counter + 1) + "__section_title' placeholder='Write the title of a new section.'></textarea>";
 
-    var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text'>\
+    var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text' value=''>\
     <div class='editor' id='" + (counter + 1) + "__editor'></div>"
 
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
@@ -486,6 +486,7 @@ $(function () {
         createTextEditor();
 
         $('#sortable [id$="block_field"]').each(function (idx) {
+            var text_content = '';
             var count_query = '';
             var textsearch_query = '';
             var count_label = '';
@@ -508,7 +509,9 @@ $(function () {
             var map_filter_bind_query = '';
             var other_filters = 0;
             fields.forEach(element => {
-                if (element.name == (idx + 1) + '__count_query') {
+                if (element.name == (idx + 1) + '__text') {
+                    fromEditorToInput((idx + 1));
+                } else if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
                 } else if (element.name == (idx + 1) + '__count_label') {
                     count_label = element.value;
@@ -550,6 +553,7 @@ $(function () {
             }
 
             );
+            console.log(text_content)
 
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
@@ -3142,10 +3146,18 @@ const createTextEditor = () => {
     var editors = document.querySelectorAll('.editor');
     if (editors.length > 0) {
         for (const [key, value] of Object.entries(editors)) {
-            // console.log(editor.innerHTML);
             quill = new Quill(value, {
                 theme: 'snow'
             });
         }
     }
+}
+
+const fromEditorToInput = (pos) => {
+    var editor = document.getElementById(pos + '__editor');
+    var qlEditor = editor.childNodes[0];
+    var textContent = qlEditor.innerHTML;
+    var input = document.getElementById(pos + '__text');
+    input.setAttribute('value', textContent);
+    console.log(input);
 }
