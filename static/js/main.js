@@ -3144,8 +3144,8 @@ const cleanString = (dirtyString) => {
 const createTextEditor = () => {
     var quill;
     var editors = document.querySelectorAll('.editor');
-    if (editors.length > 0) {
-        for (const [key, value] of Object.entries(editors)) {
+    for (const [key, value] of Object.entries(editors)) {
+        if (value.children.length != 3) {
             quill = new Quill(value, {
                 theme: 'snow'
             });
@@ -3159,5 +3159,4 @@ const fromEditorToInput = (pos) => {
     var textContent = qlEditor.innerHTML;
     var input = document.getElementById(pos + '__text');
     input.setAttribute('value', textContent);
-    console.log(input);
 }
