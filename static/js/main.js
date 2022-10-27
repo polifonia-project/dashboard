@@ -322,7 +322,7 @@ function add_field(name, bind_query_id = "") {
 
 
     if (name == 'textbox') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
+        var open_addons = "<div id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + text_field + close_addons;
     } else if (name === 'section_title') {
@@ -3145,18 +3145,23 @@ const createTextEditor = () => {
     var quill;
     var editors = document.querySelectorAll('.editor');
     for (const [key, value] of Object.entries(editors)) {
+        var pos = value.id.split('__')[0];
         if (value.children.length != 3) {
             quill = new Quill(value, {
                 theme: 'snow'
             });
         }
+        fromEditorToInput(pos);
     }
 }
 
 const fromEditorToInput = (pos) => {
     var editor = document.getElementById(pos + '__editor');
-    var qlEditor = editor.childNodes[0];
-    var textContent = qlEditor.innerHTML;
-    var input = document.getElementById(pos + '__text');
-    input.setAttribute('value', textContent);
+    editor.onmouseleave = function () {
+        var qlEditor = editor.childNodes[0];
+        var textContent = qlEditor.innerHTML;
+        var input = document.getElementById(pos + '__text');
+        input.setAttribute('value', textContent);
+        console.log(textContent)
+    }
 }
