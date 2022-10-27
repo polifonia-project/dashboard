@@ -69,16 +69,12 @@
                             </div>
                             <p class="card-category">
                                 {% if datastory_data.description %}
-                                <!-- <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
-                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea> -->
-                                <input name="description" type="hidden">
-                            <div class='editor'>{{ datastory_data.description|safe }}</div>
-                            {% else %}
-                            <!-- <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
-                                    placeholder="A brief introdution to the project."></textarea> -->
-                            <input name="description" type="hidden">
-                            <div class='editor'></div>
-                            {%endif%}
+                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
+                                {% else %}
+                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                                    placeholder="A brief introdution to the project."></textarea>
+                                {%endif%}
                             </p>
                         </div>
                         <div class="card-body" id="sortable">
@@ -392,9 +388,10 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <textarea class='editor' oninput='auto_grow(this)' type="text"
-                                    name="{{dict.position}}__{{dict.type}}" id="{{dict.position}}__{{dict.type}}"
-                                    placeholder="{{dict.text}}">{{dict.text}}</textarea>
+                                <div class='editor' id='{{dict.position}}__editor'>
+                                    <input name='{{dict.position}}__{{dict.type}}' type='hidden'
+                                        id='{{dict.position}}__{{dict.type}}'>
+                                </div>
                             </div>
 
                             {% elif dict.type == 'count' %}
