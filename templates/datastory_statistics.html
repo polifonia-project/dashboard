@@ -74,7 +74,7 @@
 						{% elif dict.type == 'text' %}
 						<!-- text -->
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
-							<p>{{dict.text}}</p>
+							<p>{{dict.text|safe}}</p>
 						</div>
 
 						{% elif dict.type == 'count' %}
