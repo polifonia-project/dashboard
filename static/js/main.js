@@ -13,7 +13,6 @@ window.onload = function () {
     disableKeypress();
     saveHTML(datastory_data.name);
     var map_ready;
-    createTextEditor();
 }
 
 // disable selection of templates other than statistics
@@ -132,9 +131,8 @@ function add_field(name, bind_query_id = "") {
 
     var title_field = "<textarea rows='2' oninput='auto_grow(this)' name='section_title' type='text' id='" + (counter + 1) + "__section_title' placeholder='Write the title of a new section.'></textarea>";
 
-    var text_field = "<div class='editor' id='" + (counter + 1) + "__editor'>\
-    <input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text'>\
-    </div>"
+    var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text'>\
+    <div class='editor' id='" + (counter + 1) + "__editor'></div>"
 
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
     var help = 'True';
@@ -485,6 +483,7 @@ $(function () {
         });
         console.log(fields);
         colorSwitch(color_2, color_1);
+        createTextEditor();
 
         $('#sortable [id$="block_field"]').each(function (idx) {
             var count_query = '';

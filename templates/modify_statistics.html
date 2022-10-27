@@ -388,9 +388,10 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
+                                <input name='{{dict.position}}__{{dict.type}}' type='hidden'
+                                    id='{{dict.position}}__{{dict.type}}'>
                                 <div class='editor' id='{{dict.position}}__editor'>
-                                    <input name='{{dict.position}}__{{dict.type}}' type='hidden'
-                                        id='{{dict.position}}__{{dict.type}}'>
+                                    {{dict.text|safe}}
                                 </div>
                             </div>
 
