@@ -509,9 +509,7 @@ $(function () {
             var map_filter_bind_query = '';
             var other_filters = 0;
             fields.forEach(element => {
-                if (element.name == (idx + 1) + '__text') {
-                    fromEditorToInput((idx + 1));
-                } else if (element.name == (idx + 1) + '__count_query') {
+                if (element.name == (idx + 1) + '__count_query') {
                     count_query = element.value;
                 } else if (element.name == (idx + 1) + '__count_label') {
                     count_label = element.value;
@@ -553,7 +551,6 @@ $(function () {
             }
 
             );
-            console.log(text_content)
 
             // show hide elements
             const queryButton = document.getElementById((idx + 1) + '__query-btn'); // if I put them inside the if, everything works.
@@ -3162,6 +3159,5 @@ const fromEditorToInput = (pos) => {
         var textContent = qlEditor.innerHTML;
         var input = document.getElementById(pos + '__text');
         input.setAttribute('value', textContent);
-        console.log(textContent)
     }
 }

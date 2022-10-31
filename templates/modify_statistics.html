@@ -389,7 +389,7 @@
                                 <br>
                                 <!-- preview -->
                                 <input name='{{dict.position}}__{{dict.type}}' type='hidden'
-                                    id='{{dict.position}}__{{dict.type}}' value=''>
+                                    id='{{dict.position}}__{{dict.type}}' value='{{dict.text|safe}}'>
                                 <div class='editor' id='{{dict.position}}__editor'>
                                     {{dict.text|safe}}
                                 </div>
