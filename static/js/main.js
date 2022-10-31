@@ -3139,25 +3139,47 @@ const cleanString = (dirtyString) => {
 ////// TEXT EDITOR
 // Initialize Quill editor
 const createTextEditor = () => {
-    var quill;
-    var editors = document.querySelectorAll('.editor');
+    let quill;
+    let editors = document.querySelectorAll('.editor');
     for (const [key, value] of Object.entries(editors)) {
-        var pos = value.id.split('__')[0];
+        let pos = value.id.split('__')[0];
+        let name = value.previousElementSibling.id.split('__')[1];
         if (value.children.length != 3) {
             quill = new Quill(value, {
+                modules: {
+                    toolbar: toolbarOptions(name)
+                },
                 theme: 'snow'
             });
         }
-        fromEditorToInput(pos);
+        fromEditorToInput(pos, name);
     }
 }
 
-const fromEditorToInput = (pos) => {
-    var editor = document.getElementById(pos + '__editor');
+const toolbarOptions = (name) => {
+    let toolbarOptions = [];
+    if (name === 'text') {
+        toolbarOptions = [
+            ['bold', 'italic', 'underline'],
+            ['link'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['clean']
+        ]
+    } else if (name === 'section_title') {
+        toolbarOptions = [
+            [{ 'header': 1 }, { 'header': 2 }],
+            ['italic']
+        ]
+    }
+    return toolbarOptions;
+}
+
+const fromEditorToInput = (pos, name) => {
+    let editor = document.getElementById(pos + '__editor');
     editor.onmouseleave = function () {
-        var qlEditor = editor.childNodes[0];
-        var textContent = qlEditor.innerHTML;
-        var input = document.getElementById(pos + '__text');
+        let qlEditor = editor.childNodes[0];
+        let textContent = qlEditor.innerHTML;
+        let input = document.getElementById(pos + '__' + name);
         input.setAttribute('value', textContent);
     }
 }
