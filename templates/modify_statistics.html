@@ -357,6 +357,7 @@
                             {% if dict.type == 'section_title' %}
                             <!-- SECTION TITLE -->
                             <div id="{{dict.position}}__block_field">
+                                <h4 class='block_title'>Add title</h4>
                                 <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
                                     <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
                                 </a>
@@ -368,15 +369,18 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
-                                    id="{{dict.position}}__{{dict.type}}"
-                                    placeholder="{{dict.section_title}}">{{dict.text}}</textarea>
+                                <input name='{{dict.position}}__{{dict.type}}' type='hidden'
+                                    id='{{dict.position}}__{{dict.type}}' value='{{dict.section_title}}'>
+                                <div class='editor' id='{{dict.position}}__editor'>
+                                    {{dict.section_title|safe}}
+                                </div>
                             </div>
 
                             {% elif dict.type == 'text' %}
                             <!-- TEXT -->
                             <!-- buttons -->
                             <div id="{{dict.position}}__block_field">
+                                <h4 class='block_title'>Add text</h4>
                                 <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
                                     <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
                                 </a>
@@ -388,9 +392,11 @@
                                 </a>
                                 <br>
                                 <!-- preview -->
-                                <textarea oninput='auto_grow(this)' type="text" name="{{dict.position}}__{{dict.type}}"
-                                    id="{{dict.position}}__{{dict.type}}"
-                                    placeholder="{{dict.text}}">{{dict.text}}</textarea>
+                                <input name='{{dict.position}}__{{dict.type}}' type='hidden'
+                                    id='{{dict.position}}__{{dict.type}}' value='{{dict.text}}'>
+                                <div class='editor' id='{{dict.position}}__editor'>
+                                    {{dict.text|safe}}
+                                </div>
                             </div>
 
                             {% elif dict.type == 'count' %}

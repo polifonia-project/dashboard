@@ -129,9 +129,11 @@ function add_field(name, bind_query_id = "") {
     updateindex();
     var contents = "";
 
-    var title_field = "<textarea rows='2' oninput='auto_grow(this)' name='section_title' type='text' id='" + (counter + 1) + "__section_title' placeholder='Write the title of a new section.'></textarea>";
+    var title_field = "<input name='" + (counter + 1) + "__section_title' type='hidden' id='" + (counter + 1) + "__section_title' value=''>\
+    <div class='editor' id='" + (counter + 1) + "__editor'></div>";
 
-    var text_field = "<textarea rows='3' oninput='auto_grow(this)' name='text' type='text' id='" + (counter + 1) + "__text' placeholder='Write the text for this paragraph.'></textarea>"
+    var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text' value=''>\
+    <div class='editor' id='" + (counter + 1) + "__editor'></div>"
 
     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
     var help = 'True';
@@ -321,11 +323,11 @@ function add_field(name, bind_query_id = "") {
 
 
     if (name == 'textbox') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add text</h4>";
+        var open_addons = "<div id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + text_field + close_addons;
     } else if (name === 'section_title') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add title</h4>";
+        var open_addons = "<div id='" + (counter + 1) + "__block_field> <h4 class='block_title'>Add title</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + title_field + close_addons;
     } else if (name == 'countbox') {
@@ -442,6 +444,7 @@ function add_field(name, bind_query_id = "") {
 
     counter = $('#sortable [id$="block_field"]').length;
     updateindex();
+    createTextEditor();
 }
 
 // add new query field
@@ -481,8 +484,10 @@ $(function () {
         });
         console.log(fields);
         colorSwitch(color_2, color_1);
+        createTextEditor();
 
         $('#sortable [id$="block_field"]').each(function (idx) {
+            var text_content = '';
             var count_query = '';
             var textsearch_query = '';
             var count_label = '';
@@ -3150,4 +3155,52 @@ const cleanString = (dirtyString) => {
     // replace white space with '_' and lowercase
     cleanedString = cleanedString.replace(/[^\w]/g, '_').toLowerCase();
     return cleanedString;
+}
+
+////// TEXT EDITOR
+// Initialize Quill editor
+const createTextEditor = () => {
+    let quill;
+    let editors = document.querySelectorAll('.editor');
+    for (const [key, value] of Object.entries(editors)) {
+        let pos = value.id.split('__')[0];
+        let name = value.previousElementSibling.id.split('__')[1];
+        if (value.children.length != 3) {
+            quill = new Quill(value, {
+                modules: {
+                    toolbar: toolbarOptions(name)
+                },
+                theme: 'snow'
+            });
+        }
+        fromEditorToInput(pos);
+    }
+}
+
+const toolbarOptions = (name) => {
+    let toolbarOptions = [];
+    if (name === 'text') {
+        toolbarOptions = [
+            ['bold', 'italic', 'underline'],
+            ['link'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['clean']
+        ]
+    } else if (name === 'section_title') {
+        toolbarOptions = [
+            [{ 'header': [2, 3] }],
+            ['italic']
+        ]
+    }
+    return toolbarOptions;
+}
+
+const fromEditorToInput = (pos) => {
+    let editor = document.getElementById(pos + '__editor');
+    editor.onmouseleave = function () {
+        let qlEditor = editor.childNodes[0];
+        let textContent = qlEditor.innerHTML;
+        let input = editor.parentNode.querySelector('input');
+        input.setAttribute('value', textContent);
+    }
 }

@@ -67,14 +67,14 @@
 
 						{% if dict.type == 'section_title' %}
 						<!-- section title -->
-						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
-							<h2 class="card-title">{{dict.section_title}}</h2>
+						<div class="col-md-12 col-sm-12 card-title" id="{{dict.position}}">
+							{{dict.section_title|safe}}
 						</div>
 
 						{% elif dict.type == 'text' %}
 						<!-- text -->
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
-							<p>{{dict.text}}</p>
+							{{dict.text|safe}}
 						</div>
 
 						{% elif dict.type == 'count' %}
