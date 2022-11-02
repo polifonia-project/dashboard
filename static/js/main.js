@@ -129,7 +129,8 @@ function add_field(name, bind_query_id = "") {
     updateindex();
     var contents = "";
 
-    var title_field = "<textarea rows='2' oninput='auto_grow(this)' name='section_title' type='text' id='" + (counter + 1) + "__section_title' placeholder='Write the title of a new section.'></textarea>";
+    var title_field = "<input name='" + (counter + 1) + "__section_title' type='hidden' id='" + (counter + 1) + "__section_title' value=''>\
+    <div class='editor' id='" + (counter + 1) + "__editor'></div>";
 
     var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text' value=''>\
     <div class='editor' id='" + (counter + 1) + "__editor'></div>"
@@ -3167,7 +3168,7 @@ const toolbarOptions = (name) => {
         ]
     } else if (name === 'section_title') {
         toolbarOptions = [
-            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'header': [2, 3] }],
             ['italic']
         ]
     }
