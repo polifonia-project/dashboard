@@ -327,7 +327,7 @@ function add_field(name, bind_query_id = "") {
         var close_addons = "</div>";
         contents += open_addons + up_down + text_field + close_addons;
     } else if (name === 'section_title') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field' class='typography-line'> <h4 class='block_title'>Add title</h4>";
+        var open_addons = "<div id='" + (counter + 1) + "__block_field> <h4 class='block_title'>Add title</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + title_field + close_addons;
     } else if (name == 'countbox') {
@@ -3153,7 +3153,7 @@ const createTextEditor = () => {
                 theme: 'snow'
             });
         }
-        fromEditorToInput(pos, name);
+        fromEditorToInput(pos);
     }
 }
 
@@ -3175,12 +3175,12 @@ const toolbarOptions = (name) => {
     return toolbarOptions;
 }
 
-const fromEditorToInput = (pos, name) => {
+const fromEditorToInput = (pos) => {
     let editor = document.getElementById(pos + '__editor');
     editor.onmouseleave = function () {
         let qlEditor = editor.childNodes[0];
         let textContent = qlEditor.innerHTML;
-        let input = document.getElementById(pos + '__' + name);
+        let input = editor.parentNode.querySelector('input');
         input.setAttribute('value', textContent);
     }
 }
