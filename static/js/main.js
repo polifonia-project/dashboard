@@ -1,7 +1,7 @@
 var checked_filters;
 var markers;
 var allMarkers;
-var sidebar;
+var sidebar, map;
 var myScatterChart;
 addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
@@ -464,8 +464,6 @@ const addQueryField = (name, idx) => {
     const afterElement = document.getElementById(name);
     afterElement.insertAdjacentHTML('beforebegin', content);
 }
-
-var sidebar, map;
 
 // preview content
 $(function () {
