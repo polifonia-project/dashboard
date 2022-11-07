@@ -1369,7 +1369,6 @@ function creategeoJSON(returnedJson) {
         pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
         geoJSONdata.push(pointObj);
     }
-    console.log('creategeoJSONcreategeoJSON')
     return geoJSONdata
 };
 
@@ -1381,7 +1380,6 @@ function initSidebar() {
         position: 'left',     // left or right
     }).addTo(map);
     //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
-    console.log('initSidebar')
     return sidebar;
 };
 
@@ -1398,6 +1396,10 @@ function showFilters(count) {
         }
     }
 };
+
+function test() {
+    console.log(document.querySelector('[role="tab"]'));
+}
 
 function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id, checked_filters) {
     // get the list of URIs from geoJSON
@@ -1542,6 +1544,25 @@ function createPanel(filter_id, filter_title, labels_values_count, checked_filte
         position: 'top'
     };
     sidebar.addPanel(panelContent);
+
+    let tabHamburger = document.getElementById('tab-hamburger');
+    tabMenu(tabHamburger);
+}
+
+function tabMenu(tabHamburger) {
+    let aTabs = document.querySelectorAll('[role="tab"]');
+    if (tabHamburger === null) {
+        let iTabElement = document.createElement('i');
+        iTabElement.className = 'fa fa-bars';
+        let aTab1 = document.querySelector('[role="tab"]');
+        aTab1.id = 'tab-hamburger';
+        aTab1.appendChild(iTabElement);
+    }
+    for (const value of Object.values(aTabs)) {
+        if (value.id != 'tab-hamburger') {
+            value.parentElement.remove();
+        }
+    }
 }
 
 function sortPanels() {
