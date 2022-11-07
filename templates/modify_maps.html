@@ -81,10 +81,10 @@
                     </div>
                     <p class="card-category">
                         {% if datastory_data.description %}
-                        <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
+                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
                             placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
                         {% else %}
-                        <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
+                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
                             placeholder="A brief introdution to the project."></textarea>
                         {%endif%}
                     </p>
@@ -120,7 +120,6 @@
                         <a class='btn btn-primary btn-border'
                             onclick='add_field(name,"{{dict.position}}__map_points_query")' name='map_filter'>Add
                             filter</a>
-
                     </div>
 
                     {% endif %}

@@ -188,7 +188,10 @@
 {% endif %}
 
 
-
+{% set with_filter = false|tojson %}
+{% if "map_filter" in datastory_data.dynamic_elements|map(attribute="type")%}
+{% set with_filter = true|tojson %}
+{% endif %}
 {% for dict in datastory_data.dynamic_elements %}
 {% if dict.type == 'map' %}
 <script type="text/javascript">
@@ -196,7 +199,7 @@
   var q = $("#{{dict.position}}__map_points_query").val();
   // TODO change waitfilters and idx
   var sidebar = initSidebar();
-  createMap("{{datastory_data.sparql_endpoint}}", encodeURIComponent(q), "{{dict.position}}__map_preview_container", 0, false, datastory_data.color_code[0]);
+  createMap("{{datastory_data.sparql_endpoint}}", encodeURIComponent(q), "{{dict.position}}__map_preview_container", 0, {{ with_filter }}, datastory_data.color_code[0]);
 
 </script>
 <script type="text/javascript" id="dataMap"></script>
@@ -211,7 +214,6 @@
 </script>
 {% endif %}
 {% endfor %}
-
 
 
 {% endblock javascripts %}

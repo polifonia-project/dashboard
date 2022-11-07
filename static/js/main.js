@@ -1253,7 +1253,6 @@ function rerunQuery(pos, el) {
 
 // initialize an empty map, used directly in templates
 function initMap(pos) {
-    console.log(pos)
     var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
         maxZoom: 19,
@@ -1263,7 +1262,7 @@ function initMap(pos) {
 }
 
 // get geo data from SPARQL endpoint and send to map
-function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = true, color_code) {
+function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = false, color_code) {
     $.ajax({
         type: 'POST',
         url: sparqlEndpoint + '?query=' + encoded_query,
@@ -1274,7 +1273,7 @@ function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = 
             var geoJSONdata = creategeoJSON(returnedJson);
             markers = setView(mapid, geoJSONdata, waitfilters, color_code);
             allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
-            if (waitfilters === true) {
+            if (waitfilters == true) {
                 showFilters(datastory_data.dynamic_elements.length);
             }
         },
