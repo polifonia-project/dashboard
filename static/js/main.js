@@ -1258,7 +1258,6 @@ function initMap(pos) {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map);
-
     return map
 }
 
@@ -1274,6 +1273,7 @@ function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = 
             var geoJSONdata = creategeoJSON(returnedJson);
             markers = setView(mapid, geoJSONdata, waitfilters, color_code);
             allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
+            showFilters(datastory_data.dynamic_elements.length);
         },
         complete: function () {
             $('#loader').addClass('hidden');
@@ -1369,6 +1369,7 @@ function creategeoJSON(returnedJson) {
         pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
         geoJSONdata.push(pointObj);
     }
+    console.log('creategeoJSONcreategeoJSON')
     return geoJSONdata
 };
 
@@ -1380,7 +1381,22 @@ function initSidebar() {
         position: 'left',     // left or right
     }).addTo(map);
     //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
+    console.log('initSidebar')
     return sidebar;
+};
+
+function showFilters(count) {
+    if (count > 1) {
+        for (let step = 2; step < count + 1; step++) {
+            var qf = $("#" + step + "__map_filter_query").val().replace('\n', '');
+            var encoded_filter = encodeURIComponent(qf);
+            var map_filter_bind_query = $('#1__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
+            var filter_title = $("#" + step + "__map_filter_title").val();
+            var filter_id = step;
+            var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+            addFilterMap(datastory_data.sparql_endpoint, encoded_filter, map_filter_bind_query, filter_title, filter_id, checked_filters);
+        }
+    }
 };
 
 function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id, checked_filters) {
@@ -1469,7 +1485,6 @@ function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filt
 
             // add panel
             createPanel(filter_id, filter_title, labels_values_count, checked_filters);
-
         },
         complete: function () {
             $('#loader').addClass('hidden');
@@ -1624,9 +1639,6 @@ function addRemoveMarkers(checked_filters) {
             map.addLayer(markers);
         }
     }
-
-
-
 }
 
 
