@@ -1253,6 +1253,7 @@ function rerunQuery(pos, el) {
 
 // initialize an empty map, used directly in templates
 function initMap(pos) {
+    console.log(pos)
     var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
         maxZoom: 19,
@@ -1273,7 +1274,9 @@ function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = 
             var geoJSONdata = creategeoJSON(returnedJson);
             markers = setView(mapid, geoJSONdata, waitfilters, color_code);
             allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
-            showFilters(datastory_data.dynamic_elements.length);
+            if (waitfilters === true) {
+                showFilters(datastory_data.dynamic_elements.length);
+            }
         },
         complete: function () {
             $('#loader').addClass('hidden');
