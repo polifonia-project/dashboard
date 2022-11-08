@@ -1399,6 +1399,8 @@ function showFilters(count) {
     }
 };
 
+function collapseFilter(panel_id) { $("#" + panel_id + " p").toggle(); }
+
 function test() {
     console.log(document.querySelector('[role="tab"]'));
 }
@@ -1514,7 +1516,11 @@ function createPanel(filter_id, filter_title, labels_values_count, checked_filte
     var groupCheckboxes = document.createElement("section");
     groupCheckboxes.id = filter_id + "_panel";
     var group_title = document.createElement("h3");
+    var filterCaret = document.createElement('span');
+    filterCaret.className = 'caret';
+    filterCaret.setAttribute('onclick', 'collapseFilter("' + filter_id + '_panel")');
     group_title.append(document.createTextNode(filter_title));
+    group_title.append(filterCaret);
     groupCheckboxes.appendChild(group_title);
 
     // create list of checkboxes
@@ -1556,6 +1562,7 @@ function tabMenu(tabHamburger) {
     if (tabHamburger === null) {
         let iTabElement = document.createElement('i');
         iTabElement.className = 'fa fa-bars';
+        iTabElement.id = 'map-ham'
         let aTab1 = document.querySelector('[role="tab"]');
         aTab1.id = 'tab-hamburger';
         aTab1.appendChild(iTabElement);
