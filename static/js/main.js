@@ -68,11 +68,11 @@ function updateindex() {
             var childname = everyChild[i].name;
             var childhref = everyChild[i].href;
             var childdataid = everyChild[i].dataset.id;
-            if (childid != undefined) {
+            if (childid != undefined && !childid.includes('_panel') && !childid.includes('ham')) {
                 if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
                 else { everyChild[i].id = idx + '__' + childid; }
             };
-            if (childname != undefined) {
+            if (childname != undefined && !'map_filter') {
                 if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
                 else { everyChild[i].name = idx + '__' + childname; }
             };
@@ -1203,7 +1203,15 @@ $(function () {
                 // run the first time and then on demand
                 var rerun = $("a[data-id='" + (idx + 1) + "__rerun_query'");
                 if (rerun.data("run") == true) {
-                    if (other_filters > 0) { var waitfilters = true } else { var waitfilters = false };
+                    if (other_filters > 0) {
+                        var waitfilters = true
+                    } else {
+                        let sidebarContainer = document.querySelector(".leaflet-sidebar-content");
+                        while (sidebarContainer.firstChild) {
+                            sidebarContainer.removeChild(sidebarContainer.firstChild);
+                        }
+                        var waitfilters = false
+                    };
                     map_ready = createMap(sparqlEndpoint, encoded_points, (idx + 1) + '__map_preview_container', (idx + 1), waitfilters, color_2);
                     rerun.data("run", false);
                 } else {
@@ -1562,7 +1570,7 @@ function tabMenu(tabHamburger) {
     if (tabHamburger === null) {
         let iTabElement = document.createElement('i');
         iTabElement.className = 'fa fa-bars';
-        iTabElement.id = 'map-ham'
+        iTabElement.id = 'map-ham';
         let aTab1 = document.querySelector('[role="tab"]');
         aTab1.id = 'tab-hamburger';
         aTab1.appendChild(iTabElement);
