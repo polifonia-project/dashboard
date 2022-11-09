@@ -1323,7 +1323,7 @@ function setView(mapid, geoJSONdata, waitfilters, color_code) {
             var markers = cluster.getAllChildMarkers();
             var n = 0;
             for (var i = 0; i < markers.length; i++) { n += 1; }
-            return L.divIcon({ html: "<span style='" + innerClusterStyle + ";'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
+            return L.divIcon({ html: "<span style='" + innerClusterStyle + "'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
         },
         singleMarkerMode: true
     });
