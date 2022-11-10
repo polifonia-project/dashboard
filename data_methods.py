@@ -7,6 +7,7 @@ import conf
 import string
 import re
 import unidecode
+import bleach
 
 
 def read_json(file_name):
@@ -73,7 +74,7 @@ def clean_string(dirty_string):
         datastory_title (str): a string that can contain any type of character.
 
     Returns:
-        clean_title (str): an alpha numeric string in which white spaces are replaced by '_'. 
+        clean_title (str): an alpha numeric string in which white spaces are replaced by '_'.
     '''
 
     pattern = r'[' + string.punctuation + ']'
@@ -152,7 +153,11 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                 if position == int(k.split('__')[0]):
                                     if 'text' in k and 'search' not in k:
                                         elements_dict['type'] = 'text'
-                                        elements_dict[k.split('__')[1]] = v
+                                        elements_dict[k.split(
+                                            '__')[1]] = bleach.clean(v,
+                                                                     tags=[
+                                                                         'h2', 'h3', 'p', 'em', 'u', 'strong', 'li', 'ul', 'ol', 'a'],
+                                                                     attributes=['href'])
                                     elif 'textsearch' in k:
                                         elements_dict['type'] = 'textsearch'
                                         elements_dict[k.split('__')[1]] = v

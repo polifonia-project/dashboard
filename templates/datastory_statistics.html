@@ -72,10 +72,17 @@
 						</div>
 
 						{% elif dict.type == 'text' %}
+						{% if dict.text[1] == 'p' %}
 						<!-- text -->
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
 							{{dict.text|safe}}
 						</div>
+						{% elif dict.text[1] == 'h' %}
+						<!-- section title -->
+						<div class="col-md-12 col-sm-12 card-title" id="{{dict.position}}">
+							{{dict.text|safe}}
+						</div>
+						{% endif %}
 
 						{% elif dict.type == 'count' %}
 						<!-- count -->

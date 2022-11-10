@@ -129,9 +129,6 @@ function add_field(name, bind_query_id = "") {
     updateindex();
     var contents = "";
 
-    var title_field = "<input name='" + (counter + 1) + "__section_title' type='hidden' id='" + (counter + 1) + "__section_title' value=''>\
-    <div class='editor' id='" + (counter + 1) + "__editor'></div>";
-
     var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text' value=''>\
     <div class='editor' id='" + (counter + 1) + "__editor'></div>"
 
@@ -326,10 +323,6 @@ function add_field(name, bind_query_id = "") {
         var open_addons = "<div id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + text_field + close_addons;
-    } else if (name === 'section_title') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field> <h4 class='block_title'>Add title</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + title_field + close_addons;
     } else if (name == 'countbox') {
         var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
         var close_addons = "</div>";
@@ -3216,7 +3209,7 @@ const createTextEditor = () => {
         if (value.children.length != 3) {
             quill = new Quill(value, {
                 modules: {
-                    toolbar: toolbarOptions(name)
+                    toolbar: toolbarOptions()
                 },
                 theme: 'snow'
             });
@@ -3225,21 +3218,16 @@ const createTextEditor = () => {
     }
 }
 
-const toolbarOptions = (name) => {
+const toolbarOptions = () => {
     let toolbarOptions = [];
-    if (name === 'text') {
-        toolbarOptions = [
-            ['bold', 'italic', 'underline'],
-            ['link'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['clean']
-        ]
-    } else if (name === 'section_title') {
-        toolbarOptions = [
-            [{ 'header': [2, 3] }],
-            ['italic']
-        ]
-    }
+    toolbarOptions = [
+        [{ 'header': [2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        ['link'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['clean']
+    ]
+
     return toolbarOptions;
 }
 

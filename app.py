@@ -9,6 +9,7 @@ import data_methods
 import os
 import time
 from apscheduler.schedulers.background import BackgroundScheduler
+import bleach
 
 
 app = Flask(__name__, static_url_path='/melody/static')
@@ -354,10 +355,13 @@ def modify_datastory(section_name, datastory_name):
                                         for k, v in form_data.items():
                                             if '__' in k:
                                                 if position == int(k.split('__')[0]):
-                                                    if 'text' in k:
+                                                    if 'text' in k and 'search' not in k:
                                                         elements_dict['type'] = 'text'
                                                         elements_dict[k.split('__')[
-                                                            1]] = v
+                                                            1]] = bleach.clean(v,
+                                                                               tags=[
+                                                                                   'h2', 'h3', 'p', 'em', 'u', 'strong', 'li', 'ul', 'ol', 'a'],
+                                                                               attributes=['href'])
                                                     elif 'textsearch' in k:
                                                         elements_dict['type'] = 'textsearch'
                                                         elements_dict[k.split('__')[
