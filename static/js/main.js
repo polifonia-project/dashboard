@@ -1,7 +1,7 @@
 var checked_filters;
 var markers;
 var allMarkers;
-var sidebar;
+var sidebar, map;
 var myScatterChart;
 addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
@@ -68,11 +68,11 @@ function updateindex() {
             var childname = everyChild[i].name;
             var childhref = everyChild[i].href;
             var childdataid = everyChild[i].dataset.id;
-            if (childid != undefined) {
+            if (childid != undefined && !childid.includes('_panel') && !childid.includes('ham')) {
                 if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
                 else { everyChild[i].id = idx + '__' + childid; }
             };
-            if (childname != undefined) {
+            if (childname != undefined && !'map_filter') {
                 if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
                 else { everyChild[i].name = idx + '__' + childname; }
             };
@@ -464,8 +464,6 @@ const addQueryField = (name, idx) => {
     const afterElement = document.getElementById(name);
     afterElement.insertAdjacentHTML('beforebegin', content);
 }
-
-var sidebar, map;
 
 // preview content
 $(function () {
@@ -1205,7 +1203,15 @@ $(function () {
                 // run the first time and then on demand
                 var rerun = $("a[data-id='" + (idx + 1) + "__rerun_query'");
                 if (rerun.data("run") == true) {
-                    if (other_filters > 0) { var waitfilters = true } else { var waitfilters = false };
+                    if (other_filters > 0) {
+                        var waitfilters = true
+                    } else {
+                        let sidebarContainer = document.querySelector(".leaflet-sidebar-content");
+                        while (sidebarContainer.firstChild) {
+                            sidebarContainer.removeChild(sidebarContainer.firstChild);
+                        }
+                        var waitfilters = false
+                    };
                     map_ready = createMap(sparqlEndpoint, encoded_points, (idx + 1) + '__map_preview_container', (idx + 1), waitfilters, color_2);
                     rerun.data("run", false);
                 } else {
@@ -1260,12 +1266,11 @@ function initMap(pos) {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map);
-
     return map
 }
 
 // get geo data from SPARQL endpoint and send to map
-function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = true, color_code) {
+function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = false, color_code) {
     $.ajax({
         type: 'POST',
         url: sparqlEndpoint + '?query=' + encoded_query,
@@ -1276,6 +1281,9 @@ function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = 
             var geoJSONdata = creategeoJSON(returnedJson);
             markers = setView(mapid, geoJSONdata, waitfilters, color_code);
             allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
+            if (waitfilters == true) {
+                showFilters(datastory_data.dynamic_elements.length);
+            }
         },
         complete: function () {
             $('#loader').addClass('hidden');
@@ -1315,7 +1323,7 @@ function setView(mapid, geoJSONdata, waitfilters, color_code) {
             var markers = cluster.getAllChildMarkers();
             var n = 0;
             for (var i = 0; i < markers.length; i++) { n += 1; }
-            return L.divIcon({ html: "<span style='" + innerClusterStyle + ";'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
+            return L.divIcon({ html: "<span style='" + innerClusterStyle + "'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
         },
         singleMarkerMode: true
     });
@@ -1384,6 +1392,26 @@ function initSidebar() {
     //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
     return sidebar;
 };
+
+function showFilters(count) {
+    if (count > 1) {
+        for (let step = 2; step < count + 1; step++) {
+            var qf = $("#" + step + "__map_filter_query").val().replace('\n', '');
+            var encoded_filter = encodeURIComponent(qf);
+            var map_filter_bind_query = $('#1__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
+            var filter_title = $("#" + step + "__map_filter_title").val();
+            var filter_id = step;
+            var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+            addFilterMap(datastory_data.sparql_endpoint, encoded_filter, map_filter_bind_query, filter_title, filter_id, checked_filters);
+        }
+    }
+};
+
+function collapseFilter(panel_id) { $("#" + panel_id + " p").toggle(); }
+
+function test() {
+    console.log(document.querySelector('[role="tab"]'));
+}
 
 function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id, checked_filters) {
     // get the list of URIs from geoJSON
@@ -1471,7 +1499,6 @@ function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filt
 
             // add panel
             createPanel(filter_id, filter_title, labels_values_count, checked_filters);
-
         },
         complete: function () {
             $('#loader').addClass('hidden');
@@ -1497,7 +1524,11 @@ function createPanel(filter_id, filter_title, labels_values_count, checked_filte
     var groupCheckboxes = document.createElement("section");
     groupCheckboxes.id = filter_id + "_panel";
     var group_title = document.createElement("h3");
+    var filterCaret = document.createElement('span');
+    filterCaret.className = 'caret';
+    filterCaret.setAttribute('onclick', 'collapseFilter("' + filter_id + '_panel")');
     group_title.append(document.createTextNode(filter_title));
+    group_title.append(filterCaret);
     groupCheckboxes.appendChild(group_title);
 
     // create list of checkboxes
@@ -1529,6 +1560,26 @@ function createPanel(filter_id, filter_title, labels_values_count, checked_filte
         position: 'top'
     };
     sidebar.addPanel(panelContent);
+
+    let tabHamburger = document.getElementById('tab-hamburger');
+    tabMenu(tabHamburger);
+}
+
+function tabMenu(tabHamburger) {
+    let aTabs = document.querySelectorAll('[role="tab"]');
+    if (tabHamburger === null) {
+        let iTabElement = document.createElement('i');
+        iTabElement.className = 'fa fa-bars';
+        iTabElement.id = 'map-ham';
+        let aTab1 = document.querySelector('[role="tab"]');
+        aTab1.id = 'tab-hamburger';
+        aTab1.appendChild(iTabElement);
+    }
+    for (const value of Object.values(aTabs)) {
+        if (value.id != 'tab-hamburger') {
+            value.parentElement.remove();
+        }
+    }
 }
 
 function sortPanels() {
@@ -1626,9 +1677,6 @@ function addRemoveMarkers(checked_filters) {
             map.addLayer(markers);
         }
     }
-
-
-
 }
 
 

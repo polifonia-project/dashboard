@@ -733,9 +733,7 @@ hr {
 
 .mycluster {
   border-radius: 50%;
-  /* background-color: white; */
   text-align: center;
-  padding-top: 10px;
   color: black;
 }
 
@@ -772,6 +770,10 @@ hr {
 
 .leaflet-sidebar-content h3 {
   margin-top: 0.5em;
+  color: #fff;
+}
+
+#map-ham {
   color: #fff;
 }
 
