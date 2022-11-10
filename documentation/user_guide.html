@@ -192,7 +192,7 @@
             <p class="mb-3">The welcome page gives you access to the most important
               functionalities.</p>
             <img src="img/home.png" alt="">
-            <p class="figcaption">The homepage of MELODY. You can login or start immediately</p>
+            <p class="figcaption">The homepage of MELODY. You can login or start immediately.</p>
             <p>The left sidebar includes data stories created by registered users, grouped by
               <i>section</i>. From the top right menu you can access the documentation (this document), create a new
               data story, and sign in with your GitHub credentials.
@@ -254,7 +254,7 @@
             <!-- <h2 id="template" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Templates
                         </h2> -->
             <img src="img/setup1.png" alt="">
-            <p class="figcaption">The setup page of the data story</p>
+            <p class="figcaption">The setup page of the data story.</p>
             <h3><strong>Select the template</strong> </h3>
             <p class="mb-3 ">Data stories are built on <b>templates</b>,
               a set of layout instructions for paginating contents.
@@ -268,7 +268,7 @@
               </li>
               <li><b>Relations</b>: an interactive text search that allows to manipulate actions on results (e.g. make
                 new text searches, combine results of multiple searches).</li>
-              <li><span style="color: red;">(not available yet)</span> <b>Map</b>: allows to create a geographical map.
+              <li><b>Map</b>: allows to create a geographical map.
                 Data points can be filtered with user-defined filters, and explored via their metadata, statistics and
                 other charts.</li>
               <li><span style="color: red;">(not available yet)</span> <b>Timeline</b>: allows to manipulate time series
@@ -286,13 +286,13 @@
               sidebar.
               Create a new section or select an existing one from the dropdown menu.</p>
             <img src="img/setup2.png" alt="">
-            <p class="figcaption">Select the section of your story (only registered users)</p>
+            <p class="figcaption">Select the section of your story (only registered users).</p>
             <h3><strong>Select the title</strong> </h3>
             <p class="mb-3">The <b>title</b> of the data story doesn't need much explanation. It's the first
               prominent communication tool in the narrative of the data story you're going to create. You can change it
               later.</p>
             <img src="img/setup3.png" alt="">
-            <p class="figcaption">Choose a title and provide the URL of the SPARQL endpoint</p>
+            <p class="figcaption">Choose a title and provide the URL of the SPARQL endpoint.</p>
 
             <h3><strong>Select the SPARQL endpoint</strong> </h3>
             <p class="mb-3">Lastly, you must include the URL of an online <b>SPARQL endpoint</b> to retrieve
@@ -337,7 +337,7 @@
               of the story (in the secondary menu) can be modified.
               The position of these elements in the canvas cannot be modified.</p>
             <img src="img/story1.png" alt="">
-            <p class="figcaption">Color picker, title, subtitle, description, and curators</p>
+            <p class="figcaption">Color picker, title, subtitle, description, and curators.</p>
 
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="statistics_template">The
               Statistics template</h2>
@@ -349,16 +349,26 @@
               <li>Text boxes</li>
               <li>Counters</li>
               <li>Charts</li>
+              <li>Tables</li>
             </ul>
             <p>You can add as many elements as you want. To add a new element use the respective button, and a box will
               appear.
               Each box can be moved up and down or removed.</p>
-            <img src="img/story2.png" alt="">
-            <p class="figcaption">Text box. Each box includes buttons to move up/down or delete an element</p>
+            <img src="img/buttons.png" alt="">
+            <p class="figcaption">An example of empty story with buttons to add elements to the page.</p>
+            <!-- TEXTBOX -->
             <h2 id="textboxes" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Textboxes
             </h2>
-            <p class="mb-3">Text boxes are meant to include free text descriptions. Each text box is rendered as a
-              single paragraph.</p>
+            <p class="mb-3">Text boxes are meant to include free text descriptions. You will work in a simple
+              <strong>text editor</strong> environment that allows you to use the following formatting elements: bold,
+              italics, underlined, ordered and unordered lists, and hypertext link.</br>
+              Moreover, you can choose between two dimensions for the <strong>title</strong> (h2 and h3) and simple
+              <strong>text</strong>, rendered as a
+              paragraph.
+            </p>
+            <img src="img/text_editor.png" alt="">
+            <p class="figcaption">Text box. Each box includes buttons to move up/down or delete an element.</p>
+            <!-- COUNTER -->
             <h2 id="counter" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Counters
             </h2>
             <p class="mb-3">Counters can be used to give some figures on the dataset, e.g. the number of individuals of
@@ -381,36 +391,44 @@ WHERE {?s ?p &lt;https://w3id.org/musow/vocab/repository&gt;.}</pre> </code>
               resulting box appears on top.</p>
             <img src="img/count.png" alt="">
             <p class="figcaption">Counter: a SPARQL query that returns a number and a label.</p>
-
+            <!-- CHARTS -->
             <h2 id="chart" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Charts
             </h2>
             <p class="mb-3">You can choose between a few charts: <b>Bar chart</b>, <b>Line chart</b>, <b>Doughnut
                 chart</b> and <b>Scatter Plot</b>.</p>
             <p class="mb-3">For each chart, the following information must be provided:</p>
             <ol class="list-group-numbered mb-3 pl-3">
-              <li>the type of chart <span style="color: red;">(required)</span>, to be selected from a dropdown
+              <li>the <strong>type</strong> of chart <span style="color: red;">(required)</span>, to be selected from a
+                dropdown;
               </li>
-              <li>one (or more) SPARQL query <span style="color: red;">(required)</span>, that usually returns two
-                variables, respectively <strong>?label</strong> and <strong>?count</strong> </li>
-              <li>the title of the chart <span style="color: red;">(required)</span></li>
-              <li>operations (optional), to aggregate data returned by the query.</li>
+              <li>one (or more) <strong>SPARQL query</strong> <span style="color: red;">(required)</span>, that usually
+                returns one or
+                two variables whose <strong>naming change according to each chart</strong>;</li>
+              <li><strong>labels</strong> for the chart axes (otional);</li>
+              <li>the <strong>title</strong> of the chart <span style="color: red;">(required)</span></li>
+              <li><strong>operations</strong> (optional), to aggregate data returned by the query.</li>
             </ol>
-            <p class="mb-3">However, it is important to check the requirements of each chart. It will be possible to do
-              this at the time of its creation.</p>
+            <p class="mb-3">However, it is important to <u>check the requirements of each chart</u>. It will be
+              possible to do this <u>at the time of its creation</u>.</p>
             <p class="mb-3">Overall, a SPARQL query to build a chart can be of two types:</p>
             <ul style="list-style: inside;" class="mb-3 pl-3">
               <li><b>Aggregating</b>: the query retrieves aggregated data that are
                 ready to be displayed in a chart.
-                That is, the query MUST return two variables,
-                respectively called <b>?label</b> and <b>?count</b>.
+                That is, the query MUST return two variables. In most cases, they need to be named <b>?label</b> and
+                <b>?count</b>.
                 <b>?label</b> can be a categorical/numerical value to be displayed on the x axis,
-                while <b>?count</b> MUST be a numerical value, to be displayed on the y axis.
+                while <b>?count</b> MUST be a numerical value, to be displayed on the y axis.</br>
+                <strong>However</strong>, it is important to check the documentation of each chart to check special
+                needs.
               </li>
               <li><b>Non-Aggregating</b>: the query retrieves non-aggregated data,
                 which are not immediately suitable for charting.
-                The query MUST return only one variable called <b>?label</b>.
+                The query MUST return only one variable, usually called <b>?label</b>.
                 The values of <b>?label</b> must be grouped by their counting using the <b>count</b> checkbox under the
-                chart.</li>
+                chart.</br>
+                <strong>However</strong>, it is important to check the documentation of each chart to check special
+                needs.
+              </li>
             </ul>
             <p class="mb-3"><strong>Bart charts, line charts and doughnut charts</strong></p>
             <p class="mb-3">To build bar charts, line charts and doughnut charts
@@ -421,11 +439,11 @@ WHERE {
     ?content &lt;https://schema.org/additionalType&gt; ?type.
     ?type rdfs:label ?label .
  } GROUP BY ?label</pre> </code>
-            <p class="figcaption">An aggregating SPARQL query to create a bar chart</p>
+            <p class="figcaption">An aggregating SPARQL query to create a bar chart.</p>
             <p>The query returns two variables (?label and ?count)
               that fit the requirements, hence no further operations are needed.</p>
             <img src="img/barchart1.png" alt="">
-            <p class="figcaption">A bar chart created with an aggregating query</p>
+            <p class="figcaption">A bar chart created with an aggregating query.</p>
             <p class="mb-3">In case of <b>non-aggregating</b> queries, the query must return only one variable called
               <b>?label</b>, and the operation <b>count</b> must be checked in order to plot results.
               For instance, the non-aggregating SPARQL query for a doughnut chart:
@@ -436,14 +454,15 @@ WHERE {
   ?content &lt;https://schema.org/additionalType&gt; ?type .
   ?type rdfs:label ?label .
 }</pre> </code>
-            <p class="figcaption">A non-aggregating SPARQL query to create a doughnut chart</p>
+            <p class="figcaption">A non-aggregating SPARQL query to create a doughnut chart.</p>
             <p>The query returns the same values as the aggregating query above,
               provided that the checbox <b>Count</b> is selected.</p>
             <img src="img/donut.png" alt="">
-            <p class="figcaption">A doughnut chart created with a non-aggregating SPARQL query</p>
+            <p class="figcaption">A doughnut chart created with a non-aggregating SPARQL query.</p>
 
             <p class="mb-3"><strong>Scatter plots</strong></p>
-            <p class="mb-3">To build scatterplots you can perform one or more aggregating SPARQL queries that return two
+            <p class="mb-3">To build scatterplots you can perform one or more <u>aggregating</u> SPARQL queries that
+              return two
               numerical variables: <b>?x</b> and <b>?y</b>.
               An aggregating query to plot a scatter plot looks like follows:</p>
             <code><pre>SELECT DISTINCT ?y ?x 
@@ -457,11 +476,17 @@ WHERE {
   ?box_office_statement ps:P2142 ?x . 
   ?box_office_statement pq:P3005 wd:Q30 .
 }</pre> </code>
-            <p class="figcaption">An aggregating SPARQL query to create a scatter plot</p>
+            <p class="figcaption">An aggregating SPARQL query to create a scatter plot.</p>
             <p>The query returns two variables (?x and ?y)
-              that represent the coordinates of each point on the Cartesian axes.</p>
+              that represent the coordinates of each point on the Cartesian axes.</br>
+              In this particular case, the <strong>main query</strong> (aqua green) identifies films and asks for their
+              U.S. box office revenue (x-axis) and review score (y-axis) in Rotten Tomatoes.</br>
+              <strong>A second query</strong> (orange) was added that again returns data on films rated by Rotten
+              Tomatoes, with the difference being worldwide box office. Therefore, the structure remains the same: the
+              main subject is fixed (movies), the variables (source of the box office data in this case) change.
+            </p>
             <img src="img/scatterplot1.png" alt="">
-            <p class="figcaption">A scatter plot created with an aggregating query</p>
+            <p class="figcaption">A scatter plot created with two aggregating queries.</p>
 
             <!-- relations template -->
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="relations_template">The
@@ -474,7 +499,7 @@ WHERE {
               or you can let the reader discover new insights in a follow-your-nose fashion.
             </p>
             <img src="img/relations1.png" alt="">
-            <p class="figcaption">Relations: create interactive, iterative text searches on a dataset</p>
+            <p class="figcaption">Relations: create interactive, iterative text searches on a dataset.</p>
 
             <p class="mb-3">The main elements of the template are:</p>
             <ul class="list-group-numbered pl-3">
@@ -499,7 +524,7 @@ WHERE {
             <p class="mb-3">Below the two areas, a preview of the final search box is shown.
               Once you fill in the query, you can immediately try the results.</p>
             <img src="img/relationssearch.png" alt="">
-            <p class="figcaption">Text search: add a SPARQL query in the area and try it immediately in the search box
+            <p class="figcaption">Text search: add a SPARQL query in the area and try it immediately in the search box.
             </p>
 
             <p class="mb-3">While the SPARQL query does not have constraints
@@ -525,14 +550,14 @@ SERVICE wikibase:label {
     bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en"
   }
 }  LIMIT 20</pre></code>
-            <p class="figcaption">A SPARQL query performing a text search in Wikidata</p>
+            <p class="figcaption">A SPARQL query performing a text search in Wikidata.</p>
             <p class="mb-3">SPARQL endpoints usually provide specific APIs
               for text searches. Therefore the query might significantly change
               depending on such services.</p>
 
             <p class="mb-3">Once you type the above query, it returns the following result</p>
             <img src="img/relations2.png" alt="">
-            <p class="figcaption">Text search: preview results of a text search</p>
+            <p class="figcaption">Text search: preview results of a text search.</p>
 
             <p class="mb-3"><b>N.B.</b> The above query would usually
               return a table with four columns, one for each variable in the SELECT clause.
@@ -551,11 +576,11 @@ SERVICE wikibase:label {
               i.e. a variable name of a previous SPARQL query,
               and these appear as buttons in the former table.</p>
             <img src="img/relations3.png" alt="">
-            <p class="figcaption">Actions appear as buttons near results of a previous search (or action)</p>
+            <p class="figcaption">Actions appear as buttons near results of a previous search (or action).</p>
             <p class="mb-3">To add an action click on the button <b>Add action to results</b>
               below the previous SPARQL query</p>
             <img src="img/relations4.png" alt="">
-            <p class="figcaption">Add an action to results of a SPARQL query</p>
+            <p class="figcaption">Add an action to results of a SPARQL query.</p>
             <p class="mb-3">An action consists of three areas to be filled in, namely:</p>
             <ul class="list-group-numbered pl-3">
               <li>The name of action <span style="color:red;">(required)</span>. It will appear as a button in the table
@@ -658,7 +683,7 @@ SERVICE wikibase:label {
               you are redirected to the preview of the data story.</p>
 
             <img src="img/final1.png" alt="">
-            <p class="figcaption">The preview of the final data story: export as PDF/HTML in the secondary menu</p>
+            <p class="figcaption">The preview of the final data story: export as PDF/HTML in the secondary menu.</p>
             <p class="mb-3">The final data story presents elements on the canvas
               in the same order defined by the designer.
               In the secondary menu, a few metadata and the export buttons are shown.
@@ -673,7 +698,7 @@ SERVICE wikibase:label {
               there.</p>
             <img src="img/modify1.png" alt="">
             <p class="figcaption">Registered users: the story is published in MELODY dashboard and can be modified from
-              the left sidebar</p>
+              the left sidebar.</p>
 
 
             <p class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
@@ -688,7 +713,7 @@ SERVICE wikibase:label {
               Be aware that your story will not be saved if you leave the page or you do not publish it!
             </p>
             <img src="img/modify2.png" alt="" style="width: 200px; text-align:center; margin: 0 auto;">
-            <p class="figcaption">Non-registered GitHub users: modify or publish the story</p>
+            <p class="figcaption">Non-registered GitHub users: modify or publish the story.</p>
 
             <p class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                 class="bi bi-arrow-right" viewBox="0 0 16 16">
@@ -707,7 +732,7 @@ SERVICE wikibase:label {
               Similarly, each chart can be saved as a .png image, or
               exported as an embeddable HTML code snippet.</p>
             <img src="img/final2.png" alt="">
-            <p class="figcaption">Export charts as images or embeddable snippets</p>
+            <p class="figcaption">Export charts as images or embeddable snippets.</p>
           </div>
         </div>
       </div>
