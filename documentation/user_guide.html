@@ -117,7 +117,26 @@
                       </div>
 
                     </li>
+                    <li>
+                      <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                        data-bs-target="#maps-collapse" aria-expanded="false">
+                        <a href="#maps_template" class="link-dark rounded">Maps</a>
+                      </button>
+                      <div class="show" id="maps-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
+                          <li>
+                            <a href="#data_point" class="link-dark rounded">Data Points</a>
+                          </li>
+                          <li>
+                            <a href="#tooltip" class="link-dark rounded">Tooltips</a>
+                          </li>
+                          <li>
+                            <a href="#map_filters" class="link-dark rounded">Map Filters</a>
+                          </li>
+                        </ul>
+                      </div>
 
+                    </li>
                   </ul>
                 </div>
               </li>
@@ -679,8 +698,108 @@ SERVICE wikibase:label {
             <img src="img/relations9.png" alt="">
             <p class="figcaption">Combine results: follow the flow of queries and see results of a combine-results
               action.</p>
+            <!-- maps template -->
+            <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="maps_template">The
+              Maps template</h2>
+            <p class="mb-3">The Maps template provides an interactive way to show data point on a geographic map. On
+              click, each data point displays a tooltip that can contain variable information, depending on the author's
+              decision, as we will see shortly.
+              The filters are decided by the author of the story as well, and are used to determine the interaction of
+              the end user, who can thus filter out the points on the map.
+            </p>
+            <img src="img/maps1.png" alt="">
+            <p class="figcaption">Maps: create interactive maps with filters.</p>
+            <p class="mb-3">The main elements of the template are:</p>
+            <ul class="list-group-numbered pl-3">
+              <li>A query to retrieve the data points <span style="color:red;">(required)</span></li>
+              <li>Data Point tooltips</li>
+              <li>Map filters</li>
+            </ul>
+            <p class="mb-3">You can have only one map, but add/delete as many filters as you want.</p>
+            <h2 id="data_point" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Data Points</h2>
+            <p class="mb-3">The view to create the map with data points contains three elements</p>
+            <ul class="list-group-numbered pl-3">
+              <li>The <strong>SPARQL query</strong> <span style="color:red;">(required)</span>.
+                A query that returns at least the mandatory variables:
+                <ul>
+                  <li><strong>?point</strong>: an URI identifying the points</li>
+                  <li><strong>?lat</strong>: the latitude of the data point</li>
+                  <li><strong>?long</strong>: the longitude of the data point</li>
+                </ul>
+              </li>
+              <li>The <strong>title</strong> of the map (optional).</li>
+              <li>A <strong>rerun</strong> button that you need to click any time you perform a change in the query.
+              </li>
+            </ul>
+            <p class="mb-3">Below the two areas, a preview of the final map is shown.
+              Once you fill in the query, you can immediately try the results.</p>
+            <img src="img/maps2.png" alt="">
+            <p class="figcaption">Data points on the map.
+            </p>
+            <p class="mb-3">For instance, a query on Wikidata to
+              return museums in Brittany would look like follows:</p>
+            <code><pre>
+SELECT DISTINCT ?point ?pointLabel ?villeIdLabel ?lat ?long
+WHERE
+{
+  ?point wdt:P539 ?museofile.
+  ?point wdt:P131* wd:Q12130.
+  ?point wdt:P131 ?villeId.
+  ?point p:P625 ?statement.
+  ?statement psv:P625 ?node.
+  ?node wikibase:geoLatitude ?lat.
+  ?node wikibase:geoLongitude ?long.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}</pre></code>
+            <p class="figcaption">A SPARQL query to retrieve coordinates of geographic points in Wikidata.</p>
+            <h2 id="tooltip" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Tooltips
+            </h2>
+            <p class="mb-3">Clicking on each data point shows a tooltip. Within it you can enter various information,
+              which will correspond to the author's preferences. Referring to the previous example, we can show the
+              label of the data point (?pointLabel) and the label of the corresponding city (?villeIdLabel), to which
+              it's added the URI of the data point itself (automatic).</p>
+            <img src="img/maps3.png" alt="">
+            <p class="figcaption">The tooltip of data points on the map.</p>
+            <h2 id="map_filters" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Map Filters
+            </h2>
+            <p class="mb-3">The view to add a filter to the map with data points contains three elements:</p>
+            <ul class="list-group-numbered pl-3">
+              <li>The <strong>SPARQL query</strong> <span style="color:red;">(required)</span>.
+                A query that returns the mandatory variables:
+                <ul>
+                  <li><strong>?point</strong>: an URI identifying the points that appears as subject/object of a pattern
+                    (the same as the main query for the map data points)</li>
+                  <li><strong>?filter</strong>: the category to be used as a filter</li>
+                  <li><strong>?filterLabel</strong>: the label of the filter in case the filter is a literal value</li>
+                </ul>
+              </li>
+              <li>The <strong>title</strong> of the filter <span style="color:red;">(required)</span></li>
+              <li>The <strong>rerun</strong> action to be perfomed after the form filling
+              </li>
+            </ul>
+            <p class="mb-3">You can add as many filters as you want.</p>
+            <img src="img/maps4.png" alt="">
+            <p class="figcaption">The part of the form to add a filter to the map.</p>
+            <p class="mb-3">For instance, a query on Wikidata to
+              return museums' cities in Brittany would look like follows:</p>
+            <code><pre>
+SELECT DISTINCT ?point ?filter ?filterLabel 
+WHERE
+{
+  ?point wdt:P539 ?museofile.
+  ?point wdt:P131* wd:Q12130.
+  ?point wdt:P131 ?filter.
+  ?filter rdfs:label ?filterLabel . 
+  FILTER(LANG(?filterLabel) = "" || LANGMATCHES(LANG(?filterLabel), "en"))
+}</pre></code>
+            <p class="figcaption">A SPARQL query that searches for museum's cities in Wikidata.</p>
+            <p class="mb-3">Once the desired filters are added and the rerun button is clicked, the filters will be
+              shown on the left side of the map within a sidebar. Each category can be compressed and expanded as
+              needed. By clicking on the desired filters, it is thus possible to slim the results shown on the map.</p>
+            <img src="img/maps5.png" alt="">
+            <p class="figcaption">The sidebar with filters of the map.</p>
 
-
+            <!-- publish and export -->
             <h2 id="publish" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
               Publish and Export
             </h2>
