@@ -12,9 +12,14 @@ body {
   font-family: 'Karla', sans-serif;
 }
 
-header {background-color: #fff; z-index: 9;}
+header {
+  background-color: #fff;
+  z-index: 9;
+}
 
-li ul li {padding-left: 2em;}
+li ul li {
+  padding-left: 2em;
+}
 
 .background_doodle {
   width: 100%;
@@ -30,8 +35,13 @@ li ul li {padding-left: 2em;}
 }
 
 @keyframes scale-down {
-  from { transform: scale(1.02); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(1.02);
+  }
+
+  to {
+    transform: scale(1);
+  }
 }
 
 .quote {
@@ -50,8 +60,16 @@ q {
   height: 30vw;
 }
 
-.author , .caption {text-transform: uppercase; display: inline-block; font-weight: 700;}
-.author::before {content: "— ";}
+.author,
+.caption {
+  text-transform: uppercase;
+  display: inline-block;
+  font-weight: 700;
+}
+
+.author::before {
+  content: "— ";
+}
 
 .payoff {
   font-size: 3vw;
@@ -59,69 +77,86 @@ q {
   font-weight: 300;
 }
 
-q, .author {background-color: var(--dark-grey, 0.8);}
-main {padding: 1em;}
+q,
+.author {
+  background-color: var(--dark-grey, 0.8);
+}
+
+main {
+  padding: 1em;
+}
 
 
 footer {
-    background-color: var(--main-color);
+  background-color: var(--main-color);
 }
 
 
 div.twocol>div {
-    flex-grow: 1;
-    padding: 0;
-    margin: 0;
+  flex-grow: 1;
+  padding: 0;
+  margin: 0;
 }
 
 div.twocol {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 div[class*=highlight-] {
-    margin: 1em 0;
+  margin: 1em 0;
 }
 
 
 .highlight {
-    position: relative;
+  position: relative;
 }
 
 div.highlight code {
-    margin: 0;
+  margin: 0;
 }
- 
+
 code {
-    line-height: 125%;
-    padding: 10px;
-    border: 1px solid #c9c9c9;
-    border-radius: 0.2rem;
-    box-shadow: 1px 1px 1px #d8d8d8;
-    display: block;
-    font-size: 87.5%;
-    overflow: auto;
+  line-height: 125%;
+  padding: 10px;
+  border: 1px solid #c9c9c9;
+  border-radius: 0.2rem;
+  box-shadow: 1px 1px 1px #d8d8d8;
+  display: block;
+  font-size: 87.5%;
+  overflow: auto;
 }
 
 a:hover {
-    color: var(--dark-main);
+  color: var(--dark-main);
 }
 
 p {
-    padding: 0.5em 0px;
+  padding: 0.5em 0px;
 }
 
-h2, h3 {
-    padding-top: 5em;
+h2,
+h3 {
+  padding-top: 2em;
 }
 
-p svg {display: inline; margin-right: 1em; color: var(--main-color);}
+p svg {
+  display: inline;
+  margin-right: 1em;
+  color: var(--main-color);
+}
 
-.figcaption {font-size: 0.8em; color: var(--light-grey); text-align: center;}
+.figcaption {
+  font-size: 0.8em;
+  color: var(--light-grey);
+  text-align: center;
+}
+
 /* rewrite */
 .bg-green-500 {
   background-color: var(--main-color) !important;
 }
+
 .text-green-500 {
   color: var(--main-color) !important;
 }
