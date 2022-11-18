@@ -53,14 +53,6 @@
                 <button class="btn btn-toggle align-items-center rounded collapsed">
                   <a class="link-dark rounded" href="#create_story">Create a new story</a>
                 </button>
-                <!-- <div class="collapse show" id="setup-collapse">
-                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                        <li><a href="#template" class="link-dark rounded">Templates</a></li>
-                                        <li><a href="#section" class="link-dark rounded">Section</a></li>
-                                        <li><a href="#title" class="link-dark rounded">Title</a></li>
-                                        <li><a href="#endpoint" class="link-dark rounded">SPARQL endpoint</a></li>
-                                    </ul>
-                                </div> -->
               </li>
               <li class="mb-1">
                 <button class="btn dropdown-toggle align-items-center rounded" type="button" data-toggle="dropdown"
@@ -91,12 +83,12 @@
                           <li>
                             <a href="#chart" class="link-dark rounded">Charts</a>
                           </li>
+                          <li>
+                            <a href="#simple_table" class="link-dark rounded">Table</a>
+                          </li>
                         </ul>
                       </div>
-
                     </li>
-                    <!-- <li><a href="#chart" class="link-dark rounded">Charts</a></li>
-                                        <li><a href="#query" class="link-dark rounded">SPARQL query</a></li> -->
                     <li>
                       <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
                         data-bs-target="#relationsel-collapse" aria-expanded="false">
@@ -511,6 +503,46 @@ WHERE {
             </p>
             <img src="img/scatterplot1.png" alt="">
             <p class="figcaption">A scatter plot created with two aggregating queries.</p>
+            <!-- simple table -->
+            <h2 id="simple_table" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Table</h2>
+            <p class="mb-3">The table field is used to display the results in a simple tabular form. To create a
+              table, fill in the two respective text areas:</p>
+            <ul style="list-style: inside;" class="mb-3 pl-3">
+              <li>The <strong>SPARQL query</strong> <span style="color: red;">(required)</span>. A query that performs a
+                search on the dataset and returns results in a table.</li>
+              <li>The <strong>title</strong> of the table (optional).</li>
+            </ul>
+            <img src="img/table1.png" alt="">
+            <p class="figcaption">The form to fill to create a simple table.</p>
+            <p class="mb-3">For instance, a query on Wikidata to return horses and some related information would look
+              like follows:</p>
+            <code><pre>
+SELECT DISTINCT ?horse ?horseLabel ?mother ?motherLabel ?father ?fatherLabel (year(?birthdate) as ?birthyear) (year(?deathdate) as ?deathyear) ?genderLabel
+WHERE
+{
+  ?horse wdt:P31/wdt:P279* wd:Q726 .
+                 
+  OPTIONAL{?horse wdt:P25 ?mother .}
+  OPTIONAL{?horse wdt:P22 ?father .}
+  OPTIONAL{?horse wdt:P569 ?birthdate .}
+  OPTIONAL{?horse wdt:P570 ?deathdate .}
+  OPTIONAL{?horse wdt:P21 ?gender .}
+               
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],fr,ar,be,bg,bn,ca,cs,da,de,el,en,es,et,fa,fi,he,hi,hu,hy,id,it,ja,jv,ko,nb,nl,eo,pa,pl,pt,ro,ru,sh,sk,sr,sv,sw,te,th,tr,uk,yue,vec,vi,zh"
+  }
+}
+ORDER BY ?horse
+LIMIT 20</pre></code>
+            <p class="figcaption">A SPARQL query performing a tabular search in Wikidata.</p>
+            <p class="mb-3">The SPARQL query <strong>does not</strong> have constraints on the variable names, and it
+              can return as many variables as needed. However, to make results easy to read, labels can replace URIs if
+              these are named <strong>?{variable}Label</strong>. For instance, in the result table below, values of the
+              variable <strong>?horse</strong> (URIs) are replaced with values of the variable
+              <strong>?horseLabel</strong>, and include a link to the URI (<strong>?horse</strong>).
+            </p>
+            <img src="img/table2.png" alt="">
+            <p class="figcaption">An example of a simple table.</p>
 
             <!-- relations template -->
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="relations_template">The
