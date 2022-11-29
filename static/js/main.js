@@ -581,10 +581,18 @@ $(function () {
                     url: sparqlEndpoint + '?query=' + encoded_count,
                     headers: { Accept: 'application/sparql-results+json' },
                     success: function (returnedJson) {
-                        for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                            var count = returnedJson.results.bindings[i].count.value;
-                            $("#" + (idx + 1) + "__num").text(count);
-
+                        const varNumb = returnedJson.head.vars.length;
+                        if (varNumb < 1) {
+                            alert('This query does not return enough variables. Remember that you only need "count". Check and try again.');
+                            console.log('Not enough variables.')
+                        } else if (varNumb > 1) {
+                            alert('This query returns too many variables. Remember that you only need "count". Check and try again.');
+                            console.log('Too many variables.')
+                        } else if (varNumb === 1) {
+                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                var count = returnedJson.results.bindings[i].count.value;
+                                $("#" + (idx + 1) + "__num").text(count);
+                            }
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -2032,28 +2040,33 @@ function queryCounter() {
                         url: sparqlEndpoint + '?query=' + encoded,
                         headers: { Accept: 'application/sparql-results+json' },
                         success: function (returnedJson) {
-                            for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                                var count = returnedJson.results.bindings[i].count.value;
-                                // create div to set the column
-                                var generalDiv = document.createElement("div");
-                                generalDiv.className = "px-2 pb-2 pb-md-0 text-center";
-                                // create div to contain number and label
-                                var countDiv = document.createElement("div");
-                                countDiv.className = "card-body option-2b";
-                                var numP = document.createElement("p");
-                                numP.appendChild(document.createTextNode(count));
-                                numP.className = 'counter_num';
-                                countDiv.appendChild(numP);
-                                // create and append p for label
-                                var labelP = document.createElement("p");
-                                labelP.appendChild(document.createTextNode(count_label));
-                                labelP.className = 'counter_label';
-                                countDiv.appendChild(labelP);
-                                generalDiv.appendChild(countDiv);
-                                colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
-                                // get container and append
-                                var container = document.getElementById(element.position);
-                                container.appendChild(generalDiv);
+                            const varNumb = returnedJson.head.vars.length;
+                            if (varNumb === 1) {
+                                for (i = 0; i < returnedJson.results.bindings.length; i++) {
+                                    var count = returnedJson.results.bindings[i].count.value;
+                                    // create div to set the column
+                                    var generalDiv = document.createElement("div");
+                                    generalDiv.className = "px-2 pb-2 pb-md-0 text-center";
+                                    // create div to contain number and label
+                                    var countDiv = document.createElement("div");
+                                    countDiv.className = "card-body option-2b";
+                                    var numP = document.createElement("p");
+                                    numP.appendChild(document.createTextNode(count));
+                                    numP.className = 'counter_num';
+                                    countDiv.appendChild(numP);
+                                    // create and append p for label
+                                    var labelP = document.createElement("p");
+                                    labelP.appendChild(document.createTextNode(count_label));
+                                    labelP.className = 'counter_label';
+                                    countDiv.appendChild(labelP);
+                                    generalDiv.appendChild(countDiv);
+                                    colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+                                    // get container and append
+                                    var container = document.getElementById(element.position);
+                                    container.appendChild(generalDiv);
+                                }
+                            } else {
+                                console.log('Too many variables. Error in the query.')
                             }
                         },
                         error: function (xhr, ajaxOptions, thrownError) {
