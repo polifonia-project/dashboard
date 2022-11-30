@@ -3253,3 +3253,20 @@ const fromEditorToInput = (pos) => {
         input.setAttribute('value', textContent);
     }
 }
+
+
+///// MODIFY CSS
+const overwriteCSS = () => {
+    const style = document.createElement('style');
+
+    style.textContent = `
+        .main-header, .sidebar {
+            display: block;
+        }
+
+        .main-panel {
+            width: calc(100% - 250px);
+        }`;
+
+    document.head.appendChild(style);
+}
