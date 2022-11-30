@@ -51,20 +51,22 @@ scheduler.start()
 # https://stackoverflow.com/questions/11810461/how-to-perform-periodic-task-with-flask-in-python
 
 PREFIX = '/melody/'
+
+stories_path = conf.melody_repo_name + '/' + conf.melody_sub_dir
+
+
 # access the home page
-
-
 @app.route(PREFIX+"")
 @app.route(PREFIX+"index.html")
 def home():
     general_data = data_methods.read_json('config.json')
-    return render_template('index.html', general_data=general_data)
+    return render_template('index.html', general_data=general_data, stories_path=stories_path)
 
 
 @app.route(PREFIX+"asklogin")
 def asklogin():
     general_data = data_methods.read_json('config.json')
-    return render_template('asklogin.html', general_data=general_data)
+    return render_template('asklogin.html', general_data=general_data, stories_path=stories_path)
 
 
 # github authentication
@@ -130,9 +132,9 @@ def datastory(section_name, datastory_name):
                 section_name, datastory_name, 'config.json')
         template_mode = datastory_data['template_mode']
         if datastory_data:
-            return render_template('datastory_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data, section_name=section_name, datastory_name=datastory_name)
+            return render_template('datastory_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data, section_name=section_name, datastory_name=datastory_name, stories_path=stories_path)
         else:
-            return render_template('page-404.html')
+            return render_template('page-404.html', stories_path=stories_path)
     elif request.method == 'POST':
         host = request.host_url
         r = requests.get(host + PREFIX[1:] + section_name +
@@ -204,11 +206,11 @@ def setup():
             template_data.append(general_data['templates'][item])
         if session.get('name') is not None:
             if session['name']:
-                return render_template('setup.html', template_data=template_data, general_data=general_data)
+                return render_template('setup.html', template_data=template_data, general_data=general_data, stories_path=stories_path)
         else:
             session["name"] = 'anonym'
             session["user_type"] = 'random'
-            return render_template('setup.html', template_data=template_data, general_data=general_data)
+            return render_template('setup.html', template_data=template_data, general_data=general_data, stories_path=stories_path)
     elif request.method == 'POST':
         if session.get('name') is not None:
             if session['name']:
@@ -311,7 +313,7 @@ def modify_datastory(section_name, datastory_name):
                 template_mode = datastory_data['template_mode']
                 if session.get('name') is not None:
                     if session['name']:
-                        return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data)
+                        return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data, stories_path=stories_path)
             elif request.method == 'POST':
                 if session.get('name') is not None:
                     if session['name']:
