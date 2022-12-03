@@ -3,6 +3,7 @@ import json
 import requests
 from github import Github, InputGitAuthor
 import conf
+import base64
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -85,7 +86,7 @@ def get_github_users(userlogin):
     return is_valid_user
 
 
-def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=None, action=''):
+def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=None, action='', path=False):
     """ Create a new file or update an existing file in a Github repository.
 
     This function allows to publish and/or update content on another Github repository.
@@ -97,6 +98,7 @@ def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=
         email (str): a string representing the email address of gituser. 'None' is default.
         bearer_token (str): a string representing the token to have permission to carry out the action. 'None' is default.
         action (str): a string representing the optional message text that can be included in the commit. It is ampty by default.
+        path (boolean): a boolean whose value default to False to check if the function want to use the local_file_path as it is (True) or not (False).
 
     """
     token = conf.token if bearer_token is None else bearer_token  # editor
@@ -107,8 +109,11 @@ def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=
     g = Github(token)
     repo = g.get_repo(owner+"/"+repo_name)
     author = InputGitAuthor(user, usermail)  #  commit author
-    # necessary to commit filename without path
-    absolute_file_path = os.path.basename(local_file_path)
+    if path == False:
+        # necessary to commit filename without path
+        absolute_file_path = os.path.basename(local_file_path)
+    else:
+        absolute_file_path = local_file_path
 
     try:
         # Retrieve the online file to get its SHA and path
