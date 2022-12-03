@@ -6,7 +6,6 @@ import github_sync
 import conf
 import data_methods
 import os
-import time
 import glob
 from apscheduler.schedulers.background import BackgroundScheduler
 import bleach

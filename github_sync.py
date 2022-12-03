@@ -1,9 +1,7 @@
 import os
-import json
 import requests
 from github import Github, InputGitAuthor
 import conf
-import base64
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
