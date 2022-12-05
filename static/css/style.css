@@ -8,6 +8,17 @@
   --font-family-sans-serif: 'Karla', sans-serif;
 }
 
+.main-header,
+.sidebar {
+  display: none;
+}
+
+.main-panel {
+  width: 100%;
+}
+
+/* EXPORT HTML */
+
 .sidebar-color,
 body,
 body[data-background-color=dark],

@@ -65,6 +65,11 @@
 
 	<script src="/melody/static/js/main.js"></script>
 
+	{% if stories_path not in request.path %}
+	<script>
+		overwriteCSS();
+	</script>
+	{% endif %}
 
 	<!-- Specific Page JS goes HERE  -->
 	{% block javascripts %}{% endblock javascripts %}
