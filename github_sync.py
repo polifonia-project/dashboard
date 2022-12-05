@@ -81,6 +81,8 @@ def get_github_users(userlogin):
             users = [user['login'] for user in req.json()]
             if userlogin in users:
                 is_valid_user = True
+    else:
+        print('Remember to fill in the conf.py')
     return is_valid_user
 
 
