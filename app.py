@@ -49,7 +49,7 @@ scheduler.start()
 # In case 2 prints are shown see
 # https://stackoverflow.com/questions/11810461/how-to-perform-periodic-task-with-flask-in-python
 
-PREFIX = '/melody/'
+PREFIX = '/'
 
 stories_path = conf.melody_repo_name + '/' + conf.melody_sub_dir
 
