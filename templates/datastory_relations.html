@@ -47,6 +47,8 @@
       <button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
       <button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
           download="{{datastory_data.title}}.html">HTML</a></button>
+      <button class="exportbutton" type="button"><a href="#" data-toggle="modal" data-target="#queryModal"
+          id="sparqlQuery">QUERIES</a></button>
       <!-- publish button -->
       {% if datastory_data.id and session['user_type'] == 'extra' %}
       <hr>
@@ -84,7 +86,6 @@
           {% for dict in datastory_data.dynamic_elements %}
           {% if dict.type == 'textsearch' %}
           <table class='col-12' id='{{dict.position}}__textsearchid'>
-            <!-- TODO add rows-->
           </table>
           {% endif %}
           {% if dict.type == 'tablevalueaction' %}
@@ -101,6 +102,35 @@
 
           {% endif %}
           {% endfor %}
+          <!-- SPARQL query modal -->
+          <div class="modal fade" id="queryModal" tabindex="-1" role="dialog" aria-labelledby="queryModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content card">
+                <div class="modal-header">
+                  <h4 class="card-title" id="queryModalLabel">SPARQL query</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="typography-line col-md-12 col-sm-12">
+                    {% for dict in datastory_data.dynamic_elements %}
+                    {% for k,v in dict.items() %}
+                    {% if 'title' in k %}
+                    <h3 class="text-white">{{v[0]|upper}}{{v[1:]}}</h3>
+                    {% endif %}
+                    {% if 'query' in k %}
+                    <p>{{v}}</p>
+                    <hr>
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

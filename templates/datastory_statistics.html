@@ -7,7 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
 	integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
 	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/personal.css') }}"> -->
 {% endblock stylesheets %}
 
 {% block content %}
@@ -64,40 +63,115 @@
 					<div class="card-body row">
 						<span id='loader' class='lds-dual-ring hidden overlay'></span>
 						{% for dict in datastory_data.dynamic_elements %}
-						<!-- section title -->
+
 						{% if dict.type == 'section_title' %}
-						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
-							<h2 class="card-title">{{dict.section_title}}</h2>
+						<!-- section title -->
+						<div class="col-md-12 col-sm-12 card-title" id="{{dict.position}}">
+							{{dict.section_title|safe}}
 						</div>
 
-						<!-- text -->
 						{% elif dict.type == 'text' %}
+						{% if dict.text[1] == 'p' %}
+						<!-- text -->
 						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
-							<p>{{dict.text}}</p>
+							{{dict.text|safe}}
 						</div>
+						{% elif dict.text[1] == 'h' %}
+						<!-- section title -->
+						<div class="col-md-12 col-sm-12 card-title" id="{{dict.position}}">
+							{{dict.text|safe}}
+						</div>
+						{% endif %}
 
-						<!-- count -->
 						{% elif dict.type == 'count' %}
+						<!-- count -->
 						<div class="count_result col-md-3 col-sm-12" id="{{dict.position}}"></div>
 
-						<!-- chart -->
+						{% elif dict.type == 'table' %}
+						<!-- table -->
+						<div class='col-md-12 col-sm-12' id='{{dict.position}}'>
+							<table class='col-12' id='{{dict.position}}__table'></table>
+						</div>
+						<div class="exportchart card-tools col-md-12 col-sm-12">
+							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+								Export HTML
+							</a>
+							<a id="csv_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
+								Export CSV
+							</a>
+							<a href="#" role="button" data-toggle="modal" data-target="#queryModal_{{dict.position}}"
+								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+								See query
+							</a>
+						</div>
+						<!-- SPARQL query modal -->
+						<div class="modal fade" id="queryModal_{{dict.position}}" tabindex="-1" role="dialog"
+							aria-labelledby="queryModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content card">
+									<div class="modal-header">
+										<h4 class="card-title" id="queryModalLabel_{{dict.position}}">SPARQL query
+										</h4>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="typography-line col-md-12 col-sm-12">
+											<h3 class="text-white">TABLE QUERY</h3>
+											<p>{{dict.table_query}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
 						{% elif dict.type == 'chart' %}
+						<!-- chart -->
 						<div class="chartstory col-md-12 col-sm-12" id="{{dict.position}}">
 
 						</div>
 						<div class="exportchart card-tools col-md-12 col-sm-12">
 							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								<span class="btn-label">
-									<i class="fa fa-pencil"></i>
-								</span>
 								Embed
 							</a>
-							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
 								<span class="btn-label">
 									<i class="fa fa-print"></i>
 								</span>
 								Save picture
 							</a>
+							<a href="#" role="button" data-toggle="modal" data-target="#queryModal_{{dict.position}}"
+								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
+								See query
+							</a>
+						</div>
+						<!-- SPARQL query modal -->
+						<div class="modal fade" id="queryModal_{{dict.position}}" tabindex="-1" role="dialog"
+							aria-labelledby="queryModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content card">
+									<div class="modal-header">
+										<h4 class="card-title" id="queryModalLabel_{{dict.position}}">SPARQL query</h4>
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="typography-line col-md-12 col-sm-12">
+											<h3 class="text-white">MAIN QUERY</h3>
+											<p>{{dict.chart_query}}</p>
+											{% if dict.extra_queries %}
+											{% for extra in dict.extra_queries %}
+											<hr>
+											<h3 class="text-white">ADDITIONAL QUERY</h3>
+											<p>{{extra.extra_query}}</p>
+											{% endfor %}
+											{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 						{% endif %}
 

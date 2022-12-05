@@ -7,6 +7,7 @@ import conf
 import string
 import re
 import unidecode
+import bleach
 
 
 def read_json(file_name):
@@ -73,7 +74,7 @@ def clean_string(dirty_string):
         datastory_title (str): a string that can contain any type of character.
 
     Returns:
-        clean_title (str): an alpha numeric string in which white spaces are replaced by '_'. 
+        clean_title (str): an alpha numeric string in which white spaces are replaced by '_'.
     '''
 
     pattern = r'[' + string.punctuation + ']'
@@ -145,20 +146,32 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                         total_extra_dict = {}  # to store together extra data of one chart
                         extra_queries = []  # to store in separate dict extra data of one chart
 
+                        legend = {}  # data for chart axes labels
+
                         for k, v in form_data.items():
                             if '__' in k:
                                 if position == int(k.split('__')[0]):
                                     if 'text' in k and 'search' not in k:
                                         elements_dict['type'] = 'text'
-                                        elements_dict[k.split('__')[1]] = v
+                                        elements_dict[k.split(
+                                            '__')[1]] = bleach.clean(v,
+                                                                     tags=[
+                                                                         'h2', 'h3', 'p', 'em', 'u', 'strong', 'li', 'ul', 'ol', 'a'],
+                                                                     attributes=['href'])
                                     elif 'textsearch' in k:
                                         elements_dict['type'] = 'textsearch'
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'count' in k:
                                         elements_dict['type'] = 'count'
                                         elements_dict[k.split('__')[1]] = v
-                                    elif 'chart' in k:
+                                    elif 'chart' in k and 'label' not in k:
                                         elements_dict['type'] = 'chart'
+                                        elements_dict[k.split('__')[1]] = v
+                                    elif 'chart_label' in k:
+                                        key = k.split('__')[1].split('_')[2]
+                                        legend[key] = v
+                                    elif 'table_' in k:
+                                        elements_dict['type'] = 'table'
                                         elements_dict[k.split('__')[1]] = v
                                     elif 'tablevalueaction' in k:
                                         elements_dict['type'] = 'tablevalueaction'
@@ -189,6 +202,7 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                                     extra_dict['extra_id'] = str(e)
                             extra_queries.append(extra_dict)
                         elements_dict['extra_queries'] = extra_queries
+                        elements_dict['chart_legend'] = legend
 
                         # create dicts with operations info
                         for op in op_list:

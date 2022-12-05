@@ -75,10 +75,10 @@
                     </div>
                     <p class="card-category">
                         {% if datastory_data.description %}
-                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                        <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
                             placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
                         {% else %}
-                        <textarea oninput='auto_grow(this)' name="description" type="text" id=""
+                        <textarea class='editor' oninput='auto_grow(this)' name="description" type="text" id=""
                             placeholder="A brief introdution to the project."></textarea>
                         {%endif%}
                     </p>
@@ -101,7 +101,7 @@
                             name='{{dict.position}}__textsearch_title' value='{{dict.textsearch_title}}'
                             placeholder='A title, e.g. Search tunes'>
                         <!-- input -->
-                        <textarea class='addplaceholder_textsearch' oninput='auto_grow(this)'
+                        <textarea spellcheck='false' class='addplaceholder_textsearch' oninput='auto_grow(this)'
                             name='{{dict.position}}__textsearch_query' type='text'
                             id='{{dict.position}}__textsearch_query' rows='6'
                             required>{{dict.textsearch_query}}</textarea>
@@ -148,7 +148,7 @@
                         <input class='tablevalueaction_table' id='{{dict.position}}__tablevalueaction_table'
                             type='hidden' name='{{dict.position}}__tablevalueaction_table'
                             value='{{dict.tablevalueaction_table}}'>
-                        <textarea class='addplaceholder_tablevalueaction' oninput='auto_grow(this)'
+                        <textarea spellcheck='false' class='addplaceholder_tablevalueaction' oninput='auto_grow(this)'
                             name='{{dict.position}}__tablevalueaction_query' type='text'
                             id='{{dict.position}}__tablevalueaction_query' rows='6'
                             required>{{dict.tablevalueaction_query}}</textarea>
@@ -190,7 +190,7 @@
                         <input class='tablevalueaction_column' id='{{dict.position}}__tablevalueaction_column_2'
                             type='text' name='{{dict.position}}__tablevalueaction_column_2'
                             placeholder='The name of the column to combine' value="{{dict.tablevalueaction_column_2}}">
-                        <textarea class='addplaceholder_tablecomboaction' oninput='auto_grow(this)'
+                        <textarea spellcheck='false' class='addplaceholder_tablecomboaction' oninput='auto_grow(this)'
                             name='{{dict.position}}__tablevalueaction_query' type='text'
                             id='{{dict.position}}__tablevalueaction_query' rows='6'
                             required>{{dict.tablecomboaction_query}}</textarea>

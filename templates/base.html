@@ -25,6 +25,8 @@
 			active: function () { sessionStorage.fonts = true; }
 		});
 	</script>
+	<!-- IQuill stylesheet -->
+	<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 	<!-- CSS Files -->
 	<link rel="stylesheet" href="/melody/static/css/bootstrap.min.css">
@@ -63,6 +65,11 @@
 
 	<script src="/melody/static/js/main.js"></script>
 
+	{% if stories_path not in request.path %}
+	<script>
+		overwriteCSS();
+	</script>
+	{% endif %}
 
 	<!-- Specific Page JS goes HERE  -->
 	{% block javascripts %}{% endblock javascripts %}
