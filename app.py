@@ -179,14 +179,14 @@ def datastory(section_name, datastory_name):
                 'static/temp/stories_list.json', stories_list)
 
         # commit config and html to repo
-        github_sync.push('static/temp/config_'+section_name+'.json', 'main', 'melodyeditor',
-                         'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
-        github_sync.push('static/temp/story_'+section_name+'.html', 'main', 'melodyeditor',
-                         'editor.melody@gmail.com', conf.melody_token, '@'+session['name'])
+        github_sync.push('static/temp/config_'+section_name+'.json', 'main', conf.gituser,
+                         conf.email, conf.melody_token, '@'+session['name'])
+        github_sync.push('static/temp/story_'+section_name+'.html', 'main', conf.gituser,
+                         conf.email, conf.melody_token, '@'+session['name'])
 
         # commit stories list to repo
-        github_sync.push('static/temp/stories_list.json', 'main', 'melodyeditor',
-                         'editor.melody@gmail.com', conf.melody_token)
+        github_sync.push('static/temp/stories_list.json', 'main', conf.gituser,
+                         conf.email, conf.melody_token)
 
         # remove the files
         os.remove('static/temp/config_'+section_name+'.json')
@@ -564,14 +564,14 @@ def static_modifications(dev=False):
                             file_path = main_folder + '/' + \
                                 folder + '/' + file.split('\\')[1]
                             github_sync.push(
-                                file_path, 'main', 'melodyeditor', 'editor.melody@gmail.com', conf.melody_token, path=True)
+                                file_path, 'main', conf.gituser, conf.email, conf.melody_token, path=True)
                 elif len(folder_files) == 0:
                     file_stats = os.stat(main_folder + '/' + folder)
                     m_date = modification_date(file_stats)
                     if modified_yesterday(today, m_date):
                         file_path = main_folder + '/' + folder
-                        github_sync.push(file_path, 'main', 'melodyeditor',
-                                         'editor.melody@gmail.com', conf.melody_token, path=True)
+                        github_sync.push(file_path, 'main', conf.gituser,
+                                         conf.email, conf.melody_token, path=True)
 
 
 static_modifications(False)
