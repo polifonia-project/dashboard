@@ -16,9 +16,9 @@ jobs:
           dest: static/static.zip
 
       - name: commit and push report
-          uses: Andro999b/push@v1.3
-          with:
-            github_token: ${{ secrets.MELODY_TOKEN }}
-            branch: development
-            force: true
-            message: 'static zip update'
+        uses: Andro999b/push@v1.3
+        with:
+          github_token: ${{ secrets.MELODY_TOKEN }}
+          branch: development
+          force: true
+          message: 'static zip update'
