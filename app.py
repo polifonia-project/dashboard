@@ -49,10 +49,9 @@ scheduler.start()
 # In case 2 prints are shown see
 # https://stackoverflow.com/questions/11810461/how-to-perform-periodic-task-with-flask-in-python
 
-PREFIX = '/'
+PREFIX = '/melody/'
 
 stories_path = conf.melody_repo_name + '/' + conf.melody_sub_dir
-
 
 # access the home page
 @app.route(PREFIX+"")
@@ -524,11 +523,11 @@ def modification_date(file_stats):
     This function retrieve a date in the isocalendar form from time statistics.
 
     Args:
-        file_stats (stat_result obj): an object whose attributes correspond to the memebers of the stat structure 
+        file_stats (stat_result obj): an object whose attributes correspond to the memebers of the stat structure
         in the os bultin library. It describes the status of a file or a file descriptor.
 
     Returns:
-        modification_date (tuple): the isocalendar version of the date in which the file has been modified, 
+        modification_date (tuple): the isocalendar version of the date in which the file has been modified,
         in the form (year, week, day).
     """
     modification_date = file_stats.st_mtime
@@ -540,8 +539,8 @@ def modification_date(file_stats):
 def static_modifications(dev=False):
     """Check for any change in the static folder and updates the corresponding one in another repository.
 
-    This function iterates over all the files inside the static folder. Every time it checks a file has been modified 
-    the previou day, it performs a push of the same file to the corresponding folder in another Github repository. 
+    This function iterates over all the files inside the static folder. Every time it checks a file has been modified
+    the previou day, it performs a push of the same file to the corresponding folder in another Github repository.
     This function is supposed to run only in development.
 
     Args:

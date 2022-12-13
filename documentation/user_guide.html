@@ -200,7 +200,11 @@
               However, at the end of the session the story is not saved anywhere
               (neither in MELODY dashboard, nor in MELODY stories).
               Therefore users are invited to immediately export their story.</p>
-            <p>All users can export any story as a web-ready document (HTML, CSS, JS) or PDF, as well as any chart or
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+              class="bi bi-arrow-right" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+            </svg><strong>All users</strong> can export any story as a web-ready document (HTML, CSS, JS) or PDF, as well as any chart or
               graph (as image or embeddable code snippet).</p>
             <h2 id="welcome" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Welcome
               Page
@@ -210,8 +214,9 @@
             <img src="img/home.png" alt="">
             <p class="figcaption">The homepage of MELODY. You can login or start immediately.</p>
             <p>The left sidebar includes data stories created by registered users, grouped by
-              <i>section</i>. From the top right menu you can access the documentation (this document), create a new
-              data story, and sign in with your GitHub credentials.
+              <i>section</i>. From the footer you can access the documentation (this document),
+              while from the top right menu you can sign in with your GitHub credentials and create a new
+              data story.
             </p>
             <p>
               <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
@@ -226,8 +231,8 @@
                 <path fill-rule="evenodd"
                   d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
               </svg>If you are an <strong>external user with a GitHub account</strong>, your stories will be published
-              elsewhere (see <a class="text-green-500" target="_blank"
-                href="https://melody-data.github.io/stories/">MELODY stories</a>). To access and modify your stories,
+              on <a class="text-green-500" target="_blank"
+                href="https://melody-data.github.io/stories/">MELODY stories</a>. To access and modify your stories,
               use the button named <em>Modify your stories</em> on the top right menu (it shows when you are logged in).
             </p>
             <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
@@ -249,24 +254,28 @@
             </h2>
             <p class="mb-3 ">To create a new story,
               click on <i>Create a story</i>, in the top right menu.
-              If you haven't logged in yet, you will be asked whether you want to do it.
+              If you haven't logged in yet, you will be redirected to another page and you will be asked whether you want to do it.
 
             </p>
-            <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
-                class="bi bi-arrow-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                  d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
-              </svg>If you are a registered user, we will know!
-            </p>
+            <img src="img/asklogin.png" alt="">
+            <img src="img/asklogin2.png" alt="">
+            <p class="figcaption">Choose whether to login or try MELODY out.</p>
+
             <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
                 class="bi bi-arrow-right" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
                   d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
               </svg>If you do not have a GitHub account, click on <strong>START NOW</strong>
             </p>
+            <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                class="bi bi-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+              </svg>If you have a GitHub account, click on <strong>SIGN IN</strong>. If you are a registered user, we will know!
+            </p>
+
             <p>
-              You are redirected to an initial setup page
-              to prepare the canvas of your story. </p>
+              You will be redirected to the setup page of your story. </p>
             <!-- <h2 id="template" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Templates
                         </h2> -->
             <img src="img/setup1.png" alt="">
@@ -284,12 +293,10 @@
               </li>
               <li><b>Relations</b>: an interactive text search that allows to manipulate actions on results (e.g. make
                 new text searches, combine results of multiple searches).</li>
-              <li><b>Map</b>: allows to create a geographical map.
+              <li><b>Map</b>: a geographical map.
                 Data points can be filtered with user-defined filters, and explored via their metadata, statistics and
-                other charts.</li>
-              <li><span style="color: red;">(not available yet)</span> <b>Timeline</b>: allows to manipulate time series
-                into adaptive charts, by adding or removing filters that intervene on the chart visualization.</li>
-              <!--<li><b>Networks</b>:</li>-->
+                other charts (in progress).</li>
+
             </ol>
             <h3><strong>Select the section</strong> </h3>
             <p><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
@@ -350,7 +357,7 @@
               The new colors will be used in every chart and will create a duotone background effect
               on the secondary menu.</p>
             <p>Similarly, the <b>title</b>, the <b>subtitle</b>, the <b>introduction</b>, and the <b>curators</b>
-              of the story (in the secondary menu) can be modified.
+              of the story can be modified.
               The position of these elements in the canvas cannot be modified.</p>
             <img src="img/story1.png" alt="">
             <p class="figcaption">Color picker, title, subtitle, description, and curators.</p>
@@ -371,16 +378,15 @@
               appear.
               Each box can be moved up and down or removed.</p>
             <img src="img/buttons.png" alt="">
-            <p class="figcaption">An example of empty story with buttons to add elements to the page.</p>
+            <p class="figcaption">The buttons to add elements to the page.</p>
             <!-- TEXTBOX -->
             <h2 id="textboxes" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Textboxes
             </h2>
-            <p class="mb-3">Text boxes are meant to include free text descriptions. You will work in a simple
-              <strong>text editor</strong> environment that allows you to use the following formatting elements: bold,
-              italics, underlined, ordered and unordered lists, and hypertext link.</br>
-              Moreover, you can choose between two dimensions for the <strong>title</strong> (h2 and h3) and simple
-              <strong>text</strong>, rendered as a
-              paragraph.
+            <p class="mb-3">Text boxes are meant to include free text descriptions. You can edit your content in a simple
+              <strong>text editor</strong> that allows you to style text in bold,
+              italics, underlined, ordered and unordered lists, and to include hypertext link.</br>
+              If you want to add a <strong>title</strong>, you can choose between two dimensions (heading 2 and heading 3), or
+               <strong>normal</strong> if you want to render text as a paragraph.
             </p>
             <img src="img/text_editor.png" alt="">
             <p class="figcaption">Text box. Each box includes buttons to move up/down or delete an element.</p>
@@ -420,7 +426,7 @@ WHERE {?s ?p &lt;https://w3id.org/musow/vocab/repository&gt;.}</pre> </code>
               <li>one (or more) <strong>SPARQL query</strong> <span style="color: red;">(required)</span>, that usually
                 returns one or
                 two variables whose <strong>naming change according to each chart</strong>;</li>
-              <li><strong>labels</strong> for the chart axes (otional);</li>
+              <li><strong>labels</strong> for the chart axes (optional);</li>
               <li>the <strong>title</strong> of the chart <span style="color: red;">(required)</span></li>
               <li><strong>operations</strong> (optional), to aggregate data returned by the query.</li>
             </ol>
@@ -481,15 +487,15 @@ WHERE {
               return two
               numerical variables: <b>?x</b> and <b>?y</b>.
               An aggregating query to plot a scatter plot looks like follows:</p>
-            <code><pre>SELECT DISTINCT ?y ?x 
-WHERE { 
-  ?item wdt:P31 wd:Q11424. 
-  ?item p:P444 ?review_statement . 
-  ?review_statement ps:P444 ?y . 
-  ?review_statement pq:P447 wd:Q105584 . 
-  ?review_statement pq:P459 wd:Q108403393 . 
-  ?item p:P2142 ?box_office_statement . 
-  ?box_office_statement ps:P2142 ?x . 
+            <code><pre>SELECT DISTINCT ?y ?x
+WHERE {
+  ?item wdt:P31 wd:Q11424.
+  ?item p:P444 ?review_statement .
+  ?review_statement ps:P444 ?y .
+  ?review_statement pq:P447 wd:Q105584 .
+  ?review_statement pq:P459 wd:Q108403393 .
+  ?item p:P2142 ?box_office_statement .
+  ?box_office_statement ps:P2142 ?x .
   ?box_office_statement pq:P3005 wd:Q30 .
 }</pre> </code>
             <p class="figcaption">An aggregating SPARQL query to create a scatter plot.</p>
@@ -521,13 +527,13 @@ SELECT DISTINCT ?horse ?horseLabel ?mother ?motherLabel ?father ?fatherLabel (ye
 WHERE
 {
   ?horse wdt:P31/wdt:P279* wd:Q726 .
-                 
+
   OPTIONAL{?horse wdt:P25 ?mother .}
   OPTIONAL{?horse wdt:P22 ?father .}
   OPTIONAL{?horse wdt:P569 ?birthdate .}
   OPTIONAL{?horse wdt:P570 ?deathdate .}
   OPTIONAL{?horse wdt:P21 ?gender .}
-               
+
   SERVICE wikibase:label {
     bd:serviceParam wikibase:language "[AUTO_LANGUAGE],fr,ar,be,bg,bn,ca,cs,da,de,el,en,es,et,fa,fi,he,hi,hu,hy,id,it,ja,jv,ko,nb,nl,eo,pa,pl,pt,ro,ru,sh,sk,sr,sv,sw,te,th,tr,uk,yue,vec,vi,zh"
   }
@@ -815,13 +821,13 @@ WHERE
             <p class="mb-3">For instance, a query on Wikidata to
               return museums' cities in Brittany would look like follows:</p>
             <code><pre>
-SELECT DISTINCT ?point ?filter ?filterLabel 
+SELECT DISTINCT ?point ?filter ?filterLabel
 WHERE
 {
   ?point wdt:P539 ?museofile.
   ?point wdt:P131* wd:Q12130.
   ?point wdt:P131 ?filter.
-  ?filter rdfs:label ?filterLabel . 
+  ?filter rdfs:label ?filterLabel .
   FILTER(LANG(?filterLabel) = "" || LANGMATCHES(LANG(?filterLabel), "en"))
 }</pre></code>
             <p class="figcaption">A SPARQL query that searches for museum's cities in Wikidata.</p>

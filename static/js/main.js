@@ -332,7 +332,7 @@ function add_field(name, bind_query_id = "") {
         var close_addons = "</div>";
         contents += open_addons + up_down + chart_field + close_addons;
     } else if (name == 'table_box') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add tabel</h4>";
+        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add table</h4>";
         var close_addons = "</div>";
         contents += open_addons + up_down + simple_table_field + close_addons;
     } else if (name == 'textsearch') {
@@ -601,7 +601,7 @@ $(function () {
                 });
             }
 
-            // call for the simple table 
+            // call for the simple table
             else if (table_query) {
                 simpleTableViz(sparqlEndpoint, table_query, table_title, (idx + 1));
             }
