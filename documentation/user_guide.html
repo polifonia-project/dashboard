@@ -423,11 +423,11 @@ WHERE {?s ?p &lt;https://w3id.org/musow/vocab/repository&gt;.}</pre> </code>
               <li>the <strong>type</strong> of chart <span style="color: red;">(required)</span>, to be selected from a
                 dropdown;
               </li>
-              <li>one (or more) <strong>SPARQL query</strong> <span style="color: red;">(required)</span>, that usually
+              <li>one (or more) <strong>SPARQL query</strong> <span style="color: red;">(required)</span>, that
                 returns one or
-                two variables whose <strong>naming change according to each chart</strong>;</li>
-              <li><strong>labels</strong> for the chart axes (optional);</li>
+                two variables with specific naming conventions;</li>
               <li>the <strong>title</strong> of the chart <span style="color: red;">(required)</span></li>
+              <li><strong>labels</strong> for the chart axes (optional);</li>
               <li><strong>operations</strong> (optional), to aggregate data returned by the query.</li>
             </ol>
             <p class="mb-3">However, it is important to <u>check the requirements of each chart</u>. It will be
@@ -739,26 +739,23 @@ SERVICE wikibase:label {
             <!-- maps template -->
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="maps_template">The
               Maps template</h2>
-            <p class="mb-3">The Maps template provides an interactive way to show data point on a geographic map. On
-              click, each data point displays a tooltip that can contain variable information, depending on the author's
-              decision, as we will see shortly.
-              The filters are decided by the author of the story as well, and are used to determine the interaction of
-              the end user, who can thus filter out the points on the map.
+            <p class="mb-3">The Maps template provides an interactive geographic map.
+              Data points can be associated with tooltips with customisable content and
+              filters can be applied to filter out points on the map.
             </p>
             <img src="img/maps1.png" alt="">
-            <p class="figcaption">Maps: create interactive maps with filters.</p>
+            <p class="figcaption">Maps: an interactive map with filters.</p>
             <p class="mb-3">The main elements of the template are:</p>
             <ul class="list-group-numbered pl-3">
-              <li>A query to retrieve the data points <span style="color:red;">(required)</span></li>
-              <li>Data Point tooltips</li>
-              <li>Map filters</li>
+              <li>A SPARQL query to retrieve the data points <span style="color:red;">(required)</span></li>
+              <li>Tooltips</li>
+              <li>Filters</li>
             </ul>
-            <p class="mb-3">You can have only one map, but add/delete as many filters as you want.</p>
+            <p class="mb-3">In a story you can add only one map, but you can add as many filters as you want.</p>
             <h2 id="data_point" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Data Points</h2>
-            <p class="mb-3">The view to create the map with data points contains three elements</p>
+            <p class="mb-3">The initialise the map with data points you need two elements:</p>
             <ul class="list-group-numbered pl-3">
-              <li>The <strong>SPARQL query</strong> <span style="color:red;">(required)</span>.
-                A query that returns at least the mandatory variables:
+              <li>A <strong>SPARQL query</strong> <span style="color:red;">(required)</span> that returns at least the mandatory variables:
                 <ul>
                   <li><strong>?point</strong>: an URI identifying the points</li>
                   <li><strong>?lat</strong>: the latitude of the data point</li>
@@ -766,11 +763,12 @@ SERVICE wikibase:label {
                 </ul>
               </li>
               <li>The <strong>title</strong> of the map (optional).</li>
-              <li>A <strong>rerun</strong> button that you need to click any time you perform a change in the query.
-              </li>
+
             </ul>
-            <p class="mb-3">Below the two areas, a preview of the final map is shown.
-              Once you fill in the query, you can immediately try the results.</p>
+            <p class="mb-3">Once you type the query, you can immediately see a preview of the final map.
+              Data points with the same location are grouped in bubbles, which expand/collapse on zoom.
+               To prevent rerunning the query every time a change is done to the query, data points are cached.
+               The button <strong>Rerun the query</strong> forces MELODY to perform again the query on demand.</p>
             <img src="img/maps2.png" alt="">
             <p class="figcaption">Data points on the map.
             </p>
@@ -792,31 +790,33 @@ WHERE
             <p class="figcaption">A SPARQL query to retrieve coordinates of geographic points in Wikidata.</p>
             <h2 id="tooltip" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Tooltips
             </h2>
-            <p class="mb-3">Clicking on each data point shows a tooltip. Within it you can enter various information,
-              which will correspond to the author's preferences. Referring to the previous example, we can show the
-              label of the data point (?pointLabel) and the label of the corresponding city (?villeIdLabel), to which
-              it's added the URI of the data point itself (automatic).</p>
-            <img src="img/maps3.png" alt="">
+            <p class="mb-3">Clicking on each data point shows a tooltip.
+              The content of the tooltips is defined in the same SPARQL query to retrieve the data points.
+              In particular, each non-mandatory variable returned in the query appears
+              in the tooltip in the same order as the corresponding variable is returned, separated by period.
+              Following the previous example, we can show the
+              label of the data point (?pointLabel) and the label of the corresponding city (?villeIdLabel).
+              The URI of the data point is automatically added.</p>
+            <img src="img/maps3.png" alt="" style="max-width: 50%; margin: 0 auto;">
             <p class="figcaption">The tooltip of data points on the map.</p>
             <h2 id="map_filters" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Map Filters
             </h2>
-            <p class="mb-3">The view to add a filter to the map with data points contains three elements:</p>
+            <p class="mb-3">
+              To add a filter to the map you need to specify two elements:</p>
             <ul class="list-group-numbered pl-3">
-              <li>The <strong>SPARQL query</strong> <span style="color:red;">(required)</span>.
-                A query that returns the mandatory variables:
+              <li>A <strong>SPARQL query</strong> <span style="color:red;">(required)</span> that returns the mandatory variables:
                 <ul>
-                  <li><strong>?point</strong>: an URI identifying the points that appears as subject/object of a pattern
-                    (the same as the main query for the map data points)</li>
-                  <li><strong>?filter</strong>: the category to be used as a filter</li>
-                  <li><strong>?filterLabel</strong>: the label of the filter in case the filter is a literal value</li>
+                  <li><strong>?point</strong>: a variable identifying the data points returned by the previous query.
+                    We will replace this variable with the list of data points returned by the previous query, so you do not need to repeat the patterns to identify what is a point.</li>
+                  <li><strong>?filter</strong>: the variable to be used as a filter. Can be a URI or a Literal</li>
+                  <li><strong>?filterLabel</strong>: the label of the filter in case the filter is a URI</li>
                 </ul>
               </li>
               <li>The <strong>title</strong> of the filter <span style="color:red;">(required)</span></li>
-              <li>The <strong>rerun</strong> action to be perfomed after the form filling
-              </li>
+
             </ul>
-            <p class="mb-3">You can add as many filters as you want.</p>
-            <img src="img/maps4.png" alt="">
+            <p class="mb-3">You can add as many filters as you want. Like with data points, to update the view, you must <strong>rerun</strong> the SPARQL query for data points first.</p>
+            <img src="img/maps4.png" style="max-width: 70%; margin: 0 auto;" alt="" >
             <p class="figcaption">The part of the form to add a filter to the map.</p>
             <p class="mb-3">For instance, a query on Wikidata to
               return museums' cities in Brittany would look like follows:</p>
@@ -831,10 +831,10 @@ WHERE
   FILTER(LANG(?filterLabel) = "" || LANGMATCHES(LANG(?filterLabel), "en"))
 }</pre></code>
             <p class="figcaption">A SPARQL query that searches for museum's cities in Wikidata.</p>
-            <p class="mb-3">Once the desired filters are added and the rerun button is clicked, the filters will be
-              shown on the left side of the map within a sidebar. Each category can be compressed and expanded as
-              needed. By clicking on the desired filters, it is thus possible to slim the results shown on the map.</p>
-            <img src="img/maps5.png" alt="">
+            <p class="mb-3">Filters appear as sections of a left sidebar in the map.
+              Each section (filter) can be expanded, and it includes a list of checkboxes that the final user can use to filter data points.
+              </p>
+            <img src="img/maps5.png" alt="" style="max-width: 70%; margin: 0 auto;">
             <p class="figcaption">The sidebar with filters of the map.</p>
 
             <!-- publish and export -->
@@ -890,7 +890,8 @@ WHERE
             <p class="mb-3"><strong>Export</strong></p>
             <p class="mb-3">
               The whole story can be exported as a PDF document or as a web document,
-              ready to be published in you favourite platform.
+              ready to be published in you favourite platform. The exported story does not include the top menu and left sidebar.
+              The export buttons appear in the secondary menu on the left of the story.
               Similarly, each chart can be saved as a .png image, or
               exported as an embeddable HTML code snippet.</p>
             <img src="img/final2.png" alt="">
