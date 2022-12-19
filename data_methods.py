@@ -83,10 +83,12 @@ def add_story_to_config(config_file, form_data, general_data, user_name=None,sto
     datastory_title = form_data['title']
     datastory_endpoint = form_data['sparql_endpoint']
     color_code = ''
-    section_name = form_data['section_name'] if story_id is None else None
-    color_code = general_data['templates'][template_mode.lower()]['default_color']
+    for item in general_data['templates']:
+        if general_data['templates'][item]['name'] == template_mode.lower():
+            color_code = general_data['templates'][item]['default_color']
     clean_title = clean_string(datastory_title)
     clean_section = None
+    section_name = form_data['section_name'] if story_id is None else None
     # create new datastory instance
     new_datastory = {}
     new_datastory['sparql_endpoint'] = datastory_endpoint
@@ -101,12 +103,25 @@ def add_story_to_config(config_file, form_data, general_data, user_name=None,sto
         else:
             general_data['data_sources'][clean_section] = {}
             general_data['data_sources'][clean_section][clean_title] = new_datastory
+        update_json(config_file, general_data)
     if user_name and story_id:
         new_datastory['user_name'] = user_name
         new_datastory['id'] = story_id
-    # add to config file
-    update_json('config.json', general_data)
+        update_json(config_file, new_datastory)
     return clean_title, clean_section
+
+
+def get_correct_config(session,section_name, datastory_name):
+    """
+    Get the correct config json file according to the user type and the datastory name.
+    """
+    if session['user_type'] == 'polifonia':
+        datastory_data = access_data_sources(
+            section_name, datastory_name, 'config.json')
+    elif session['user_type'] in ['extra','random']:
+        datastory_data = read_json(
+            'static/temp/config_'+section_name+'.json')
+    return datastory_data
 
 def update_sections_config(general_data):
     """
@@ -115,12 +130,13 @@ def update_sections_config(general_data):
     Args:
         general_data (dict): the current version of config.json as dictionary
     """
-    sections = {el['section_name'] for el in story.values() for story in general_data['data_sources'].values()}
+    sections = {el['section_name'] for story in general_data['data_sources'].values() for el in story.values()}
     sections_dict = {}
     for s in sections:
-        sections_dict[data_methods.clean_string(s)] = s
+        sections_dict[clean_string(s)] = s
     general_data['sections'] = sections_dict
     update_json('config.json', general_data)
+
 
 def clean_string(dirty_string):
     '''
@@ -162,7 +178,6 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
 
     # transform ImmutableMultiDict into regular dict
     form_data = request.form.to_dict(flat=True)
-    print(form_data)
     datastory_title = form_data['title']
     datastory_title_clean = clean_string(datastory_title)
     print("datastory_title_clean", datastory_title_clean,
@@ -274,7 +289,6 @@ def manage_datastory_data(general_data, file, section_name, datastory_name):
                         dynamic_elements.append(elements_dict)
 
                     datastory_data['dynamic_elements'] = dynamic_elements
-
     update_json(file, general_data)
     return datastory_title_clean
 

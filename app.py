@@ -49,7 +49,7 @@ def asklogin():
 def gitauth():
     "Redirect to github authentication"
     scope = "&read:user"
-    return redirect(github_sync.github_auth+"?client_id="+conf.clientId+scope)
+    return redirect(github_sync.github_auth+"?client_id="+conf.clientID+scope)
 
 # authenticate user: polifonia, extra
 @app.route(PREFIX+"oauth-callback")
@@ -105,7 +105,6 @@ def datastory(section_name, datastory_name):
         datastory_data = utils.get_datastory_data(section_name,datastory_name)
         if datastory_data:
             template_mode = datastory_data['template_mode']
-
             return render_template('datastory_'+template_mode+'.html',
                 datastory_data=datastory_data,
                 general_data=general_data,
@@ -119,14 +118,13 @@ def datastory(section_name, datastory_name):
         # save datastory to github
         host = request.host_url
         github_sync.publish_datastory(host,PREFIX,section_name,datastory_name,session)
-        return redirect('https://melody-data.github.io/stories/#catalogue')
+        return redirect('https://'+conf.melody_owner+'.github.io/'+conf.melody_repo_name+'/#catalogue')
 
 
 @app.route(PREFIX+"setup", methods=['POST', 'GET'])
 def setup():
     general_data = data_methods.read_json('config.json')
     template_data = [general_data['templates'][t] for t in general_data['templates']]
-
     if request.method == 'GET':
         if session.get('name') is None \
             or (session is not None and "name" not in session):
@@ -135,7 +133,6 @@ def setup():
             template_data=template_data,
             general_data=general_data,
             stories_path=stories_path)
-
     elif request.method == 'POST':
         if session.get('name') is not None and session['name']:
             try:
@@ -164,18 +161,15 @@ def modify_datastory(section_name, datastory_name):
     while True:
         try:
             general_data = data_methods.read_json('config.json')
-            if session['user_type'] == 'polifonia':
-                datastory_data = data_methods.access_data_sources(
-                    section_name, datastory_name, 'config.json')
-            elif session['user_type'] == 'extra' or session['user_type'] == 'random':
-                datastory_data = data_methods.read_json(
-                    'static/temp/config_'+section_name+'.json')
-                print(datastory_data)
+            datastory_data = data_methods.get_correct_config(session,section_name, datastory_name)
             if request.method == 'GET':
                 template_mode = datastory_data['template_mode']
                 if session.get('name') is not None:
                     if session['name']:
-                        return render_template('modify_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data, stories_path=stories_path)
+                        return render_template('modify_'+template_mode+'.html',
+                            datastory_data=datastory_data,
+                            general_data=general_data,
+                            stories_path=stories_path)
             elif request.method == 'POST':
                 if session.get('name') is not None:
                     if session['name']:
@@ -299,6 +293,7 @@ def modify_datastory(section_name, datastory_name):
                                         dynamic_elements.append(elements_dict)
 
                                     datastory_data['dynamic_elements'] = dynamic_elements
+                                    print("modify_datastory")
                                     data_methods.update_json(
                                         'static/temp/config_'+section_name+'.json', datastory_data)
                                     datastory_name = data_methods.clean_string(
@@ -317,6 +312,7 @@ def modify_datastory(section_name, datastory_name):
                                 if len(general_data['data_sources'][section_name]) == 0:
                                     general_data = data_methods.delete_empty_section(
                                         general_data, section_name)
+                                print("modify_datastory2")
                                 data_methods.update_json(
                                     'config.json', general_data)
                                 return redirect(PREFIX)
@@ -324,9 +320,10 @@ def modify_datastory(section_name, datastory_name):
                                 os.remove('static/temp/config_' +
                                           section_name+'.json')
                                 return redirect(PREFIX)
-        except:
+        except Exception as e:
             retrieved_config = github_sync.get_raw_json(
                 branch='main', absolute_file_path='config_' + section_name + '.json')
+            print("modify_datastory3", str(e))
             data_methods.update_json(
                 'static/temp/config_' + section_name + '.json', retrieved_config)
             continue
