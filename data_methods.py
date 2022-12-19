@@ -66,6 +66,62 @@ def access_data_sources(section_name, datastory_name, file_name):
             return details
 
 
+def add_story_to_config(config_file, form_data, general_data, user_name=None,story_id=None):
+    """
+    Updates config.json or temp/config_*.json with data about a new data story.
+
+    Args:
+        config_file (str): the path to the config json file
+        general_data (dict): the current version of config.json as dictionary
+        user_name (str): session name if the story is created by external users
+        story_id (str): a timestamp if the story is created by external users
+    Returns:
+        clean_title (str): URL path of the data story
+        clean_section (str): URL path of the section
+    """
+    template_mode = form_data['template_mode']
+    datastory_title = form_data['title']
+    datastory_endpoint = form_data['sparql_endpoint']
+    color_code = ''
+    section_name = form_data['section_name'] if story_id is None else None
+    color_code = general_data['templates'][template_mode.lower()]['default_color']
+    clean_title = clean_string(datastory_title)
+    clean_section = None
+    # create new datastory instance
+    new_datastory = {}
+    new_datastory['sparql_endpoint'] = datastory_endpoint
+    new_datastory['template_mode'] = template_mode
+    new_datastory['title'] = datastory_title
+    new_datastory['color_code'] = color_code
+    if section_name:
+        new_datastory['section_name'] = section_name
+        clean_section = clean_string(section_name)
+        if clean_section in general_data['data_sources']:
+            general_data['data_sources'][clean_section][clean_title] = new_datastory
+        else:
+            general_data['data_sources'][clean_section] = {}
+            general_data['data_sources'][clean_section][clean_title] = new_datastory
+    if user_name and story_id:
+        new_datastory['user_name'] = user_name
+        new_datastory['id'] = story_id
+    # add to config file
+    update_json('config.json', general_data)
+    return clean_title, clean_section
+
+def update_sections_config(general_data):
+    """
+    Update the list of sections in config.json.
+
+    Args:
+        general_data (dict): the current version of config.json as dictionary
+    """
+    sections = {el['section_name'] for el in story.values() for story in general_data['data_sources'].values()}
+    sections_dict = {}
+    for s in sections:
+        sections_dict[data_methods.clean_string(s)] = s
+    general_data['sections'] = sections_dict
+    update_json('config.json', general_data)
+
 def clean_string(dirty_string):
     '''
     This function deals with data story titles to transform them into clean alpha numeric string with no white spaces.
@@ -236,28 +292,6 @@ def create_html(r, datastory_name, section_name):
     temp_html_file = open('static/temp/story_'+section_name+'.html', 'w')
     temp_html_file.write(html)
     temp_html_file.close()
-
-
-def get_raw_json(branch='main', absolute_file_path=None):
-    '''
-    This function request the raw version of a json file hosted in a Github repository.
-    Args:
-        branch (str): the repository branch from which the file is requested. Default is "main".
-        absolute_file_path (str): a string that identifies the name of the file (or its path).
-
-    Returns:
-        data (dict): a disctionary containing th econtent of the json file.
-
-    '''
-    try:
-        json_url = 'https://raw.githubusercontent.com/' + conf.melody_owner + '/' + \
-            conf.melody_repo_name+'/' + branch + '/' + \
-            conf.melody_sub_dir + '/' + absolute_file_path
-        r = requests.get(json_url)
-        data = r.json()
-    except:
-        data = None
-    return data
 
 
 def delete_empty_section(general_data, section_name):

@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, url_for, redirect, session
 import requests
 from flask_session import Session
 import github_sync
+import utils
 import conf
 import data_methods
 import os
@@ -10,7 +11,7 @@ import glob
 from apscheduler.schedulers.background import BackgroundScheduler
 import bleach
 
-
+# Sessions config
 app = Flask(__name__, static_url_path='/melody/static')
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.config["SESSION_PERMANENT"] = False
@@ -19,278 +20,141 @@ app.config['SESSION_FILE_THRESHOLD'] = 100
 app.config["APPLICATION_ROOT"] = "/melody"
 Session(app)
 
-
-def empty_temp():
-    '''
-    This function checks every 12 hours if there are files
-    in the folder "temp" that were created more than 1 day before, and delete them.
-    '''
-    today = datetime.today().isocalendar()
-    file_list = os.listdir('static/temp')
-    if len(file_list) > 0:
-        for f in file_list:
-            file_path = 'static/temp/' + f
-            creation_timestamp = os.path.getmtime(file_path)
-            creation_date = datetime.fromtimestamp(
-                creation_timestamp).date().isocalendar()
-            if creation_date[2] != today[2]:
-                os.remove(file_path)
-                print(f'Removed {f}.')
-            else:
-                print(f'{f} is still too new.')
-    else:
-        return 'Temp folder empty.'
-
-
+# temp folder
 scheduler = BackgroundScheduler()
-job = scheduler.add_job(empty_temp, 'interval', hours=12)
+job = scheduler.add_job(utils.empty_temp, 'interval', hours=12)
 scheduler.start()
 
-# In case 2 prints are shown see
-# https://stackoverflow.com/questions/11810461/how-to-perform-periodic-task-with-flask-in-python
-
+# paths
 PREFIX = '/melody/'
-
 stories_path = conf.melody_repo_name + '/' + conf.melody_sub_dir
 
-# access the home page
+
 @app.route(PREFIX+"")
 @app.route(PREFIX+"index.html")
 def home():
+    "Return the home page"
     general_data = data_methods.read_json('config.json')
     return render_template('index.html', general_data=general_data, stories_path=stories_path)
 
 
 @app.route(PREFIX+"asklogin")
 def asklogin():
+    "Return templates/asklogin"
     general_data = data_methods.read_json('config.json')
     return render_template('asklogin.html', general_data=general_data, stories_path=stories_path)
 
 
-# github authentication
 @app.route(PREFIX+"gitauth")
 def gitauth():
-    github_auth = "https://github.com/login/oauth/authorize"
-    clientId = conf.clientID
+    "Redirect to github authentication"
     scope = "&read:user"
-    return redirect(github_auth+"?client_id="+clientId+scope)
+    return redirect(github_sync.github_auth+"?client_id="+conf.clientId+scope)
 
-
+# authenticate user: polifonia, extra
 @app.route(PREFIX+"oauth-callback")
 def oauthcallback(is_valid_user=None):
+    """Authenticate users via GitHub.
+
+    Args:
+        is_valid_user (boolean): returned by github_sync.ask_user_permission(code)
+    Returns:
+        redirection to the setup page or homepage
+    """
     code = request.args.get('code')
     res = github_sync.ask_user_permission(code)
-
     if res:
         userlogin, usermail, bearer_token = github_sync.get_user_login(res)
         is_valid_user = github_sync.get_github_users(userlogin)
         if is_valid_user == True:
-            session["name"] = userlogin
-            session["user_type"] = 'polifonia'
-            print("good Polifonia chap, logged in as ", session["name"])
-            return redirect(url_for('setup'))
+            session["name"],session["user_type"] = userlogin , 'polifonia'
         else:
-            session["name"] = userlogin
-            print("good lad, welcome ", session["name"])
-            session["user_type"] = 'extra'
-
-            return redirect(url_for('setup'))
+            session["name"], session["user_type"] = userlogin , 'extra'
+        return redirect(url_for('setup'))
     else:
-        session["name"] = 'None'
-        session["user_type"] = 'extra'
-        print("bad boy's request to github oauth")
+        session["name"], session["user_type"] = 'None' , 'extra'
         return redirect(url_for('home'))
 
+    print("LOGIN type:", session["user_type"], "| username:", session["name"])
 
-#  signout
+
 @app.route(PREFIX+"signout")
 def signout():
-    session["name"] = None
-    session["user_type"] = None
+    "Signout and redirect to the homepage."
+    session["name"], session["user_type"] = None , None
     return redirect(url_for('home'))
 
 
-# access any datastory page
 @app.route(PREFIX+"<string:section_name>/<string:datastory_name>", methods=['GET', 'POST'])
 def datastory(section_name, datastory_name):
     '''
-    opens the config file, checks if datastory_name is inside data_sources and returns its page with the data(datastory_data)
-    to be displayed.
+    Visualise the final data story.
+    Get the data of a datastory from config.json/data_sources/ and render the correct
+    html template.
+
+    Args:
+        section_name (str): a section in config.json/sections or a new one
+        datastory_name (str): a story in config.json/data_sources/{section_name}
+    Returns:
+        redirect to setup page or homepage (dashboard or external catalogue)
     '''
+
     if request.method == 'GET':
+        # return datastory in dashboard or 404
         general_data = data_methods.read_json('config.json')
-        try:
-            # check if section name is the timestamp, retrieve config from static/temp
-            float(section_name)
-            datastory_data = data_methods.read_json(
-                'static/temp/config_'+section_name+'.json')
-        except ValueError:
-            # else is the general config
-            datastory_data = data_methods.access_data_sources(
-                section_name, datastory_name, 'config.json')
-        template_mode = datastory_data['template_mode']
+        datastory_data = utils.get_datastory_data(section_name,datastory_name)
         if datastory_data:
-            return render_template('datastory_'+template_mode+'.html', datastory_data=datastory_data, general_data=general_data, section_name=section_name, datastory_name=datastory_name, stories_path=stories_path)
+            template_mode = datastory_data['template_mode']
+
+            return render_template('datastory_'+template_mode+'.html',
+                datastory_data=datastory_data,
+                general_data=general_data,
+                section_name=section_name,
+                datastory_name=datastory_name,
+                stories_path=stories_path)
         else:
             return render_template('page-404.html', stories_path=stories_path)
+
     elif request.method == 'POST':
+        # save datastory to github
         host = request.host_url
-        r = requests.get(host + PREFIX[1:] + section_name +
-                         '/' + datastory_name)
-        # open and create html file
-        data_methods.create_html(r, datastory_name, section_name)
-
-        story_data = data_methods.read_json(
-            'static/temp/config_'+section_name+'.json')
-
-        new_story = {
-            'user_name': session['name'],
-            'id': section_name,
-            'title': story_data['title']
-        }
-
-        stories_list = data_methods.get_raw_json(
-            branch='main', absolute_file_path='stories_list.json')
-
-        if stories_list is not None:
-            data_methods.update_json(
-                'static/temp/stories_list.json', stories_list)
-            if new_story in stories_list:
-                pass
-            elif new_story not in stories_list:
-                for story in stories_list:
-                    # check if story id is present
-                    if new_story['id'] in story.values():
-                        # update title
-                        story['title'] = new_story['title']
-                        data_methods.update_json(
-                            'static/temp/stories_list.json', stories_list)
-                        break
-                else:
-                    # append new story
-                    stories_list.append(new_story)
-                    data_methods.update_json(
-                        'static/temp/stories_list.json', stories_list)
-        else:
-            stories_list = []
-            stories_list.append(new_story)
-            data_methods.update_json(
-                'static/temp/stories_list.json', stories_list)
-
-        # commit config and html to repo
-        github_sync.push('static/temp/config_'+section_name+'.json', 'main', conf.gituser,
-                         conf.email, conf.melody_token, '@'+session['name'])
-        github_sync.push('static/temp/story_'+section_name+'.html', 'main', conf.gituser,
-                         conf.email, conf.melody_token, '@'+session['name'])
-
-        # commit stories list to repo
-        github_sync.push('static/temp/stories_list.json', 'main', conf.gituser,
-                         conf.email, conf.melody_token)
-
-        # remove the files
-        os.remove('static/temp/config_'+section_name+'.json')
-        os.remove('static/temp/story_'+section_name+'.html')
-        os.remove('static/temp/stories_list.json')
-
+        github_sync.publish_datastory(host,PREFIX,section_name,datastory_name,session)
         return redirect('https://melody-data.github.io/stories/#catalogue')
 
 
 @app.route(PREFIX+"setup", methods=['POST', 'GET'])
 def setup():
     general_data = data_methods.read_json('config.json')
+    template_data = [general_data['templates'][t] for t in general_data['templates']]
+
     if request.method == 'GET':
-        template_data = []
-        for item in general_data['templates']:
-            template_data.append(general_data['templates'][item])
-        if session.get('name') is not None:
-            if session['name']:
-                return render_template('setup.html', template_data=template_data, general_data=general_data, stories_path=stories_path)
-        else:
-            session["name"] = 'anonym'
-            session["user_type"] = 'random'
-            return render_template('setup.html', template_data=template_data, general_data=general_data, stories_path=stories_path)
+        if session.get('name') is None \
+            or (session is not None and "name" not in session):
+            session["name"],session["user_type"] = 'anonym','random'
+        return render_template('setup.html',
+            template_data=template_data,
+            general_data=general_data,
+            stories_path=stories_path)
+
     elif request.method == 'POST':
-        if session.get('name') is not None:
-            if session['name']:
-                try:
-                    # polifonia user
-                    if session['user_type'] == 'polifonia':
-                        # get data
-                        form_data = request.form
-                        template_mode = form_data['template_mode']
-                        datastory_title = form_data['title']
-                        datastory_endpoint = form_data['sparql_endpoint']
-                        section_name = form_data['section_name']
-                        color_code = ''
-                        for item in general_data['templates']:
-                            if general_data['templates'][item]['name'] == template_mode.lower():
-                                color_code = general_data['templates'][item]['default_color']
-                        # create new datastory instance
-                        new_datastory = {}
-                        new_datastory['sparql_endpoint'] = datastory_endpoint
-                        new_datastory['template_mode'] = template_mode
-                        new_datastory['title'] = datastory_title
-                        new_datastory['color_code'] = color_code
-                        new_datastory['section_name'] = section_name
-                        # add to config file
-                        clean_title = data_methods.clean_string(
-                            datastory_title)
-                        clean_section = data_methods.clean_string(section_name)
-                        if clean_section in general_data['data_sources']:
-                            general_data['data_sources'][clean_section][clean_title] = new_datastory
-                        else:
-                            general_data['data_sources'][clean_section] = {}
-                            general_data['data_sources'][clean_section][clean_title] = new_datastory
-
-                        data_methods.update_json('config.json', general_data)
-                        general_data = data_methods.read_json('config.json')
-
-                        # upload the sections list
-                        sections = set()
-                        sections_dict = {}
-                        for story in general_data['data_sources'].values():
-                            for el in story.values():
-                                sections.add(el['section_name'])
-                        for s in sections:
-                            sections_dict[data_methods.clean_string(s)] = s
-                        general_data['sections'] = sections_dict
-                        data_methods.update_json('config.json', general_data)
-                        general_data = data_methods.read_json('config.json')
-
-                        datastory_data = data_methods.access_data_sources(
-                            clean_section, clean_title, 'config.json')
-
-                        # the correct template opens based on the name
-                        return redirect(url_for("modify_datastory", section_name=clean_section, datastory_name=clean_title))
-                    elif session['user_type'] == 'extra' or session['user_type'] == 'random':
-                        # timestamp
-                        ts = data_methods.new_timestamp()
-                        # get data
-                        form_data = request.form
-                        template_mode = form_data['template_mode']
-                        datastory_title = form_data['title']
-                        datastory_endpoint = form_data['sparql_endpoint']
-                        color_code = ''
-                        for item in general_data['templates']:
-                            if general_data['templates'][item]['name'] == template_mode.lower():
-                                color_code = general_data['templates'][item]['default_color']
-                        # create new datastory instance
-                        config_data = {}
-                        config_data['sparql_endpoint'] = datastory_endpoint
-                        config_data['template_mode'] = template_mode
-                        config_data['title'] = datastory_title
-                        config_data['color_code'] = color_code
-                        config_data['user_name'] = session['name']
-                        config_data['id'] = str(ts)
-
-                        clean_title = data_methods.clean_string(
-                            datastory_title)
-                        # add to config file
-                        data_methods.update_json(
-                            'static/temp/config_' + str(ts) + '.json', config_data)
-                        return redirect(url_for("modify_datastory", section_name=str(ts), datastory_name=clean_title))
-                except Exception as e:
-                    return str(e)+'did not save to database'
+        if session.get('name') is not None and session['name']:
+            try:
+                form_data = request.form
+                if session['user_type'] == 'polifonia':
+                    clean_title, clean_section = data_methods.add_story_to_config('config.json',form_data,general_data)
+                    general_data = data_methods.read_json('config.json')
+                    data_methods.update_sections_config(general_data)
+                    return redirect(url_for("modify_datastory",
+                        section_name=clean_section, datastory_name=clean_title))
+                elif session['user_type'] in ['extra','random']:
+                    ts = data_methods.new_timestamp()
+                    config_file = 'static/temp/config_' + str(ts) + '.json'
+                    clean_title, clean_section = data_methods.add_story_to_config(config_file,form_data,general_data,
+                        session['name'], str(ts))
+                    return redirect(url_for("modify_datastory",
+                        section_name=str(ts), datastory_name=clean_title))
+            except Exception as e:
+                return str(e)+'did not save to database'
     else:
         return 'something went wrong, try again'
 
@@ -461,7 +325,7 @@ def modify_datastory(section_name, datastory_name):
                                           section_name+'.json')
                                 return redirect(PREFIX)
         except:
-            retrieved_config = data_methods.get_raw_json(
+            retrieved_config = github_sync.get_raw_json(
                 branch='main', absolute_file_path='config_' + section_name + '.json')
             data_methods.update_json(
                 'static/temp/config_' + section_name + '.json', retrieved_config)
