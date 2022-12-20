@@ -2,8 +2,12 @@ name: zip folder
 
 on:
   push:
+    branches:
+      - development
     paths:
       - 'static/**'
+      - '!static/temp/**'
+      - '!static/static.zip'
 
 jobs:
   zip-files:
