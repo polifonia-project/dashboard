@@ -7,7 +7,6 @@ addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
 
-
 window.onload = function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { queryCounter(); }
     chartViz();
