@@ -20,9 +20,7 @@ jobs:
       - name: create new zip
         uses: vimtor/action-zip@v1
         with:
-          files:
-            - static/
-            - '!static/temp/**'
+          files: static/
           dest: static/static.zip
 
       - name: commit and push report
