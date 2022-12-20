@@ -26,3 +26,8 @@ jobs:
           branch: development
           force: true
           message: 'static zip update'
+          
+      - name: Checking out...
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.MELODY_TOKEN }}
