@@ -2,6 +2,16 @@
 <html lang="en">
 
 <head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-9SSDBXGCXK"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-9SSDBXGCXK');
+	</script>
+
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 	<title>
@@ -34,8 +44,6 @@
 	<link rel="stylesheet" href="/melody/static/css/style.css">
 
 
-	<!-- CSS Just for demo purpose, don't include it in your project -->
-	<!-- <link rel="stylesheet" href="/static/css/demo.css"> -->
 
 	<!-- Specific Page CSS goes HERE  -->
 	{% block stylesheets %}{% endblock stylesheets %}
