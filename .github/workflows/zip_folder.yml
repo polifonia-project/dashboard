@@ -13,7 +13,10 @@ jobs:
   zip-files:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checking out...
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.MELODY_TOKEN }}
       - uses: vimtor/action-zip@v1
         with:
           files: static/
@@ -26,8 +29,3 @@ jobs:
           branch: development
           force: true
           message: 'static zip update'
-          
-      - name: Checking out...
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.MELODY_TOKEN }}
