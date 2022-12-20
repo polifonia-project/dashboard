@@ -17,9 +17,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.MELODY_TOKEN }}
-      - uses: vimtor/action-zip@v1
+      - name: create new zip
+        uses: vimtor/action-zip@v1
         with:
-          files: static/
+          files:
+            - static/
+            - '!static/temp/**'
           dest: static/static.zip
 
       - name: commit and push report
