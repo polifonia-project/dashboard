@@ -87,6 +87,18 @@ def get_github_users(userlogin):
     return is_valid_user
 
 
+def validate_credentials(code):
+    """Given the user token, check if melody user or external."""
+    res = ask_user_permission(code)
+    if res:
+        userlogin, usermail, bearer_token = get_user_login(res)
+        is_valid_user = get_github_users(userlogin)
+        user_name = userlogin
+        user_type = 'polifonia' if is_valid_user == True else 'extra'
+    else:
+        user_name, user_type = 'None' , 'extra'
+    return user_name, user_type
+
 def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=None, action='', path=False):
     """ Create a new file or update an existing file in a Github repository.
 

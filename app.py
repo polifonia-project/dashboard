@@ -62,17 +62,11 @@ def oauthcallback(is_valid_user=None):
         redirection to the setup page or homepage
     """
     code = request.args.get('code')
-    res = github_sync.ask_user_permission(code)
-    if res:
-        userlogin, usermail, bearer_token = github_sync.get_user_login(res)
-        is_valid_user = github_sync.get_github_users(userlogin)
-        session["name"] = userlogin
-        session["user_type"] = 'polifonia' if is_valid_user == True else 'extra'
+    session["name"],session["user_type"] = github_sync.validate_credentials(code)
+    if session["name"] != 'None':
         return redirect(url_for('setup'))
     else:
-        session["name"], session["user_type"] = 'None' , 'extra'
         return redirect(url_for('home'))
-
     print("LOGIN type:", session["user_type"], "| username:", session["name"])
 
 
