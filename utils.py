@@ -1,6 +1,7 @@
 from datetime import datetime
-import data_methods
 import os
+import glob
+import github_sync , data_methods , conf
 
 def empty_temp():
     '''
@@ -23,19 +24,99 @@ def empty_temp():
     else:
         return 'Temp folder empty.'
 
-def get_datastory_data(section_name,datastory_name):
+
+def modified_yesterday(today, modification_date):
+    """Checks if a file has been modified the previous day, based on today and modification dates.
+
+    Args:
+        today (tuple): the isocalendar version of the current date, in the form (year, week, day).
+        modification_date (tuple): the isocalendar version of the date in which the file has been modified, in the form (year, week, day).
+
+    Returns:
+        True/False (boolean): a boolean operator that states if the file has been modified the previous day (True) or not (False).
     """
-    Get the data from config.json of temp/config
-    to render the final datastory.
+    # same year
+    if modification_date[0] == today[0]:
+        # same week
+        if modification_date[1] == today[1]:
+            # 1 day difference
+            if (today[2] - modification_date[2]) == 1:
+                return True
+            else:
+                return False
+        # different week
+        else:
+            # 1 day difference
+            if modification_date[2] == 7 and today[2] == 1:
+                return True
+            else:
+                return False
+    # different year
+    elif (today[0] - modification_date[0]) == 1:
+        # different week
+        if modification_date[1] == 52 and today[1] == 1:
+            # 1 day difference
+            if modification_date[2] == 7 and today[2] == 1:
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+
+def modification_date(file_stats):
+    """Retrieve a date from time statistics.
+
+    This function retrieve a date in the isocalendar form from time statistics.
+
+    Args:
+        file_stats (stat_result obj): an object whose attributes correspond to the memebers of the stat structure
+        in the os bultin library. It describes the status of a file or a file descriptor.
+
+    Returns:
+        modification_date (tuple): the isocalendar version of the date in which the file has been modified,
+        in the form (year, week, day).
     """
-    datastory_data = None
-    try:
-        # if section name is a timestamp, retrieve config from static/temp
-        float(section_name)
-        datastory_data = data_methods.read_json(
-            'static/temp/config_'+section_name+'.json')
-    except ValueError:
-        # else is the general config
-        datastory_data = data_methods.access_data_sources(
-            section_name, datastory_name, 'config.json')
-    return datastory_data
+    modification_date = file_stats.st_mtime
+    modification_date = datetime.fromtimestamp(
+        modification_date).date().isocalendar()
+    return modification_date
+
+
+def static_modifications(dev=False):
+    """Check for any change in the static folder and updates the corresponding one in another repository.
+
+    This function iterates over all the files inside the static folder. Every time it checks a file has been modified
+    the previou day, it performs a push of the same file to the corresponding folder in another Github repository.
+    This function is supposed to run only in development.
+
+    Args:
+        dev (boolean): a boolean that declares if the environment is development or not.
+    """
+    if dev:
+        main_folder = 'static'
+        list_of_folders = os.listdir(main_folder)
+        today = datetime.today().isocalendar()
+        for folder in list_of_folders:
+            if folder != 'temp' and folder != 'static.zip':
+                folder_files = glob.glob(main_folder + '/' + folder + '/*')
+                if len(folder_files) > 0:
+                    for file in folder_files:
+                        file_path = os.path.join(
+                            main_folder, folder, file.split('\\')[1])
+                        file_stats = os.stat(file_path)
+                        m_date = modification_date(file_stats)
+                        if modified_yesterday(today, m_date):
+                            file_path = main_folder + '/' + \
+                                folder + '/' + file.split('\\')[1]
+                            github_sync.push(
+                                file_path, 'main', conf.gituser, conf.email, conf.melody_token, path=True)
+                elif len(folder_files) == 0:
+                    file_stats = os.stat(main_folder + '/' + folder)
+                    m_date = modification_date(file_stats)
+                    if modified_yesterday(today, m_date):
+                        file_path = main_folder + '/' + folder
+                        github_sync.push(file_path, 'main', conf.gituser,
+                                         conf.email, conf.melody_token, path=True)

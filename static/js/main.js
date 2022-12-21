@@ -160,9 +160,9 @@ function add_field(name, bind_query_id = "") {
                 <label for='largeInput'>Chart Title</label><br/>\
 				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
 				<br/><label>Operations</label><br/>\
-				<input type='checkbox' id='count' name='action1' value='count'>\
+				<input type='checkbox' id='count' name='" + (counter + 1) + "action1' value='count'>\
 				<label for='count'>Count</label><br/>\
-				<input type='checkbox' id='sort' name='action2' value='sort'>\
+				<input type='checkbox' id='sort' name='" + (counter + 1) + "action2' value='sort'>\
 				<label for='count'>Sort</label><br/>\
 				</div>";
 
