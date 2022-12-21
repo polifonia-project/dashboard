@@ -88,7 +88,7 @@ def datastory(section_name, datastory_name):
     Returns:
         redirect to setup page or homepage (dashboard or external catalogue)
     '''
-
+    react_version = 'development.js' if '127.0.0.1' in request.host_url else 'production.min.js'
     if request.method == 'GET':
         # return datastory in dashboard or 404
         general_data = data_methods.read_json('config.json')
@@ -98,7 +98,8 @@ def datastory(section_name, datastory_name):
             return render_template('datastory_'+template_mode+'.html',
                 datastory_data=datastory_data, general_data=general_data,
                 section_name=section_name,datastory_name=datastory_name,
-                stories_path=stories_path)
+                stories_path=stories_path,
+                react_version=react_version)
         else:
             return render_template('page-404.html', stories_path=stories_path)
 
@@ -139,13 +140,15 @@ def modify_datastory(section_name, datastory_name):
         try:
             general_data = data_methods.read_json('config.json')
             datastory_data = data_methods.get_config(session,section_name,datastory_name)
+            react_version = 'development.js' if '127.0.0.1' in request.host_url else 'production.min.js'
             if session.get('name') is not None and "name" in session:
                 if request.method == 'GET':
                     template_mode = datastory_data['template_mode']
                     return render_template('modify_'+template_mode+'.html',
                         datastory_data=datastory_data,
                         general_data=general_data,
-                        stories_path=stories_path)
+                        stories_path=stories_path,
+                        react_version=react_version)
                 elif request.method == 'POST':
                     if request.form['action'] == 'save':
                         try:
