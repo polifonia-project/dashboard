@@ -1,0 +1,11 @@
+<h1 class="text-white pb-2 fw-bold">{{ datastory_data.title }}</h1>
+{% if datastory_data.subtitle %}
+<h2 class="text-white op-7 mb-2">
+  {{ datastory_data.subtitle }}
+</h2>
+{%endif%}
+{% if datastory_data.description %}
+<p class="card-category">
+  {{ datastory_data.description }}
+</p>
+{%endif%}

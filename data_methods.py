@@ -165,7 +165,7 @@ def init_datastory(user_type,form_data,general_data,user_name=None):
 		ts = new_timestamp()
 		config_file = 'static/temp/config_' + str(ts) + '.json'
 		clean_title, clean_section = add_story_to_config(config_file,form_data,general_data,
-			session['name'], str(ts))
+			user_name, str(ts))
 		clean_section = str(ts)
 	return clean_title, clean_section
 
@@ -222,7 +222,7 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 				datastory_name)
 		datastory_data = general_data['data_sources'][section_name][datastory_title_clean]
 	elif user_type in ['extra','random']:
-		datastory_data = data_methods.read_json(file)
+		datastory_data = read_json(file)
 
 	try:
 		datastory_data['color_code'] = color_code_list
@@ -298,7 +298,7 @@ def delete_story(general_data,user_type):
 		# if section is now empty, delete it
 		if len(general_data['data_sources'][section_name]) == 0:
 			general_data = delete_empty_section( general_data, section_name)
-		data_methods.update_json('config.json', general_data)
+		update_json('config.json', general_data)
 	elif user_type in ['extra','random']:
 		os.remove('static/temp/config_' + section_name+'.json')
 

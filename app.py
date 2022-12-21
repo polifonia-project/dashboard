@@ -112,7 +112,7 @@ def datastory(section_name, datastory_name):
 @app.route(PREFIX+"setup", methods=['POST', 'GET'])
 def setup():
     general_data = data_methods.read_json('config.json')
-    template_data = [general_data['templates'][t] for t in general_data['templates']]
+    template_data = utils.check_templates(general_data)
     if request.method == 'GET':
         if session.get('name') is None \
             or (session is not None and "name" not in session):
@@ -149,15 +149,15 @@ def modify_datastory(section_name, datastory_name):
                 elif request.method == 'POST':
                     if request.form['action'] == 'save':
                         try:
-                            config_file = 'config.json' if user_type == 'polifonia' \
+                            config_file = 'config.json' if session['user_type'] == 'polifonia' \
                                 else 'static/temp/config_'+section_name+'.json'
                             new_datastory_name = data_methods.manage_datastory_data(
                                 session['user_type'], general_data, config_file, section_name, datastory_name)
                             return redirect(url_for('datastory',
                                 section_name=section_name,
                                 datastory_name=new_datastory_name))
-                        except:
-                            return 'Something went wrong'
+                        except Exception as e:
+                            return str(e),'Something went wrong'
 
                     elif request.form['action'] == 'delete':
                         data_methods.delete_story(general_data,session['user_type'])

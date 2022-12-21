@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import glob
 import github_sync , data_methods , conf
+import shutil
 
 def empty_temp():
     '''
@@ -120,3 +121,20 @@ def static_modifications(dev=False):
                         file_path = main_folder + '/' + folder
                         github_sync.push(file_path, 'main', conf.gituser,
                                          conf.email, conf.melody_token, path=True)
+
+
+def check_templates(general_data):
+    """Check if new templates have been added to config.json
+    and creates templates if needed, using base_modify."""
+    templates_names = [general_data['templates'][t]['name'] for t in general_data['templates']]
+    for t in templates_names:
+        if os.path.isfile('templates/modify_'+t+'.html') == False:
+            source = 'templates/base_modify.html'
+            target = 'templates/modify_'+t+'.html'
+            shutil.copy(source, target)
+        if os.path.isfile('templates/datastory_'+t+'.html') == False:
+            source = 'templates/base_datastory.html'
+            target = 'templates/datastory_'+t+'.html'
+            shutil.copy(source, target)
+    template_data = [general_data['templates'][t] for t in general_data['templates']]
+    return template_data
