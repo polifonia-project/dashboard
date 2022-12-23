@@ -4,6 +4,9 @@
 <!-- CSS for this template -->
 {% block stylesheets %}
 <link rel="stylesheet" href="/melody/static/css/templates.css">
+<script src="https://unpkg.com/react@18/umd/react.{{ react_version }}" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.{{ react_version }}" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 {% endblock stylesheets %}
 
 <!-- Content of this template -->
@@ -23,10 +26,17 @@
                 {% for dict in datastory_data.dynamic_elements %}
                 <!-- DO STUFF -->
                 {% endfor %}
+                <script src="/melody/static/js/react/add_components.js" type="text/babel"></script>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <!-- save buttons -->
+    <div class="card-action" style="margin:auto;">
+        <button type="submit" name="action" value="save" class="btn btn-success prevent_alert">Save</button>
+        <button type="reset" class="btn btn-danger">Reset content</button>
+        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
     </div>
   </form>
 </div>
@@ -38,4 +48,26 @@
 {% block javascripts %}
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+
+{% if datastory_data.user_name %}
+<!-- <script>
+    let beforeUnloadAlert = true;
+    window.addEventListener('beforeunload', function (e) {
+        if (!beforeUnloadAlert) return;
+
+        // etc
+        e.preventDefault();
+        e.returnValue = '';
+    });
+
+    function myFunction() {
+        beforeUnloadAlert = false;
+    }
+    var myObj = document.getElementsByClassName('prevent_alert')
+    console.log("myObj",myObj);
+    for (el of myObj) {
+        el.addEventListener('click', myFunction);
+    }
+</script> -->
+{% endif %}
 {% endblock javascripts %}
