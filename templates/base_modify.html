@@ -7,6 +7,9 @@
 <script src="https://unpkg.com/react@18/umd/react.{{ react_version }}" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.{{ react_version }}" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
+<script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+<script src="https://unpkg.com/@jitbit/htmlsanitizer@latest/HtmlSanitizer.js"></script>
 {% endblock stylesheets %}
 
 <!-- Content of this template -->
@@ -23,9 +26,6 @@
             {% include 'modify_description.html' %}
             <div class="card-body nopaddingleft" id="sortable">
                 <span id='loader' class='lds-dual-ring hidden overlay'></span>
-                {% for dict in datastory_data.dynamic_elements %}
-                <!-- DO STUFF -->
-                {% endfor %}
                 <script src="/melody/static/js/react/add_components.js" type="text/babel"></script>
             </div>
           </div>
@@ -46,8 +46,6 @@
 
 <!-- JS for this template -->
 {% block javascripts %}
-<script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
-<script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
 
 {% if datastory_data.user_name %}
 <script>

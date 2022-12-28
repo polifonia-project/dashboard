@@ -8,6 +8,11 @@
   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://unpkg.com/react@18/umd/react.{{ react_version }}" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.{{ react_version }}" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/@jitbit/htmlsanitizer@latest/HtmlSanitizer.js"></script>
+  <script type="text/javascript">
+    var datastory_data = {{ datastory_data | tojson }};
+  </script>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -17,12 +22,11 @@
   <div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
     <div class="page-inner py-5">
       <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-        <div id="maps_datastory_final">
+        <div>
           {% include 'datastory_heading.html' %}
           <span id='loader' class='lds-dual-ring hidden overlay'></span>
-          {% for dict in datastory_data.dynamic_elements %}
-          <!-- DO STUFF -->
-          {% endfor %}
+          <div id="sortable"></div>
+          <script src="/melody/static/js/react/add_components.js" type="text/babel"></script>
         </div>
       </div>
     </div>
@@ -33,7 +37,6 @@
 
 {% block javascripts %}
 <script type="text/javascript">
-  var datastory_data = {{ datastory_data | tojson }};
   $('footer').detach();
 </script>
 {% if datastory_data.user_name %}

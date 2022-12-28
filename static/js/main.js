@@ -17,7 +17,7 @@ window.onload = function () {
 
 // disable selection of templates other than statistics
 $(document).ready(function () {
-    $("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
+    //$("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
     $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded', 'false');
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
@@ -58,66 +58,66 @@ function disableKeypress() {
 }
 
 // update index of fields in template page (to store the final order)
-function updateindex() {
-    $('#sortable [id$="block_field"]').each(function () {
-        var idx = $('[id$="block_field"]').index(this) + 1;
-        $(this).attr("id", idx + '__block_field');
-        var everyChild = this.getElementsByTagName("*");
-        for (var i = 0; i < everyChild.length; i++) {
-            var childid = everyChild[i].id;
-            var childname = everyChild[i].name;
-            var childhref = everyChild[i].href;
-            var childdataid = everyChild[i].dataset.id;
-            if (childid != undefined && !childid.includes('_panel') && !childid.includes('ham')) {
-                if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
-                else { everyChild[i].id = idx + '__' + childid; }
-            };
-            if (childname != undefined && !'map_filter') {
-                if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
-                else { everyChild[i].name = idx + '__' + childname; }
-            };
-            if (childdataid != undefined) {
-                if (!isNaN(+childdataid.charAt(0))) { everyChild[i].dataset.id = idx + '__' + childdataid.split(/__(.+)/)[1] }
-                else { everyChild[i].dataset.id = idx + '__' + childdataid; }
-            };
-        };
-    });
-};
+// function updateindex() {
+//     $('#sortable [id$="block_field"]').each(function () {
+//         var idx = $('[id$="block_field"]').index(this) + 1;
+//         $(this).attr("id", idx + '__block_field');
+//         var everyChild = this.getElementsByTagName("*");
+//         for (var i = 0; i < everyChild.length; i++) {
+//             var childid = everyChild[i].id;
+//             var childname = everyChild[i].name;
+//             var childhref = everyChild[i].href;
+//             var childdataid = everyChild[i].dataset.id;
+//             if (childid != undefined && !childid.includes('_panel') && !childid.includes('ham')) {
+//                 if (!isNaN(+childid.charAt(0))) { everyChild[i].id = idx + '__' + childid.split(/__(.+)/)[1] }
+//                 else { everyChild[i].id = idx + '__' + childid; }
+//             };
+//             if (childname != undefined && !'map_filter') {
+//                 if (!isNaN(+childname.charAt(0))) { everyChild[i].name = idx + '__' + childname.split(/__(.+)/)[1] }
+//                 else { everyChild[i].name = idx + '__' + childname; }
+//             };
+//             if (childdataid != undefined) {
+//                 if (!isNaN(+childdataid.charAt(0))) { everyChild[i].dataset.id = idx + '__' + childdataid.split(/__(.+)/)[1] }
+//                 else { everyChild[i].dataset.id = idx + '__' + childdataid; }
+//             };
+//         };
+//     });
+// };
 
 // move blocks up/down when clicking on arrow and delete with trash
 // down function
-$("#sortable").on('click', "a[id$='down']", function (e) {
-    e.preventDefault();
-    var numrow = parseInt(this.id.split('__')[0], 10),
-        nr = 1,
-        current = $("#" + numrow + "__block_field"),
-        next = current.next();
-
-    if (next.length) {// if there's row after one that was clicked
-        current.insertAfter(next);
-    }
-    updateindex();
-
-    // up function
-}).on('click', "a[id$='up']", function (e) {
-    e.preventDefault();
-
-    var numrow = parseInt(this.id.split('__')[0], 10),
-        nr = 1,
-        current = $("#" + numrow + "__block_field"),
-        prev = current.prev();
-
-    if (prev.length) {
-        current.insertBefore(prev);
-    }
-    updateindex();
-
-    // delete function
-}).on('click', "a[id$='trash']", function (e) {
-    e.preventDefault();
-    $(this).parent().remove();
-    updateindex();
-});
+// $("#sortable").on('click', "a[id$='down']", function (e) {
+//     e.preventDefault();
+//     var numrow = parseInt(this.id.split('__')[0], 10),
+//         nr = 1,
+//         current = $("#" + numrow + "__block_field"),
+//         next = current.next();
+//
+//     if (next.length) {// if there's row after one that was clicked
+//         current.insertAfter(next);
+//     }
+//     updateindex();
+//
+//     // up function
+// }).on('click', "a[id$='up']", function (e) {
+//     e.preventDefault();
+//
+//     var numrow = parseInt(this.id.split('__')[0], 10),
+//         nr = 1,
+//         current = $("#" + numrow + "__block_field"),
+//         prev = current.prev();
+//
+//     if (prev.length) {
+//         current.insertBefore(prev);
+//     }
+//     updateindex();
+//
+//     // delete function
+// }).on('click', "a[id$='trash']", function (e) {
+//     e.preventDefault();
+//     $(this).parent().remove();
+//     updateindex();
+// });
 
 // remove add map after click or if any map is already available
 //$("a[name='map']").on('click', function () { $(this).detach(); });
@@ -125,320 +125,320 @@ $("#sortable").on('click', "a[id$='down']", function (e) {
 
 // add box
 var counter = 0;
-function add_field(name, bind_query_id = "") {
-    updateindex();
-    var contents = "";
-
-    var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text' value=''>\
-    <div class='editor' id='" + (counter + 1) + "__editor'></div>"
-
-    var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
-    var help = 'True';
-    var chart_field = "<div class='chart-container'>\
-			<canvas id='" + (counter + 1) + "__chartid'></canvas>\
-			</div>\
-			<div class='form-group' id='" + (counter + 1) + "__form_group'>\
-				<label for='exampleFormControlSelect2'>Chart Type</label>\
-				<select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'>\
-					<option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
-					<option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
-					<option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
-					<option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
-				</select>\
-                <a href='#' class='form-text' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
-				<label for='largeInput'>SPARQL query</label><br/>\
-				<textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
-				<input style='display: block;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
-				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a>\
-				<div class='form-group row' id='" + (counter + 1) + "__axes_label' style='display: flex;'><div class='col-6'>\
-                <label>x label</label>\
-                <input name='" + (counter + 1) + "__chart_label_x' type='text' id='" + (counter + 1) + "__chart_label_x' placeholder='The label for the x axis'></div>\
-                <div class='col-6'>\
-                <label>y label</label>\
-                <input name='" + (counter + 1) + "__chart_label_y' type='text' id='" + (counter + 1) + "__chart_label_y' placeholder='The label for the y axis'>\
-                </div> </div>\
-                <label for='largeInput'>Chart Title</label><br/>\
-				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
-				<br/><label>Operations</label><br/>\
-				<input type='checkbox' id='count' name='" + (counter + 1) + "action1' value='count'>\
-				<label for='count'>Count</label><br/>\
-				<input type='checkbox' id='sort' name='" + (counter + 1) + "action2' value='sort'>\
-				<label for='count'>Sort</label><br/>\
-				</div>";
-
-    var simple_table_field = "<table class='col-12' id='" + (counter + 1) + "__table'></table>\
-            <div class='form-group'>\
-                <label for='" + (counter + 1) + "__table_title'>Table title</label>\
-                <input name='" + (counter + 1) + "__table_title' type='text' id='" + (counter + 1) + "__table_title' placeholder='The title of your table' required></div>\
-            <div class='form-group'>\
-                <label for='" + (counter + 1) + "__table_query'>SPARQL query</label>\
-                <textarea spellcheck='false' oninput='auto_grow(this)' name='" + (counter + 1) + "__table_query' type='text' id='" + (counter + 1) + "__table_query' placeholder='The query for your table results' required></textarea>\
-            </div></div>";
-
-    var text_search_field = "\
-		<input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
-		<textarea class='addplaceholder_textsearch' \
-			oninput='auto_grow(this)' \
-			name='" + (counter + 1) + "__textsearch_query' \
-			type='text' \
-			id='" + (counter + 1) + "__textsearch_query' \
-			rows='6' required></textarea>\
-		<div class='table-container textsearch_result'>\
-			<div class='previewtextsearch col-4' style='background-image: linear-gradient(-45deg, "+ datastory_data.color_code[0] + ", " + datastory_data.color_code[1] + ";'>\
-				<input class='textsearch_userinput modifydatastory' id='" + (counter + 1).toString() + "__textsearch_userinput' type='text' name='" + (counter + 1).toString() + "__textsearch_userinput' value=''>\
-				<a id='" + (counter + 1).toString() + "__textsearch_button' class='textsearch_button' onclick='perform_textsearch(\"" + (counter + 1).toString() + "__textsearch_userinput\")' name='" + (counter + 1).toString() + "__textsearch'>Search</a>\
-			</div>\
-			<table class='col-12' id='" + (counter + 1).toString() + "__textsearchid'>\
-				<!-- TODO add rows-->\
-			</table>\
-		</div>\
-		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
-		<p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>\
-		<a class='btn btn-primary btn-border' \
-				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-				name='tablevalueaction'>Add\
-				action to results</a>";
-
-    var tablevalueaction_field = "\
-		<input class='tablevalueaction_title' \
-			id='" + (counter + 1).toString() + "__tablevalueaction_title' \
-			type='text' \
-			name='" + (counter + 1).toString() + "__tablevalueaction_title' \
-			placeholder='A title, e.g. Show similar tunes'>\
-		<input class='tablevalueaction_column' \
-			id='" + (counter + 1).toString() + "__tablevalueaction_column' \
-			type='text' \
-			name='" + (counter + 1).toString() + "__tablevalueaction_column' \
-			placeholder='The name of the column'>\
-		<input class='tablevalueaction_table' \
-			id='" + (counter + 1).toString() + "__tablevalueaction_table' \
-			type='hidden' \
-			name='" + (counter + 1).toString() + "__tablevalueaction_table' \
-			value='"+ bind_query_id + "'>\
-		<textarea class='addplaceholder_tablevalueaction'  \
-			oninput='auto_grow(this)' \
-			name='" + (counter + 1) + "__tablevalueaction_query' \
-			type='text' \
-			id='" + (counter + 1) + "__tablevalueaction_query' \
-			rows='6' required></textarea>\
-		<p><em>Type your query and perform a new search above to see the result</em></p>\
-		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
-		<p>Row values can be subject of new queries and return tables or charts. \
-		For each action a button will appear in the table. You can also combine value results of this action with value results of a prior action or search.</p>\
-		<a class='btn btn-primary btn-border' \
-				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-				name='tablevalueaction'>Add\
-				action to results</a>\
-		<a class='btn btn-primary btn-border' \
-				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-				name='tablecomboaction'>\
-				Combine value results</a>";
-
-    var tablecomboaction_field = "\
-		<input class='tablevalueaction_title' \
-				id='" + (counter + 1).toString() + "__tablevalueaction_title' type='text' \
-				name='" + (counter + 1).toString() + "__tablevalueaction_title' \
-				placeholder='A title, e.g. Show tunes in common'>\
-		<input class='tablevalueaction_table' \
-			id='" + (counter + 1).toString() + "__tablevalueaction_table' \
-			type='hidden' \
-			name='" + (counter + 1).toString() + "__tablevalueaction_table' \
-			value='"+ bind_query_id + "'>\
-		<input class='tablevalueaction_column' \
-				id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' \
-				name='" + (counter + 1).toString() + "__tablevalueaction_column' \
-				placeholder='The name of the column to combine'>\
-		<input class='tablevalueaction_column' \
-				id='" + (counter + 1).toString() + "__tablevalueaction_table_2' type='text' \
-				name='" + (counter + 1).toString() + "__tablevalueaction_table_2' \
-				placeholder='The name of other table to combine'>\
-		<input class='tablevalueaction_column' \
-				id='" + (counter + 1).toString() + "__tablevalueaction_column_2' type='text' \
-				name='" + (counter + 1).toString() + "__tablevalueaction_column_2' \
-				placeholder='The name of the column to combine'>\
-		<textarea class='addplaceholder_tablecomboaction' \
-				oninput='auto_grow(this)' \
-				name='" + (counter + 1) + "__tablecomboaction_query' type='text' \
-				id='" + (counter + 1) + "__tablecomboaction_query' \
-				rows='6' required></textarea>\
-		<p><em>Type your query and perform a new search above to see the result</em></p>\
-		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle'\
-				class='text-white'>Do you want to add an action to your results?</h4>\
-		<p>Row values can be subject of new queries and return tables or charts. \
-		For each action a button will appear in the table. You can also combine results of this \
-		action with results of a prior action or search.</p>\
-		<a class='btn btn-primary btn-border' \
-				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-				name='tablevalueaction'>Add\
-				action to results</a>\
-		<a class='btn btn-primary btn-border' \
-				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
-				name='tablecomboaction'>\
-				Combine results</a>";
-
-    var map_field = "<input class='map_title' id='" + (counter + 1) + "__map_title' type='text'\
-				name='"+ (counter + 1) + "__map_title'\
-				placeholder='The title of the map'>\
-			<!-- data points -->\
-			<textarea class='addplaceholder_points' oninput='auto_grow(this)'\
-					name='"+ (counter + 1) + "__map_points_query' type='text'\
-					id='"+ (counter + 1) + "__map_points_query' rows='10'\
-					required></textarea>\
-			<a onclick='rerunQuery(\""+ (counter + 1).toString() + "\",this)' \
-					data-id='"+ (counter + 1).toString() + "__rerun_query' \
-					data-run='true' href='#'>Rerun the query</a>\
-			<!-- map preview -->\
-			<div class='map_preview_container' id='"+ (counter + 1).toString() + "__map_preview_container'>\
-			</div>\
-			<script>var map = initMap("+ (counter + 1).toString() + ");</script>\
-			<h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>\
-			<p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
-			<a class='btn btn-primary btn-border' \
-					onclick='add_field(name,\"" + (counter + 1).toString() + "__map_points_query\")' \
-					name='map_filter'>Add filter</a>";
-
-    var map_filter = "<input class='map_filter_title' \
-				id='"+ (counter + 1) + "__map_filter_title' type='text'\
-				name='"+ (counter + 1) + "__map_filter_title'\
-				placeholder='The title of the filter'>\
-		<input class='map_filter_bind_query' \
-					id='" + (counter + 1).toString() + "__map_filter_bind_query' \
-					type='hidden' \
-					name='" + (counter + 1).toString() + "__map_filter_bind_query' \
-					value='"+ bind_query_id + "'>\
-		<textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'\
-				name='"+ (counter + 1) + "__map_filter_query' type='text'\
-				data-bind-query='"+ bind_query_id + "'\
-				id='"+ (counter + 1) + "__map_filter_query' rows='6'\
-				required></textarea>\
-				<p>Rerun the query to add the filter to the map</p>";
-
-    var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
-		<a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
-		<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
-    var no_up_down = '<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
-
-
-    if (name == 'textbox') {
-        var open_addons = "<div id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + text_field + close_addons;
-    } else if (name == 'countbox') {
-        var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + count_field + close_addons;
-    } else if (name == 'chart_box') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + chart_field + close_addons;
-    } else if (name == 'table_box') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add table</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + simple_table_field + close_addons;
-    } else if (name == 'textsearch') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + text_search_field + close_addons;
-    } else if (name.includes('tablevalueaction')) {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Add action</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + no_up_down + tablevalueaction_field + close_addons;
-    } else if (name.includes('tablecomboaction')) {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
-    } else if (name == 'map') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + no_up_down + map_field + close_addons;
-    } else if (name == 'map_filter') {
-        var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
-        var close_addons = "</div>";
-        contents += open_addons + up_down + map_filter + close_addons;
-    }
-
-    if (name.includes('query-btn')) {
-        addQueryField(name, (counter + 1));
-    } else {
-        $("#sortable").append(contents);
-    }
-
-    colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
-
-
-    // add multiline placeholder
-    var placeholder_t = "Type an example text search query using the placeholder <<searchterm>>,\n\
-		prefix bds: <http://www.bigdata.com/rdf/search#>\n\
-		SELECT DISTINCT ?s ?o \n\
-		WHERE { ?o bds:search '<<searchterm>>' . ?s rdfs:label ?o . } LIMIT 10 \nWe will replace the placeholder with the user input";
-    $(".addplaceholder_textsearch").attr("placeholder", placeholder_t);
-
-    var placeholder_action = "Type a query based on the entity selected in the table. \n\
-		Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
-		SELECT DISTINCT ?o ?oLabel \n\
-		WHERE { <<item>> ?p ?o . ?o rdfs:label ?oLabel .} \n\
-		LIMIT 10";
-    $(".addplaceholder_tablevalueaction").attr("placeholder", placeholder_action);
-
-    var placeholder_combo = "Type a query based on the entities of the two tables. \n\
-		Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
-		SELECT DISTINCT ?o ?oLabel \n\
-		WHERE { <<item>> ?p ?o . <<other>> ?p ?o .} \n\
-		LIMIT 10";
-    $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
-
-    var placeholder_map = "Type a query that returns at least the mandatory variables: \
-		latitude (?lat), longitude (?long) and a URI identifying points (?point). \n\
-		PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
-		PREFIX fabio: <http://purl.org/spar/fabio/>\n\
-		PREFIX frbr: <http://purl.org/vocab/frbr/core#>\n\
-		PREFIX owl: <http://www.w3.org/2002/07/owl#>\n\
-		PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n\
-		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
-		PREFIX psv: <http://www.wikidata.org/prop/statement/value/>\n\
-		PREFIX wikibase: <http://wikiba.se/ontology#>\n\
-		PREFIX p: <http://www.wikidata.org/prop/>\n\
-		PREFIX ps: <http://www.wikidata.org/prop/statement/>\n\
-		\n\
-		SELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\n\
-		 ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\n\
-				fabio:hasManifestation ?manif .\n\
-		 ?manif frbr:exemplar ?point .\n\
-			?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\n\
-		 ?keeper crm:P74_has_current_or_former_residence ?location .\n\
-		 OPTIONAL {?keeper rdfs:label ?keeperLabel}\n\
-		 ?location owl:sameAs ?wdlocation .\n\
-		 \n\
-		 FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
-		 FILTER(LANG(?keeperLabel) = '' || LANGMATCHES(LANG(?keeperLabel), 'en'))\n\
-		 FILTER(contains (str(?wdlocation), 'wikidata') )\n\
-		 \n\
-			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\n\
-			 ?wdlocation p:P625 ?coords_stmt .\n\
-			 ?coords_stmt ps:P625 ?coords;\n\
-										psv:P625 [\n\
-											wikibase:geoLatitude ?lat;\n\
-											wikibase:geoLongitude ?long ] .\n\
-		 }\n\
-		} LIMIT 10";
-    $(".addplaceholder_points").attr("placeholder", placeholder_map);
-
-    var placeholder_mapfilter = "Type a query where the variable \
-		?point appears as subject/object of a pattern. Return ?point and two variables called\
-		?filter and ?filterLabel. If the filter is a literal value, return only ?point and ?filter. \n\
-		PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
-		SELECT DISTINCT ?point ?filter ?filterLabel\n\
-		WHERE {\n\
-		?point crm:P50_has_current_keeper ?filter .\n\
-		?filter refs:label ?filterLabel .\n\
-		FILTER(LANG(?filterLabel) = '' || LANGMATCHES(LANG(?filterLabel), 'en'))\n\
-		}";
-    $(".addplaceholder_mapfilter").attr("placeholder", placeholder_mapfilter);
-
-    counter = $('#sortable [id$="block_field"]').length;
-    updateindex();
-    createTextEditor();
-}
+// function add_field(name, bind_query_id = "") {
+//     updateindex();
+//     var contents = "";
+//
+//     var text_field = "<input name='" + (counter + 1) + "__text' type='hidden' id='" + (counter + 1) + "__text' value=''>\
+//     <div class='editor' id='" + (counter + 1) + "__editor'></div>"
+//
+//     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
+//     var help = 'True';
+//     var chart_field = "<div class='chart-container'>\
+// 			<canvas id='" + (counter + 1) + "__chartid'></canvas>\
+// 			</div>\
+// 			<div class='form-group' id='" + (counter + 1) + "__form_group'>\
+// 				<label for='exampleFormControlSelect2'>Chart Type</label>\
+// 				<select name='" + (counter + 1) + "__chart_type' class='form-control' id='" + (counter + 1) + "__chart_type'>\
+// 					<option name='" + (counter + 1) + "__linechart' id='" + (counter + 1) + "__linechart'>linechart</option>\
+// 					<option name='" + (counter + 1) + "__barchart' id='" + (counter + 1) + "__barchart'>barchart</option>\
+// 					<option name='" + (counter + 1) + "__doughnutchart' id='" + (counter + 1) + "__doughnutchart'>doughnutchart</option>\
+// 					<option name='" + (counter + 1) + "__scatterplot' id='" + (counter + 1) + "__scatterplot'>scatterplot</option>\
+// 				</select>\
+//                 <a href='#' class='form-text' role='button' data-toggle='modal' data-target='#chartsModalLong'>Discover more about query and charts.</a><br/>\
+// 				<label for='largeInput'>SPARQL query</label><br/>\
+// 				<textarea oninput='auto_grow(this)' name='" + (counter + 1) + "__chart_query' type='text' id='" + (counter + 1) + "__chart_query' placeholder='Type your query' rows='3' required></textarea><br/>\
+// 				<input style='display: block;' class='form-control' type='text' name='" + (counter + 1) + "__chart_series' id='" + (counter + 1) + "__chart_series' placeholder='The label for the data series'><br/>\
+// 				<a id='query-btn' style='display: none;' class='btn btn-primary btn-border' extra='True' onclick='add_field(name)' name='query-btn'>Add another query</a>\
+// 				<div class='form-group row' id='" + (counter + 1) + "__axes_label' style='display: flex;'><div class='col-6'>\
+//                 <label>x label</label>\
+//                 <input name='" + (counter + 1) + "__chart_label_x' type='text' id='" + (counter + 1) + "__chart_label_x' placeholder='The label for the x axis'></div>\
+//                 <div class='col-6'>\
+//                 <label>y label</label>\
+//                 <input name='" + (counter + 1) + "__chart_label_y' type='text' id='" + (counter + 1) + "__chart_label_y' placeholder='The label for the y axis'>\
+//                 </div> </div>\
+//                 <label for='largeInput'>Chart Title</label><br/>\
+// 				<input name='" + (counter + 1) + "__chart_title' type='text' class='form-control' id='" + (counter + 1) + "__chart_title' placeholder='Title' required><br/>\
+// 				<br/><label>Operations</label><br/>\
+// 				<input type='checkbox' id='count' name='" + (counter + 1) + "action1' value='count'>\
+// 				<label for='count'>Count</label><br/>\
+// 				<input type='checkbox' id='sort' name='" + (counter + 1) + "action2' value='sort'>\
+// 				<label for='count'>Sort</label><br/>\
+// 				</div>";
+//
+//     var simple_table_field = "<table class='col-12' id='" + (counter + 1) + "__table'></table>\
+//             <div class='form-group'>\
+//                 <label for='" + (counter + 1) + "__table_title'>Table title</label>\
+//                 <input name='" + (counter + 1) + "__table_title' type='text' id='" + (counter + 1) + "__table_title' placeholder='The title of your table' required></div>\
+//             <div class='form-group'>\
+//                 <label for='" + (counter + 1) + "__table_query'>SPARQL query</label>\
+//                 <textarea spellcheck='false' oninput='auto_grow(this)' name='" + (counter + 1) + "__table_query' type='text' id='" + (counter + 1) + "__table_query' placeholder='The query for your table results' required></textarea>\
+//             </div></div>";
+//
+//     var text_search_field = "\
+// 		<input class='textsearch_title' id='" + (counter + 1).toString() + "__textsearch_title' type='text' name='" + (counter + 1).toString() + "__textsearch_title' placeholder='A title, e.g. Search tunes'>\
+// 		<textarea class='addplaceholder_textsearch' \
+// 			oninput='auto_grow(this)' \
+// 			name='" + (counter + 1) + "__textsearch_query' \
+// 			type='text' \
+// 			id='" + (counter + 1) + "__textsearch_query' \
+// 			rows='6' required></textarea>\
+// 		<div class='table-container textsearch_result'>\
+// 			<div class='previewtextsearch col-4' style='background-image: linear-gradient(-45deg, "+ datastory_data.color_code[0] + ", " + datastory_data.color_code[1] + ";'>\
+// 				<input class='textsearch_userinput modifydatastory' id='" + (counter + 1).toString() + "__textsearch_userinput' type='text' name='" + (counter + 1).toString() + "__textsearch_userinput' value=''>\
+// 				<a id='" + (counter + 1).toString() + "__textsearch_button' class='textsearch_button' onclick='perform_textsearch(\"" + (counter + 1).toString() + "__textsearch_userinput\")' name='" + (counter + 1).toString() + "__textsearch'>Search</a>\
+// 			</div>\
+// 			<table class='col-12' id='" + (counter + 1).toString() + "__textsearchid'>\
+// 				<!-- TODO add rows-->\
+// 			</table>\
+// 		</div>\
+// 		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
+// 		<p>Row values can be subject of new queries and return tables or charts. For each action a button will appear in the table.</p>\
+// 		<a class='btn btn-primary btn-border' \
+// 				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+// 				name='tablevalueaction'>Add\
+// 				action to results</a>";
+//
+//     var tablevalueaction_field = "\
+// 		<input class='tablevalueaction_title' \
+// 			id='" + (counter + 1).toString() + "__tablevalueaction_title' \
+// 			type='text' \
+// 			name='" + (counter + 1).toString() + "__tablevalueaction_title' \
+// 			placeholder='A title, e.g. Show similar tunes'>\
+// 		<input class='tablevalueaction_column' \
+// 			id='" + (counter + 1).toString() + "__tablevalueaction_column' \
+// 			type='text' \
+// 			name='" + (counter + 1).toString() + "__tablevalueaction_column' \
+// 			placeholder='The name of the column'>\
+// 		<input class='tablevalueaction_table' \
+// 			id='" + (counter + 1).toString() + "__tablevalueaction_table' \
+// 			type='hidden' \
+// 			name='" + (counter + 1).toString() + "__tablevalueaction_table' \
+// 			value='"+ bind_query_id + "'>\
+// 		<textarea class='addplaceholder_tablevalueaction'  \
+// 			oninput='auto_grow(this)' \
+// 			name='" + (counter + 1) + "__tablevalueaction_query' \
+// 			type='text' \
+// 			id='" + (counter + 1) + "__tablevalueaction_query' \
+// 			rows='6' required></textarea>\
+// 		<p><em>Type your query and perform a new search above to see the result</em></p>\
+// 		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle' class='text-white'>Do you want to add an action to your results?</h4>\
+// 		<p>Row values can be subject of new queries and return tables or charts. \
+// 		For each action a button will appear in the table. You can also combine value results of this action with value results of a prior action or search.</p>\
+// 		<a class='btn btn-primary btn-border' \
+// 				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+// 				name='tablevalueaction'>Add\
+// 				action to results</a>\
+// 		<a class='btn btn-primary btn-border' \
+// 				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+// 				name='tablecomboaction'>\
+// 				Combine value results</a>";
+//
+//     var tablecomboaction_field = "\
+// 		<input class='tablevalueaction_title' \
+// 				id='" + (counter + 1).toString() + "__tablevalueaction_title' type='text' \
+// 				name='" + (counter + 1).toString() + "__tablevalueaction_title' \
+// 				placeholder='A title, e.g. Show tunes in common'>\
+// 		<input class='tablevalueaction_table' \
+// 			id='" + (counter + 1).toString() + "__tablevalueaction_table' \
+// 			type='hidden' \
+// 			name='" + (counter + 1).toString() + "__tablevalueaction_table' \
+// 			value='"+ bind_query_id + "'>\
+// 		<input class='tablevalueaction_column' \
+// 				id='" + (counter + 1).toString() + "__tablevalueaction_column' type='text' \
+// 				name='" + (counter + 1).toString() + "__tablevalueaction_column' \
+// 				placeholder='The name of the column to combine'>\
+// 		<input class='tablevalueaction_column' \
+// 				id='" + (counter + 1).toString() + "__tablevalueaction_table_2' type='text' \
+// 				name='" + (counter + 1).toString() + "__tablevalueaction_table_2' \
+// 				placeholder='The name of other table to combine'>\
+// 		<input class='tablevalueaction_column' \
+// 				id='" + (counter + 1).toString() + "__tablevalueaction_column_2' type='text' \
+// 				name='" + (counter + 1).toString() + "__tablevalueaction_column_2' \
+// 				placeholder='The name of the column to combine'>\
+// 		<textarea class='addplaceholder_tablecomboaction' \
+// 				oninput='auto_grow(this)' \
+// 				name='" + (counter + 1) + "__tablecomboaction_query' type='text' \
+// 				id='" + (counter + 1) + "__tablecomboaction_query' \
+// 				rows='6' required></textarea>\
+// 		<p><em>Type your query and perform a new search above to see the result</em></p>\
+// 		<h4 id='" + (counter + 1).toString() + "__addtablevalueactiontitle'\
+// 				class='text-white'>Do you want to add an action to your results?</h4>\
+// 		<p>Row values can be subject of new queries and return tables or charts. \
+// 		For each action a button will appear in the table. You can also combine results of this \
+// 		action with results of a prior action or search.</p>\
+// 		<a class='btn btn-primary btn-border' \
+// 				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+// 				name='tablevalueaction'>Add\
+// 				action to results</a>\
+// 		<a class='btn btn-primary btn-border' \
+// 				onclick='add_field(name,\"" + (counter + 1).toString() + "__textsearch_query\")' \
+// 				name='tablecomboaction'>\
+// 				Combine results</a>";
+//
+//     var map_field = "<input class='map_title' id='" + (counter + 1) + "__map_title' type='text'\
+// 				name='"+ (counter + 1) + "__map_title'\
+// 				placeholder='The title of the map'>\
+// 			<!-- data points -->\
+// 			<textarea class='addplaceholder_points' oninput='auto_grow(this)'\
+// 					name='"+ (counter + 1) + "__map_points_query' type='text'\
+// 					id='"+ (counter + 1) + "__map_points_query' rows='10'\
+// 					required></textarea>\
+// 			<a onclick='rerunQuery(\""+ (counter + 1).toString() + "\",this)' \
+// 					data-id='"+ (counter + 1).toString() + "__rerun_query' \
+// 					data-run='true' href='#'>Rerun the query</a>\
+// 			<!-- map preview -->\
+// 			<div class='map_preview_container' id='"+ (counter + 1).toString() + "__map_preview_container'>\
+// 			</div>\
+// 			<script>var map = initMap("+ (counter + 1).toString() + ");</script>\
+// 			<h4 id='" + (counter + 1).toString() + "__addmapfilter' class='text-white'>Do you want to add a filter to the map?</h4>\
+// 			<p>Filters appear on the left side of the map and allow you to filter out points on the map based on a SPARQL query.</p>\
+// 			<a class='btn btn-primary btn-border' \
+// 					onclick='add_field(name,\"" + (counter + 1).toString() + "__map_points_query\")' \
+// 					name='map_filter'>Add filter</a>";
+//
+//     var map_filter = "<input class='map_filter_title' \
+// 				id='"+ (counter + 1) + "__map_filter_title' type='text'\
+// 				name='"+ (counter + 1) + "__map_filter_title'\
+// 				placeholder='The title of the filter'>\
+// 		<input class='map_filter_bind_query' \
+// 					id='" + (counter + 1).toString() + "__map_filter_bind_query' \
+// 					type='hidden' \
+// 					name='" + (counter + 1).toString() + "__map_filter_bind_query' \
+// 					value='"+ bind_query_id + "'>\
+// 		<textarea class='addplaceholder_mapfilter' oninput='auto_grow(this)'\
+// 				name='"+ (counter + 1) + "__map_filter_query' type='text'\
+// 				data-bind-query='"+ bind_query_id + "'\
+// 				id='"+ (counter + 1) + "__map_filter_query' rows='6'\
+// 				required></textarea>\
+// 				<p>Rerun the query to add the filter to the map</p>";
+//
+//     var up_down = '<a href="#" class="up" id="' + (counter + 1) + '__up" name="' + (counter + 1) + '__up"><i class="fas fa-arrow-up" id="' + (counter + 1) + '__arrow-up"></i></a> \
+// 		<a href="#" class="down" id="' + (counter + 1) + '__down" name="' + (counter + 1) + '__down"><i class="fas fa-arrow-down" id="' + (counter + 1) + '__arrow-down"></i></a> \
+// 		<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
+//     var no_up_down = '<a href="#" class="trash" id="' + (counter + 1) + '__trash" name="' + (counter + 1) + '__trash"><i class="far fa-trash-alt" id="' + (counter + 1) + '__bin"></i></a><br/>';
+//
+//
+//     if (name == 'textbox') {
+//         var open_addons = "<div id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + up_down + text_field + close_addons;
+//     } else if (name == 'countbox') {
+//         var open_addons = "<div class='col' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add counter</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + up_down + count_field + close_addons;
+//     } else if (name == 'chart_box') {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add chart</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + up_down + chart_field + close_addons;
+//     } else if (name == 'table_box') {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add table</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + up_down + simple_table_field + close_addons;
+//     } else if (name == 'textsearch') {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add text search</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + up_down + text_search_field + close_addons;
+//     } else if (name.includes('tablevalueaction')) {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Add action</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + no_up_down + tablevalueaction_field + close_addons;
+//     } else if (name.includes('tablecomboaction')) {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'>  <h4 class='block_title'>Combine results</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + no_up_down + tablecomboaction_field + close_addons;
+//     } else if (name == 'map') {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + no_up_down + map_field + close_addons;
+//     } else if (name == 'map_filter') {
+//         var open_addons = "<div class='col-12' id='" + (counter + 1) + "__block_field'> <h4 class='block_title'>Add map filter</h4>";
+//         var close_addons = "</div>";
+//         contents += open_addons + up_down + map_filter + close_addons;
+//     }
+//
+//     if (name.includes('query-btn')) {
+//         addQueryField(name, (counter + 1));
+//     } else {
+//         $("#sortable").append(contents);
+//     }
+//
+//     colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
+//
+//
+//     // add multiline placeholder
+//     var placeholder_t = "Type an example text search query using the placeholder <<searchterm>>,\n\
+// 		prefix bds: <http://www.bigdata.com/rdf/search#>\n\
+// 		SELECT DISTINCT ?s ?o \n\
+// 		WHERE { ?o bds:search '<<searchterm>>' . ?s rdfs:label ?o . } LIMIT 10 \nWe will replace the placeholder with the user input";
+//     $(".addplaceholder_textsearch").attr("placeholder", placeholder_t);
+//
+//     var placeholder_action = "Type a query based on the entity selected in the table. \n\
+// 		Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
+// 		SELECT DISTINCT ?o ?oLabel \n\
+// 		WHERE { <<item>> ?p ?o . ?o rdfs:label ?oLabel .} \n\
+// 		LIMIT 10";
+//     $(".addplaceholder_tablevalueaction").attr("placeholder", placeholder_action);
+//
+//     var placeholder_combo = "Type a query based on the entities of the two tables. \n\
+// 		Use the placeholder <<{column name}>> (change {column name} with the name of the column),\n\
+// 		SELECT DISTINCT ?o ?oLabel \n\
+// 		WHERE { <<item>> ?p ?o . <<other>> ?p ?o .} \n\
+// 		LIMIT 10";
+//     $(".addplaceholder_tablecomboaction").attr("placeholder", placeholder_combo);
+//
+//     var placeholder_map = "Type a query that returns at least the mandatory variables: \
+// 		latitude (?lat), longitude (?long) and a URI identifying points (?point). \n\
+// 		PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+// 		PREFIX fabio: <http://purl.org/spar/fabio/>\n\
+// 		PREFIX frbr: <http://purl.org/vocab/frbr/core#>\n\
+// 		PREFIX owl: <http://www.w3.org/2002/07/owl#>\n\
+// 		PREFIX wdt: <http://www.wikidata.org/prop/direct/>\n\
+// 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+// 		PREFIX psv: <http://www.wikidata.org/prop/statement/value/>\n\
+// 		PREFIX wikibase: <http://wikiba.se/ontology#>\n\
+// 		PREFIX p: <http://www.wikidata.org/prop/>\n\
+// 		PREFIX ps: <http://www.wikidata.org/prop/statement/>\n\
+// 		\n\
+// 		SELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\n\
+// 		 ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\n\
+// 				fabio:hasManifestation ?manif .\n\
+// 		 ?manif frbr:exemplar ?point .\n\
+// 			?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\n\
+// 		 ?keeper crm:P74_has_current_or_former_residence ?location .\n\
+// 		 OPTIONAL {?keeper rdfs:label ?keeperLabel}\n\
+// 		 ?location owl:sameAs ?wdlocation .\n\
+// 		 \n\
+// 		 FILTER(LANG(?artwork) = '' || LANGMATCHES(LANG(?artwork), 'en'))\n\
+// 		 FILTER(LANG(?keeperLabel) = '' || LANGMATCHES(LANG(?keeperLabel), 'en'))\n\
+// 		 FILTER(contains (str(?wdlocation), 'wikidata') )\n\
+// 		 \n\
+// 			SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\n\
+// 			 ?wdlocation p:P625 ?coords_stmt .\n\
+// 			 ?coords_stmt ps:P625 ?coords;\n\
+// 										psv:P625 [\n\
+// 											wikibase:geoLatitude ?lat;\n\
+// 											wikibase:geoLongitude ?long ] .\n\
+// 		 }\n\
+// 		} LIMIT 10";
+//     $(".addplaceholder_points").attr("placeholder", placeholder_map);
+//
+//     var placeholder_mapfilter = "Type a query where the variable \
+// 		?point appears as subject/object of a pattern. Return ?point and two variables called\
+// 		?filter and ?filterLabel. If the filter is a literal value, return only ?point and ?filter. \n\
+// 		PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+// 		SELECT DISTINCT ?point ?filter ?filterLabel\n\
+// 		WHERE {\n\
+// 		?point crm:P50_has_current_keeper ?filter .\n\
+// 		?filter refs:label ?filterLabel .\n\
+// 		FILTER(LANG(?filterLabel) = '' || LANGMATCHES(LANG(?filterLabel), 'en'))\n\
+// 		}";
+//     $(".addplaceholder_mapfilter").attr("placeholder", placeholder_mapfilter);
+//
+//     counter = $('#sortable [id$="block_field"]').length;
+//     updateindex();
+//     createTextEditor();
+// }
 
 // add new query field
 const addQueryField = (name, idx) => {
@@ -475,7 +475,7 @@ $(function () {
         });
         console.log(fields);
         colorSwitch(color_2, color_1);
-        createTextEditor();
+        //createTextEditor();
 
         $('#sortable [id$="block_field"]').each(function (idx) {
             var text_content = '';
