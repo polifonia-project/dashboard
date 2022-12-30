@@ -4,7 +4,7 @@
 		<div class="sidebar-content">
 			<ul class="nav nav-primary">
 				{% if general_data %}
-				{% for clean_section, section_title in general_data.sections.items() %}
+				{% for clean_section, section_title in general_data.sections.items()|sort %}
 				<li class="nav-item submenu">
 					<a data-toggle="collapse" href="#submenu{{loop.index}}" aria-expanded="true">
 						<p>{{section_title}}</p>

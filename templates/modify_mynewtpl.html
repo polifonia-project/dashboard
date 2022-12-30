@@ -16,7 +16,7 @@
 {% block content %}
 <div class="content row modifystory">
   {% include 'modify_secondarymenu.html' %}
-  <form action="" method="post" class="card col-md-9 col-sm-12"">
+  <form id="modifystory_form" action="" method="post" class="card col-md-9 col-sm-12"">
     {% include 'modify_story_heading.html' %}
     <!-- interactive elements -->
     <div class="page-inner mt--5">
@@ -26,6 +26,7 @@
             {% include 'modify_description.html' %}
             <div class="card-body nopaddingleft" id="sortable">
                 <span id='loader' class='lds-dual-ring hidden overlay'></span>
+                <script src="/melody/static/js/react/Count.js" type="text/babel"></script>
                 <script src="/melody/static/js/react/Table.js" type="text/babel"></script>
                 <script src="/melody/static/js/react/Chart.js" type="text/babel"></script>
                 <script src="/melody/static/js/react/Textbox.js" type="text/babel"></script>

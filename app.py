@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, url_for, redirect, session , json
 import requests
 from flask_session import Session
 import github_sync
@@ -157,8 +157,9 @@ def modify_datastory(section_name, datastory_name):
                             new_datastory_name = data_methods.manage_datastory_data(
                                 session['user_type'], general_data, config_file, section_name, datastory_name)
                             return redirect(url_for('datastory',
-                                section_name=section_name,
-                                datastory_name=new_datastory_name))
+                                    section_name=section_name,
+                                    datastory_name=new_datastory_name))
+
                         except Exception as e:
                             return str(e),'Something went wrong'
 
@@ -172,6 +173,35 @@ def modify_datastory(section_name, datastory_name):
                 'static/temp/config_' + section_name + '.json', retrieved_config)
             continue
         break
+
+
+@app.route(PREFIX+"modify_bkg/<string:section_name>/<string:datastory_name>", methods=['POST'])
+def modify_bkg_datastory(section_name, datastory_name):
+    while True:
+        try:
+            general_data = data_methods.read_json('config.json')
+            datastory_data = data_methods.get_config(session,section_name,datastory_name)
+            if session.get('name') is not None and "name" in session:
+                if request.method == 'POST':
+                    try:
+                        config_file = 'config.json' if session['user_type'] == 'polifonia' \
+                            else 'static/temp/config_'+section_name+'.json'
+                        new_datastory_name = data_methods.manage_datastory_data(
+                            session['user_type'], general_data, config_file, section_name, datastory_name)
+                        datastory_data = data_methods.get_config(session,section_name,datastory_name)
+                        return datastory_data
+                    except Exception as e:
+                        print(str(e)+'Something went wrong!')
+                        return datastory_data
+        except Exception as e:
+            retrieved_config = github_sync.get_raw_json(
+                branch='main', absolute_file_path='config_' + section_name + '.json')
+            if retrieved_config:
+                data_methods.update_json(
+                    'static/temp/config_' + section_name + '.json', retrieved_config)
+            continue
+        break
+
 
 
 @app.route(PREFIX+"<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])

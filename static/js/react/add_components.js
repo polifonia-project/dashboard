@@ -1,15 +1,14 @@
 
 const e = React.createElement;
 
-
-
-
-
-
 const components = [
   {
     name:"text",
     action: Textbox
+  },
+  {
+    name:"count",
+    action: Count
   },
   {
     name:"chart",
@@ -53,7 +52,7 @@ const ButtonGroup = ({ componentList , componentBoxes , buttons ,
         <>{componentBoxes}</>
         <section className="addfieldssection col-md-12 col-lg-12 col-sm-12">
         {buttons.map((buttonLabel, i) => (
-          <a onClick={() => addComponent(buttonLabel.name)}
+          <a onClick={() => addComponent(buttonLabel.name,i)}
               className="btn btn-primary btn-border"
               key={i} name={buttonLabel.name}>
             Add {buttonLabel.name}
@@ -69,12 +68,23 @@ const ButtonGroup = ({ componentList , componentBoxes , buttons ,
 
 };
 
+function update_datastory(form) {
+  const formData = new FormData(form);
+  var url = window.location.toString()
+  url = url.replace(/modify\//, 'modify_bkg\/');
+  fetch(url, { method: 'POST', body: formData})
+    .then(response => response.text())
+    .then((data) => { datastory_data = JSON.parse(data); });
+  return datastory_data;
+}
+
 function AddComponent() {
+
+  const form = document.getElementById('modifystory_form');
 
   // retrieve existing components
   const stateComponents = [];
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
-    console.log("datastory_data.dynamic_elements",datastory_data.dynamic_elements);
     datastory_data.dynamic_elements.forEach(element => {
       const component_type = element.type ;
       let comp = components.find(o => o.name === component_type);
@@ -82,17 +92,25 @@ function AddComponent() {
     })
   }
 
+  // save data on keyup
+  if (window.location.href.indexOf("/modify/") > -1) {
+    React.useEffect(() => {
+      form.addEventListener('mouseout', function(event) {
+        datastory_data = update_datastory(form) ;
+      });
+    });
+  }
+
   const [componentList, setComponent] = React.useState(stateComponents);
   const componentBoxes = []
 
-
   // add a new component
-  const addComponent = (buttonLabel) => {
+  const addComponent = (buttonLabel,i) => {
       let comp = components.find(o => o.name === buttonLabel).action;
       setComponent(prevComponents => [
         ...prevComponents, {name:buttonLabel,action:comp}
       ])
-      // TODO:ADD TO datastory_data.dynamic_elements
+
   }
 
   // remove a component
@@ -100,9 +118,11 @@ function AddComponent() {
       let newcomponentList = [...componentList];
       newcomponentList.splice(i, 1);
       setComponent(newcomponentList)
+      datastory_data = update_datastory(form)
       if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
         datastory_data.dynamic_elements.splice(i, 1);
         datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
+        datastory_data = update_datastory(form)
       }
   }
 
@@ -113,10 +133,13 @@ function AddComponent() {
     let new_i = (i === 0) ? 0: i-1; // cut the element at index 'i'
     newcomponentList.splice(new_i, 0, cutOut); // insert it at index 'new_i'
     setComponent(newcomponentList)
-    if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+    datastory_data = update_datastory(form)
+    console.log("UP: NOW IS",datastory_data);
+    if (datastory_data.dynamic_elements.length) {
       let cutOut = datastory_data.dynamic_elements.splice(i, 1) [0];
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
       datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
+      datastory_data = update_datastory(form)
     }
   }
 
@@ -127,10 +150,13 @@ function AddComponent() {
     let new_i = i+1; // cut the element at index 'from'
     newcomponentList.splice(new_i, 0, cutOut); // insert it at index 'to'
     setComponent(newcomponentList)
-    if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+    datastory_data = update_datastory(form)
+    console.log("DOWN: NOW IS",datastory_data);
+    if (datastory_data.dynamic_elements.length) {
       let cutOut = datastory_data.dynamic_elements.splice(i, 1) [0];
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
       datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
+      datastory_data = update_datastory(form)
     }
   }
 
@@ -150,6 +176,8 @@ function AddComponent() {
 
   console.log("componentList",componentList);
   console.log("componentBoxes",componentBoxes);
+
+
 
   return (
     <>

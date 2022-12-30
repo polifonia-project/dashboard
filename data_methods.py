@@ -287,7 +287,6 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 
 	except Exception as e:
 		print(e)
-	print("\n\n",datastory_data)
 	return datastory_title_clean
 
 

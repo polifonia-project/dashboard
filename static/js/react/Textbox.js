@@ -3,7 +3,7 @@ const Textbox = ({unique_key, index ,
                   removeComponent , componentList, setComponent ,
                   sortComponentUp , sortComponentDown }) => {
 
-  // WYSIWYG: render empty editor
+  // WYSIWYG: render editor
   React.useEffect(() => {
 
     const toolbarOptions = () => {
@@ -51,7 +51,7 @@ const Textbox = ({unique_key, index ,
     createTextEditor();
   });
 
-  // WYSIWYG: show component content
+  // WYSIWYG: get content if any
   let content = "";
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
     datastory_data.dynamic_elements.forEach(element => {
@@ -77,7 +77,7 @@ const Textbox = ({unique_key, index ,
             removeComponent={removeComponent}
             key={unique_key} />
 
-            <input name={index+'__text'} type='hidden' id={index+'__text'} value=''/>
+            <input name={index+'__text'} type='hidden' id={index+'__text'} defaultValue=''/>
             <div className='editor' id={index+'__editor'} dangerouslySetInnerHTML={createMarkup()}></div>
         </div>
       );
