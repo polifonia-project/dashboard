@@ -12,7 +12,7 @@ const components = [
   },
   {
     name:"chart",
-    action: Chart
+    action: ChartViz
   },
   {
     name:"table",
@@ -54,6 +54,7 @@ const ButtonGroup = ({ componentList , componentBoxes , buttons ,
         {buttons.map((buttonLabel, i) => (
           <a onClick={() => addComponent(buttonLabel.name,i)}
               className="btn btn-primary btn-border"
+              style={{marginRight: '10px'}}
               key={i} name={buttonLabel.name}>
             Add {buttonLabel.name}
           </a>

@@ -9,7 +9,7 @@ addEventListener("DOMContentLoaded", function () {
 
 window.onload = function () {
     //if (Object.getOwnPropertyNames(datastory_data).length > 0) { queryCounter(); }
-    chartViz();
+    //chartViz();
     disableKeypress();
     saveHTML(datastory_data.name);
     var map_ready;
@@ -134,6 +134,7 @@ var counter = 0;
 //
 //     var count_field = "<br><div class='card-body justify-content-center option-2b count_result  col-md-4'><p class='counter_num' id='" + (counter + 1) + "__num'></p><p class='counter_label' id='" + (counter + 1) + "__lab'></p></div><textarea name='" + (counter + 1) + "__count_query' type='text' id='" + (counter + 1) + "__count_query' rows='3' placeholder='Write the SPARQL query for the count.' required></textarea><input name='" + (counter + 1) + "__count_label' type='text' id='" + (counter + 1) + "__count_label' placeholder='The label you want to show.' required>";
 //     var help = 'True';
+//
 //     var chart_field = "<div class='chart-container'>\
 // 			<canvas id='" + (counter + 1) + "__chartid'></canvas>\
 // 			</div>\
@@ -2079,39 +2080,39 @@ function colorSwitch(color_1, color_2) {
 //     }
 // }
 
-function chartViz() {
-    if (datastory_data.dynamic_elements) {
-        datastory_data.dynamic_elements.forEach(element => {
-            if (element.type === 'chart') {
-                var chart = element.chart_type;
-                if (chart === "barchart") {
-                    barchart(element);
-                } else if (chart === "linechart") {
-                    linechart(element);
-                } else if (chart === "doughnutchart") {
-                    doughnutchart(element);
-                } else if (chart === 'scatterplot') {
-                    scatterplot(element);
-                }
-            } else if (element.type === 'table') {
-                simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position, element.type);
-            }
-        }
-        )
-    }
-}
+// function chartViz() {
+//     if (datastory_data.dynamic_elements) {
+//         datastory_data.dynamic_elements.forEach(element => {
+//             if (element.type === 'chart') {
+//                 var chart = element.chart_type;
+//                 if (chart === "barchart") {
+//                     barchart(element);
+//                 } else if (chart === "linechart") {
+//                     linechart(element);
+//                 } else if (chart === "doughnutchart") {
+//                     doughnutchart(element);
+//                 } else if (chart === 'scatterplot') {
+//                     scatterplot(element);
+//                 }
+//             } else if (element.type === 'table') {
+//                 simpleTableViz(datastory_data.sparql_endpoint, element.table_query, element.table_title, element.position, element.type);
+//             }
+//         }
+//         )
+//     }
+// }
 
 // function that applies the operation 'count'
-function count(arr) {
-    let elCount = {};
-    for (const item of arr) {
-        if (elCount[item]) {
-            elCount[item] += 1;
-        } else {
-            elCount[item] = 1;
-        }
-    } return elCount;
-}
+// function count(arr) {
+//     let elCount = {};
+//     for (const item of arr) {
+//         if (elCount[item]) {
+//             elCount[item] += 1;
+//         } else {
+//             elCount[item] = 1;
+//         }
+//     } return elCount;
+// }
 
 // function that applies the operation 'order_by'
 // function order_by(numArray) {
@@ -2121,37 +2122,37 @@ function count(arr) {
 //     return numArray;
 // }
 
-function chartHTMLElements(element) {
-    // create canva for bar chart
-    var chartCanva = document.createElement("canvas");
-    var chartId = "chart_" + element.position;
-    chartCanva.setAttribute("id", chartId);
-
-    // create div that contains canva
-    var chartArea = document.createElement("div");
-    chartArea.className = "chart-container";
-    chartArea.appendChild(chartCanva);
-
-    // create card body div
-    var cardBody = document.createElement("div");
-    cardBody.className = "card-body";
-    cardBody.appendChild(chartArea);
-
-    // create chart title h3 and add element.chart_title as text
-    var chartTitle = document.createElement("h3");
-    chartTitle.className = "card-title";
-    chartTitle.appendChild(document.createTextNode(element.chart_title));
-
-    // create card header
-    var cardHeader = document.createElement("div");
-    // cardHeader.className = "card-header";
-    cardHeader.appendChild(chartTitle);
-
-    // get general container and append elements
-    var container = document.getElementById(element.position);
-    container.appendChild(cardHeader);
-    container.appendChild(cardBody);
-}
+// function chartHTMLElements(element) {
+//     // create canva for bar chart
+//     var chartCanva = document.createElement("canvas");
+//     var chartId = "chart_" + element.position;
+//     chartCanva.setAttribute("id", chartId);
+//
+//     // create div that contains canva
+//     var chartArea = document.createElement("div");
+//     chartArea.className = "chart-container";
+//     chartArea.appendChild(chartCanva);
+//
+//     // create card body div
+//     var cardBody = document.createElement("div");
+//     cardBody.className = "card-body";
+//     cardBody.appendChild(chartArea);
+//
+//     // create chart title h3 and add element.chart_title as text
+//     var chartTitle = document.createElement("h3");
+//     chartTitle.className = "card-title";
+//     chartTitle.appendChild(document.createTextNode(element.chart_title));
+//
+//     // create card header
+//     var cardHeader = document.createElement("div");
+//     // cardHeader.className = "card-header";
+//     cardHeader.appendChild(chartTitle);
+//
+//     // get general container and append elements
+//     var container = document.getElementById(element.position);
+//     container.appendChild(cardHeader);
+//     container.appendChild(cardBody);
+// }
 
 // colors for charts
 function chartColor(colorStart, colorEnd, dataLength) {
@@ -2186,295 +2187,295 @@ function exportChart(position, type, labels, data, label) {
     }
 }
 
-function barchart(element) {
-
-
-    // get the data that I need
-    // now starts a piece of code that is exactly the same from function counter
-    // ********
-
-    // where I'll store the data necessary fo the bar chart
-    var chartData = [];
-    var chartLabels = [];
-
-    var query = element.chart_query;
-    // check if the query is an API request
-    if (query.startsWith('http')) {
-        alert('There is an API request.');
-        // $.ajax({
-        //     type: 'GET',
-        //     url: query,
-        //     headers: {Accept: 'application/json'},
-        //     success: function (returnedJson) {
-        //         do things
-        //     }
-        // }
-    } else {
-        // if it is a sparql query
-        var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = datastory_data.sparql_endpoint;
-        $.ajax({
-            type: 'GET',
-            url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json' },
-            beforeSend: function () { $('#loader').removeClass('hidden') },
-            success: function (returnedJson) {
-
-                // check if query requires operations
-                var op = element.operations;
-                if (op.length > 0) {
-                    var label = [];
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        if (returnedJson.results.bindings[i].label.value == '') {
-                            label[i] = 'Unknown'
-                        } else {
-                            label[i] = returnedJson.results.bindings[i].label.value;
-                        }
-
-                    }
-
-                    op.forEach(o => {
-                        var action = o.action;
-                        var param = o.param;
-                        // activate the operations on the data
-                        if (action.includes('count')) {
-                            var elCount = eval(action + '(' + param + ')');
-                            // where I'll store the data necessary for the chart
-                            chartData = Object.values(elCount);
-                            chartLabels = Object.keys(elCount);
-                        }
-                    })
-                } else if (op.length == 0) {
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
-                        chartData[i] = returnedJson.results.bindings[i].count.value;
-                    }
-                }
-
-                //  create the HTML structure that'll receive the data
-                chartHTMLElements(element);
-                //  retrieve the chart id
-                var chartId = "chart_" + element.position;
-                // set colors
-                var chartColor = datastory_data.color_code[0];
-                // create image string
-                var image = '';
-                var myBarChart = new Chart(chartId, {
-                    type: 'bar',
-                    data: {
-                        labels: chartLabels,
-                        datasets: [{
-                            label: element.chart_series,
-                            backgroundColor: chartColor,
-                            borderColor: chartColor,
-                            data: chartData,
-                        }],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        scaleShowValues: true,
-                        scales: {
-                            yAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: element.chart_legend.y
-                                },
-                                beginAtZero: true
-                            }],
-                            xAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: element.chart_legend.x
-                                },
-                                ticks: {
-                                    autoSkip: false
-                                }
-                            }]
-                        },
-                        legend: {
-                            labels: {
-                                boxWidth: 20,
-                                padding: 10,
-                            }
-                        },
-                        animation: {
-                            onComplete: function () {
-                                image = myBarChart.toBase64Image();
-                                printChart(image, element.position);
-                                labels = arrayToString(chartLabels);
-                                exportChart(element.position, 'bar', labels, chartData, 'Quantity');
-                            }
-                        }
-                    }
-                });
-
-            },
-            complete: function () {
-                $('#loader').addClass('hidden');
-                return true;
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                queryError(xhr, ajaxOptions, thrownError);
-            }
-        })
-
-    }
-
-}
-
-function linechart(element) {
-    // get the data that I need
-    // now starts a piece of code that is exactly the same from function counter
-    // ********
-
-    // where I'll store the data necessary fo the bar chart
-    var chartData = [];
-    var chartLabels = [];
-
-    var query = element.chart_query;
-    // check if the query is an API request
-    if (query.startsWith('http')) {
-        alert('There is an API request.');
-        // $.ajax({
-        //     type: 'GET',
-        //     url: query,
-        //     headers: {Accept: 'application/json'},
-        //     success: function (returnedJson) {
-        //         do things
-        //     }
-        // }
-    } else {
-        // if it is a sparql query
-        var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = datastory_data.sparql_endpoint;
-        // var label = element.label;
-        $.ajax({
-            type: 'GET',
-            url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json' },
-            beforeSend: function () { $('#loader').removeClass('hidden') },
-            success: function (returnedJson) {
-
-                // check if query requires operations
-                var op = element.operations;
-                if (op.length > 0) {
-                    var label = [];
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        if (returnedJson.results.bindings[i].label.value == '') {
-                            label[i] = 'Unknown'
-                        } else {
-                            label[i] = returnedJson.results.bindings[i].label.value;
-                        }
-
-                    }
-
-                    op.forEach(o => {
-                        var action = o.action;
-                        var param = o.param;
-                        // activate the operations on the data
-                        if (action.includes('count')) {
-                            var elCount = eval(action + '(' + param + ')');
-                            // where I'll store the data necessary for the chart
-                            chartData = Object.values(elCount);
-                            chartLabels = Object.keys(elCount);
-                        }
-                    })
-                } else if (op.length == 0) {
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartLabels[i] = returnedJson.results.bindings[i].label.value;
-                        chartData[i] = returnedJson.results.bindings[i].count.value;
-                    }
-                }
-
-                //  create the HTML structure that'll receive the data
-                chartHTMLElements(element);
-                //  retrieve the chart id
-                var chartId = "chart_" + element.position;
-                var chartColor = datastory_data.color_code[0];
-                // graph plotting
-                var myLineChart = new Chart(chartId, {
-                    type: 'line',
-                    data: {
-                        labels: chartLabels,
-                        datasets: [{
-                            label: element.chart_series,
-                            borderColor: chartColor,
-                            pointBorderColor: "#FFF",
-                            pointBackgroundColor: chartColor,
-                            pointBorderWidth: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 1,
-                            pointRadius: 4,
-                            backgroundColor: 'transparent',
-                            fill: true,
-                            borderWidth: 2,
-                            data: chartData
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        spanGaps: true,
-                        legend: {
-                            labels: {
-                                boxWidth: 20,
-                                padding: 10,
-                            }
-                        },
-                        scaleShowValues: true,
-                        scales: {
-                            yAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: element.chart_legend.y
-                                },
-                                beginAtZero: true
-                            }],
-                            xAxes: [{
-                                scaleLabel: {
-                                    display: true,
-                                    labelString: element.chart_legend.x
-                                },
-                                ticks: {
-                                    autoSkip: false
-                                }
-                            }]
-                        },
-                        tooltips: {
-                            bodySpacing: 4,
-                            mode: "nearest",
-                            intersect: 0,
-                            position: "nearest",
-                            xPadding: 10,
-                            yPadding: 10,
-                            caretPadding: 10
-                        },
-                        layout: {
-                            padding: { left: 15, right: 15, top: 15, bottom: 15 }
-                        },
-                        animation: {
-                            onComplete: function () {
-                                image = myLineChart.toBase64Image();
-                                printChart(image, element.position);
-                                labels = arrayToString(chartLabels);
-                                exportChart(element.position, 'line', labels, chartData, 'New Entries');
-                            }
-                        }
-                    }
-                });
-            },
-            complete: function () {
-                $('#loader').addClass('hidden');
-                return true;
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                queryError(xhr, ajaxOptions, thrownError);
-            }
-        })
-    }
-
-}
+// function barchart(element) {
+//
+//
+//     // get the data that I need
+//     // now starts a piece of code that is exactly the same from function counter
+//     // ********
+//
+//     // where I'll store the data necessary fo the bar chart
+//     var chartData = [];
+//     var chartLabels = [];
+//
+//     var query = element.chart_query;
+//     // check if the query is an API request
+//     if (query.startsWith('http')) {
+//         alert('There is an API request.');
+//         // $.ajax({
+//         //     type: 'GET',
+//         //     url: query,
+//         //     headers: {Accept: 'application/json'},
+//         //     success: function (returnedJson) {
+//         //         do things
+//         //     }
+//         // }
+//     } else {
+//         // if it is a sparql query
+//         var encoded = encodeURIComponent(query);
+//         var sparqlEndpoint = datastory_data.sparql_endpoint;
+//         $.ajax({
+//             type: 'GET',
+//             url: sparqlEndpoint + '?query=' + encoded,
+//             headers: { Accept: 'application/sparql-results+json' },
+//             beforeSend: function () { $('#loader').removeClass('hidden') },
+//             success: function (returnedJson) {
+//
+//                 // check if query requires operations
+//                 var op = element.operations;
+//                 if (op.length > 0) {
+//                     var label = [];
+//                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                         if (returnedJson.results.bindings[i].label.value == '') {
+//                             label[i] = 'Unknown'
+//                         } else {
+//                             label[i] = returnedJson.results.bindings[i].label.value;
+//                         }
+//
+//                     }
+//
+//                     op.forEach(o => {
+//                         var action = o.action;
+//                         var param = o.param;
+//                         // activate the operations on the data
+//                         if (action.includes('count')) {
+//                             var elCount = eval(action + '(' + param + ')');
+//                             // where I'll store the data necessary for the chart
+//                             chartData = Object.values(elCount);
+//                             chartLabels = Object.keys(elCount);
+//                         }
+//                     })
+//                 } else if (op.length == 0) {
+//                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                         chartLabels[i] = returnedJson.results.bindings[i].label.value;
+//                         chartData[i] = returnedJson.results.bindings[i].count.value;
+//                     }
+//                 }
+//
+//                 //  create the HTML structure that'll receive the data
+//                 chartHTMLElements(element);
+//                 //  retrieve the chart id
+//                 var chartId = "chart_" + element.position;
+//                 // set colors
+//                 var chartColor = datastory_data.color_code[0];
+//                 // create image string
+//                 var image = '';
+//                 var myBarChart = new Chart(chartId, {
+//                     type: 'bar',
+//                     data: {
+//                         labels: chartLabels,
+//                         datasets: [{
+//                             label: element.chart_series,
+//                             backgroundColor: chartColor,
+//                             borderColor: chartColor,
+//                             data: chartData,
+//                         }],
+//                     },
+//                     options: {
+//                         responsive: true,
+//                         maintainAspectRatio: true,
+//                         scaleShowValues: true,
+//                         scales: {
+//                             yAxes: [{
+//                                 scaleLabel: {
+//                                     display: true,
+//                                     labelString: element.chart_legend.y
+//                                 },
+//                                 beginAtZero: true
+//                             }],
+//                             xAxes: [{
+//                                 scaleLabel: {
+//                                     display: true,
+//                                     labelString: element.chart_legend.x
+//                                 },
+//                                 ticks: {
+//                                     autoSkip: false
+//                                 }
+//                             }]
+//                         },
+//                         legend: {
+//                             labels: {
+//                                 boxWidth: 20,
+//                                 padding: 10,
+//                             }
+//                         },
+//                         animation: {
+//                             onComplete: function () {
+//                                 image = myBarChart.toBase64Image();
+//                                 printChart(image, element.position);
+//                                 labels = arrayToString(chartLabels);
+//                                 exportChart(element.position, 'bar', labels, chartData, 'Quantity');
+//                             }
+//                         }
+//                     }
+//                 });
+//
+//             },
+//             complete: function () {
+//                 $('#loader').addClass('hidden');
+//                 return true;
+//             },
+//             error: function (xhr, ajaxOptions, thrownError) {
+//                 queryError(xhr, ajaxOptions, thrownError);
+//             }
+//         })
+//
+//     }
+//
+// }
+//
+// function linechart(element) {
+//     // get the data that I need
+//     // now starts a piece of code that is exactly the same from function counter
+//     // ********
+//
+//     // where I'll store the data necessary fo the bar chart
+//     var chartData = [];
+//     var chartLabels = [];
+//
+//     var query = element.chart_query;
+//     // check if the query is an API request
+//     if (query.startsWith('http')) {
+//         alert('There is an API request.');
+//         // $.ajax({
+//         //     type: 'GET',
+//         //     url: query,
+//         //     headers: {Accept: 'application/json'},
+//         //     success: function (returnedJson) {
+//         //         do things
+//         //     }
+//         // }
+//     } else {
+//         // if it is a sparql query
+//         var encoded = encodeURIComponent(query);
+//         var sparqlEndpoint = datastory_data.sparql_endpoint;
+//         // var label = element.label;
+//         $.ajax({
+//             type: 'GET',
+//             url: sparqlEndpoint + '?query=' + encoded,
+//             headers: { Accept: 'application/sparql-results+json' },
+//             beforeSend: function () { $('#loader').removeClass('hidden') },
+//             success: function (returnedJson) {
+//
+//                 // check if query requires operations
+//                 var op = element.operations;
+//                 if (op.length > 0) {
+//                     var label = [];
+//                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                         if (returnedJson.results.bindings[i].label.value == '') {
+//                             label[i] = 'Unknown'
+//                         } else {
+//                             label[i] = returnedJson.results.bindings[i].label.value;
+//                         }
+//
+//                     }
+//
+//                     op.forEach(o => {
+//                         var action = o.action;
+//                         var param = o.param;
+//                         // activate the operations on the data
+//                         if (action.includes('count')) {
+//                             var elCount = eval(action + '(' + param + ')');
+//                             // where I'll store the data necessary for the chart
+//                             chartData = Object.values(elCount);
+//                             chartLabels = Object.keys(elCount);
+//                         }
+//                     })
+//                 } else if (op.length == 0) {
+//                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                         chartLabels[i] = returnedJson.results.bindings[i].label.value;
+//                         chartData[i] = returnedJson.results.bindings[i].count.value;
+//                     }
+//                 }
+//
+//                 //  create the HTML structure that'll receive the data
+//                 chartHTMLElements(element);
+//                 //  retrieve the chart id
+//                 var chartId = "chart_" + element.position;
+//                 var chartColor = datastory_data.color_code[0];
+//                 // graph plotting
+//                 var myLineChart = new Chart(chartId, {
+//                     type: 'line',
+//                     data: {
+//                         labels: chartLabels,
+//                         datasets: [{
+//                             label: element.chart_series,
+//                             borderColor: chartColor,
+//                             pointBorderColor: "#FFF",
+//                             pointBackgroundColor: chartColor,
+//                             pointBorderWidth: 2,
+//                             pointHoverRadius: 4,
+//                             pointHoverBorderWidth: 1,
+//                             pointRadius: 4,
+//                             backgroundColor: 'transparent',
+//                             fill: true,
+//                             borderWidth: 2,
+//                             data: chartData
+//                         }]
+//                     },
+//                     options: {
+//                         responsive: true,
+//                         maintainAspectRatio: true,
+//                         spanGaps: true,
+//                         legend: {
+//                             labels: {
+//                                 boxWidth: 20,
+//                                 padding: 10,
+//                             }
+//                         },
+//                         scaleShowValues: true,
+//                         scales: {
+//                             yAxes: [{
+//                                 scaleLabel: {
+//                                     display: true,
+//                                     labelString: element.chart_legend.y
+//                                 },
+//                                 beginAtZero: true
+//                             }],
+//                             xAxes: [{
+//                                 scaleLabel: {
+//                                     display: true,
+//                                     labelString: element.chart_legend.x
+//                                 },
+//                                 ticks: {
+//                                     autoSkip: false
+//                                 }
+//                             }]
+//                         },
+//                         tooltips: {
+//                             bodySpacing: 4,
+//                             mode: "nearest",
+//                             intersect: 0,
+//                             position: "nearest",
+//                             xPadding: 10,
+//                             yPadding: 10,
+//                             caretPadding: 10
+//                         },
+//                         layout: {
+//                             padding: { left: 15, right: 15, top: 15, bottom: 15 }
+//                         },
+//                         animation: {
+//                             onComplete: function () {
+//                                 image = myLineChart.toBase64Image();
+//                                 printChart(image, element.position);
+//                                 labels = arrayToString(chartLabels);
+//                                 exportChart(element.position, 'line', labels, chartData, 'New Entries');
+//                             }
+//                         }
+//                     }
+//                 });
+//             },
+//             complete: function () {
+//                 $('#loader').addClass('hidden');
+//                 return true;
+//             },
+//             error: function (xhr, ajaxOptions, thrownError) {
+//                 queryError(xhr, ajaxOptions, thrownError);
+//             }
+//         })
+//     }
+//
+// }
 
 function doughnutchart(element) {
 

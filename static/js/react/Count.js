@@ -44,7 +44,7 @@ const Count = ({ unique_key, index ,
   // preview counter
   React.useEffect(() => {
      fetchQuery();
-     
+
      let color_1 = datastory_data.color_code[0], color_2 = datastory_data.color_code[1]
      var counters = document.querySelectorAll(".count_result");
      function borders(el) {
