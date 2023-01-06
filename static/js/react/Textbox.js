@@ -66,7 +66,7 @@ const Textbox = ({unique_key, index ,
   if (window.location.href.indexOf("/modify/") > -1) {
     return (
         <div id={index+"__block_field"} className="block_field">
-          <h4 className="block_title">{index}. Add textbox</h4>
+          <h4 className="block_title">Add a textbox</h4>
           <SortComponent
             index={index}
             sortComponentUp={sortComponentUp}

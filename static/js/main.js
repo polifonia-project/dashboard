@@ -2477,348 +2477,348 @@ function exportChart(position, type, labels, data, label) {
 //
 // }
 
-function doughnutchart(element) {
+// function doughnutchart(element) {
+//
+//     // get the data that I need
+//     // now starts a piece of code that is exactly the same from function counter
+//     // ********
+//
+//
+//     var query = element.chart_query;
+//     // check if the query is an API request
+//     if (query.startsWith('http')) {
+//         alert('There is an API request.');
+//         // $.ajax({
+//         //     type: 'GET',
+//         //     url: query,
+//         //     headers: {Accept: 'application/json'},
+//         //     success: function (returnedJson) {
+//         //         do things
+//         //     }
+//         // }
+//     } else {
+//         // if it is a sparql query
+//         var encoded = encodeURIComponent(query);
+//         var sparqlEndpoint = datastory_data.sparql_endpoint;
+//
+//         $.ajax({
+//             type: 'GET',
+//             url: sparqlEndpoint + '?query=' + encoded,
+//             headers: { Accept: 'application/sparql-results+json' },
+//             beforeSend: function () { $('#loader').removeClass('hidden') },
+//             success: function (returnedJson) {
+//
+//                 var chartData = [];
+//                 var chartLabels = [];
+//
+//                 // check if query requires operations
+//                 var op = element.operations;
+//                 if (op.length > 0) {
+//                     var label = [];
+//                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                         if (returnedJson.results.bindings[i].label.value == '') {
+//                             label[i] = 'Unknown'
+//                         } else {
+//                             label[i] = returnedJson.results.bindings[i].label.value;
+//                         }
+//
+//                     }
+//
+//                     op.forEach(o => {
+//                         var action = o.action;
+//                         var param = o.param;
+//                         // activate the operations on the data
+//                         if (action.includes('count')) {
+//                             var elCount = eval(action + '(' + param + ')');
+//                             // where I'll store the data necessary for the chart
+//                             chartData = Object.values(elCount);
+//                             chartLabels = Object.keys(elCount);
+//                         }
+//                     })
+//                 } else if (op.length == 0) {
+//                     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                         chartData[i] = returnedJson.results.bindings[i].count.value;
+//                         if (returnedJson.results.bindings[i].label.value == '') {
+//                             chartLabels[i] = 'Unknown'
+//                         } else {
+//                             chartLabels[i] = returnedJson.results.bindings[i].label.value;
+//                         }
+//                     }
+//                 }
+//
+//                 // create the HTML structure that'll receive the data
+//                 chartHTMLElements(element);
+//                 // retrieve the chart id
+//                 var chartId = "chart_" + element.position;
+//
+//                 // chart colors
+//                 if (chartLabels.length === 1) {
+//                     var colors = datastory_data.color_code[0];
+//                 } else {
+//                     var colors = chartColor(datastory_data.color_code[0], datastory_data.color_code[1], chartLabels.length);
+//                 }
+//
+//                 // chart plotting
+//                 var myDoughnutChart = new Chart(chartId, {
+//                     type: 'doughnut',
+//                     data: {
+//                         datasets: [{
+//                             data: chartData,
+//                             backgroundColor: colors
+//                         }],
+//
+//                         labels: chartLabels
+//                     },
+//                     options: {
+//                         responsive: true,
+//                         maintainAspectRatio: true,
+//                         legend: {
+//                             position: 'right'
+//                         },
+//                         layout: {
+//                             padding: {
+//                                 left: 20,
+//                                 right: 20,
+//                                 top: 20,
+//                                 bottom: 20
+//                             }
+//                         },
+//                         animation: {
+//                             onComplete: function () {
+//                                 image = myDoughnutChart.toBase64Image();
+//                                 printChart(image, element.position);
+//                                 labels = arrayToString(chartLabels);
+//                                 exportChart(element.position, 'doughnut', labels, chartData);
+//                             }
+//                         }
+//                     }
+//                 });
+//             },
+//             complete: function () {
+//                 $('#loader').addClass('hidden');
+//                 return true;
+//             },
+//             error: function (xhr, ajaxOptions, thrownError) {
+//                 queryError(xhr, ajaxOptions, thrownError);
+//             }
+//         })
+//     }
+//
+// }
 
-    // get the data that I need
-    // now starts a piece of code that is exactly the same from function counter
-    // ********
-
-
-    var query = element.chart_query;
-    // check if the query is an API request
-    if (query.startsWith('http')) {
-        alert('There is an API request.');
-        // $.ajax({
-        //     type: 'GET',
-        //     url: query,
-        //     headers: {Accept: 'application/json'},
-        //     success: function (returnedJson) {
-        //         do things
-        //     }
-        // }
-    } else {
-        // if it is a sparql query
-        var encoded = encodeURIComponent(query);
-        var sparqlEndpoint = datastory_data.sparql_endpoint;
-
-        $.ajax({
-            type: 'GET',
-            url: sparqlEndpoint + '?query=' + encoded,
-            headers: { Accept: 'application/sparql-results+json' },
-            beforeSend: function () { $('#loader').removeClass('hidden') },
-            success: function (returnedJson) {
-
-                var chartData = [];
-                var chartLabels = [];
-
-                // check if query requires operations
-                var op = element.operations;
-                if (op.length > 0) {
-                    var label = [];
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        if (returnedJson.results.bindings[i].label.value == '') {
-                            label[i] = 'Unknown'
-                        } else {
-                            label[i] = returnedJson.results.bindings[i].label.value;
-                        }
-
-                    }
-
-                    op.forEach(o => {
-                        var action = o.action;
-                        var param = o.param;
-                        // activate the operations on the data
-                        if (action.includes('count')) {
-                            var elCount = eval(action + '(' + param + ')');
-                            // where I'll store the data necessary for the chart
-                            chartData = Object.values(elCount);
-                            chartLabels = Object.keys(elCount);
-                        }
-                    })
-                } else if (op.length == 0) {
-                    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                        chartData[i] = returnedJson.results.bindings[i].count.value;
-                        if (returnedJson.results.bindings[i].label.value == '') {
-                            chartLabels[i] = 'Unknown'
-                        } else {
-                            chartLabels[i] = returnedJson.results.bindings[i].label.value;
-                        }
-                    }
-                }
-
-                // create the HTML structure that'll receive the data
-                chartHTMLElements(element);
-                // retrieve the chart id
-                var chartId = "chart_" + element.position;
-
-                // chart colors
-                if (chartLabels.length === 1) {
-                    var colors = datastory_data.color_code[0];
-                } else {
-                    var colors = chartColor(datastory_data.color_code[0], datastory_data.color_code[1], chartLabels.length);
-                }
-
-                // chart plotting
-                var myDoughnutChart = new Chart(chartId, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            data: chartData,
-                            backgroundColor: colors
-                        }],
-
-                        labels: chartLabels
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        legend: {
-                            position: 'right'
-                        },
-                        layout: {
-                            padding: {
-                                left: 20,
-                                right: 20,
-                                top: 20,
-                                bottom: 20
-                            }
-                        },
-                        animation: {
-                            onComplete: function () {
-                                image = myDoughnutChart.toBase64Image();
-                                printChart(image, element.position);
-                                labels = arrayToString(chartLabels);
-                                exportChart(element.position, 'doughnut', labels, chartData);
-                            }
-                        }
-                    }
-                });
-            },
-            complete: function () {
-                $('#loader').addClass('hidden');
-                return true;
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                queryError(xhr, ajaxOptions, thrownError);
-            }
-        })
-    }
-
-}
-
-function scatterplot(element) {
-    let queryArray = [];
-
-    // check if chart requires extra queries
-    var extra = element.extra_queries;
-    if (extra.length == 0) {
-        // where I'll store the data necessary fo the scatter plot
-        let chartData = [];
-        let tempLabels = [];
-
-        let query = element.chart_query;
-        // check if the query is an API request
-        if (query.startsWith('http')) {
-            alert('There is an API request.');
-            // $.ajax({
-            //     type: 'GET',
-            //     url: query,
-            //     headers: {Accept: 'application/json'},
-            //     success: function (returnedJson) {
-            //         do things
-            //     }
-            // }
-        } else {
-            // if it is a sparql query
-            var encoded = encodeURIComponent(query);
-            var sparqlEndpoint = datastory_data.sparql_endpoint;
-            $.ajax({
-                type: 'GET',
-                url: sparqlEndpoint + '?query=' + encoded,
-                headers: { Accept: 'application/sparql-results+json' },
-                beforeSend: function () { $('#loader').removeClass('hidden') },
-                success: function (returnedJson) {
-                    const queryResults = returnedJson.results.bindings;
-                    for (entry in queryResults) {
-                        const xValue = parseInt(queryResults[entry].x.value);
-                        const yValue = parseInt(queryResults[entry].y.value);
-                        const entryObj = { x: xValue, y: yValue }
-                        tempLabels.push(xValue);
-                        chartData.push(entryObj);
-                    }
-
-                    //  create the HTML structure that'll receive the data
-                    chartHTMLElements(element);
-                    //  retrieve the chart id
-                    var chartId = "chart_" + element.position;
-                    var chartColor = datastory_data.color_code[0];
-                    // graph plotting
-                    myScatterChart = new Chart(chartId, {
-                        type: 'scatter',
-                        data: {
-                            datasets: [{
-                                label: element.chart_series,
-                                data: chartData,
-                                backgroundColor: chartColor
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            legend: {
-                                position: 'top',
-                            },
-                            scales: {
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: element.chart_legend.y
-                                    },
-                                    beginAtZero: true
-                                }],
-                                xAxes: [{
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: element.chart_legend.x
-                                    },
-                                    ticks: {
-                                        autoSkip: false
-                                    }
-                                }]
-                            },
-                            animation: {
-                                onComplete: function () {
-                                    image = myScatterChart.toBase64Image();
-                                    printChart(image, element.position);
-                                    exportChart(element.position, 'scatter', chartData);
-                                }
-                            }
-                        }
-                    });
-                },
-                complete: function () {
-                    $('#loader').addClass('hidden');
-                    return true;
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    queryError(xhr, ajaxOptions, thrownError);
-                }
-            })
-        }
-    } else if (extra.length > 0) {
-        let query = element.chart_query;
-        let seriesArray = [];
-        let datasetArray = [];
-        queryArray.push(query);
-        seriesArray.push(element.chart_series);
-
-        for (const e of extra) {
-            queryArray.push(e.extra_query);
-            seriesArray.push(e.extra_series);
-        }
-        // generate colors based on number of queries
-        var colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), queryArray.length);
-
-        for (const [i, q] of queryArray.entries()) {
-            let chart_query = q;
-            let chartData = [];
-            let dataDict = {};
-
-            // check if the query is an API request
-            if (chart_query.startsWith('http')) {
-                alert('There is an API request.');
-                // $.ajax({
-                //     type: 'GET',
-                //     url: query,
-                //     headers: {Accept: 'application/json'},
-                //     success: function (returnedJson) {
-                //         do things
-                //     }
-                // }
-            } else {
-                // if it is a sparql query
-                var encoded = encodeURIComponent(chart_query);
-                var sparqlEndpoint = datastory_data.sparql_endpoint;
-                $.ajax({
-                    type: 'GET',
-                    url: sparqlEndpoint + '?query=' + encoded,
-                    headers: { Accept: 'application/sparql-results+json' },
-                    beforeSend: function () { $('#loader').removeClass('hidden') },
-                    success: function (returnedJson) {
-                        const queryResults = returnedJson.results.bindings;
-                        for (entry in queryResults) {
-                            const xValue = parseInt(queryResults[entry].x.value);
-                            const yValue = parseInt(queryResults[entry].y.value);
-                            const entryObj = { x: xValue, y: yValue }
-                            chartData.push(entryObj);
-                        }
-                        dataDict.data = chartData;
-                        dataDict.label = seriesArray[i];
-                        dataDict.backgroundColor = colors[i];
-                        datasetArray.push(dataDict);
-                        myScatterChart.update();
-                    },
-                    complete: function () {
-                        $('#loader').addClass('hidden');
-                        return true;
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        queryError(xhr, ajaxOptions, thrownError);
-                    }
-                });
-            }
-        }
-
-        //  create the HTML structure that'll receive the data
-        chartHTMLElements(element);
-        //  retrieve the chart id
-        var chartId = "chart_" + element.position;
-
-        // graph plotting
-        myScatterChart = new Chart(chartId, {
-            type: 'scatter',
-            data: data = {
-                datasets: datasetArray
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: element.chart_title
-                    }
-                },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: element.chart_legend.y
-                        },
-                        beginAtZero: true
-                    }],
-                    xAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: element.chart_legend.x
-                        },
-                        ticks: {
-                            autoSkip: false
-                        }
-                    }]
-                },
-                animation: {
-                    onComplete: function () {
-                        image = myScatterChart.toBase64Image();
-                        printChart(image, element.position);
-                        exportChart(element.position, 'scatter', datasetArray);
-                    }
-                }
-            }
-        });
-    }
-}
+// function scatterplot(element) {
+//     let queryArray = [];
+//
+//     // check if chart requires extra queries
+//     var extra = element.extra_queries;
+//     if (extra.length == 0) {
+//         // where I'll store the data necessary fo the scatter plot
+//         let chartData = [];
+//         let tempLabels = [];
+//
+//         let query = element.chart_query;
+//         // check if the query is an API request
+//         if (query.startsWith('http')) {
+//             alert('There is an API request.');
+//             // $.ajax({
+//             //     type: 'GET',
+//             //     url: query,
+//             //     headers: {Accept: 'application/json'},
+//             //     success: function (returnedJson) {
+//             //         do things
+//             //     }
+//             // }
+//         } else {
+//             // if it is a sparql query
+//             var encoded = encodeURIComponent(query);
+//             var sparqlEndpoint = datastory_data.sparql_endpoint;
+//             $.ajax({
+//                 type: 'GET',
+//                 url: sparqlEndpoint + '?query=' + encoded,
+//                 headers: { Accept: 'application/sparql-results+json' },
+//                 beforeSend: function () { $('#loader').removeClass('hidden') },
+//                 success: function (returnedJson) {
+//                     const queryResults = returnedJson.results.bindings;
+//                     for (entry in queryResults) {
+//                         const xValue = parseInt(queryResults[entry].x.value);
+//                         const yValue = parseInt(queryResults[entry].y.value);
+//                         const entryObj = { x: xValue, y: yValue }
+//                         tempLabels.push(xValue);
+//                         chartData.push(entryObj);
+//                     }
+//
+//                     //  create the HTML structure that'll receive the data
+//                     chartHTMLElements(element);
+//                     //  retrieve the chart id
+//                     var chartId = "chart_" + element.position;
+//                     var chartColor = datastory_data.color_code[0];
+//                     // graph plotting
+//                     myScatterChart = new Chart(chartId, {
+//                         type: 'scatter',
+//                         data: {
+//                             datasets: [{
+//                                 label: element.chart_series,
+//                                 data: chartData,
+//                                 backgroundColor: chartColor
+//                             }]
+//                         },
+//                         options: {
+//                             responsive: true,
+//                             legend: {
+//                                 position: 'top',
+//                             },
+//                             scales: {
+//                                 yAxes: [{
+//                                     scaleLabel: {
+//                                         display: true,
+//                                         labelString: element.chart_legend.y
+//                                     },
+//                                     beginAtZero: true
+//                                 }],
+//                                 xAxes: [{
+//                                     scaleLabel: {
+//                                         display: true,
+//                                         labelString: element.chart_legend.x
+//                                     },
+//                                     ticks: {
+//                                         autoSkip: false
+//                                     }
+//                                 }]
+//                             },
+//                             animation: {
+//                                 onComplete: function () {
+//                                     image = myScatterChart.toBase64Image();
+//                                     printChart(image, element.position);
+//                                     exportChart(element.position, 'scatter', chartData);
+//                                 }
+//                             }
+//                         }
+//                     });
+//                 },
+//                 complete: function () {
+//                     $('#loader').addClass('hidden');
+//                     return true;
+//                 },
+//                 error: function (xhr, ajaxOptions, thrownError) {
+//                     queryError(xhr, ajaxOptions, thrownError);
+//                 }
+//             })
+//         }
+//     } else if (extra.length > 0) {
+//         let query = element.chart_query;
+//         let seriesArray = [];
+//         let datasetArray = [];
+//         queryArray.push(query);
+//         seriesArray.push(element.chart_series);
+//
+//         for (const e of extra) {
+//             queryArray.push(e.extra_query);
+//             seriesArray.push(e.extra_series);
+//         }
+//         // generate colors based on number of queries
+//         var colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), queryArray.length);
+//
+//         for (const [i, q] of queryArray.entries()) {
+//             let chart_query = q;
+//             let chartData = [];
+//             let dataDict = {};
+//
+//             // check if the query is an API request
+//             if (chart_query.startsWith('http')) {
+//                 alert('There is an API request.');
+//                 // $.ajax({
+//                 //     type: 'GET',
+//                 //     url: query,
+//                 //     headers: {Accept: 'application/json'},
+//                 //     success: function (returnedJson) {
+//                 //         do things
+//                 //     }
+//                 // }
+//             } else {
+//                 // if it is a sparql query
+//                 var encoded = encodeURIComponent(chart_query);
+//                 var sparqlEndpoint = datastory_data.sparql_endpoint;
+//                 $.ajax({
+//                     type: 'GET',
+//                     url: sparqlEndpoint + '?query=' + encoded,
+//                     headers: { Accept: 'application/sparql-results+json' },
+//                     beforeSend: function () { $('#loader').removeClass('hidden') },
+//                     success: function (returnedJson) {
+//                         const queryResults = returnedJson.results.bindings;
+//                         for (entry in queryResults) {
+//                             const xValue = parseInt(queryResults[entry].x.value);
+//                             const yValue = parseInt(queryResults[entry].y.value);
+//                             const entryObj = { x: xValue, y: yValue }
+//                             chartData.push(entryObj);
+//                         }
+//                         dataDict.data = chartData;
+//                         dataDict.label = seriesArray[i];
+//                         dataDict.backgroundColor = colors[i];
+//                         datasetArray.push(dataDict);
+//                         myScatterChart.update();
+//                     },
+//                     complete: function () {
+//                         $('#loader').addClass('hidden');
+//                         return true;
+//                     },
+//                     error: function (xhr, ajaxOptions, thrownError) {
+//                         queryError(xhr, ajaxOptions, thrownError);
+//                     }
+//                 });
+//             }
+//         }
+//
+//         //  create the HTML structure that'll receive the data
+//         chartHTMLElements(element);
+//         //  retrieve the chart id
+//         var chartId = "chart_" + element.position;
+//
+//         // graph plotting
+//         myScatterChart = new Chart(chartId, {
+//             type: 'scatter',
+//             data: data = {
+//                 datasets: datasetArray
+//             },
+//             options: {
+//                 responsive: true,
+//                 plugins: {
+//                     legend: {
+//                         position: 'top',
+//                     },
+//                     title: {
+//                         display: true,
+//                         text: element.chart_title
+//                     }
+//                 },
+//                 scales: {
+//                     yAxes: [{
+//                         scaleLabel: {
+//                             display: true,
+//                             labelString: element.chart_legend.y
+//                         },
+//                         beginAtZero: true
+//                     }],
+//                     xAxes: [{
+//                         scaleLabel: {
+//                             display: true,
+//                             labelString: element.chart_legend.x
+//                         },
+//                         ticks: {
+//                             autoSkip: false
+//                         }
+//                     }]
+//                 },
+//                 animation: {
+//                     onComplete: function () {
+//                         image = myScatterChart.toBase64Image();
+//                         printChart(image, element.position);
+//                         exportChart(element.position, 'scatter', datasetArray);
+//                     }
+//                 }
+//             }
+//         });
+//     }
+// }
 
 // function stacked_barchart(element) {
 

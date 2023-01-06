@@ -227,8 +227,9 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 	try:
 		datastory_data['color_code'] = color_code_list
 		for k, v in form_data.items():
-			if '__' not in k and '_color' not in k:
-				datastory_data[k] = v # extra form inputs
+			if ('__' not in k and '_color' not in k):
+				if ('action' not in k and v != 'save'):
+					datastory_data[k] = v # extra form inputs
 
 		for position in position_set:
 			elements_dict = {}

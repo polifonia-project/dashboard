@@ -23,6 +23,7 @@ const Count = ({ unique_key, index ,
 
   const fetchQuery = event => {
     if (query.length > 1) {
+      $('#loader').removeClass('hidden');
       fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
         {
         method: 'GET',
@@ -36,6 +37,9 @@ const Count = ({ unique_key, index ,
        .catch((error) => {
           console.error('Error:', error);
           count = "Error!"
+       })
+       .finally( () => {
+         $('#loader').addClass('hidden');
        });
 
     }
@@ -58,7 +62,7 @@ const Count = ({ unique_key, index ,
   if (window.location.href.indexOf("/modify/") > -1) {
     return (
       <div id={index+"__block_field"} className="block_field">
-        <h4 className="block_title">{index}. Add counter</h4>
+        <h4 className="block_title">Add a counter</h4>
         <SortComponent
           index={index}
           sortComponentUp={sortComponentUp}

@@ -3,7 +3,7 @@ const Table = ({unique_key, index ,
                 sortComponentUp , sortComponentDown}) => {
     return (
     <div id={index+"__block_field"} className="block_field">
-      <h4 className="block_title">{index}. This is a table</h4>
+      <h4 className="block_title">Add a table</h4>
       <SortComponent
         index={index}
         sortComponentUp={sortComponentUp}

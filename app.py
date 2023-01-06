@@ -183,16 +183,16 @@ def modify_bkg_datastory(section_name, datastory_name):
             datastory_data = data_methods.get_config(session,section_name,datastory_name)
             if session.get('name') is not None and "name" in session:
                 if request.method == 'POST':
-                    try:
+                    #try:
                         config_file = 'config.json' if session['user_type'] == 'polifonia' \
                             else 'static/temp/config_'+section_name+'.json'
                         new_datastory_name = data_methods.manage_datastory_data(
                             session['user_type'], general_data, config_file, section_name, datastory_name)
                         datastory_data = data_methods.get_config(session,section_name,datastory_name)
                         return datastory_data
-                    except Exception as e:
-                        print(str(e)+'Something went wrong!')
-                        return datastory_data
+                    # except Exception as e:
+                    #     print(str(e)+'Something went wrong!')
+                    #     return datastory_data
         except Exception as e:
             retrieved_config = github_sync.get_raw_json(
                 branch='main', absolute_file_path='config_' + section_name + '.json')
