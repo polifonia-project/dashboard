@@ -11,8 +11,10 @@
     <button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
     <button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
         download="{{datastory_data.title}}.html">HTML</a></button>
-    <button class="exportbutton" type="button"><a href="#" data-toggle="modal" data-target="#queryModal"
-        id="sparqlQuery">QUERIES</a></button>
+    <button class="exportbutton" type="button">
+      <a href="#" data-toggle="modal" data-target="#queryModal"
+        id="sparqlQuery">JSON</a></button>
+
     <!-- publish button -->
     {% if datastory_data.id and session['user_type'] == 'extra' %}
     <hr>
@@ -29,4 +31,27 @@
     </a>
     {% endif %}
   </section>
+
+  <div class="modal fade" id="queryModal" tabindex="-1" role="dialog"
+    aria-labelledby="queryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content card">
+        <div class="modal-header">
+          <h4 class="card-title" id="queryModalLabel">Story components and queries</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <code>{{datastory_data}}</code>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger"
+                data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

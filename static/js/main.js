@@ -17,6 +17,8 @@ window.onload = function () {
 
 // disable selection of templates other than statistics
 $(document).ready(function () {
+
+
     //$("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
     $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded', 'false');
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
@@ -3116,21 +3118,7 @@ function getPDF(elem_id) {
 
 function getHTML(el) {
     var html = document.documentElement.outerHTML;
-    var htmlcopy = html.replaceAll('/static', 'static');
-
-    // remove elements
-    // var div = document.createElement('div');
-    // div.innerHTML = htmlcopy;
-    // var elements = div.getElementsByClassName('sidebar');
-    // while (elements[0])
-    //   elements[0].parentNode.removeChild(elements[0])
-    // var elements2 = div.getElementsByClassName('main-header');
-    // while (elements2[0])
-    //   elements2[0].parentNode.removeChild(elements2[0])
-
-    // reassemble html
-    //var repl = div.innerHTML;
-    // download html and zip file
+    var htmlcopy = html.replaceAll('/melody/static', 'static');
     var thishtml = encodeURIComponent(htmlcopy);
     el.href = 'data:text/html;charset=UTF-8,' + thishtml;
     window.open('../static/static.zip');

@@ -159,7 +159,7 @@ const ChartViz = ({ unique_key, index ,
 
   let basicChart, chart_type = '', chart_query = '', chart_series_1 = '',
       chart_series_1_x = '', chart_series_1_y = '', chart_title = '' ,
-      chart_count = '', extra_queries = [] , image;
+      chart_count = '', extra_queries = [] , image , chartData = [], chartLabels = [], labels , datasets = [], data_scatter ;
 
   // WYSIWYG: get content if any
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
@@ -193,10 +193,23 @@ const ChartViz = ({ unique_key, index ,
     }
   }
 
+  function doughnut_fields(index,ch_type) {
+    var seriesButton = document.getElementById(index+'__series_label');
+    var axesButton = document.getElementById(index+'__axes_label');
+    if (ch_type == 'doughnutchart') {
+      seriesButton.style.display = "none";
+      axesButton.style.display = "none";
+    } else {
+      seriesButton.style.display = "block";
+      axesButton.style.display = "block";
+    }
+  }
+
   const [chart, setChart] = React.useState(chart_type);
   const chartChange = event => {
     setChart(event.target.value);
     add_series_btn(index,event.target.value);
+    doughnut_fields(index,event.target.value);
   };
 
   const [query, setQuery] = React.useState(chart_query);
@@ -213,6 +226,7 @@ const ChartViz = ({ unique_key, index ,
     ])
   };
 
+  const [datasetArray, setDataArray] = React.useState();
 
   const [seriesX, setSeriesX] = React.useState(chart_series_1_x);
   const seriesXChange = event => { setSeriesX(event.target.value); };
@@ -263,7 +277,6 @@ const ChartViz = ({ unique_key, index ,
       } return elCount;
   }
 
-
   function arrayToString(labelsArray) {
       var labelsString = '';
       labelsArray.forEach(el => {
@@ -272,29 +285,38 @@ const ChartViz = ({ unique_key, index ,
       }); return labelsString
   }
 
+  const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) { return; }
+        seen.add(value);
+    }
+    return value;
+    };
+};
+
   function exportChart(position) {
       var export_btn = document.getElementById('export_' + position);
-      let type, labels, data, label;
+      let type, label = 'data';
       if (chart == 'barchart') { type = 'bar'}
       else if (chart == 'linechart') {type = 'line'}
       else if (chart == 'doughnutchart') { type = 'doughnut'}
       else if (chart == 'scatterplot') { type = 'scatter'}
-
-      var chartURL = 'https://quickchart.io/chart?\
-          c={type:"' + type + '",\
-          data:{\
-            labels:[' + labels + '],\
-            datasets:[{label:"' + label + '", data:[' + data + ']}]\
-          }\
-        }'
+      // basic chart
+      if (!extras || !extras.length) {
+        var chartURL = 'https://quickchart.io/chart?c={type:"' + type + '", data:{labels:[' + labels + '],datasets:[{label:"' + label + '", data:[' + chartData + ']}]}}'
+      }
+      // multi-series scatterplot
+      else {
+        var chartURL = 'https://quickchart.io/chart?c={type:"' + type + '", data:{ datasets: ' + JSON.stringify(data_scatter,getCircularReplacer() ) + '}}'
+      }
 
       window.prompt("Copy to clipboard: Ctrl+C, Enter", '<embed type="image/jpg" src="' + encodeURI(chartURL) + '">');
   }
 
   function basic_chart(el_id, ch_type, series, color, chartData, chartLabels, x=undefined, y=undefined, extras=undefined) {
     let chartId = document.getElementById(el_id).getContext('2d');
-    console.log("hello",ch_type, series, color, chartData, chartLabels, x, y, extras);
-    var datasets = [];
     var options = {};
     if (ch_type == 'barchart') {
       ch_type = 'bar';
@@ -394,7 +416,6 @@ const ChartViz = ({ unique_key, index ,
       }
     }
     else if (ch_type == 'doughnutchart') {
-      console.log("doug");
       var colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), chartLabels.length )
       ch_type = 'doughnut';
       datasets = [{
@@ -456,16 +477,24 @@ const ChartViz = ({ unique_key, index ,
         options: options
       });
 
-      //let img = function () { image = basicChart.toBase64Image(); }
+      options = Object.assign(options,
+        { animation: {
+          onComplete: function () {
+            image = basicChart.toBase64Image();
+            labels = arrayToString(chartLabels);
+          }
+        }
+      });
 
-      // basicChart.options.animation.onComplete = img;
-      // basicChart.update();
-
+      basicChart.options = options;
+      basicChart.update();
     }
     else {
+      console.log("CALL THIS");
       //$('#loader').removeClass('hidden');
       let labels = [] , queries = [] , title = "", x ='', y='';
-      let scatterChart;
+      let datasets = [];
+      let scatterChart ;
       datastory_data.dynamic_elements.forEach(element => {
         if (element.type == 'chart' && element.position == index) {
           queries.push(element.chart_query)
@@ -496,7 +525,6 @@ const ChartViz = ({ unique_key, index ,
     		return response.json();
     	}));})
       .then(function (resultdata) {
-        let datasets = [];
         resultdata.forEach((data,i) => {
           let dataset = {}, seriesData = [], seriesLabels = [];
           if (data.head.vars.includes('x')
@@ -512,11 +540,15 @@ const ChartViz = ({ unique_key, index ,
             dataset.data = seriesData;
             dataset.backgroundColor = colors[i];
             datasets.push(dataset);
+
          }
        });
+        data_scatter = datasets
         return datasets
+
       })
       .then(function(datasets) {
+
         let chartId = document.getElementById(index+'__chartid').getContext('2d');
 
         scatterChart = new Chart(chartId, {
@@ -541,6 +573,7 @@ const ChartViz = ({ unique_key, index ,
                 animation: {
                   onComplete: function () {
                     image = scatterChart.toBase64Image();
+
                   },
                 }
             }
@@ -556,7 +589,6 @@ const ChartViz = ({ unique_key, index ,
 
   function printChart(position) {
       let print_btn = document.getElementById('print_' + position);
-      console.log(print_btn);
       print_btn.href = image;
       print_btn.download = 'chart.png';
   }
@@ -577,7 +609,6 @@ const ChartViz = ({ unique_key, index ,
          document.getElementById(index+"__chartcontainer").innerHTML = '&nbsp;';
          document.getElementById(index+"__chartcontainer").innerHTML = '<canvas id="'+index+'__chartid"></canvas>';
          if (chart == 'barchart' || chart == 'linechart' || chart == 'doughnutchart' || chart == 'scatterplot' ) {
-           let chartData = [], chartLabels = [];
 
              if (data.head.vars.length === 1 && data.head.vars.includes('label')){
                let labels = [];
@@ -590,7 +621,7 @@ const ChartViz = ({ unique_key, index ,
                chartLabels = Object.keys(elCount);
              }
 
-           
+
            else {
              if (data.head.vars.includes('count')
               && data.head.vars.includes('label')
@@ -637,8 +668,9 @@ const ChartViz = ({ unique_key, index ,
   React.useEffect(() => {
      fetchQuery();
      if (window.location.href.indexOf("/modify/") > -1) {
-       let ch_type = document.getElementById(index+'__chart_type').value
+       let ch_type = document.getElementById(index+'__chart_type').value;
        add_series_btn(index,ch_type);
+       doughnut_fields(index,ch_type);
      }
   }, []);
 
@@ -706,7 +738,7 @@ const ChartViz = ({ unique_key, index ,
                     placeholder='A SPARQL query that returns two variables' required>
           </textarea>
 
-          <div className='form-group row'
+          <div id={index+"__series_label"} className='form-group row'
               style={{display: 'flex'}}>
             <label>Series label</label>
     				<input style={{display: 'block'}}
@@ -769,10 +801,300 @@ const ChartViz = ({ unique_key, index ,
             name={index+"__query-btn"}>Add a series</a>
           {extraQueriesBox}
   			</div>
+
+        <div className="modal fade"
+            id="chartsModalLong"
+            tabIndex="-1" role="dialog"
+            aria-labelledby="chartsModalLongTitle"
+            aria-hidden="true">
+            <div className="modal-dialog modal-lg" role="document">
+                <div className="modal-content card">
+                    <div className="modal-header">
+                        <h4 id="chartsModalLongTitle" className="card-title">
+                        Choose the right chart for your query</h4>
+                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        <div className="container">
+                            <div className="row">
+                                <p>Check the description of the charts to see which one fits the
+                                    data you want to show. Pay particular attention to the naming conventions of the
+                                    variables.</p>
+                                <p>Although this is not the case for all charts, overall a SPARQL
+                                    query to build a chart can be of two types:</p>
+                                <ul>
+                                    <li className="pb-2"><strong>Aggregating</strong>: the query
+                                        retrieves
+                                        aggregated data that are automatically post-processed to be
+                                        displayed in a chart.
+                                        The query returns two or more variables. Check how to name
+                                        them for each chart type.</li>
+                                    <li><strong>Non-aggregating</strong>: the query retrieves
+                                        non-aggregated data, which are not immediately suitable for charting, hence
+                                        data need some post-processing operations, provided by the
+                                        interface.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="container">
+                            <div className="row">
+                                <h4>Bar Chart</h4>
+                            </div>
+                            <div className="row pt-3">
+                                <div className="col-sm-4 col-lg-3 text-center">
+                                    <img className="preview-png"
+                                        src="/melody/static/img/bar-chart.png" />
+                                </div>
+                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
+                                    <p>A bar chart is useful to make comparisons.
+                                        The horizontal (x) axis represents categories.
+                                        The vertical (y) axis represents a value (e.g. a counting) for those
+                                        categories. Values can be percentages or numbers.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="row pt-3">
+                                <p>
+                                    To build it, you can:
+                                </p>
+                                <ul>
+                                    <li className="pb-2">write a <strong>non-aggregating</strong> query
+                                        that
+                                        returns a
+                                        variable called <code>{"?label"}</code> (time periods) and flag
+                                        the "<strong>Count</strong>" checkbox.
+
+                                    </li>
+                                    <code className="query-eg">{"SELECT ?label"}<br/>
+                                    {"WHERE {"}<br/>
+                                    {"?entry ?p <https://w3id.org/musow/vocab/repository> ."}<br/>
+                                    {"?entry <https://schema.org/audience> ?audience ."}<br/>
+                                    {"?audience rdfs:label ?label .  }"}</code>
+                                    <li>write an <strong>aggregating</strong> query that returns two
+                                        variables:
+                                        <ol>
+                                            <li className="pb-2"><code>{"?label"}</code>
+                                                (categorical or numerical values on the x axis)</li>
+                                            <li className="pb-2"><code>{"?count"}</code>
+                                                (numerical values on the y axis).</li>
+                                        </ol>
+                                        <code
+                                            className="query-eg">{"PREFIX musow: <https://w3id.org/musow/vocab/>"}<br/>
+                                            {"SELECT ?label (COUNT(?content) AS ?count) "}<br/>
+                                            {"WHERE { "}<br/>
+                                            {"  {?content ?p musow:repository . "}<br/>
+                                            {"  musow:repository rdfs:label ?label .} "}<br/>
+                                            {"  UNION {?content ?p musow:catalogue . "}<br/>
+                                            {"  musow:catalogue rdfs:label ?label .} "}<br/>
+                                            {"  UNION {?content ?p musow:dataset . "}<br/>
+                                            {"  musow:dataset rdfs:label ?label .}  "}<br/>
+                                            {"} GROUP BY ?label"}</code>
+                                    </li>
+                                </ul>
+                            </div>
+                            <hr />
+                        </div>
+
+                        <div className="container">
+                            <div className="row">
+                                <h4>Line Chart</h4>
+                            </div>
+                            <div className="row pt-3">
+                                <div className="col-sm-4 col-lg-3 text-center">
+                                    <img className="preview-png"
+                                        src="/melody/static/img/line-chart.png" />
+                                </div>
+                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
+                                    <p>Line charts help to visualise trends.
+                                    The horizontal (x) axis includes numeric or ordinal values.
+                                    The vertical (y) axis includes numeric values.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="row pt-3">
+                                <p>
+                                    To build it, you can:
+                                </p>
+                                <ul>
+                                    <li className="pb-2">write a <strong>non-aggregating</strong> query
+                                        that
+                                        returns a
+                                        variable called <code>{"?label"}</code> and flag
+                                        the "<strong>Count</strong>" operation.<br />
+                                        <code
+                                            className="query-eg">{"SELECT ?label "}<br/>
+                                            {"WHERE { "}<br/>
+                                            {"{ SELECT ?time (DAY(?time) AS ?label) "}<br/>
+                                            {"WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . "}<br/>
+                                            {"} } }"}</code>
+                                    </li>
+                                    <li>write an <strong>aggregating</strong> query that returns two
+                                        variables:
+                                        <ol>
+                                            <li className="pb-2"><code>{"?label"}</code>
+                                                (numerical or ordinal values on the x axis)</li>
+                                            <li className="pb-2"><code>{"?count"}</code>
+                                              (numerical values on the y axis).</li>
+                                        </ol>
+                                        <code
+                                            className="query-eg">{"SELECT ?label (COUNT(?label) AS ?count) "}<br/>
+                                            {"WHERE { "}<br/>
+                                            {"{ SELECT ?time (DAY(?time) AS ?label) "}<br/>
+                                            {"WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . "}<br/>
+                                            {"} } } "}<br/>
+                                            {"GROUP BY ?label "}<br/>
+                                            {"ORDER BY ?label"}</code>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <hr />
+                        </div>
+
+                        <div className="container">
+                            <div className="row">
+                                <h4>Doughnut Chart</h4>
+                            </div>
+                            <div className="row pt-3">
+                                <div className="col-sm-4 col-lg-3 text-center">
+                                    <img className="preview-png"
+                                        src="/melody/static/img/doughnut-chart.png" />
+                                </div>
+                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
+                                    <p>Doughnut charts are used to express a "part-to-whole"
+                                        relationship,
+                                        where all pieces together represent 100%.<br />
+                                        A doughnut chart works best to display data with a small
+                                        number of
+                                        categories (up to 5).
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="row pt-3">
+                                <p>
+                                    To build it, you can:
+                                </p>
+                                <ul>
+                                    <li className="pb-2">write a <strong>non-aggregating</strong> query
+                                        that
+                                        returns a
+                                        variable called <code>{"?label"}</code> (the categories) and
+                                        flag
+                                        the "<strong>Count</strong>" checkbox.<br />
+                                        <code
+                                            className="query-eg">{"SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }"}</code>
+                                    </li>
+                                    <li className="pb-2">write an <strong>aggregating</strong> query
+                                        that
+                                        returns two
+                                        variables:
+                                        <ol>
+                                            <li className="pb-2"><code>{"?label"}</code>
+                                                (categorical/numerical
+                                                values that
+                                                represents categories)</li>
+                                            <li className="pb-2"><code>{"?count"}</code> (
+                                                numerical
+                                                values for
+                                                each slice).</li>
+                                        </ol>
+                                        <code
+                                            className="query-eg">{"SELECT ?label (COUNT(?label) AS ?count) "}<br/>
+                                            {"WHERE { "}<br/>
+                                            {"?entry ?p <https://w3id.org/musow/vocab/repository> . "}<br/>
+                                            {"?entry <https://schema.org/audience> ?audience . "}<br/>
+                                            {"?audience rdfs:label ?label . } "}<br/>
+                                            {"GROUP BY ?label ORDER BY ?label"}</code>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div className="container">
+                            <div className="row">
+                                <h4>Scatter Plot</h4>
+                            </div>
+                            <div className="row pt-3">
+                                <div className="col-sm-4 col-lg-3 text-center">
+                                    <img className="preview-png"
+                                        src="/melody/static/img/scatter-chart.png" />
+                                </div>
+                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
+                                    <p>Scatter plots help to understand correlation between two variables.
+                                        Data are displayed as a collection of points, each having two variables
+                                        determining the position on the axes (x, y).
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="row pt-3">
+                                <p>
+                                    To build it, you can:
+                                </p>
+                                <ul>
+                                    <li className="pb-2">write a query that returns two variables, each being numerical
+                                        values called <code>{"?x"}</code> and <code>{"?y"}</code>, that
+                                        represent
+                                        the
+                                        coordinates of each point.<br />
+                                    </li>
+                                    <li className="pb-2">You can add more queries to visualise several data series,
+                                    each returning two numerical values called <code>{"?x"}</code> and
+                                        <code>{"?y"}</code> that
+                                        represent the coordinates of each point. <br />
+                                        This is the case in which, for example, you want to
+                                        <strong>compare different datasets</strong>.
+                                        Datasets are distinguished by color.
+                                    </li>
+                                    <code
+                                        className="query-eg">{"PREFIX wdt: <http://www.wikidata.org/prop/direct/> "}<br/>
+                                        {"PREFIX wd: <http://www.wikidata.org/entity/> "}<br/>
+                                        {"PREFIX p: <http://www.wikidata.org/prop/> "}<br/>
+                                        {"PREFIX ps: <http://www.wikidata.org/prop/statement/> "}<br/>
+                                        {"PREFIX pq: <http://www.wikidata.org/prop/qualifier/> "}<br/>
+                                        {"SELECT DISTINCT ?y ?x "}<br/>
+                                        {"WHERE {  ?item wdt:P31 wd:Q11424.  "}<br/>
+                                        {"?item p:P444 ?review_statement .  "}<br/>
+                                        {"?review_statement ps:P444 ?y .  "}<br/>
+                                        {"?review_statement pq:P447 wd:Q105584 .  "}<br/>
+                                        {"?review_statement pq:P459 wd:Q108403393 . "}<br/>
+                                        {" ?item p:P2142 ?box_office_statement . "}<br/>
+                                        {" ?box_office_statement ps:P2142 ?x . "}<br/>
+                                        {" ?box_office_statement pq:P3005 wd:Q30 .}"}</code>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-danger"
+                            data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/* END MODAL */}
+
     </div>
     );
   } else {
     // Final story: render preview
+
+    let q = '';
+    if (!extras || !extras.length) { q = '<p>'+query+'</p>'}
+    else {
+      q += '<p>'+query+'</p><br/>';
+      extras.forEach(element => {
+        q += '<p>'+element.extra_query+'</p><br/><br/>';
+      }) ;
+    }
+
+    function createMarkup() { return {__html: q};}
     return (
       <>
         <h3 className="block_title">{title}</h3>
@@ -791,10 +1113,40 @@ const ChartViz = ({ unique_key, index ,
             onClick={() => printChart(index)}>
             Save
           </a>
-          <a role="button" data-toggle="modal" data-target={"#queryModal_"+index}
-            id={"sparqlQuery_"+index} className="btn btn-info btn-border btn-round btn-sm">
+          <a href='#' id={index+"_query_tooltip"}
+            role="button"
+            data-toggle='modal'
+            data-target={'#'+index+'_query'}
+            className="btn btn-info btn-border btn-round btn-sm">
             Query
           </a>
+
+
+          <div className="modal fade"
+              id={index+'_query'}
+              tabIndex="-1" role="dialog"
+              aria-labelledby={index+'_querytitle'}
+              aria-hidden="true">
+              <div className="modal-dialog modal-lg" role="document">
+                  <div className="modal-content card">
+                      <div className="modal-header">
+                          <h4 id={'#'+index+'_querytitle'} className="card-title">
+                          SPARQL query</h4>
+                      </div>
+                      <div className="modal-body">
+                          <div
+                            className="container"
+                            dangerouslySetInnerHTML={createMarkup()}>
+
+                          </div>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="button" className="btn btn-danger"
+                              data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
       </>
 
