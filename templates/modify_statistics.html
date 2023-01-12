@@ -1,678 +1,63 @@
 {% extends "base.html" %}
 {% block title %} Modify {{ datastory_data.title }} {% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
+<!-- CSS for this template -->
 {% block stylesheets %}
 <link rel="stylesheet" href="/melody/static/css/templates.css">
-{% endblock stylesheets %}
-
-{% block content %}
-<div class="content row modifystory">
-    <section class="secondarymenu col-md-3 col-sm-12">
-        <section class="secondarymenuinner" id="secondarymenuinner">
-            <h3>Data source</h3>
-            <p><a href="{{datastory_data.sparql_endpoint}}" target="_blank">SPARQL endpoint</a></p>
-        </section>
-    </section>
-    <form action="" method="post" class="card col-md-9 col-sm-12">
-        <div class=" panel-header bg-primary-gradient">
-            <div class="page-inner">
-                <!-- color picker -->
-                <div id="colors">
-                    <p>Pick the colors of your story</p>
-                    {% for color in datastory_data.color_code|reverse %}
-                    <input type="color" id="{{loop.index}}_color" name="{{loop.index}}_color" value="{{color}}">
-                    {% endfor %}
-                </div>
-
-                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                    <div>
-                        <h1 class="pb-2 fw-bold">
-                            <textarea oninput='auto_grow(this)' name="title" type="text" id=""
-                                cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
-                                required>{{ datastory_data.title }}</textarea>
-                        </h1>
-                        <h5 class="mb-2 fw-bold">
-                            {% if datastory_data.subtitle %}
-                            <textarea oninput='auto_grow(this)' name="subtitle" type="text" id=""
-                                cols="{{ datastory_data.subtitle|length }}" rows="1"
-                                placeholder="Subtitle">{{ datastory_data.subtitle }}</textarea>
-                            {% else %}
-                            <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1"
-                                placeholder="Subtitle"></textarea>
-                            {%endif%}
-                        </h5>
-                        <h5 class="text-white op-7 pb-2">
-                            {% if datastory_data.curator %}
-                            <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                                placeholder="Authors">{{ datastory_data.curator }}</textarea>
-                            {% else %}
-                            <textarea class="col-10" oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
-                                placeholder="Authors"></textarea>
-                            {%endif%}
-                        </h5>
-                    </div>
-                    <div class="ml-md-auto py-2 py-md-0">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="page-inner mt--5">
-            <div class="row row-card-no-pd">
-                <div class="col-md-12 nopaddingleft">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-head-row card-tools-still-right">
-                                <!-- <h4 class="card-title">About the Project</h4> -->
-                            </div>
-                            <p class="card-category">
-                                {% if datastory_data.description %}
-                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
-                                    placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
-                                {% else %}
-                                <textarea oninput='auto_grow(this)' name="description" type="text" id=""
-                                    placeholder="A brief introdution to the project."></textarea>
-                                {%endif%}
-                            </p>
-                        </div>
-                        <div class="card-body" id="sortable">
-                            <!-- Button trigger modal -->
-                            <span id='loader' class='lds-dual-ring hidden overlay'></span>
-
-                            <!-- Modal for query and chart preview -->
-                            <div class="modal fade" id="chartsModalLong" tabindex="-1" role="dialog"
-                                aria-labelledby="chartsModalLongTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content card">
-                                        <div class="modal-header">
-                                            <h4 id="chartsModalLongTitle" class="card-title">Choose the right chart for
-                                                your
-                                                query</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="container">
-                                                <div class="row">
-                                                    <p>Check the description of the charts to see which one fits the
-                                                        data you
-                                                        want to show. Pay particular attention to the terminology of the
-                                                        variables.</p>
-                                                    <p>Although this is not the case for all charts, overall a SPARQL
-                                                        query to
-                                                        build a chart can be of two types:</p>
-                                                    <ul>
-                                                        <li class="pb-2"><strong>Aggregating</strong>: the query
-                                                            retrieves
-                                                            aggregated data that are automatically post-processed to be
-                                                            displayed in a chart.
-                                                            The query returns two or more variables. Check how to name
-                                                            them for
-                                                            each chart type.</li>
-                                                        <li><strong>Non-aggregating</strong>: the query retrieves
-                                                            non-aggregated
-                                                            data, which are not immediately suitable for charting, hence
-                                                            data
-                                                            need some post-processing operations, provided by the
-                                                            interface.
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <!-- Bar chart -->
-                                            <div class="container">
-                                                <div class="row">
-                                                    <h4>Bar Chart</h4>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <div class="col-sm-4 col-lg-3 text-center">
-                                                        <img class="preview-png"
-                                                            src="/melody/static/img/bar-chart.png" />
-                                                    </div>
-                                                    <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                                        <p>A bar chart is a graph with rectangular bars that's useful
-                                                            for
-                                                            looking
-                                                            at a set of data and making comparisons.<br />
-                                                            The horizontal (x) axis represents the categories.<br />
-                                                            The vertical (y) axis represents a value for those
-                                                            categories.
-                                                            The values can be percentages or numbers.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <p>
-                                                        To build it, you can:
-                                                    </p>
-                                                    <ul>
-                                                        <li class="pb-2">write a <strong>non-aggregating</strong> query
-                                                            that
-                                                            returns a
-                                                            variable called <code>?label</code> (time periods) and flag
-                                                            the "<strong>Count</strong>" operation.
-                                                            <code class="query-eg">SELECT ?label
-                                                        WHERE {
-                                                            ?entry ?p &lt;https://w3id.org/musow/vocab/repository&gt; .
-                                                            ?entry &lt;https://schema.org/audience&gt; ?audience . ?audience rdfs:label ?label .
-                                                        }</code>
-                                                        </li>
-                                                        <li>write an <strong>aggregating</strong> query that returns two
-                                                            variables:
-                                                            <ol>
-                                                                <li class="pb-2"><code>?label</code>
-                                                                    (categorical/numerical
-                                                                    values that
-                                                                    represents categories in the x axis)</li>
-                                                                <li class="pb-2"><code>?count</code> (corresponding
-                                                                    numerical
-                                                                    values in
-                                                                    the y axis).</li>
-                                                            </ol>
-                                                            <code
-                                                                class="query-eg">PREFIX musow: &lt;https://w3id.org/musow/vocab/&gt; SELECT ?label (COUNT(?content) AS ?count) nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} } GROUP BY ?label</code>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <hr />
-                                            </div>
-                                            <!-- Line chart -->
-                                            <div class="container">
-                                                <div class="row">
-                                                    <h4>Line Chart</h4>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <div class="col-sm-4 col-lg-3 text-center">
-                                                        <img class="preview-png"
-                                                            src="/melody/static/img/line-chart.png" />
-                                                    </div>
-                                                    <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                                        <p>Line charts are usually employed to track changes in data
-                                                            over
-                                                            periods of time.A line chart is created plotting a series of
-                                                            several
-                                                            points
-                                                            connected with a continuous line.<br />
-                                                            The horizontal (x) axis represents the time period.<br />
-                                                            The vertical (y) axis represents the item that is being
-                                                            measured in
-                                                            that specifi
-                                                            period.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <p>
-                                                        To build it, you can:
-                                                    </p>
-                                                    <ul>
-                                                        <li class="pb-2">write a <strong>non-aggregating</strong> query
-                                                            that
-                                                            returns a
-                                                            variable called <code>?label</code> (time periods) and flag
-                                                            the "<strong>Count</strong>" operation.<br />
-                                                            <code
-                                                                class="query-eg">SELECT ?label WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry &lt;http://www.w3.org/ns/prov#generatedAtTime&gt; ?time . } } }</code>
-                                                        </li>
-                                                        <li>write an <strong>aggregating</strong> query that returns two
-                                                            variables:
-                                                            <ol>
-                                                                <li class="pb-2"><code>?label</code>
-                                                                    (categorical/numerical
-                                                                    values that
-                                                                    represents periods of time in the x axis)</li>
-                                                                <li class="pb-2"><code>?count</code> (corresponding
-                                                                    numerical
-                                                                    value for
-                                                                    the item in the y axis).</li>
-                                                            </ol>
-                                                            <code
-                                                                class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?label ORDER BY ?label</code>
-                                                        </li>
-                                                    </ul>
-                                                    <p>* The ?label can be numbers or letters to represent day, months,
-                                                        years,
-                                                        or other periods of time.</p>
-                                                </div>
-                                                <hr />
-                                            </div>
-                                            <!-- Doughnut chart -->
-                                            <div class="container">
-                                                <div class="row">
-                                                    <h4>Doughnut Chart</h4>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <div class="col-sm-4 col-lg-3 text-center">
-                                                        <img class="preview-png"
-                                                            src="/melody/static/img/doughnut-chart.png" />
-                                                    </div>
-                                                    <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                                        <p>Doughnut charts are used to express a "part-to-whole"
-                                                            relationship,
-                                                            where all pieces together represent 100%.<br />
-                                                            A doughnut chart works best to display data with a small
-                                                            number of
-                                                            categories (2-5).
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <p>
-                                                        To build it, you can:
-                                                    </p>
-                                                    <ul>
-                                                        <li class="pb-2">write a <strong>non-aggregating</strong> query
-                                                            that
-                                                            returns a
-                                                            variable called <code>?label</code> (the categories) and
-                                                            flag
-                                                            the "<strong>Count</strong>" operation.<br />
-                                                            <code
-                                                                class="query-eg">SELECT ?label WHERE { ?entry ?p &lt;https://w3id.org/musow/vocab/repository&gt; . ?entry &lt;https://schema.org/audience&gt; ?audience . ?audience rdfs:label ?label . }</code>
-                                                        </li>
-                                                        <li class="pb-2">write an <strong>aggregating</strong> query
-                                                            that
-                                                            returns two
-                                                            variables:
-                                                            <ol>
-                                                                <li class="pb-2"><code>?label</code>
-                                                                    (categorical/numerical
-                                                                    values that
-                                                                    represents categories)</li>
-                                                                <li class="pb-2"><code>?count</code> (corresponding
-                                                                    numerical
-                                                                    values for
-                                                                    each segment).</li>
-                                                            </ol>
-                                                            <code
-                                                                class="query-eg">SELECT ?label (COUNT(?label) AS ?count) WHERE { ?entry ?p &lt;https://w3id.org/musow/vocab/repository&gt; . ?entry &lt;https://schema.org/audience&gt; ?audience . ?audience rdfs:label ?label . } GROUP BY ?label ORDER BY ?label</code>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                            <!-- Scatter plot -->
-                                            <div class="container">
-                                                <div class="row">
-                                                    <h4>Scatter Plot</h4>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <div class="col-sm-4 col-lg-3 text-center">
-                                                        <img class="preview-png"
-                                                            src="/melody/static/img/scatter-chart.png" />
-                                                    </div>
-                                                    <div class="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                                        <p>Scatter plots usually display values for two variables for a
-                                                            set of
-                                                            data.<br />
-                                                            Data is displayed as a collection of points, each having the
-                                                            value
-                                                            of one variable determining the position on the axes (x, y).
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="row pt-3">
-                                                    <p>
-                                                        To build it, you can:
-                                                    </p>
-                                                    <ul>
-                                                        <li class="pb-2">write a single query that returns two numerical
-                                                            variables called <code>?x</code> and <code>?y</code> that
-                                                            represent
-                                                            the
-                                                            coordinates of each point.<br />
-                                                        </li>
-                                                        <li class="pb-2">write two or more queries each of which returns
-                                                            two
-                                                            numerical variables called <code>?x</code> and
-                                                            <code>?y</code> that
-                                                            represent the coordinates of each point. <br />
-                                                            This is the case in which, for example, you want to
-                                                            <strong>compare
-                                                                different datasets</strong> on the same type of
-                                                            characteristics
-                                                            (age/height). Datasets will be distinguished by color.
-                                                        </li>
-                                                        <code
-                                                            class="query-eg">PREFIX wdt: &lt;http://www.wikidata.org/prop/direct/&gt; PREFIX wd: &lt;http://www.wikidata.org/entity/&gt; PREFIX p: &lt;http://www.wikidata.org/prop/&gt; PREFIX ps: &lt;http://www.wikidata.org/prop/statement/&gt; PREFIX pq: &lt;http://www.wikidata.org/prop/qualifier/&gt; SELECT DISTINCT ?y ?x WHERE {  ?item wdt:P31 wd:Q11424.  ?item p:P444 ?review_statement .  ?review_statement ps:P444 ?y .  ?review_statement pq:P447 wd:Q105584 .  ?review_statement pq:P459 wd:Q108403393 .  ?item p:P2142 ?box_office_statement .  ?box_office_statement ps:P2142 ?x .  ?box_office_statement pq:P3005 wd:Q30 .}</code>
-
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger"
-                                                data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {% for dict in datastory_data.dynamic_elements %}
-
-                            {% if dict.type == 'section_title' %}
-                            <!-- SECTION TITLE -->
-                            <div id="{{dict.position}}__block_field">
-                                <h4 class='block_title'>Add title</h4>
-                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                                </a>
-                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                                </a>
-                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                                </a>
-                                <br>
-                                <!-- preview -->
-                                <input name='{{dict.position}}__{{dict.type}}' type='hidden'
-                                    id='{{dict.position}}__{{dict.type}}' value='{{dict.section_title}}'>
-                                <div class='editor' id='{{dict.position}}__editor'>
-                                    {{dict.section_title|safe}}
-                                </div>
-                            </div>
-
-                            {% elif dict.type == 'text' %}
-                            <!-- TEXT -->
-                            <!-- buttons -->
-                            <div id="{{dict.position}}__block_field">
-                                <h4 class='block_title'>Add text</h4>
-                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                                </a>
-                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                                </a>
-                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                                </a>
-                                <br>
-                                <!-- preview -->
-                                <input name='{{dict.position}}__{{dict.type}}' type='hidden'
-                                    id='{{dict.position}}__{{dict.type}}' value='{{dict.text}}'>
-                                <div class='editor' id='{{dict.position}}__editor'>
-                                    {{dict.text|safe}}
-                                </div>
-                            </div>
-
-                            {% elif dict.type == 'count' %}
-                            <!-- COUNT -->
-                            <div id="{{dict.position}}__block_field">
-                                <!-- buttons -->
-                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                                </a>
-                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                                </a>
-                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                                </a>
-                                <br>
-                                <!-- preview -->
-                                <div class='card-body justify-content-center option-2b count_result col-md-4'
-                                    id="{{dict.position}}__count">
-                                    <p class="counter_num" id='{{dict.position}}__num'></p>
-                                    <p class="counter_label" id='{{dict.position}}__lab'></p>
-                                </div>
-
-                                <!-- input -->
-                                <textarea spellcheck='false' oninput='auto_grow(this)'
-                                    name='{{dict.position}}__count_query' type='text'
-                                    id='{{dict.position}}__count_query' value="{{dict.count_query}}"
-                                    placeholder="Write the SPARQL query for the count."
-                                    required>{{dict.count_query}}</textarea>
-                                <input name='{{dict.position}}__count_label' type='text'
-                                    id='{{dict.position}}__count_label' value="{{dict.count_label}}" required>
-                            </div>
-
-                            {% elif dict.type == 'table' %}
-                            <!-- TABLE -->
-                            <div class='col-12' id='{{dict.position}}__block_field'>
-                                <!-- buttons -->
-                                <a href='#' class='up' id='{{dict.position}}__up' name='{{dict.position}}__up'>
-                                    <i class='fas fa-arrow-up' id='{{dict.position}}__arrow-up'></i>
-                                </a>
-                                <a href='#' class='down' id='{{dict.position}}__down' name='{{dict.position}}__down'>
-                                    <i class='fas fa-arrow-down' id='{{dict.position}}__arrow-down'></i>
-                                </a>
-                                <a href='#' class='trash' id='{{dict.position}}__trash' name='{{dict.position}}__trash'>
-                                    <i class='far fa-trash-alt' id='{{dict.position}}__bin'></i>
-                                </a>
-                                <br />
-                                <!-- input -->
-                                <div class='form-group'>
-                                    <label for='{{dict.position}}__table_title'>Table title</label>
-                                    <input name='{{dict.position}}__table_title' type='text'
-                                        id='{{dict.position}}__table_title' placeholder='The title of your table'
-                                        value='{{dict.table_title}}' required>
-                                </div>
-                                <div class='form-group'>
-                                    <label for='{{dict.position}}__table_query'>SPARQL query</label>
-                                    <textarea spellcheck='false' oninput='auto_grow(this)'
-                                        name='{{dict.position}}__table_query' type='text'
-                                        id='{{dict.position}}__table_query'
-                                        placeholder='The query for your table results'
-                                        required>{{dict.table_query}}</textarea>
-                                </div>
-                                <!-- preview -->
-                                <table class='col-12' id='{{dict.position}}__table'></table>
-                            </div>
-
-                            {% elif dict.type == 'chart' %}
-                            <!-- CHART -->
-                            <div class="col-12" id="{{dict.position}}__block_field">
-                                <!-- buttons -->
-                                <a href="#" class="up" id="{{dict.position}}__up" name="{{dict.position}}__up">
-                                    <i class="fas fa-arrow-up" id="{{dict.position}}__arrow-up"></i>
-                                </a>
-                                <a href="#" class="down" id="{{dict.position}}__down" name="{{dict.position}}__down">
-                                    <i class="fas fa-arrow-down" id="{{dict.position}}__arrow-down"></i>
-                                </a>
-                                <a href="#" class="trash" id="{{dict.position}}__trash" name="{{dict.position}}__trash">
-                                    <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                                </a>
-                                <br />
-                                <!-- preview -->
-                                <div class="chart-container">
-                                    <canvas id="{{dict.position}}__chartid"></canvas>
-                                </div>
-
-                                <!-- input -->
-                                <div class="form-group" id="{{dict.position}}_undefined">
-                                    <label>Chart Type</label>
-                                    <select class="form-control" name="{{dict.position}}__chart_type"
-                                        id="{{dict.position}}__chart_type">
-                                        {% for chart in general_data.chart_types %}
-                                        {% if chart == dict.chart_type %}
-                                        <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}"
-                                            selected>
-                                            {{chart}}
-                                        </option>
-                                        {% else %}
-                                        <option name="{{dict.position}}__{{chart}}" id="{{dict.position}}__{{chart}}">
-                                            {{chart}}</option>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                    <a href='#' class='form-text' role='button' data-toggle='modal'
-                                        data-target='#chartsModalLong'>Discover more
-                                        about query and charts.</a><br />
-                                    <label>SPARQL query</label>
-                                    <textarea spellcheck='false' oninput='auto_grow(this)'
-                                        name='{{dict.position}}__chart_query' type='text'
-                                        id='{{dict.position}}__chart_query' placeholder="{{dict.chart_query}}"
-                                        required>{{dict.chart_query}}</textarea>
-                                    {% if dict.chart_type == 'scatterplot' %}
-                                    <input style='display: block;' class='form-control' type='text'
-                                        name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
-                                        placeholder='{{dict.chart_series}}' value='{{dict.chart_series}}'
-                                        required><br />
-                                    <a id='{{dict.position}}__query-btn' style='display: block;'
-                                        class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
-                                        name='{{dict.position}}__query-btn'>Add another query</a><br />
-                                    {% for extra in dict.extra_queries %}
-                                    <div class="query-div" id="{{dict.position}}_undefined">
-                                        <a href="#" class="trash" id="{{dict.position}}__trash"
-                                            name="{{dict.position}}__trash">
-                                            <i class="far fa-trash-alt" id="{{dict.position}}__bin"></i>
-                                        </a>
-                                        <br />
-                                        <label>SPARQL query</label>
-                                        <br />
-                                        <textarea spellcheck='false' oninput='auto_grow(this)'
-                                            name='{{dict.position}}__extra_query_{{extra.extra_id}}' type='text'
-                                            id='{{dict.position}}__extra_query_{{extra.extra_id}}'
-                                            placeholder="{{extra.extra_query}}"
-                                            required>{{extra.extra_query}}</textarea>
-                                        <br />
-                                        <input style='display: block;' class='form-control' type='text'
-                                            name='{{dict.position}}__extra_series_{{extra.extra_id}}'
-                                            id='{{dict.position}}__extra_series_{{extra.extra_id}}'
-                                            placeholder='{{extra.extra_series}}' value='{{extra.extra_series}}'
-                                            required><br />
-                                    </div>
-                                    {% endfor %}
-                                    {% elif dict.chart_type == 'doughnutchart' %}
-                                    <input style='display: none;' class='form-control' type='text'
-                                        name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
-                                        placeholder='The label for the data series'><br />
-                                    <a id='{{dict.position}}__query-btn' style='display: none;'
-                                        class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
-                                        name='{{dict.position}}__query-btn'>Add another query</a><br />
-                                    {% else %}
-                                    {% if dict.chart_series %}
-                                    <input style='display: block;' class='form-control' type='text'
-                                        name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
-                                        placeholder='{{dict.chart_series}}' value='{{dict.chart_series}}'
-                                        required><br />
-                                    {% else %}
-                                    <input style='display: block;' class='form-control' type='text'
-                                        name='{{dict.position}}__chart_series' id='{{dict.position}}__chart_series'
-                                        placeholder='The label for the data series'><br />
-                                    {% endif %}
-                                    <a id='{{dict.position}}__query-btn' style='display: none;'
-                                        class='btn btn-primary btn-border' extra="True" onclick='add_field(name)'
-                                        name='{{dict.position}}__query-btn'>Add another query</a>
-                                    {% endif %}
-                                    {% if dict.chart_type == 'doughnutchart' %}
-                                    <div class='form-group row' id='{{dict.position}}__axes_label'
-                                        style='display: none;'>
-                                        {% else %}
-                                        <div class='form-group row' id='{{dict.position}}__axes_label'
-                                            style='display: flex;'>
-                                            {% endif %}
-                                            <div class='col-6'>
-                                                <label>x label</label>
-                                                {% if dict.chart_legend %}
-                                                <input name='{{dict.position}}__chart_label_x' type='text'
-                                                    id='{{dict.position}}__chart_label_x'
-                                                    placeholder='The label for the x axis'
-                                                    value='{{dict.chart_legend.x}}'>
-                                                {% else %}
-                                                <input name='{{dict.position}}__chart_label_x' type='text'
-                                                    id='{{dict.position}}__chart_label_x'
-                                                    placeholder='The label for the x axis'>
-                                                {% endif %}
-                                            </div>
-                                            <div class='col-6'>
-                                                <label>y label</label>
-                                                {% if dict.chart_legend %}
-                                                <input name='{{dict.position}}__chart_label_y' type='text'
-                                                    id='{{dict.position}}__chart_label_y'
-                                                    placeholder='The label for the y axis'
-                                                    value='{{dict.chart_legend.y}}'>
-                                                {% else %}
-                                                <input name='{{dict.position}}__chart_label_y' type='text'
-                                                    id='{{dict.position}}__chart_label_y'
-                                                    placeholder='The label for the y axis'>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <label>Chart Title</label>
-                                        <input name='{{dict.position}}__chart_title' type='text'
-                                            id='{{dict.position}}__chart_title' value="{{dict.chart_title}}"
-                                            required><br /><br /><br />
-                                        <label>Operations</label><br />
-
-
-                                        <!-- no operation present -->
-                                        {% if dict.operations|length == 0 %}
-                                        {% for op in general_data.operations %}
-                                        <input type='checkbox' id='{{op|lower}}' name='{{dict.position}}__action1'
-                                            value='{{op|lower}}'>
-                                        <label for='{{op|lower}}'>{{op}}</label><br>
-                                        {% endfor %}
-
-                                        {% else %}
-
-                                        {% for op in general_data.operations %}
-                                        {% for dict_op in dict.operations %}
-                                        {% if dict_op.action|capitalize == op %}
-                                        <input type='checkbox' id='{{dict_op.action}}' name='{{dict.position}}__action1'
-                                            value='{{dict_op.action}}' checked>
-                                        <label for='{{dict_op.action}}'>{{dict_op.action|capitalize}}</label><br>
-                                        {% else %}
-                                        <input type='checkbox' id='{{op|lower}}' name='{{dict.position}}__action1'
-                                            value='{{op|lower}}'>
-                                        <label for='{{op|lower}}'>{{op}}</label><br>
-                                        {% endif %}
-                                        {% endfor %}
-                                        {% endfor %}
-                                        {% endif %}
-
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            {% endfor %}
-
-
-                            <section class="addfieldssection col-md-12 col-lg-12 col-sm-12">
-                                <a class="btn btn-primary btn-border" onclick="add_field(name)" name="textbox">Add
-                                    Textbox</a>
-                                <a class="btn btn-primary btn-border" onclick="add_field(name)" name="countbox">Add
-                                    Count</a>
-                                <a class="btn btn-primary btn-border" onclick="add_field(name)" name="chart_box">Add
-                                    Chart</a>
-                                <a class="btn btn-primary btn-border" onclick="add_field(name)" name="table_box">Add
-                                    Table</a>
-                            </section>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-action" style="margin:auto;">
-                <button type="submit" name="action" value="save" class="btn btn-success prevent_alert">Save</button>
-                <button type="reset" class="btn btn-danger">Reset content</button>
-                <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
-            </div>
-    </form>
-</div>
-{% if session['user_type'] == 'random' %}
-<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
-    data-notify-position="bottom-right"
-    style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
-    data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
-        style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
-        class="flaticon-alarm-1"></span> <span data-notify="title">Remember</span>
-    <span data-notify="message">If you don't login, you can only download material, not
-        publish.</span><a href="#" target="_blank" data-notify="url"></a>
-</div>
-{% endif %}
-<script>
-
-</script>
-{% endblock content %}
-
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}
+<script src="https://unpkg.com/react@18/umd/react.{{ react_version }}" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.{{ react_version }}" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+<script src="https://unpkg.com/@jitbit/htmlsanitizer@latest/HtmlSanitizer.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
+<link rel="stylesheet" href="/melody/static/css/leaflet-sidebar.css">
+
+{% endblock stylesheets %}
+
+<!-- Content of this template -->
+{% block content %}
+<div class="content row modifystory">
+  {% include 'modify_secondarymenu.html' %}
+  <form id="modifystory_form" action="" method="post" class="card col-md-9 col-sm-12"">
+    {% include 'modify_story_heading.html' %}
+    <!-- interactive elements -->
+    <div class="page-inner mt--5">
+      <div class="row row-card-no-pd">
+        <div class="col-md-12 nopaddingleft">
+          <div class="card">
+            {% include 'modify_description.html' %}
+            <div class="card-body nopaddingleft" id="sortable">
+                <span id='loader' class='lds-dual-ring hidden overlay'></span>
+                <script src="/melody/static/js/react/Map.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Count.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Table.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Chart.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Textbox.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/add_components.js" type="text/babel"></script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- save buttons -->
+    <div class="card-action" style="margin:auto;">
+        <button type="submit" name="action" value="save" class="btn btn-success prevent_alert">Save</button>
+        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+    </div>
+  </form>
+</div>
+
+{% include 'notify.html' %}
+{% endblock content %}
+
+<!-- JS for this template -->
+{% block javascripts %}
+
 {% if datastory_data.user_name %}
 <script>
     let beforeUnloadAlert = true;
@@ -688,11 +73,10 @@
         beforeUnloadAlert = false;
     }
     var myObj = document.getElementsByClassName('prevent_alert')
-    console.log(myObj);
+    console.log("myObj",myObj);
     for (el of myObj) {
         el.addEventListener('click', myFunction);
     }
 </script>
 {% endif %}
-
 {% endblock javascripts %}

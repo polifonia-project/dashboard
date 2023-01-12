@@ -6,7 +6,7 @@ const ExtraSeries = ({ indexExtra, index_parent ,
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
     datastory_data.dynamic_elements.forEach(element => {
       if (element.type == 'chart' && element.position == index_parent) {
-        if (element.extra_queries.length) {
+        if (element.extra_queries.length > indexExtra) {
           defaultExtraQuery = element.extra_queries[indexExtra].extra_query;
           defaultExtraLabel = element.extra_queries[indexExtra].extra_series;
         }
@@ -33,10 +33,6 @@ const ExtraSeries = ({ indexExtra, index_parent ,
   // fetchExtraQuery
   const fetchExtraQuery = index_parent => event => {
     if (extraQuery.length > 1) {
-      //$('#loader').removeClass('hidden');
-      // destroy chart
-      // document.getElementById(index_parent+"__chartcontainer").innerHTML = '&nbsp;';
-      // document.getElementById(index_parent+"__chartcontainer").innerHTML = '<canvas id="'+index_parent+'__chartid"></canvas>';
 
       let labels = [] , queries = [] , title = "", x ='', y='';
 
@@ -117,7 +113,6 @@ const ExtraSeries = ({ indexExtra, index_parent ,
 
       })
       .catch(function (error) {console.log(error);})
-      //.finally( () => {$('#loader').addClass('hidden')});
 
     }
   };
@@ -238,14 +233,15 @@ const ChartViz = ({ unique_key, index ,
   const titleChange = event => { setTitle(event.target.value); };
 
   const [count, setCount] = React.useState(chart_count);
-  const countChange = event => { setCount(event.target.value); };
+  const countChange = event => { setCount('count'); };
 
   const generateKey = (pre) => {
       return `${ pre }_${ new Date().getTime() }`;
   }
 
   function alertError(data,count,chart) {
-    if (data.head.vars.length === 1 && count != 'count'
+    console.log("count",count);
+    if (data.head.vars.length === 1 && !data.head.vars.includes('label') && count != 'count'
       && (chart == 'barchart' || chart == 'linechart')) {
       alert("The query must return two variables, or you should tick the box 'count'")
     }
@@ -258,10 +254,10 @@ const ChartViz = ({ unique_key, index ,
       alert("The query must return two variables")
     }
 
-    if ((!data.head.vars.includes('label') || !data.head.vars.includes('count'))
-      && (chart == 'barchart' || chart == 'linechart')) {
-      alert("The query must return two variables, called ?label and ?count")
-    }
+    // if ((!data.head.vars.includes('label') || !data.head.vars.includes('count'))
+    //   && (chart == 'barchart' || chart == 'linechart')) {
+    //   alert("The query must return two variables, called ?label and ?count")
+    // }
 
     if ((!data.head.vars.includes('x') || !data.head.vars.includes('y'))
       && chart == 'scatterplot') {
@@ -416,7 +412,10 @@ const ChartViz = ({ unique_key, index ,
       }
     }
     else if (ch_type == 'doughnutchart') {
-      var colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), chartLabels.length )
+      var colors ;
+      if (chartLabels.length == 1) {colors = datastory_data.color_code[0] }
+      else {d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), chartLabels.length )}
+
       ch_type = 'doughnut';
       datasets = [{
           data: chartData,
@@ -485,13 +484,10 @@ const ChartViz = ({ unique_key, index ,
           }
         }
       });
-
       basicChart.options = options;
       basicChart.update();
     }
     else {
-      console.log("CALL THIS");
-      //$('#loader').removeClass('hidden');
       let labels = [] , queries = [] , title = "", x ='', y='';
       let datasets = [];
       let scatterChart ;
@@ -513,6 +509,7 @@ const ChartViz = ({ unique_key, index ,
 
       let ch_type = 'scatter';
       let promises = [];
+      $('#loader').removeClass('hidden');
       queries.forEach((q, i) => {
         promises.push(fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(q),
           { method: 'GET', headers: { 'Accept': 'application/sparql-results+json' }}
@@ -581,7 +578,9 @@ const ChartViz = ({ unique_key, index ,
 
       })
       .catch(function (error) {console.log(error);})
-      //.finally( () => {$('#loader').addClass('hidden')});
+      .finally( () => {
+        $('#loader').addClass('hidden');
+      });
       // end cp
     }
 
@@ -595,8 +594,12 @@ const ChartViz = ({ unique_key, index ,
 
   const fetchQuery = event => {
     if (query.length > 1) {
-      // FETCH DATA
-      //$('#loader').removeClass('hidden');
+      chartData = [], chartLabels = []
+      $('#loader').removeClass('hidden');
+      // empty the chart container
+      document.getElementById(index+"__chartcontainer").innerHTML = '&nbsp;';
+      document.getElementById(index+"__chartcontainer").innerHTML = '<canvas id="'+index+'__chartid"></canvas>';
+
       fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
         {
         method: 'GET',
@@ -604,10 +607,9 @@ const ChartViz = ({ unique_key, index ,
         }
       ).then((res) => res.json())
        .then((data) => {
-         alertError(data,count,chart);
-         // empty the chart container
-         document.getElementById(index+"__chartcontainer").innerHTML = '&nbsp;';
-         document.getElementById(index+"__chartcontainer").innerHTML = '<canvas id="'+index+'__chartid"></canvas>';
+         if (window.location.href.indexOf("/modify/") > -1) {
+           alertError(data,count,chart);
+         }
          if (chart == 'barchart' || chart == 'linechart' || chart == 'doughnutchart' || chart == 'scatterplot' ) {
 
              if (data.head.vars.length === 1 && data.head.vars.includes('label')){
@@ -625,7 +627,7 @@ const ChartViz = ({ unique_key, index ,
            else {
              if (data.head.vars.includes('count')
               && data.head.vars.includes('label')
-              && (chart == 'barchart' || chart == 'linechart')) {
+              && (chart == 'barchart' || chart == 'linechart' || chart == 'doughnutchart')) {
                data.results.bindings.forEach(element => {
                  chartData.push(element.count.value)
                  chartLabels.push(element.label.value)
@@ -653,14 +655,16 @@ const ChartViz = ({ unique_key, index ,
                 color   = datastory_data.color_code[0],
                 x       = seriesX ,
                 y       = seriesY ;
-             basic_chart(el_id, ch_type, series, color, chartData, chartLabels, x, y, extras)
+             basic_chart(el_id, ch_type, ch_series, color, chartData, chartLabels, x, y, extras)
            }
          }
         })
        .catch((error) => {
           console.error('Error:', error);
        })
-       //.finally( () => {$('#loader').addClass('hidden')});
+       .finally( () => {
+         $('#loader').addClass('hidden');
+       });
     }
   }
 
@@ -738,7 +742,7 @@ const ChartViz = ({ unique_key, index ,
                     placeholder='A SPARQL query that returns two variables' required>
           </textarea>
 
-          <div id={index+"__series_label"} className='form-group row'
+          <div id={index+"__series_label"} className='form-group'
               style={{display: 'flex'}}>
             <label>Series label</label>
     				<input style={{display: 'block'}}

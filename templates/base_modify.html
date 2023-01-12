@@ -10,6 +10,12 @@
 <script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
 <script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
 <script src="https://unpkg.com/@jitbit/htmlsanitizer@latest/HtmlSanitizer.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
+<link rel="stylesheet" href="/melody/static/css/leaflet-sidebar.css">
 {% endblock stylesheets %}
 
 <!-- Content of this template -->
@@ -26,6 +32,7 @@
             {% include 'modify_description.html' %}
             <div class="card-body nopaddingleft" id="sortable">
                 <span id='loader' class='lds-dual-ring hidden overlay'></span>
+                <script src="/melody/static/js/react/Map.js" type="text/babel"></script>
                 <script src="/melody/static/js/react/Count.js" type="text/babel"></script>
                 <script src="/melody/static/js/react/Table.js" type="text/babel"></script>
                 <script src="/melody/static/js/react/Chart.js" type="text/babel"></script>

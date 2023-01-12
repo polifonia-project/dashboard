@@ -62,10 +62,9 @@ components = [
         "postprocess_value":""
     },
     {
-        "name":"map_filter",
+        "name":"map_filters",
         "regex_attr": "(map_filter)",
-        "value_type": "string",
-        "postprocess_value":""
+        "donothing": True
     },
     {
         "name":"operations",

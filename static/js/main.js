@@ -11,12 +11,13 @@ window.onload = function () {
     //if (Object.getOwnPropertyNames(datastory_data).length > 0) { queryCounter(); }
     //chartViz();
     disableKeypress();
-    saveHTML(datastory_data.name);
+    //saveHTML(datastory_data.name);
     var map_ready;
 }
 
-// disable selection of templates other than statistics
 $(document).ready(function () {
+
+  // wrap counters
 
 
     //$("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
@@ -28,12 +29,10 @@ $(document).ready(function () {
     var form = document.querySelector('form');
     if (form != undefined) {
         form.addEventListener('change', function (e) {
-            var map_chechbox = $(this).find('input[class="map_chechbox"]');
-            if (map_chechbox != undefined) {
-                e.preventDefault();
-                checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
-                addRemoveMarkers(checked_filters);
-            }
+          var map_chechbox = $(this).find('input[class="map_chechbox"]');
+          if (map_chechbox != undefined) {
+              addRemoveMarkers();
+          }
         });
 
     }
@@ -126,7 +125,7 @@ function disableKeypress() {
 //if ($("#1__map_points_query") != undefined) { $("a[name='map']").detach(); }
 
 // add box
-var counter = 0;
+// var counter = 0;
 // function add_field(name, bind_query_id = "") {
 //     updateindex();
 //     var contents = "";
@@ -444,22 +443,22 @@ var counter = 0;
 // }
 
 // add new query field
-const addQueryField = (name, idx) => {
-    const currentDate = new Date();
-    const timestamp = currentDate.getTime();
-
-    let content = '';
-    const openDiv = '<div class="query-div">'
-    const closeDiv = '</div>'
-    const query_field = "<label for='largeInput'>SPARQL query</label><br/>\
-		<textarea oninput='auto_grow(this)' id='" + idx + "__extra_query_" + timestamp + "' name='" + idx + "__extra_query_" + timestamp + "' type='text' placeholder='Type your query' required></textarea><br/>\
-		<input class='form-control' type='text' id='" + idx + "__extra_series_" + timestamp + "' name='" + idx + "__extra_series_" + timestamp + "' placeholder='The label for the data series'><br/>";
-    const trash = '<a href="#" class="trash" id="trash" name="trash"><i class="far fa-trash-alt" id="bin"></i></a><br/>';
-    content = openDiv + trash + query_field + closeDiv;
-
-    const afterElement = document.getElementById(name);
-    afterElement.insertAdjacentHTML('beforebegin', content);
-}
+// const addQueryField = (name, idx) => {
+//     const currentDate = new Date();
+//     const timestamp = currentDate.getTime();
+//
+//     let content = '';
+//     const openDiv = '<div class="query-div">'
+//     const closeDiv = '</div>'
+//     const query_field = "<label for='largeInput'>SPARQL query</label><br/>\
+// 		<textarea oninput='auto_grow(this)' id='" + idx + "__extra_query_" + timestamp + "' name='" + idx + "__extra_query_" + timestamp + "' type='text' placeholder='Type your query' required></textarea><br/>\
+// 		<input class='form-control' type='text' id='" + idx + "__extra_series_" + timestamp + "' name='" + idx + "__extra_series_" + timestamp + "' placeholder='The label for the data series'><br/>";
+//     const trash = '<a href="#" class="trash" id="trash" name="trash"><i class="far fa-trash-alt" id="bin"></i></a><br/>';
+//     content = openDiv + trash + query_field + closeDiv;
+//
+//     const afterElement = document.getElementById(name);
+//     afterElement.insertAdjacentHTML('beforebegin', content);
+// }
 
 // preview content
 // $(function () {
@@ -1244,9 +1243,9 @@ const addQueryField = (name, idx) => {
 //     $('form').change(update);
 // });
 
-const addQueryArea = () => {
-    console.log('check');
-}
+// const addQueryArea = () => {
+//     console.log('check');
+// }
 
 // function for errors in sparql queries
 const queryError = (xhr, ajaxOptions, thrownError) => {
@@ -1264,152 +1263,152 @@ function rerunQuery(pos, el) {
 }
 
 // initialize an empty map, used directly in templates
-function initMap(pos) {
-    var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
-    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-    return map
-}
+// function initMap(pos) {
+//     var map = L.map(pos + "__map_preview_container").setView([51.505, -0.09], 3);
+//     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
+//         maxZoom: 19,
+//         attribution: '© OpenStreetMap'
+//     }).addTo(map);
+//     return map
+// }
 
 // get geo data from SPARQL endpoint and send to map
-function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = false, color_code) {
-    $.ajax({
-        type: 'POST',
-        url: sparqlEndpoint + '?query=' + encoded_query,
-        headers: { Accept: 'application/sparql-results+json' },
-        beforeSend: function () { $('#loader').removeClass('hidden') },
-        success: function (returnedJson) {
-            // preview map
-            var geoJSONdata = creategeoJSON(returnedJson);
-            markers = setView(mapid, geoJSONdata, waitfilters, color_code);
-            allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
-            if (waitfilters == true) {
-                showFilters(datastory_data.dynamic_elements.length);
-            }
-        },
-        complete: function () {
-            $('#loader').addClass('hidden');
-            return true;
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            queryError(xhr, ajaxOptions, thrownError);
-        }
-    });
-}
+// function createMap(sparqlEndpoint, encoded_query, mapid, idx = 0, waitfilters = false, color_code) {
+//     $.ajax({
+//         type: 'POST',
+//         url: sparqlEndpoint + '?query=' + encoded_query,
+//         headers: { Accept: 'application/sparql-results+json' },
+//         beforeSend: function () { $('#loader').removeClass('hidden') },
+//         success: function (returnedJson) {
+//             // preview map
+//             var geoJSONdata = creategeoJSON(returnedJson);
+//             markers = setView(mapid, geoJSONdata, waitfilters, color_code);
+//             allMarkers = setView(mapid, geoJSONdata, waitfilters, color_code);
+//             if (waitfilters == true) {
+//                 showFilters(datastory_data.dynamic_elements.length);
+//             }
+//         },
+//         complete: function () {
+//             $('#loader').addClass('hidden');
+//             return true;
+//         },
+//         error: function (xhr, ajaxOptions, thrownError) {
+//             queryError(xhr, ajaxOptions, thrownError);
+//         }
+//     });
+// }
 
-function onEachFeature(feature, layer) {
-    // does this feature have a property named popupContent?
-    if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.popupContent);
-    }
-}
+// function onEachFeature(feature, layer) {
+//     // does this feature have a property named popupContent?
+//     if (feature.properties && feature.properties.popupContent) {
+//         layer.bindPopup(feature.properties.popupContent);
+//     }
+// }
 
 // fill in an already initialized map (initMap())
 // with data points received from createMap()
-function setView(mapid, geoJSONdata, waitfilters, color_code) {
-    // remove markers if any from a map already initialised
-    map.eachLayer(function (layer) {
-        if (layer instanceof L.MarkerClusterGroup) {
-            map.removeLayer(layer)
-        }
-    });
-    // remove geoJSON
-    $('#dataMap').remove();
+// function setView(mapid, geoJSONdata, waitfilters, color_code) {
+//     // remove markers if any from a map already initialised
+//     map.eachLayer(function (layer) {
+//         if (layer instanceof L.MarkerClusterGroup) {
+//             map.removeLayer(layer)
+//         }
+//     });
+//     // remove geoJSON
+//     $('#dataMap').remove();
+//
+//     // style clusters
+//     var innerClusterStyle = "display: inline-block; background:" + color_code + ";\
+// 		width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
+//
+//     var markers = L.markerClusterGroup({
+//         iconCreateFunction: function (cluster) {
+//             var markers = cluster.getAllChildMarkers();
+//             var n = 0;
+//             for (var i = 0; i < markers.length; i++) { n += 1; }
+//             return L.divIcon({ html: "<span style='" + innerClusterStyle + "'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
+//         },
+//         singleMarkerMode: true
+//     });
+//
+//     // get markers from geoJSON, bind popupContent
+//     var data_layers = L.geoJSON(geoJSONdata, {
+//         onEachFeature: onEachFeature
+//     });
+//
+//     // add markers to clusters
+//     markers.addLayer(data_layers);
+//
+//     // show clusters
+//     map.addLayer(markers);
+//
+//     // add geoJSONdata to DOM
+//     var $body = $(document.body);
+//     $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + "</script>");
+//     if (waitfilters == true) {
+//         map_ready = true;
+//         $('form').trigger('change');
+//     }
+//     return markers;
+// }
+//
+// function creategeoJSON(returnedJson) {
+//     var geoJSONdata = [];
+//     // clean headings
+//     var headings = returnedJson.head.vars;
+//     var there_is_point = headings.indexOf('point');
+//     for (j = 0; j < headings.length; j++) {
+//         if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
+//             headings.splice(j, 1); j--;
+//         }
+//     }
+//     // create geoJSON object
+//     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//         var queryResults = returnedJson.results.bindings;
+//         pointObj = {};
+//         pointObj.type = "Feature";
+//         pointObj.properties = {};
+//         pointObj.properties.popupContent = "";
+//         for (j = 0; j < headings.length; j++) {
+//             pointObj.properties.popupContent += queryResults[i][headings[j]].value + '.\n\ '
+//         }
+//         if (there_is_point != -1) {
+//             pointObj.properties.uri = queryResults[i]['point'].value;
+//             pointObj.properties.popupContent += "<br><a target='_blank' href='" + queryResults[i].point.value + "'>URI</a>"
+//         };
+//         pointObj.geometry = {};
+//         pointObj.geometry.type = "Point";
+//         // check first
+//         pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
+//         geoJSONdata.push(pointObj);
+//     }
+//     return geoJSONdata
+// };
+//
+// function initSidebar() {
+//     sidebar = L.control.sidebar({
+//         autopan: false,       // whether to maintain the centered map point when opening the sidebar
+//         closeButton: true,    // whether t add a close button to the panes
+//         container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
+//         position: 'left',     // left or right
+//     }).addTo(map);
+//     //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
+//     return sidebar;
+// };
 
-    // style clusters
-    var innerClusterStyle = "display: inline-block; background:" + color_code + ";\
-		width: 40px; height: 40px !important; border-radius: 50% !important; padding-top: 10px; opacity: 0.8;"
-
-    var markers = L.markerClusterGroup({
-        iconCreateFunction: function (cluster) {
-            var markers = cluster.getAllChildMarkers();
-            var n = 0;
-            for (var i = 0; i < markers.length; i++) { n += 1; }
-            return L.divIcon({ html: "<span style='" + innerClusterStyle + "'>" + n + "</span>", className: 'mycluster pointer-color', iconSize: L.point(40, 40) });
-        },
-        singleMarkerMode: true
-    });
-
-    // get markers from geoJSON, bind popupContent
-    var data_layers = L.geoJSON(geoJSONdata, {
-        onEachFeature: onEachFeature
-    });
-
-    // add markers to clusters
-    markers.addLayer(data_layers);
-
-    // show clusters
-    map.addLayer(markers);
-
-    // add geoJSONdata to DOM
-    var $body = $(document.body);
-    $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + "</script>");
-    if (waitfilters == true) {
-        map_ready = true;
-        $('form').trigger('change');
-    }
-    return markers;
-}
-
-function creategeoJSON(returnedJson) {
-    var geoJSONdata = [];
-    // clean headings
-    var headings = returnedJson.head.vars;
-    var there_is_point = headings.indexOf('point');
-    for (j = 0; j < headings.length; j++) {
-        if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
-            headings.splice(j, 1); j--;
-        }
-    }
-    // create geoJSON object
-    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-        var queryResults = returnedJson.results.bindings;
-        pointObj = {};
-        pointObj.type = "Feature";
-        pointObj.properties = {};
-        pointObj.properties.popupContent = "";
-        for (j = 0; j < headings.length; j++) {
-            pointObj.properties.popupContent += queryResults[i][headings[j]].value + '.\n\ '
-        }
-        if (there_is_point != -1) {
-            pointObj.properties.uri = queryResults[i]['point'].value;
-            pointObj.properties.popupContent += "<br><a target='_blank' href='" + queryResults[i].point.value + "'>URI</a>"
-        };
-        pointObj.geometry = {};
-        pointObj.geometry.type = "Point";
-        // check first
-        pointObj.geometry.coordinates = [queryResults[i].long.value, queryResults[i].lat.value];
-        geoJSONdata.push(pointObj);
-    }
-    return geoJSONdata
-};
-
-function initSidebar() {
-    sidebar = L.control.sidebar({
-        autopan: false,       // whether to maintain the centered map point when opening the sidebar
-        closeButton: true,    // whether t add a close button to the panes
-        container: 'sidebar', // the DOM container or #ID of a predefined sidebar container that should be used
-        position: 'left',     // left or right
-    }).addTo(map);
-    //$(".leaflet-sidebar").css("background",'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ') !important');
-    return sidebar;
-};
-
-function showFilters(count) {
-    if (count > 1) {
-        for (let step = 2; step < count + 1; step++) {
-            var qf = $("#" + step + "__map_filter_query").val().replace('\n', '');
-            var encoded_filter = encodeURIComponent(qf);
-            var map_filter_bind_query = $('#1__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
-            var filter_title = $("#" + step + "__map_filter_title").val();
-            var filter_id = step;
-            var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
-            addFilterMap(datastory_data.sparql_endpoint, encoded_filter, map_filter_bind_query, filter_title, filter_id, checked_filters);
-        }
-    }
-};
+// function showFilters(count) {
+//     if (count > 1) {
+//         for (let step = 2; step < count + 1; step++) {
+//             var qf = $("#" + step + "__map_filter_query").val().replace('\n', '');
+//             var encoded_filter = encodeURIComponent(qf);
+//             var map_filter_bind_query = $('#1__map_filter_query').map(function () { return $(this).data('bind-query'); }).get();
+//             var filter_title = $("#" + step + "__map_filter_title").val();
+//             var filter_id = step;
+//             var checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+//             addFilterMap(datastory_data.sparql_endpoint, encoded_filter, map_filter_bind_query, filter_title, filter_id, checked_filters);
+//         }
+//     }
+// };
 
 function collapseFilter(panel_id) { $("#" + panel_id + " p").toggle(); }
 
@@ -1607,8 +1606,10 @@ function checkvalue(checkbox, checked_filters) {
     return checked;
 }
 
-function addRemoveMarkers(checked_filters) {
-    console.log("addRemoveMarkers: checked_filters", checked_filters);
+function addRemoveMarkers() {
+  checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+
+    console.log("addRemoveMarkers: checked_filters", checked_filters, markers);
     if (markers != undefined) {
         markers.clearLayers();
         allMarkers.eachLayer(layer => {
@@ -1985,7 +1986,7 @@ function colorSwitch(color_1, color_2) {
     var gradientEl = document.querySelector(".secondarymenuinner");
     var gradientPreview = document.querySelectorAll(".previewtextsearch");
     var counters = document.querySelectorAll(".count_result");
-    var mapSidebar = document.querySelectorAll(".leaflet-sidebar");
+    //var mapSidebar = document.querySelectorAll(".leaflet-sidebar");
     // var mapSidebarTab = document.querySelectorAll(".leaflet-sidebar-tabs");
     //var textsearch_buttons = document.querySelectorAll(".textsearch_button");
     //gradientEl.classList.remove("bg-primary-gradient");
@@ -2001,9 +2002,9 @@ function colorSwitch(color_1, color_2) {
         gradientPreview.forEach(gradientbackground);
     }
     // does not work
-    if (typeof (mapSidebar) != undefined && mapSidebar != null) {
-        mapSidebar.forEach(gradientbackground);
-    }
+    // if (typeof (mapSidebar) != undefined && mapSidebar != null) {
+    //     mapSidebar.forEach(gradientbackground);
+    // }
     // if (typeof (mapSidebarTab) != undefined && mapSidebarTab != null) {
     //     mapSidebarTab.forEach(monchromebackground);
     // }
@@ -2162,32 +2163,32 @@ function chartColor(colorStart, colorEnd, dataLength) {
 }
 
 // print chart
-function printChart(image, position) {
-    var print_btn = document.getElementById('print_' + position);
-    print_btn.onclick = function () {
-        print_btn.href = image;
-        print_btn.download = 'my_chart.png';
-    }
-}
+// function printChart(image, position) {
+//     var print_btn = document.getElementById('print_' + position);
+//     print_btn.onclick = function () {
+//         print_btn.href = image;
+//         print_btn.download = 'my_chart.png';
+//     }
+// }
 
 // array to string with quotes
-function arrayToString(labelsArray) {
-    var labelsString = '';
-    labelsArray.forEach(el => {
-        var newString = '"' + el + '",';
-        labelsString = labelsString + newString;
-    }); return labelsString
-}
+// function arrayToString(labelsArray) {
+//     var labelsString = '';
+//     labelsArray.forEach(el => {
+//         var newString = '"' + el + '",';
+//         labelsString = labelsString + newString;
+//     }); return labelsString
+// }
 
 // create embed tag with image source
-function exportChart(position, type, labels, data, label) {
-    var export_btn = document.getElementById('export_' + position);
-    export_btn.onclick = function () {
-        var chartURL = 'https://quickchart.io/chart?c={type:"' + type + '",data:{labels:[' + labels + '],datasets:[{label:"' + label + '",data:[' + data + ']}]}}'
-        // window.open(chartURL);
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<embed type="image/jpg" src="' + encodeURI(chartURL) + '">');
-    }
-}
+// function exportChart(position, type, labels, data, label) {
+//     var export_btn = document.getElementById('export_' + position);
+//     export_btn.onclick = function () {
+//         var chartURL = 'https://quickchart.io/chart?c={type:"' + type + '",data:{labels:[' + labels + '],datasets:[{label:"' + label + '",data:[' + data + ']}]}}'
+//         // window.open(chartURL);
+//         window.prompt("Copy to clipboard: Ctrl+C, Enter", '<embed type="image/jpg" src="' + encodeURI(chartURL) + '">');
+//     }
+// }
 
 // function barchart(element) {
 //
@@ -2928,174 +2929,174 @@ function exportChart(position, type, labels, data, label) {
 
 
 // STATISTICS TABLE
-function createSimpleTable(table_title, returnedJson, pos, type) {
-    var tabletoappend = "<caption class='resulttable_caption' \
-	style='color: white'>"+ decodeURIComponent(table_title) + "\
-	</caption>\
-	<tr>";
-    // exclude headings with Label
-    var headings = returnedJson.head.vars;
-    for (j = 0; j < headings.length; j++) {
-        if (!headings[j].includes('Label')) {
-            tabletoappend += "<th>" + headings[j] + "</th>";
-        } else {
-            headings.splice(j, 1);
-            j--;
-        }
-    }
+// function createSimpleTable(table_title, returnedJson, pos, type) {
+//     var tabletoappend = "<caption class='resulttable_caption' \
+// 	style='color: white'>"+ decodeURIComponent(table_title) + "\
+// 	</caption>\
+// 	<tr>";
+//     // exclude headings with Label
+//     var headings = returnedJson.head.vars;
+//     for (j = 0; j < headings.length; j++) {
+//         if (!headings[j].includes('Label')) {
+//             tabletoappend += "<th>" + headings[j] + "</th>";
+//         } else {
+//             headings.splice(j, 1);
+//             j--;
+//         }
+//     }
+//
+//     // format table
+//     tabletoappend += "</tr>";
+//     //if (returnedJson.length >= 1) {
+//     for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//         tabletoappend += "<tr>";
+//         for (j = 0; j < headings.length; j++) {
+//
+//             var res_value = "";
+//             if (returnedJson.results.bindings[i][headings[j]] !== undefined) {
+//                 res_value = returnedJson.results.bindings[i][headings[j]].value;
+//             };
+//
+//             if (returnedJson.results.bindings[i][headings[j] + 'Label'] != undefined) {
+//                 var res_label = ""
+//                 if (returnedJson.results.bindings[i][headings[j] + 'Label'].value.length) {
+//                     res_label = returnedJson.results.bindings[i][headings[j] + 'Label'].value;
+//                 }
+//                 tabletoappend += "<td>";
+//                 tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+//                 // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
+//                 tabletoappend += "</td>";
+//             }
+//             else {
+//                 tabletoappend += "<td>";
+//                 tabletoappend += "<span class='table_result'>" + res_value + "</span>";
+//                 // var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
+//                 tabletoappend += "</td>";
+//             }
+//         }
+//         tabletoappend += "</tr>";
+//     }
+//     $("#" + pos + "__table tr").detach();
+//     $("#" + pos + "__table caption").detach();
+//     $("#" + pos + "__table").append(tabletoappend);
+//     if (type.length > 0) {
+//         exportTableHtml(pos, type);
+//         exportTableCsv(pos, type, table_title);
+//     }
+//
+// }
 
-    // format table
-    tabletoappend += "</tr>";
-    //if (returnedJson.length >= 1) {
-    for (i = 0; i < returnedJson.results.bindings.length; i++) {
-        tabletoappend += "<tr>";
-        for (j = 0; j < headings.length; j++) {
-
-            var res_value = "";
-            if (returnedJson.results.bindings[i][headings[j]] !== undefined) {
-                res_value = returnedJson.results.bindings[i][headings[j]].value;
-            };
-
-            if (returnedJson.results.bindings[i][headings[j] + 'Label'] != undefined) {
-                var res_label = ""
-                if (returnedJson.results.bindings[i][headings[j] + 'Label'].value.length) {
-                    res_label = returnedJson.results.bindings[i][headings[j] + 'Label'].value;
-                }
-                tabletoappend += "<td>";
-                tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
-                // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
-                tabletoappend += "</td>";
-            }
-            else {
-                tabletoappend += "<td>";
-                tabletoappend += "<span class='table_result'>" + res_value + "</span>";
-                // var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
-                tabletoappend += "</td>";
-            }
-        }
-        tabletoappend += "</tr>";
-    }
-    $("#" + pos + "__table tr").detach();
-    $("#" + pos + "__table caption").detach();
-    $("#" + pos + "__table").append(tabletoappend);
-    if (type.length > 0) {
-        exportTableHtml(pos, type);
-        exportTableCsv(pos, type, table_title);
-    }
-
-}
-
-function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type = '') {
-    var encoded_table = encodeURIComponent(table_query);
-    $.ajax({
-        type: 'GET',
-        url: sparqlEndpoint + '?query=' + encoded_table,
-        headers: { Accept: 'application/sparql-results+json' },
-        beforeSend: function () { $('#loader').removeClass('hidden') },
-        success: function (returnedJson) {
-            createSimpleTable(table_title, returnedJson, pos, type);
-        },
-        complete: function () {
-            $('#loader').addClass('hidden');
-            return true;
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            queryError(xhr, ajaxOptions, thrownError);
-        }
-    });
-
-}
+// function simpleTableViz(sparqlEndpoint, table_query, table_title, pos, type = '') {
+//     var encoded_table = encodeURIComponent(table_query);
+//     $.ajax({
+//         type: 'GET',
+//         url: sparqlEndpoint + '?query=' + encoded_table,
+//         headers: { Accept: 'application/sparql-results+json' },
+//         beforeSend: function () { $('#loader').removeClass('hidden') },
+//         success: function (returnedJson) {
+//             createSimpleTable(table_title, returnedJson, pos, type);
+//         },
+//         complete: function () {
+//             $('#loader').addClass('hidden');
+//             return true;
+//         },
+//         error: function (xhr, ajaxOptions, thrownError) {
+//             queryError(xhr, ajaxOptions, thrownError);
+//         }
+//     });
+//
+// }
 
 // export table HTML
-function exportTableHtml(position, type) {
-    var export_btn;
-    var tableHtml;
-    if (type && type.includes('table')) {
-        export_btn = document.getElementById('export_' + position);
-        table = document.getElementById(position + '__table');
-        var cloneTable = table.cloneNode(true);
-        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-        tableHtml = cloneTable.innerHTML;
-    } else if (type && type.includes('textsearch')) {
-        export_btn = document.getElementById('export_' + position);
-        table = document.getElementById(position + '__textsearchid');
-        var cloneTable = table.cloneNode(true);
-        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-        // remove action buttons
-        var uselessEl = cloneTable.querySelectorAll('.action_button');
-        uselessEl.forEach(el => {
-            el.remove();
-        })
-        // remove span buttons
-        cloneTable.querySelector('.caret').remove();
-        cloneTable.querySelector('.closetable').remove();
-        cloneTable.querySelector('#export_' + position).remove();
-        tableHtml = cloneTable.innerHTML;
-    }
-    export_btn.onclick = function () {
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
-    }
-
-}
+// function exportTableHtml(position, type) {
+//     var export_btn;
+//     var tableHtml;
+//     if (type && type.includes('table')) {
+//         export_btn = document.getElementById('export_' + position);
+//         table = document.getElementById(position + '__table');
+//         var cloneTable = table.cloneNode(true);
+//         cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+//         tableHtml = cloneTable.innerHTML;
+//     } else if (type && type.includes('textsearch')) {
+//         export_btn = document.getElementById('export_' + position);
+//         table = document.getElementById(position + '__textsearchid');
+//         var cloneTable = table.cloneNode(true);
+//         cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+//         // remove action buttons
+//         var uselessEl = cloneTable.querySelectorAll('.action_button');
+//         uselessEl.forEach(el => {
+//             el.remove();
+//         })
+//         // remove span buttons
+//         cloneTable.querySelector('.caret').remove();
+//         cloneTable.querySelector('.closetable').remove();
+//         cloneTable.querySelector('#export_' + position).remove();
+//         tableHtml = cloneTable.innerHTML;
+//     }
+//     export_btn.onclick = function () {
+//         window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
+//     }
+//
+// }
 
 // export table CSV
 // reference: https://stackoverflow.com/questions/15547198/export-html-table-to-csv-using-vanilla-javascript
-function exportTableCsv(position, type, title) {
-    export_btn = document.getElementById('csv_' + position);
-    var table_id = '';
-    var csv = [];
-    if (type && type.includes('table')) {
-        table_id = position + '__table';
-        var cloneTable = table.cloneNode(true);
-        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-        csv = createCsv(cloneTable);
-    } else if (type && type.includes('textsearch')) {
-        table_id = position + '__textsearchid';
-        var cloneTable = table.cloneNode(true);
-        cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-        // remove action buttons
-        var uselessEl = cloneTable.querySelectorAll('.action_button');
-        uselessEl.forEach(el => {
-            el.remove();
-        })
-        // remove span buttons
-        cloneTable.querySelector('.caret').remove();
-        cloneTable.querySelector('.closetable').remove();
-        cloneTable.querySelector('#export_' + position).remove();
-        csv = createCsv(cloneTable);
-    }
-
-    var csv_string = csv.join('\n');
-    var cleanTitle = decodeURIComponent(title);
-    // Download it
-    var filename = 'export_' + cleanString(cleanTitle) + '.csv';
-    export_btn.onclick = function () {
-        export_btn.setAttribute('target', '_blank');
-        export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
-        export_btn.setAttribute('download', filename);
-    }
-}
-
-// construct csv
-function createCsv(table, separator = ',') {
-    // Select rows from table_id
-    var rows = table.rows;
-    // Construct csv
-    var csv = [];
-    for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll('td, th');
-        for (var j = 0; j < cols.length; j++) {
-            // Clean innertext to remove multiple spaces and jumpline (break csv)
-            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
-            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
-            data = data.replace(/"/g, '""');
-            // Push escaped string
-            row.push('"' + data + '"');
-        }
-        csv.push(row.join(separator));
-    }
-    return csv;
-}
+// function exportTableCsv(position, type, title) {
+//     export_btn = document.getElementById('csv_' + position);
+//     var table_id = '';
+//     var csv = [];
+//     if (type && type.includes('table')) {
+//         table_id = position + '__table';
+//         var cloneTable = table.cloneNode(true);
+//         cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+//         csv = createCsv(cloneTable);
+//     } else if (type && type.includes('textsearch')) {
+//         table_id = position + '__textsearchid';
+//         var cloneTable = table.cloneNode(true);
+//         cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
+//         // remove action buttons
+//         var uselessEl = cloneTable.querySelectorAll('.action_button');
+//         uselessEl.forEach(el => {
+//             el.remove();
+//         })
+//         // remove span buttons
+//         cloneTable.querySelector('.caret').remove();
+//         cloneTable.querySelector('.closetable').remove();
+//         cloneTable.querySelector('#export_' + position).remove();
+//         csv = createCsv(cloneTable);
+//     }
+//
+//     var csv_string = csv.join('\n');
+//     var cleanTitle = decodeURIComponent(title);
+//     // Download it
+//     var filename = 'export_' + cleanString(cleanTitle) + '.csv';
+//     export_btn.onclick = function () {
+//         export_btn.setAttribute('target', '_blank');
+//         export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+//         export_btn.setAttribute('download', filename);
+//     }
+// }
+//
+// // construct csv
+// function createCsv(table, separator = ',') {
+//     // Select rows from table_id
+//     var rows = table.rows;
+//     // Construct csv
+//     var csv = [];
+//     for (var i = 0; i < rows.length; i++) {
+//         var row = [], cols = rows[i].querySelectorAll('td, th');
+//         for (var j = 0; j < cols.length; j++) {
+//             // Clean innertext to remove multiple spaces and jumpline (break csv)
+//             var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+//             // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+//             data = data.replace(/"/g, '""');
+//             // Push escaped string
+//             row.push('"' + data + '"');
+//         }
+//         csv.push(row.join(separator));
+//     }
+//     return csv;
+// }
 
 // autoresize textarea
 function auto_grow(element) {
@@ -3124,12 +3125,12 @@ function getHTML(el) {
     window.open('../static/static.zip');
 }
 
-function saveHTML(name) {
-    var html = document.documentElement.outerHTML;
-    var htmlcopy = html.replaceAll('/static', 'static');
-    var thishtml = encodeURIComponent(htmlcopy);
-    saveAs(thishtml, name + '.html');
-}
+// function saveHTML(name) {
+//     var html = document.documentElement.outerHTML;
+//     var htmlcopy = html.replaceAll('/static', 'static');
+//     var thishtml = encodeURIComponent(htmlcopy);
+//     saveAs(thishtml, name + '.html');
+// }
 
 // change color of secondary menu in datastory
 function getBrightness(c) {
@@ -3202,46 +3203,46 @@ const cleanString = (dirtyString) => {
 
 ////// TEXT EDITOR
 // Initialize Quill editor
-const createTextEditor = () => {
-    let quill;
-    let editors = document.querySelectorAll('.editor');
-    for (const [key, value] of Object.entries(editors)) {
-        let pos = value.id.split('__')[0];
-        let name = value.previousElementSibling.id.split('__')[1];
-        if (value.children.length != 3) {
-            quill = new Quill(value, {
-                modules: {
-                    toolbar: toolbarOptions()
-                },
-                theme: 'snow'
-            });
-        }
-        fromEditorToInput(pos);
-    }
-}
-
-const toolbarOptions = () => {
-    let toolbarOptions = [];
-    toolbarOptions = [
-        [{ 'header': [2, 3, false] }],
-        ['bold', 'italic', 'underline'],
-        ['link'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['clean']
-    ]
-
-    return toolbarOptions;
-}
-
-const fromEditorToInput = (pos) => {
-    let editor = document.getElementById(pos + '__editor');
-    editor.onmouseleave = function () {
-        let qlEditor = editor.childNodes[0];
-        let textContent = qlEditor.innerHTML;
-        let input = editor.parentNode.querySelector('input');
-        input.setAttribute('value', textContent);
-    }
-}
+// const createTextEditor = () => {
+//     let quill;
+//     let editors = document.querySelectorAll('.editor');
+//     for (const [key, value] of Object.entries(editors)) {
+//         let pos = value.id.split('__')[0];
+//         let name = value.previousElementSibling.id.split('__')[1];
+//         if (value.children.length != 3) {
+//             quill = new Quill(value, {
+//                 modules: {
+//                     toolbar: toolbarOptions()
+//                 },
+//                 theme: 'snow'
+//             });
+//         }
+//         fromEditorToInput(pos);
+//     }
+// }
+//
+// const toolbarOptions = () => {
+//     let toolbarOptions = [];
+//     toolbarOptions = [
+//         [{ 'header': [2, 3, false] }],
+//         ['bold', 'italic', 'underline'],
+//         ['link'],
+//         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+//         ['clean']
+//     ]
+//
+//     return toolbarOptions;
+// }
+//
+// const fromEditorToInput = (pos) => {
+//     let editor = document.getElementById(pos + '__editor');
+//     editor.onmouseleave = function () {
+//         let qlEditor = editor.childNodes[0];
+//         let textContent = qlEditor.innerHTML;
+//         let input = editor.parentNode.querySelector('input');
+//         input.setAttribute('value', textContent);
+//     }
+// }
 
 
 ///// MODIFY CSS

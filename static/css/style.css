@@ -8,16 +8,21 @@
   --font-family-sans-serif: 'Karla', sans-serif;
 }
 
+#queryModal {
+  z-index: 10000;
+}
 .main-header,
 .sidebar {
   display: none;
 }
 
+nav {
+  z-index: 30000;
+}
+
 .text_green {
   color:#3DED97!important;
 }
-
-/* EXPORT HTML */
 
 .sidebar-color,
 body,
@@ -399,6 +404,9 @@ textarea:focus {
 
 
 /* modify datastory */
+.form-group {
+  padding-left : 0px !important;
+}
 div[id*='block_field'],
 body[data-background-color=dark] .modifystory .card .card-header {
   /* border-bottom: dotted 2px var(--main-color) !important; */
@@ -475,6 +483,10 @@ div[id*='block_field'] {
   color: white !important;
 }
 
+.block_title.float_none {
+  float:none !important;
+}
+
 #sortable a.up,
 #sortable a.down,
 #sortable a.trash {
@@ -488,11 +500,14 @@ div[id*='block_field'] {
   border-radius: 50%;
 }
 
+#sortable p {
+  line-height: 1.5em;
+}
+
 .count_result {
   margin: 0.4em;
   border-radius: 0.5em;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-
 }
 
 .count_result .card-body {
@@ -605,6 +620,7 @@ border-radius: 0.4em!important;
 .chart-container {
   border-radius: 0.4em;
   padding: 2em;
+  margin-top: 1em;
 }
 
 
@@ -619,6 +635,8 @@ border-radius: 0.4em!important;
   line-height: 1.3em;
   margin: 1em 0px;
 }
+
+.typography-line {padding-left: 0px !important;}
 
 .exportbutton {
   cursor: pointer;
@@ -772,11 +790,16 @@ p {
 
 table {
   margin: 2em 0px;
+
 }
 
 table tr th {
   border-top: solid 2px var(--light-grey);
   padding: 0.3em 0.6em;
+}
+
+table tr td {
+  font-family: var(--font-family-sans-serif);
 }
 
 tr:nth-child(even) {
@@ -911,6 +934,31 @@ hr {
 
 #sidebar {
   max-width: 250px;
+}
+
+.map_sidebar {
+  max-width:200px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: scroll;
+  z-index: 2000;
+  float: left;
+  clear: both;
+  background-color: white;
+  border-radius: 0.5em;
+  pointer-events: auto;
+  transition: width 500ms;
+  color: black;
+}
+
+.map_sidebar_panel {
+  padding: 1em;
+}
+
+.map_sidebar_panel_title {
+  color: black !important;
 }
 
 .leaflet-sidebar-content,

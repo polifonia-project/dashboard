@@ -56,6 +56,14 @@ const Count = ({ unique_key, index ,
          el.style.color = color_1;
      }
      counters.forEach(borders);
+     if (window.location.href.indexOf("/modify/") == -1) {
+         $('#sortable > .count_result:first-of-type').each(function() {
+           $(this).nextUntil('#sortable > :not(.count_result)')
+                .addBack()
+                .wrapAll("<div class='row' />");
+         });
+     }
+
   }, []);
 
   // WYSIWYG: render component and preview
@@ -72,7 +80,7 @@ const Count = ({ unique_key, index ,
           index={index}
           removeComponent={removeComponent}
           key={unique_key} />
-          <div className='card-body justify-content-center option-2b count_result col-md-4'>
+          <div className='card-body justify-content-center option-2b count_result col-md-3'>
             <p className='counter_num' id={index+"__num"}>{count}</p>
             <p className='counter_label' id={index+"__lab"}>{label}</p>
           </div>
@@ -96,7 +104,7 @@ const Count = ({ unique_key, index ,
   } else {
     // Final story: render preview
     return (
-      <div className='card-body justify-content-center option-2b count_result col-md-4'>
+      <div className='card-body justify-content-center option-2b count_result col-md-3'>
         <p className='counter_num' id={index+"__num"}>{count}</p>
         <p className='counter_label' id={index+"__lab"}>{label}</p>
       </div>

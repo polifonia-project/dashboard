@@ -17,6 +17,10 @@ const components = [
   {
     name:"table",
     action: Table
+  },
+  {
+    name:"map",
+    action: MapViz
   }
 ]
 
@@ -75,7 +79,8 @@ function update_datastory(form) {
   url = url.replace(/modify\//, 'modify_bkg\/');
   fetch(url, { method: 'POST', body: formData})
     .then(response => response.text())
-    .then((data) => { datastory_data = JSON.parse(data); });
+    .then((data) => { if (data) {datastory_data = JSON.parse(data);} })
+    .catch(function (error) {console.log(error);});
   return datastory_data;
 }
 
@@ -168,6 +173,7 @@ function AddComponent() {
   // push new and old components to a list and render
   for (let i = 0; i < componentList.length; i++) {
     const TargetComponent = componentList[i].action;
+    console.log("KEY",generateKey(componentList[i].name)+i, componentList[i].name);
     componentBoxes.push(<TargetComponent
         removeComponent={removeComponent}
         sortComponentUp={sortComponentUp}

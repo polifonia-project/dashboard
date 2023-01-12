@@ -238,6 +238,9 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 			extra_set = set()
 			total_extra_dict = {}  # to store together extra data of one chart
 			extra_queries = []  # to store in separate dict extra data of one chart
+			filter_set = set()
+			total_filter_dict = {}  # to store together extra data of one chart
+			filter_queries = []
 
 			legend = {}  # data for chart axes labels
 			for k, v in form_data.items():
@@ -268,6 +271,10 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 							extra_set.add(int(k.split('_')[4]))
 							total_extra_dict[k.split('__')[1]] = v
 
+						if component_data['name'] == 'map_filters':
+							total_filter_dict[k.split('__')[1]] = v
+							filter_set.add(int(k.split('_')[5]))
+
 			for e in extra_set:
 				extra_dict = {}
 				for k, v in total_extra_dict.items():
@@ -276,6 +283,16 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 						extra_dict['extra_id'] = str(e)
 				extra_queries.append(extra_dict)
 			elements_dict['extra_queries'] = extra_queries
+
+			for e in filter_set:
+				filter_dict = {}
+				for k, v in total_filter_dict.items():
+					if str(e) in k:
+						filter_dict[k.strip('_'+str(e))] = v
+						filter_dict['extra_id'] = str(e)
+				filter_queries.append(filter_dict)
+			elements_dict['map_filters'] = filter_queries
+
 			dynamic_elements.append(elements_dict)
 
 		datastory_data['dynamic_elements'] = dynamic_elements
