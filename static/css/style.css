@@ -946,19 +946,37 @@ hr {
   z-index: 2000;
   float: left;
   clear: both;
-  background-color: white;
   border-radius: 0.5em;
   pointer-events: auto;
   transition: width 500ms;
   color: black;
+  padding: 1.3em;
+  margin: 10px 0px 10px 55px;
+  box-shadow: rgb(0 0 0 / 10%) 0px 4px 12px;
+}
+.map_sidebar_title {
+  font-size: 1.1em !important;
+}
+.map_sidebar_panel p {
+  line-height: 1em !important;
+  margin-bottom: 5px !important;
 }
 
-.map_sidebar_panel {
-  padding: 1em;
+.map_sidebar_panel_title::before {
+  content: '> ';
 }
 
-.map_sidebar_panel_title {
+.map_sidebar_panel_title, .map_sidebar_panel_title:visited, .map_sidebar_panel_title:hover {
   color: black !important;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 1em;
+  text-decoration: none !important;
+}
+
+.map_sidebar_panel label {
+  color:black !important;
+  padding-left:5px;
 }
 
 .leaflet-sidebar-content,

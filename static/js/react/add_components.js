@@ -104,6 +104,14 @@ function AddComponent() {
       form.addEventListener('mouseout', function(event) {
         datastory_data = update_datastory(form) ;
       });
+
+      // var trash_subcomponents = document.querySelectorAll(".trash_subcomponent");
+      // trash_subcomponents.forEach((element) => {
+      //   element.addEventListener("click", function (evt) {
+      //     datastory_data = update_datastory(form) ;
+      //   });
+      // });
+
     });
   }
 
@@ -140,7 +148,6 @@ function AddComponent() {
     newcomponentList.splice(new_i, 0, cutOut); // insert it at index 'new_i'
     setComponent(newcomponentList)
     datastory_data = update_datastory(form)
-    console.log("UP: NOW IS",datastory_data);
     if (datastory_data.dynamic_elements.length) {
       let cutOut = datastory_data.dynamic_elements.splice(i, 1) [0];
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
@@ -157,7 +164,7 @@ function AddComponent() {
     newcomponentList.splice(new_i, 0, cutOut); // insert it at index 'to'
     setComponent(newcomponentList)
     datastory_data = update_datastory(form)
-    console.log("DOWN: NOW IS",datastory_data);
+
     if (datastory_data.dynamic_elements.length) {
       let cutOut = datastory_data.dynamic_elements.splice(i, 1) [0];
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
@@ -173,7 +180,6 @@ function AddComponent() {
   // push new and old components to a list and render
   for (let i = 0; i < componentList.length; i++) {
     const TargetComponent = componentList[i].action;
-    console.log("KEY",generateKey(componentList[i].name)+i, componentList[i].name);
     componentBoxes.push(<TargetComponent
         removeComponent={removeComponent}
         sortComponentUp={sortComponentUp}
@@ -181,8 +187,8 @@ function AddComponent() {
         index={i} key={generateKey(componentList[i].name)+i} number={i}/>)
   }
 
-  console.log("componentList",componentList);
-  console.log("componentBoxes",componentBoxes);
+  // console.log("componentList",componentList);
+  // console.log("componentBoxes",componentBoxes);
 
 
 

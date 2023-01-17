@@ -27,15 +27,15 @@ $(document).ready(function () {
     }
 
     var form = document.querySelector('form');
-    if (form != undefined) {
-        form.addEventListener('change', function (e) {
-          var map_chechbox = $(this).find('input[class="map_chechbox"]');
-          if (map_chechbox != undefined) {
-              addRemoveMarkers();
-          }
-        });
-
-    }
+    // if (form != undefined) {
+    //     form.addEventListener('change', function (e) {
+    //       var map_chechbox = $(this).find('input[class="map_chechbox"]');
+    //       if (map_chechbox != undefined) {
+    //           addRemoveMarkers();
+    //       }
+    //     });
+    //
+    // }
 
 });
 
@@ -1248,19 +1248,19 @@ function disableKeypress() {
 // }
 
 // function for errors in sparql queries
-const queryError = (xhr, ajaxOptions, thrownError) => {
-    var error_text = 'There is an ' + xhr.statusText + ' in the query, check and try again.';
-    alert(error_text);
-    console.log(xhr);
-}
+// const queryError = (xhr, ajaxOptions, thrownError) => {
+//     var error_text = 'There is an ' + xhr.statusText + ' in the query, check and try again.';
+//     alert(error_text);
+//     console.log(xhr);
+// }
 
 //// MAPS TEMPLATE FUNCTIONS ////
 
 // rerun maps query on demand
-function rerunQuery(pos, el) {
-    $("a[data-id='" + pos + "__rerun_query']").data("run", true);
-    $('form').trigger('change');
-}
+// function rerunQuery(pos, el) {
+//     $("a[data-id='" + pos + "__rerun_query']").data("run", true);
+//     $('form').trigger('change');
+// }
 
 // initialize an empty map, used directly in templates
 // function initMap(pos) {
@@ -1410,286 +1410,288 @@ function rerunQuery(pos, el) {
 //     }
 // };
 
-function collapseFilter(panel_id) { $("#" + panel_id + " p").toggle(); }
+// function collapseFilter(panel_id) { $("#" + panel_id + " p").toggle(); }
+//
+// function test() {
+//     console.log(document.querySelector('[role="tab"]'));
+// }
+//
+// function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id, checked_filters) {
+//     // get the list of URIs from geoJSON
+//     var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
+//     var values = "VALUES ?point {";
+//     for (var i = 0; i < dataMap.length; i++) {
+//         values += '<' + dataMap[i].properties.uri + '> ';
+//     }
+//     values += '}';
+//
+//     // restructure query with VALUES
+//     // might have performance issues!
+//     var decoded_query = decodeURIComponent(encoded_query);
+//     var decoded_query_parts = decoded_query.split(/\{(.*)/s);
+//     decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
+//     encoded_query = encodeURIComponent(decoded_query);
+//
+//     // get the data
+//     $.ajax({
+//         type: 'POST',
+//         url: sparqlEndpoint + '?query=' + encoded_query,
+//         headers: { Accept: 'application/sparql-results+json' },
+//         beforeSend: function () { $('#loader').removeClass('hidden') },
+//         success: function (returnedJson) {
+//             // modify geoJSON and create list
+//             var labels_values_count = {};
+//
+//             for (i = 0; i < returnedJson.results.bindings.length; i++) {
+//                 var res = returnedJson.results.bindings[i];
+//                 // check if the filter is a string or a uri+string
+//                 var headings = returnedJson.head.vars;
+//                 var has_label = false;
+//                 if (headings.includes('filterLabel')) { has_label = true; }
+//                 // update geoJSON object in DOM
+//                 for (var j = 0; j < dataMap.length; j++) {
+//                     if (dataMap[j].properties.uri == res.point.value) {
+//                         if (has_label == true) {
+//                             dataMap[j].properties[filter_title + "#label"] = res.filterLabel.value;
+//                             dataMap[j].properties[filter_title + "#value"] = res.filter.value;
+//                             if (labels_values_count[res.filter.value] == undefined) {
+//                                 labels_values_count[res.filter.value] = [res.filterLabel.value, 1]
+//                             } else {
+//                                 labels_values_count[res.filter.value] = [res.filterLabel.value, labels_values_count[res.filter.value][1] + 1]
+//                             }
+//                         } else {
+//                             dataMap[j].properties[filter_title + "#label"] = res.filter.value;
+//                             dataMap[j].properties[filter_title + "#value"] = res.filter.value;
+//                             if (labels_values_count[res.filter.value] == undefined) {
+//                                 labels_values_count[res.filter.value] = [res.filter.value, 1]
+//                             } else {
+//                                 labels_values_count[res.filter.value] = [res.filter.value, labels_values_count[res.filter.value][1] + 1]
+//                             }
+//                         }
+//                     }
+//                 }
+//                 // update geoJSON in DOM
+//                 $('#dataMap').remove();
+//                 var $body = $(document.body);
+//                 $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
+//
+//                 // update markers
+//                 markers.eachLayer(layer => {
+//                     if (layer.feature.properties.uri == res.point.value) {
+//                         if (has_label == true) {
+//                             layer.feature.properties[filter_title + "#label"] = res.filterLabel.value;
+//                         } else {
+//                             layer.feature.properties[filter_title + "#label"] = res.filter.value;
+//                         }
+//                         layer.feature.properties[filter_title + "#value"] = res.filter.value;
+//                     }
+//                 });
+//             }
+//
+//
+//             // get markers from geoJSON, bind popupContent
+//             var data_layers = L.geoJSON(dataMap, {
+//                 onEachFeature: onEachFeature
+//             });
+//             //console.log("addFilterMap "+filter_title+" - markers");
+//
+//             // add markers to clusters
+//             //markers = L.markerClusterGroup();
+//             //markers.addLayer(data_layers);
+//             //logMarkers(markers);
+//
+//             // add panel
+//             createPanel(filter_id, filter_title, labels_values_count, checked_filters);
+//         },
+//         complete: function () {
+//             $('#loader').addClass('hidden');
+//             sortPanels();
+//         },
+//         error: function (xhr, ajaxOptions, thrownError) {
+//             queryError(xhr, ajaxOptions, thrownError);
+//         }
+//     });
+//
+// };
+//
+// function createPanel(filter_id, filter_title, labels_values_count, checked_filters) {
+//     // empty panel if exists
+//     console.log("createPanel - START", filter_title);
+//     //if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
+//     if ($("#" + filter_id + '_panel') != undefined) {
+//         sidebar.removePanel(filter_id + '_panel');
+//         $("#" + filter_id + '_panel').detach();
+//         $('a[href="#' + filter_id + '_panel"]').detach();
+//     };
+//
+//     var groupCheckboxes = document.createElement("section");
+//     groupCheckboxes.id = filter_id + "_panel";
+//     var group_title = document.createElement("h3");
+//     var filterCaret = document.createElement('span');
+//     filterCaret.className = 'caret';
+//     filterCaret.setAttribute('onclick', 'collapseFilter("' + filter_id + '_panel")');
+//     group_title.append(document.createTextNode(filter_title));
+//     group_title.append(filterCaret);
+//     groupCheckboxes.appendChild(group_title);
+//
+//     // create list of checkboxes
+//     for (const [key, value] of Object.entries(labels_values_count)) {
+//         // create elements
+//         var label = document.createElement("label");
+//         var checkbox = document.createElement("input");
+//         var singlecheckbox = document.createElement("p");
+//
+//         checkbox.type = 'checkbox';
+//         checkbox.label = value[0] + " (" + value[1] + ")";
+//         checkbox.value = key;
+//         checkbox.name = key;
+//         checkbox.className = "map_chechbox";
+//         checkbox.setAttribute("data-filter", filter_title);
+//         checkbox.checked = checkvalue(checkbox, checked_filters);
+//         label.append(document.createTextNode(checkbox.label));
+//         singlecheckbox.append(checkbox);
+//         singlecheckbox.append(label);
+//         groupCheckboxes.appendChild(singlecheckbox);
+//     }
+//
+//     // add panel
+//     var panelContent = {
+//         id: filter_id + '_panel',
+//         tab: '',
+//         pane: groupCheckboxes,
+//         title: filter_title,
+//         position: 'top'
+//     };
+//     sidebar.addPanel(panelContent);
+//
+//     let tabHamburger = document.getElementById('tab-hamburger');
+//     tabMenu(tabHamburger);
+// }
+//
+// function tabMenu(tabHamburger) {
+//     let aTabs = document.querySelectorAll('[role="tab"]');
+//     if (tabHamburger === null) {
+//         let iTabElement = document.createElement('i');
+//         iTabElement.className = 'fa fa-bars';
+//         iTabElement.id = 'map-ham';
+//         let aTab1 = document.querySelector('[role="tab"]');
+//         aTab1.id = 'tab-hamburger';
+//         aTab1.appendChild(iTabElement);
+//     }
+//     for (const value of Object.values(aTabs)) {
+//         if (value.id != 'tab-hamburger') {
+//             value.parentElement.remove();
+//         }
+//     }
+// }
+//
+// function sortPanels() {
+//     // var ps = document.querySelectorAll( ".leaflet-sidebar-content section" );
+//     // var sortedPs = Array.from( ps ).sort( (a, b) => a.id.localeCompare( b.id ) ); //sort the ps
+//     // //document.querySelector( ".leaflet-sidebar-content" ).innerHTML = sortedPs.map( s => s.outerHTML ).join(""); //recreate the markup
+//     // var tags = document.querySelector( ".leaflet-sidebar-content" );
+//     // var dupTags = tags.cloneNode(false);
+//     // sortedPs.forEach( s => dupTags.appendChild ( s ) );
+//     // //replace old with new tags
+//     // tags.parentNode.replaceChild(dupTags ,tags);
+// }
 
-function test() {
-    console.log(document.querySelector('[role="tab"]'));
-}
+// function checkvalue(checkbox, checked_filters) {
+//     var checked = false;
+//     if (checked_filters != undefined && checked_filters.length) {
+//         for (const value of checked_filters.values()) {
+//             if (checkbox.name == value.name) { checked = true; break; }
+//         }
+//     }
+//     return checked;
+// }
 
-function addFilterMap(sparqlEndpoint, encoded_query, map_filter_bind_query, filter_title, filter_id, checked_filters) {
-    // get the list of URIs from geoJSON
-    var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
-    var values = "VALUES ?point {";
-    for (var i = 0; i < dataMap.length; i++) {
-        values += '<' + dataMap[i].properties.uri + '> ';
-    }
-    values += '}';
-
-    // restructure query with VALUES
-    // might have performance issues!
-    var decoded_query = decodeURIComponent(encoded_query);
-    var decoded_query_parts = decoded_query.split(/\{(.*)/s);
-    decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
-    encoded_query = encodeURIComponent(decoded_query);
-
-    // get the data
-    $.ajax({
-        type: 'POST',
-        url: sparqlEndpoint + '?query=' + encoded_query,
-        headers: { Accept: 'application/sparql-results+json' },
-        beforeSend: function () { $('#loader').removeClass('hidden') },
-        success: function (returnedJson) {
-            // modify geoJSON and create list
-            var labels_values_count = {};
-
-            for (i = 0; i < returnedJson.results.bindings.length; i++) {
-                var res = returnedJson.results.bindings[i];
-                // check if the filter is a string or a uri+string
-                var headings = returnedJson.head.vars;
-                var has_label = false;
-                if (headings.includes('filterLabel')) { has_label = true; }
-                // update geoJSON object in DOM
-                for (var j = 0; j < dataMap.length; j++) {
-                    if (dataMap[j].properties.uri == res.point.value) {
-                        if (has_label == true) {
-                            dataMap[j].properties[filter_title + "#label"] = res.filterLabel.value;
-                            dataMap[j].properties[filter_title + "#value"] = res.filter.value;
-                            if (labels_values_count[res.filter.value] == undefined) {
-                                labels_values_count[res.filter.value] = [res.filterLabel.value, 1]
-                            } else {
-                                labels_values_count[res.filter.value] = [res.filterLabel.value, labels_values_count[res.filter.value][1] + 1]
-                            }
-                        } else {
-                            dataMap[j].properties[filter_title + "#label"] = res.filter.value;
-                            dataMap[j].properties[filter_title + "#value"] = res.filter.value;
-                            if (labels_values_count[res.filter.value] == undefined) {
-                                labels_values_count[res.filter.value] = [res.filter.value, 1]
-                            } else {
-                                labels_values_count[res.filter.value] = [res.filter.value, labels_values_count[res.filter.value][1] + 1]
-                            }
-                        }
-                    }
-                }
-                // update geoJSON in DOM
-                $('#dataMap').remove();
-                var $body = $(document.body);
-                $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
-
-                // update markers
-                markers.eachLayer(layer => {
-                    if (layer.feature.properties.uri == res.point.value) {
-                        if (has_label == true) {
-                            layer.feature.properties[filter_title + "#label"] = res.filterLabel.value;
-                        } else {
-                            layer.feature.properties[filter_title + "#label"] = res.filter.value;
-                        }
-                        layer.feature.properties[filter_title + "#value"] = res.filter.value;
-                    }
-                });
-            }
-
-
-            // get markers from geoJSON, bind popupContent
-            var data_layers = L.geoJSON(dataMap, {
-                onEachFeature: onEachFeature
-            });
-            //console.log("addFilterMap "+filter_title+" - markers");
-
-            // add markers to clusters
-            //markers = L.markerClusterGroup();
-            //markers.addLayer(data_layers);
-            //logMarkers(markers);
-
-            // add panel
-            createPanel(filter_id, filter_title, labels_values_count, checked_filters);
-        },
-        complete: function () {
-            $('#loader').addClass('hidden');
-            sortPanels();
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            queryError(xhr, ajaxOptions, thrownError);
-        }
-    });
-
-};
-
-function createPanel(filter_id, filter_title, labels_values_count, checked_filters) {
-    // empty panel if exists
-    console.log("createPanel - START", filter_title);
-    //if ($("#"+filter_id+'_panel') != undefined) {sidebar.removePanel(filter_id+'_panel');}
-    if ($("#" + filter_id + '_panel') != undefined) {
-        sidebar.removePanel(filter_id + '_panel');
-        $("#" + filter_id + '_panel').detach();
-        $('a[href="#' + filter_id + '_panel"]').detach();
-    };
-
-    var groupCheckboxes = document.createElement("section");
-    groupCheckboxes.id = filter_id + "_panel";
-    var group_title = document.createElement("h3");
-    var filterCaret = document.createElement('span');
-    filterCaret.className = 'caret';
-    filterCaret.setAttribute('onclick', 'collapseFilter("' + filter_id + '_panel")');
-    group_title.append(document.createTextNode(filter_title));
-    group_title.append(filterCaret);
-    groupCheckboxes.appendChild(group_title);
-
-    // create list of checkboxes
-    for (const [key, value] of Object.entries(labels_values_count)) {
-        // create elements
-        var label = document.createElement("label");
-        var checkbox = document.createElement("input");
-        var singlecheckbox = document.createElement("p");
-
-        checkbox.type = 'checkbox';
-        checkbox.label = value[0] + " (" + value[1] + ")";
-        checkbox.value = key;
-        checkbox.name = key;
-        checkbox.className = "map_chechbox";
-        checkbox.setAttribute("data-filter", filter_title);
-        checkbox.checked = checkvalue(checkbox, checked_filters);
-        label.append(document.createTextNode(checkbox.label));
-        singlecheckbox.append(checkbox);
-        singlecheckbox.append(label);
-        groupCheckboxes.appendChild(singlecheckbox);
-    }
-
-    // add panel
-    var panelContent = {
-        id: filter_id + '_panel',
-        tab: '',
-        pane: groupCheckboxes,
-        title: filter_title,
-        position: 'top'
-    };
-    sidebar.addPanel(panelContent);
-
-    let tabHamburger = document.getElementById('tab-hamburger');
-    tabMenu(tabHamburger);
-}
-
-function tabMenu(tabHamburger) {
-    let aTabs = document.querySelectorAll('[role="tab"]');
-    if (tabHamburger === null) {
-        let iTabElement = document.createElement('i');
-        iTabElement.className = 'fa fa-bars';
-        iTabElement.id = 'map-ham';
-        let aTab1 = document.querySelector('[role="tab"]');
-        aTab1.id = 'tab-hamburger';
-        aTab1.appendChild(iTabElement);
-    }
-    for (const value of Object.values(aTabs)) {
-        if (value.id != 'tab-hamburger') {
-            value.parentElement.remove();
-        }
-    }
-}
-
-function sortPanels() {
-    // var ps = document.querySelectorAll( ".leaflet-sidebar-content section" );
-    // var sortedPs = Array.from( ps ).sort( (a, b) => a.id.localeCompare( b.id ) ); //sort the ps
-    // //document.querySelector( ".leaflet-sidebar-content" ).innerHTML = sortedPs.map( s => s.outerHTML ).join(""); //recreate the markup
-    // var tags = document.querySelector( ".leaflet-sidebar-content" );
-    // var dupTags = tags.cloneNode(false);
-    // sortedPs.forEach( s => dupTags.appendChild ( s ) );
-    // //replace old with new tags
-    // tags.parentNode.replaceChild(dupTags ,tags);
-}
-
-function checkvalue(checkbox, checked_filters) {
-    var checked = false;
-    if (checked_filters != undefined && checked_filters.length) {
-        for (const value of checked_filters.values()) {
-            if (checkbox.name == value.name) { checked = true; break; }
-        }
-    }
-    return checked;
-}
-
-function addRemoveMarkers() {
-  checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
-
-    console.log("addRemoveMarkers: checked_filters", checked_filters, markers);
-    if (markers != undefined) {
-        markers.clearLayers();
-        allMarkers.eachLayer(layer => {
-            markers.addLayer(layer);
-        });
-        console.log("addRemoveMarkers: recreate all markers");
-        logMarkers(markers);
-
-        // get the filter names
-        var filternames = [];
-        if (checked_filters.length) {
-            for (const value of checked_filters.values()) {
-                filternames.push(value.dataset.filter);
-            }
-        }
-        // [ filter1, filter2 ...]
-        filternames = [...new Set(filternames)];
-
-        // add values checked
-        var filternames_values = {};
-        filternames.forEach(function (el, index) {
-            filternames_values[el] = [];
-        });
-        // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
-        if (checked_filters.length) {
-            for (const value of checked_filters.values()) {
-                filternames_values[value.dataset.filter].push(value.value)
-            }
-        }
-        console.log("filternames_values", filternames_values);
-        if (Object.keys(filternames_values).length) {
-            for (const [key, value] of Object.entries(filternames_values)) {
-                markers.eachLayer(layer => {
-                    // if property value not in the list of checked-checkboxes values remove marker
-                    var prop_key = key + '#value';
-                    var prop_value = layer.feature.properties[prop_key];
-                    if (!value.includes(prop_value)) {
-                        console.log("remove this", layer.feature.properties);
-                        markers.removeLayer(layer);
-                    }
-                });
-            }
-            console.log("addRemoveMarkers: removed markers");
-            //logMarkers(markers);
-            // clear map
-            map.eachLayer(function (layer) {
-                if (layer instanceof L.MarkerClusterGroup) {
-                    map.removeLayer(layer)
-                }
-            });
-            map.addLayer(markers);
-
-        }
-        // else put them all back!
-        else {
-            console.log("put all markers back");
-            // var data_layers = L.geoJSON(dataMap, {
-            // 	onEachFeature: onEachFeature
-            // });
-
-            map.eachLayer(function (layer) {
-                if (layer instanceof L.MarkerClusterGroup) {
-                    map.removeLayer(layer)
-                }
-            });
-            markers.clearLayers();
-            allMarkers.eachLayer(layer => {
-                markers.addLayer(layer);
-            });
-            map.addLayer(markers);
-        }
-    }
-}
+// function addRemoveMarkers() {
+//   checked_filters = Array.from(document.querySelectorAll('input[class="map_chechbox"]:checked'));
+//
+//     console.log("addRemoveMarkers: checked_filters", checked_filters, markers);
+//     if (markers != undefined) {
+//         markers.clearLayers();
+//         allMarkers.eachLayer(layer => {
+//             markers.addLayer(layer);
+//         });
+//         console.log("addRemoveMarkers: recreate all markers");
+//         logMarkers(markers);
+//
+//         // get the filter names
+//         var filternames = [];
+//         if (checked_filters.length) {
+//             for (const value of checked_filters.values()) {
+//                 filternames.push(value.dataset.filter);
+//             }
+//         }
+//         // [ filter1, filter2 ...]
+//         filternames = [...new Set(filternames)];
+//
+//         // add values checked
+//         var filternames_values = {};
+//         filternames.forEach(function (el, index) {
+//             filternames_values[el] = [];
+//         });
+//         // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
+//         if (checked_filters.length) {
+//             for (const value of checked_filters.values()) {
+//                 filternames_values[value.dataset.filter].push(value.value)
+//             }
+//         }
+//         console.log("filternames_values", filternames_values);
+//         if (Object.keys(filternames_values).length) {
+//             for (const [key, value] of Object.entries(filternames_values)) {
+//                 markers.eachLayer(layer => {
+//                     // if property value not in the list of checked-checkboxes values remove marker
+//                     var prop_key = key + '#value';
+//                     var prop_value = layer.feature.properties[prop_key];
+//                     if (!value.includes(prop_value)) {
+//                         console.log("remove this", layer.feature.properties);
+//                         markers.removeLayer(layer);
+//                     }
+//                 });
+//             }
+//             console.log("addRemoveMarkers: removed markers");
+//             //logMarkers(markers);
+//             // clear map
+//             map.eachLayer(function (layer) {
+//                 if (layer instanceof L.MarkerClusterGroup) {
+//                     map.removeLayer(layer)
+//                 }
+//             });
+//             map.addLayer(markers);
+//
+//         }
+//         // else put them all back!
+//         else {
+//             console.log("put all markers back");
+//             // var data_layers = L.geoJSON(dataMap, {
+//             // 	onEachFeature: onEachFeature
+//             // });
+//
+//             map.eachLayer(function (layer) {
+//                 if (layer instanceof L.MarkerClusterGroup) {
+//                     map.removeLayer(layer)
+//                 }
+//             });
+//             markers.clearLayers();
+//             allMarkers.eachLayer(layer => {
+//                 markers.addLayer(layer);
+//             });
+//             map.addLayer(markers);
+//         }
+//     }
+// }
 
 
-function logMarkers(markers) {
-    markers.eachLayer(layer => {
-        console.log(layer.feature.properties);
-    });
-}
+// function logMarkers(markers) {
+//     markers.eachLayer(layer => {
+//         console.log(layer.feature.properties);
+//     });
+// }
+
+
 //// RELATIONS TEMPLATE FUNCTIONS ////
 
 // text search
@@ -3099,10 +3101,10 @@ function chartColor(colorStart, colorEnd, dataLength) {
 // }
 
 // autoresize textarea
-function auto_grow(element) {
-    // element.style.height = "5px";
-    // element.style.height = (element.scrollHeight)+"px";
-}
+// function auto_grow(element) {
+//     // element.style.height = "5px";
+//     // element.style.height = (element.scrollHeight)+"px";
+// }
 
 function getPDF(elem_id) {
     var element = document.getElementById(elem_id);

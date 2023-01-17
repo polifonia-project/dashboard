@@ -273,7 +273,7 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 
 						if component_data['name'] == 'map_filters':
 							total_filter_dict[k.split('__')[1]] = v
-							filter_set.add(int(k.split('_')[5]))
+							filter_set.add(k.split('_')[5]+"_"+k.split('_')[6])
 
 			for e in extra_set:
 				extra_dict = {}
@@ -284,13 +284,17 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 				extra_queries.append(extra_dict)
 			elements_dict['extra_queries'] = extra_queries
 
+			print("total_filter_dict",total_filter_dict)
 			for e in filter_set:
+				print(e)
 				filter_dict = {}
 				for k, v in total_filter_dict.items():
 					if str(e) in k:
 						filter_dict[k.strip('_'+str(e))] = v
 						filter_dict['extra_id'] = str(e)
+						filter_dict['position'] = int(str(e).split('_')[1])
 				filter_queries.append(filter_dict)
+			filter_queries = sorted(filter_queries, key=lambda k: k['position'])
 			elements_dict['map_filters'] = filter_queries
 
 			dynamic_elements.append(elements_dict)

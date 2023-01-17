@@ -2,126 +2,251 @@ const generateKey = (pre) => {
     return `${ pre }_${ new Date().getTime() }`;
 }
 
-const FilterCheckbox = ({ key_check, value_check , indexPanel , filter_title}) => {
-
-  const [checked, setCheck] = React.useState('')
-  console.log("calling FilterCheckbox");
-  return (<p>hello</p>)
-  // return (
-  //   <p>
-  //     <input
-  //       type='checkbox'
-  //       label={value_check[0] + " (" + value_check[1] + ")"}
-  //       defaultValue={key_check}
-  //       name={key_check}
-  //       className="map_checkbox"
-  //       data-filter={filter_title}>
-  //     </input>
-  //     <label htmlFor="key_check">
-  //       {value_check[0] + " (" + value_check[1] + ")"}
-  //     </label>
-  //   </p>
-  // )
+function update_datastory(form) {
+  const formData = new FormData(form);
+  var url = window.location.toString()
+  url = url.replace(/modify\//, 'modify_bkg\/');
+  fetch(url, { method: 'POST', body: formData})
+    .then(response => response.text())
+    .then((data) => { if (data) {datastory_data = JSON.parse(data);} })
+    .catch(function (error) {console.log(error);});
+  return datastory_data;
 }
 
-const SidebarPanel = ({indexPanel , index_parent , filterData }) => {
-  const checkboxBox = []
-  const getCheckboxes = event => {
-    // get data points
-    var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
-    var values = "VALUES ?point {";
-    dataMap.forEach((item, i) => { values += '<' + item.properties.uri + '> '; });
-    values += '}';
+const FilterCheckbox = ({ key_check, value_check , indexPanel ,
+      filter_title , markers, allMarkers, map}) => {
+  const [checked, setCheck] = React.useState('not checked');
 
-    let filter_title= filterData.map_filter_title,
-        f_query = filterData.map_filter_query;
+  function addRemoveMarkers() {
+    checked_filters = Array.from(document.querySelectorAll('input[class="map_checkbox"]:checked'));
+    if (markers != undefined) {
+        markers.clearLayers();
+        allMarkers.eachLayer(layer => { markers.addLayer(layer); });
 
-    // restructure query with VALUES
-    var decoded_query = decodeURIComponent(f_query);
-    var decoded_query_parts = decoded_query.split(/\{(.*)/s);
-    decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
-    var encoded_query = encodeURIComponent(decoded_query.replace('\n', ' '));
-
-    fetch(datastory_data.sparql_endpoint+'?query='+encoded_query,
-        {
-        method: 'GET',
-        headers: { 'Accept': 'application/sparql-results+json' }
+        // get the filter names
+        let filternames = [];
+        if (checked_filters.length) {
+            for (const value of checked_filters.values()) {
+                filternames.push(value.dataset.filter);
+            }
         }
-    ).then((res) => res.json())
-    .then((data) => {
-       let labels_values_count = {}, headings = data.head.vars,
-            has_label = false;
+        // [ filter1, filter2 ...]
+        filternames = [...new Set(filternames)];
 
-       data.results.bindings.forEach((res, i) => {
-         // check if the filter is a string or a uri+string
-         if (headings.includes('filterLabel')) { has_label = true; }
+        // add values checked
+        var filternames_values = {};
+        filternames.forEach(function (el, index) { filternames_values[el] = []; });
 
-         dataMap.forEach((elem, i) => {
-           if (elem.properties.uri == res.point.value) {
-             if (has_label == true) {
-               elem.properties[filter_title + "#label"] = res.filterLabel.value;
-               elem.properties[filter_title + "#value"] = res.filter.value;
-               if (labels_values_count[res.filter.value] == undefined) {
-                   labels_values_count[res.filter.value] = [res.filterLabel.value, 1]
-               } else {
-                   labels_values_count[res.filter.value] = [res.filterLabel.value, labels_values_count[res.filter.value][1] + 1]
+        // { filter1: [ checkbox1value, checkbox2value], filter2 : [ ... ] ...]
+        if (checked_filters.length) {
+            for (const value of checked_filters.values()) {
+                filternames_values[value.dataset.filter].push(value.value)
+            }
+        }
+
+        if (Object.keys(filternames_values).length) {
+          let f_names = Object.keys(filternames_values);
+          f_names.forEach((name, i) => {
+            markers.eachLayer(layer => {
+              // if property value not in the list of checked-checkboxes values remove marker
+              var prop_key = name + '#value';
+              var prop_value = layer.feature.properties[prop_key];
+              if (!filternames_values[name].includes(prop_value)) {
+                  markers.removeLayer(layer);
+              }
+            });
+          });
+
+          // clear map
+          map.eachLayer(function (layer) {
+              if (layer instanceof L.MarkerClusterGroup) {
+                  map.removeLayer(layer)
+              }
+          });
+          map.addLayer(markers);
+        }
+        // else put them all back!
+        else {
+
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.MarkerClusterGroup) {
+                    map.removeLayer(layer)
+                }
+            });
+            markers.clearLayers();
+            allMarkers.eachLayer(layer => {
+                markers.addLayer(layer);
+            });
+            map.addLayer(markers);
+        }
+    }
+  }
+
+  const changeCheck = event => {
+    if (checked == 'not checked') {
+      setCheck('checked');
+    } else {
+      setCheck('not checked');
+    }
+    addRemoveMarkers();
+
+  }
+  return (
+    <p>
+      <input
+        type='checkbox'
+        label={value_check[0] + " (" + value_check[1] + ")"}
+        defaultValue={key_check}
+        name={key_check}
+        onClick={changeCheck}
+        className="map_checkbox"
+        data-filter={filter_title}>
+      </input>
+      <label htmlFor="key_check">
+        {value_check[0] + " (" + value_check[1] + ")"}
+      </label>
+    </p>
+  )
+}
+
+const SidebarPanel = ({indexPanel ,
+    index_parent , onEachFeature , filters, markers, allMarkers, map}) => {
+
+  const [collapsedBox, setCollapse] = React.useState('not collapsed');
+  const [firstLoad, setLoad] = React.useState('not loaded');
+
+  const [checkboxData,setCheckbox] = React.useState([]);
+  const checkboxBox = []
+
+  let filter_title= filters[indexPanel].map_filter_title,
+      f_query = filters[indexPanel].map_filter_query, extra_id = filters[indexPanel].extra_id;
+
+  function update_panel() {
+    if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+      datastory_data.dynamic_elements.forEach(element => {
+        if (element.type == 'map' && element.position == index_parent) {
+          if (element.map_filters.length > indexPanel) {
+            element.map_filters.forEach((item, i) => {
+              if (item.position == indexPanel) {
+                filter_title = item.map_filter_title ;
+                f_query = item.map_filter_query;
+                extra_id = item.extra_id
+              }
+            });
+          }
+        }
+      })
+    }
+  }
+
+  console.log("datastory Data",extra_id, filter_title,f_query);
+
+  const getCheckboxes = event => {
+    if (f_query.length > 1) {
+      var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
+      var values = "VALUES ?point {";
+      dataMap.forEach((item, i) => { values += '<' + item.properties.uri + '> '; });
+      values += '}';
+
+      // restructure query with VALUES
+      var decoded_query = decodeURIComponent(f_query);
+      var decoded_query_parts = decoded_query.split(/\{(.*)/s);
+      decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
+      var encoded_query = encodeURIComponent(decoded_query.replace('\n', ' '));
+
+      fetch(datastory_data.sparql_endpoint+'?query='+encoded_query,
+          {
+          method: 'GET',
+          headers: { 'Accept': 'application/sparql-results+json' }
+          }
+      ).then((res) => res.json())
+      .then((data) => {
+         let labels_values_count = {}, headings = data.head.vars,
+              has_label = false;
+
+         data.results.bindings.forEach((res, i) => {
+           // check if the filter is a string or a uri+string
+           if (headings.includes('filterLabel')) { has_label = true; }
+
+           dataMap.forEach((elem, i) => {
+             if (elem.properties.uri == res.point.value) {
+               if (has_label == true) {
+                 elem.properties[filter_title + "#label"] = res.filterLabel.value;
+                 elem.properties[filter_title + "#value"] = res.filter.value;
+                 if (labels_values_count[res.filter.value] == undefined) {
+                     labels_values_count[res.filter.value] = [res.filterLabel.value, 1]
+                 } else {
+                     labels_values_count[res.filter.value] = [res.filterLabel.value, labels_values_count[res.filter.value][1] + 1]
+                 }
+               }
+               else {
+                 elem.properties[filter_title + "#label"] = res.filter.value;
+                 elem.properties[filter_title + "#value"] = res.filter.value;
+                 if (labels_values_count[res.filter.value] == undefined) {
+                     labels_values_count[res.filter.value] = [res.filter.value, 1]
+                 } else {
+                     labels_values_count[res.filter.value] = [res.filter.value, labels_values_count[res.filter.value][1] + 1]
+                 }
                }
              }
-             else {
-               elem.properties[filter_title + "#label"] = res.filter.value;
-               elem.properties[filter_title + "#value"] = res.filter.value;
-               if (labels_values_count[res.filter.value] == undefined) {
-                   labels_values_count[res.filter.value] = [res.filter.value, 1]
-               } else {
-                   labels_values_count[res.filter.value] = [res.filter.value, labels_values_count[res.filter.value][1] + 1]
+           });
+
+           // update geoJSON in DOM
+           $('#dataMap').remove();
+           var $body = $(document.body);
+           $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
+
+           // update markers
+           markers.eachLayer(layer => {
+               if (layer.feature.properties.uri == res.point.value) {
+                   if (has_label == true) {
+                       layer.feature.properties[filter_title + "#label"] = res.filterLabel.value;
+                   } else {
+                       layer.feature.properties[filter_title + "#label"] = res.filter.value;
+                   }
+                   layer.feature.properties[filter_title + "#value"] = res.filter.value;
                }
-             }
-           }
+           });
+
          });
 
-         // update geoJSON in DOM
-         $('#dataMap').remove();
-         var $body = $(document.body);
-         $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
+         // get markers from geoJSON, bind popupContent
+         var data_layers = L.geoJSON(dataMap, { onEachFeature: onEachFeature  });
 
-         // update markers
-         // markers.eachLayer(layer => {
-         //     if (layer.feature.properties.uri == res.point.value) {
-         //         if (has_label == true) {
-         //             layer.feature.properties[filter_title + "#label"] = res.filterLabel.value;
-         //         } else {
-         //             layer.feature.properties[filter_title + "#label"] = res.filter.value;
-         //         }
-         //         layer.feature.properties[filter_title + "#value"] = res.filter.value;
-         //     }
-         // });
+         // add checkboxes
+         let filter_names = Object.keys(labels_values_count)
+         setCheckbox([])
+         filter_names.forEach((filter_name, i) => {
+           setCheckbox(prevCheckboxes => [
+             ...prevCheckboxes, { key_check: filter_name, value_check: labels_values_count[filter_name]}
+           ])
+         });
 
-       });
-
-       // get markers from geoJSON, bind popupContent
-       //var data_layers = L.geoJSON(dataMap, { onEachFeature: onEachFeature  });
-
-       // add checkboxes
-
-       for (const [key_check, value_check] of Object.entries(labels_values_count)) {
-         console.log("labels_values_count",labels_values_count);
-         checkboxBox.push(<FilterCheckbox
-           key={generateKey(key_check+value_check[0])}
-           key_check={key_check} value_check={value_check[0]}
-           indexPanel={indexPanel} filter_title={filter_title}
-           />)
-       }
-
-       return labels_values_count;
+         setCollapse('collapsed');
+         $("#filter_"+extra_id).collapse();
       })
-    .catch((error) => { console.error('Error:', error); })
-    .finally( (labels_values_count) => {
-     $('#loader').addClass('hidden');
+      .catch((error) => { console.error('Error:', error); })
+      .finally( () => { $('#loader').addClass('hidden'); setLoad('loaded'); });
+    }
 
-    });
-
-    $("#filter_"+filterData.extra_id).collapse();
   }
+
+  if (checkboxData.length) {
+    for (let i = 0; i < checkboxData.length; i++) {
+      checkboxBox.push(<FilterCheckbox
+        key={generateKey(checkboxData[i].key_check)}
+        key_check={checkboxData[i].key_check} value_check={checkboxData[i].value_check}
+        indexPanel={indexPanel} filter_title={filter_title} markers={markers}
+        allMarkers={allMarkers} map={map}
+        />);
+    }
+  }
+
+
+  React.useEffect(() => {
+    update_panel();
+    if (firstLoad == 'loaded') { getCheckboxes(); }
+  }, []);
 
   return (
     <div className="map_sidebar_panel">
@@ -129,11 +254,11 @@ const SidebarPanel = ({indexPanel , index_parent , filterData }) => {
       className="map_sidebar_panel_title"
       data-toggle="collapse"
       onClick={getCheckboxes}
-      href={"#filter_"+filterData.extra_id}
-      aria-expanded="false" aria-controls="collapseExample">
-      {filterData.map_filter_title}
+      href={"#filter_"+extra_id}
+      aria-expanded="false" aria-controls={"filter_"+extra_id}>
+      {filter_title}
     </a>
-    <div className="collapse" id={"filter_"+filterData.extra_id}>
+    <div className="collapse" id={"filter_"+extra_id}>
       <div>
         {checkboxBox}
       </div>
@@ -142,7 +267,7 @@ const SidebarPanel = ({indexPanel , index_parent , filterData }) => {
   )
 }
 
-const MapSidebar = ({index, filters}) => {
+const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map}) => {
 
   const sidebarPanelsBox = []
   const [isExpanded, setExpanded] = React.useState(false)
@@ -159,13 +284,14 @@ const MapSidebar = ({index, filters}) => {
     sidebarPanelsBox.push(
       <SidebarPanel
           indexPanel={i} key={generateKey(filter)+i}
-          index_parent={index} filterData={filter}/>
+          index_parent={index} onEachFeature={onEachFeature}
+          filters={filters}
+          markers={markers} allMarkers={allMarkers} map={map}/>
     )
   });
 
   const expandSidebar = event => {
-    if (isExpanded == false) {
-      setExpanded(true);
+    if (isExpanded == false) { setExpanded(true);
     } else {
       // collapse sidebar
     }
@@ -177,6 +303,7 @@ const MapSidebar = ({index, filters}) => {
       <div
         onClick={() => expandSidebar}
         className="map_sidebar">
+        <h3 className="map_sidebar_title">FILTERS</h3>
         {sidebarPanelsBox}
       </div>
     )
@@ -185,67 +312,77 @@ const MapSidebar = ({index, filters}) => {
 }
 
 const FilterMap = ({ indexFilter, index_parent ,
-                      filters, setFilter }) => {
+                      setFilterChange, filters, removeFilterBox }) => {
 
-  let defaultFilterQuery = '', defaultFilterTitle = ''
-  if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
-    datastory_data.dynamic_elements.forEach(element => {
-      if (element.type == 'map' && element.position == index_parent) {
-        if (element.map_filters.length > indexFilter) {
-          defaultFilterQuery = element.map_filters[indexFilter].map_filter_query;
-          defaultFilterTitle = element.map_filters[indexFilter].map_filter_title;
-        }
-      }
-    })
-  }
+  let defaultFilterQuery = filters[indexFilter].map_filter_query,
+      defaultFilterTitle = filters[indexFilter].map_filter_title;
+
+  // if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+  //   datastory_data.dynamic_elements.forEach(element => {
+  //     if (element.type == 'map' && element.position == index_parent) {
+  //       if (element.map_filters.length > indexFilter) {
+  //         element.map_filters.forEach((item, i) => {
+  //           if(item.position == indexFilter) {
+  //             defaultFilterQuery = item.map_filter_query;
+  //             defaultFilterTitle = item.map_filter_title;
+  //           }
+  //         });
+  //       }
+  //     }
+  //   })
+  // }
 
   const [filterQuery, setFilterQuery] = React.useState(defaultFilterQuery);
-  const filterQueryChange = index => event => {
-    setFilterQuery(event.target.value);
-    let newArr = [...filters];
-    newArr[index].map_filter_query = event.target.value;
-    setFilter(newArr);
+  const filterQueryChange = event => {
+    let newArrQ = [...filters];
+    newArrQ[indexFilter].map_filter_query = event.target.value;
+    console.log("newArrQ",newArrQ);
+    // console.log("before",filters);
+    //setFilterChange(newArrQ);
+    console.log("newFilter",filters);
+    console.log("hello");
   };
+  // function filterQueryChange = index => event => {
+
+  // };
 
   const [filterTitle, setFilterTitle] = React.useState(defaultFilterTitle);
-  const filterTitleChange = index => event => {
-    setFilterTitle(event.target.value);
-    let newArr = [...filters];
-    newArr[index].map_filter_title = event.target.value;
-    setFilter(newArr);
+  const filterTitleChange = event => {
+    let newArrQ = [...filters];
+    newArrQ[indexFilter].map_filter_title = event.target.value;
+    console.log("newArrQ",newArrQ);
+    // console.log("before",filters);
+    //setFilterChange(newArrQ);
+    console.log("newFilter",filters);
+    console.log("hello");
   };
-
-  // fetchFilterQuery
-  const fetchFilterQuery = index_parent => event => {
-    if (filterQuery.length > 1) { }
-  };
-
-  React.useEffect(() => {
-     fetchFilterQuery(index_parent);
-  }, []);
 
   let filter_id = new Date().getTime();
   return (
-    <div className="query-div">
-    <hr/>
-      <h4 style={{ color: 'white'}}>Add a filter</h4><br/>
-      {/* add remove component new*/}
+    <div className="query-div" id={"el_"+indexFilter+"__form_group"}>
+      <hr/>
+      <h4 className='block_title'>Add a filter</h4>
+      <a
+        onClick={() => removeFilterBox(indexFilter)}
+        className="trash trash_subcomponent">
+        <i className="far fa-trash-alt"></i>
+      </a><br/>
+
       <div className='form-group' id={indexFilter+"__form_group_filter"}>
         <label htmlFor='largeInput'>SPARQL query</label>
         <textarea
-            onMouseLeave={fetchFilterQuery(index_parent)}
-            onChange={() => filterQueryChange(indexFilter)}
-            id={index_parent+"__map_filter_query_"+filter_id}
-            name={index_parent+"__map_filter_query_"+filter_id}
+            onChange={filterQueryChange}
+            id={index_parent+"__map_filter_query_"+filter_id+"_"+indexFilter}
+            name={index_parent+"__map_filter_query_"+filter_id+"_"+indexFilter}
             defaultValue={filterQuery}
             placeholder='A SPARQL query that returns two variables' required>
         </textarea>
         <label htmlFor='largeInput'>Filter title</label>
     		<input className='form-control'
-            onChange={() => filterTitleChange(indexFilter)}
+            onChange={filterTitleChange}
             type='text'
-            id={index_parent+"__map_filter_title_"+filter_id}
-            name={index_parent+"__map_filter_title_"+filter_id}
+            id={index_parent+"__map_filter_title_"+filter_id+"_"+indexFilter}
+            name={index_parent+"__map_filter_title_"+filter_id+"_"+indexFilter}
             defaultValue={filterTitle}
             placeholder='The label of the filter'>
         </input>
@@ -258,6 +395,7 @@ const FilterMap = ({ indexFilter, index_parent ,
 const MapViz = ({ unique_key, index ,
                 removeComponent , componentList, setComponent,
                 sortComponentUp , sortComponentDown}) => {
+
 
   let map_title = '', map_points_query = '',
       waitfilters ,
@@ -281,6 +419,9 @@ const MapViz = ({ unique_key, index ,
     })
   }
 
+  const [markersMap, setMarkers] = React.useState(markers);
+  const [allMarkersMap, setAllMarkers] = React.useState(allMarkers);
+
   const [query, setQuery] = React.useState(map_points_query);
   const queryChange = event => { setQuery(event.target.value); };
 
@@ -288,15 +429,10 @@ const MapViz = ({ unique_key, index ,
   const titleChange = event => { setTitle(event.target.value); };
 
   const [mapInstance, setMap] = React.useState('not initialised');
+  const [mapRendered, setMapRender] = React.useState('');
   const [sidebarInstance,setSidebar] = React.useState('not initialised');
 
   const [filters, setFilter] = React.useState(map_filters);
-  const filterQueriesBox = [];
-  const filterChange = event => {
-    setFilter(prevExtras => [
-      ...prevExtras, {map_filter_query:'',map_filter_title:''}
-    ]);
-  };
 
   const initMap = event => {
 
@@ -329,10 +465,12 @@ const MapViz = ({ unique_key, index ,
        .finally( () => {
          $('#loader').addClass('hidden');
          setMap('initialised');
-
+         setMapRender(map);
+         setMarkers(markers);
+         setAllMarkers(allMarkers);
        });
     }
-
+    return map;
   };
 
   function setViewMarkers(map, mapid, geoJSONdata, waitfilters, color_code) {
@@ -373,10 +511,8 @@ const MapViz = ({ unique_key, index ,
       // add geoJSONdata to DOM
       var $body = $(document.body);
       $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + "</script>");
-      // if (waitfilters == true) {
-      //     map_ready = true;
-      //     $('form').trigger('change');
-      // }
+
+
       return markers;
   };
 
@@ -429,23 +565,59 @@ const MapViz = ({ unique_key, index ,
       return geoJSONdata
   };
 
+  const filterQueriesBox = []
+  const filterChange = event => {
+    setFilter(prevExtras => [
+      ...prevExtras, {map_filter_query:'',map_filter_title:''}
+    ]);
+  };
 
+  const [toBeRemoved, setToBeRemoved] = React.useState();
 
-  function collapseFilter(panel_id) { $("#" + panel_id + " p").toggle(); }
+  const removeFilterBox = (indexFilter) => {
 
+    var form = document.getElementById('modifystory_form');
+    const formData = new FormData(form);
+    var url = window.location.toString()
+    url = url.replace(/modify\//, 'modify_bkg\/');
+
+    fetch(url, { method: 'POST', body: formData})
+      .then(response => response.text())
+      .then((data) => { if (data) {
+        datastory_data = JSON.parse(data);
+
+        setFilter(old_filters => {
+          let new_filters = []
+          datastory_data.dynamic_elements.forEach(element => {
+            if (element.type == 'map' && element.position == index) {
+              if (element.map_filters && element.map_filters.length) {
+                element.map_filters.forEach((elem,i) => {
+                  if (elem.position != indexFilter) {new_filters.push(elem);}
+                  //else {element.map_filters.splice(i,1);}
+                }) ;
+              }
+            }
+          })
+          console.log("AFTER",datastory_data);
+          return new_filters} )
+      } })
+      .catch(function (error) {console.log(error);});
+  };
 
   if (filters) {
     for (let i = 0; i < filters.length; i++) {
+      console.log("filters to regenerate",filters);
       filterQueriesBox.push(<FilterMap
-          indexFilter={i} key={generateKey(filters[i].map_filter_query)+i}
-          index_parent={index} setExtras={setFilter} filters={filters}/>)
+          indexFilter={i} key={generateKey(filters[i].map_filter_title)+i}
+          index_parent={index} setFilterChange={setFilter} filters={filters}
+          removeFilterBox={removeFilterBox}/>)
     }
   }
 
+
   // preview
   React.useEffect(() => {
-    if (mapInstance != 'initialised') { initMap(); }
-
+    if (mapInstance != 'initialised') { map = initMap(); }
   }, []);
 
   // WYSIWYG: render component and preview
@@ -495,7 +667,11 @@ const MapViz = ({ unique_key, index ,
           <MapSidebar
             index={index}
             filters={filters}
-            key={"sidebar_"+unique_key+index} />
+            key={"sidebar_"+unique_key+index}
+            onEachFeature={onEachFeature}
+            allMarkers={allMarkersMap}
+            markers={markersMap}
+            map={mapRendered} />
         </div>
         <a id={index+"__addmapfilter"}
           className='btn btn-primary btn-border'
@@ -516,6 +692,14 @@ const MapViz = ({ unique_key, index ,
         <div
           className='map_preview_container'
           id={index+'__map_preview_container'}>
+          <MapSidebar
+            index={index}
+            filters={filters}
+            key={"sidebar_"+unique_key+index}
+            onEachFeature={onEachFeature}
+            allMarkers={allMarkersMap}
+            markers={markersMap}
+            map={mapRendered} />
         </div>
       </>
     )

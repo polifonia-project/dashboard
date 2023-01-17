@@ -240,7 +240,6 @@ const ChartViz = ({ unique_key, index ,
   }
 
   function alertError(data,count,chart) {
-    console.log("count",count);
     if (data.head.vars.length === 1 && !data.head.vars.includes('label') && count != 'count'
       && (chart == 'barchart' || chart == 'linechart')) {
       alert("The query must return two variables, or you should tick the box 'count'")
