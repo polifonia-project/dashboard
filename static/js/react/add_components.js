@@ -77,6 +77,15 @@ function update_datastory(form) {
   const formData = new FormData(form);
   var url = window.location.toString()
   url = url.replace(/modify\//, 'modify_bkg\/');
+
+  // var title_form = formData.get('title');
+  // var title_url = window.location.pathname.split('/').pop();
+  // var url = window.location.toString()
+  // url = url.replace(/modify\//, 'modify_bkg\/');
+  // // if the title changed but the url not
+  // if (cleanString(title_form) != title_url) {
+  //   url = url.replace(title_url, cleanString(title_form));
+  // }
   fetch(url, { method: 'POST', body: formData})
     .then(response => response.text())
     .then((data) => { if (data) {datastory_data = JSON.parse(data);} })

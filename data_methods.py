@@ -9,6 +9,7 @@ import re
 import unidecode
 import bleach
 import components
+import os
 
 
 def read_json(file_name):
@@ -112,17 +113,25 @@ def add_story_to_config(config_file, form_data, general_data, user_name=None,sto
 	return clean_title, clean_section
 
 
-def get_config(session,section_name, datastory_name):
+def get_config(session,section_name, datastory_name, datastory_title=None):
 	"""
 	Get the correct config json file
 	according to the user type and the datastory name.
 	"""
+
 	if session['user_type'] == 'polifonia':
-		datastory_data = access_data_sources(
-			section_name, datastory_name, 'config.json')
+		section_json = read_json('config.json')['data_sources'][section_name]
+		if datastory_name in section_json:
+			datastory_data = access_data_sources(
+				section_name, datastory_name, 'config.json')
+		else:
+			if datastory_title and clean_string(datastory_title) in section_json:
+				datastory_data = access_data_sources(
+					section_name, clean_string(datastory_title), 'config.json')
 	elif session['user_type'] in ['extra','random']:
 		datastory_data = read_json(
 			'static/temp/config_'+section_name+'.json')
+
 	return datastory_data
 
 
@@ -218,12 +227,14 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 
 	if user_type == 'polifonia':
 		if datastory_name != datastory_title_clean: # if the title has changed, rename the key
-			general_data['data_sources'][section_name][datastory_title_clean] = general_data['data_sources'][section_name].pop(
-				datastory_name)
-		datastory_data = general_data['data_sources'][section_name][datastory_title_clean]
+			if datastory_name in general_data['data_sources'][section_name]:
+				general_data['data_sources'][section_name][datastory_title_clean] = general_data['data_sources'][section_name].pop(datastory_name)
+			datastory_data = general_data['data_sources'][section_name][datastory_title_clean]
+
+		else:
+			datastory_data = general_data['data_sources'][section_name][datastory_name]
 	elif user_type in ['extra','random']:
 		datastory_data = read_json(file)
-
 	try:
 		datastory_data['color_code'] = color_code_list
 		for k, v in form_data.items():
@@ -284,9 +295,7 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 				extra_queries.append(extra_dict)
 			elements_dict['extra_queries'] = extra_queries
 
-			print("total_filter_dict",total_filter_dict)
 			for e in filter_set:
-				print(e)
 				filter_dict = {}
 				for k, v in total_filter_dict.items():
 					if str(e) in k:

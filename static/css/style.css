@@ -945,7 +945,6 @@ hr {
   overflow: scroll;
   z-index: 2000;
   float: left;
-  clear: both;
   border-radius: 0.5em;
   pointer-events: auto;
   transition: width 500ms;
@@ -977,6 +976,15 @@ hr {
 .map_sidebar_panel label {
   color:black !important;
   padding-left:5px;
+}
+
+.map_sidebar.map_sidebar_right {
+  float: right;
+  clear: both;
+  right:0;
+  color:white;
+  background-color: var(--dark-grey);
+  margin: 10px 10px 10px 0px;
 }
 
 .leaflet-sidebar-content,

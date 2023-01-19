@@ -2,19 +2,9 @@ const generateKey = (pre) => {
     return `${ pre }_${ new Date().getTime() }`;
 }
 
-function update_datastory(form) {
-  const formData = new FormData(form);
-  var url = window.location.toString()
-  url = url.replace(/modify\//, 'modify_bkg\/');
-  fetch(url, { method: 'POST', body: formData})
-    .then(response => response.text())
-    .then((data) => { if (data) {datastory_data = JSON.parse(data);} })
-    .catch(function (error) {console.log(error);});
-  return datastory_data;
-}
-
 const FilterCheckbox = ({ key_check, value_check , indexPanel ,
       filter_title , markers, allMarkers, map}) => {
+
   const [checked, setCheck] = React.useState('not checked');
 
   function addRemoveMarkers() {
@@ -110,7 +100,7 @@ const FilterCheckbox = ({ key_check, value_check , indexPanel ,
 }
 
 const SidebarPanel = ({indexPanel ,
-    index_parent , onEachFeature , filters, markers, allMarkers, map}) => {
+    index_parent , onEachFeature , filters, filter_title, markers, allMarkers, map}) => {
 
   const [collapsedBox, setCollapse] = React.useState('not collapsed');
   const [firstLoad, setLoad] = React.useState('not loaded');
@@ -118,8 +108,8 @@ const SidebarPanel = ({indexPanel ,
   const [checkboxData,setCheckbox] = React.useState([]);
   const checkboxBox = []
 
-  let filter_title= filters[indexPanel].map_filter_title,
-      f_query = filters[indexPanel].map_filter_query, extra_id = filters[indexPanel].extra_id;
+  let f_query = filters[indexPanel].map_filter_query,
+      extra_id = filters[indexPanel].extra_id;
 
   function update_panel() {
     if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
@@ -139,7 +129,6 @@ const SidebarPanel = ({indexPanel ,
     }
   }
 
-  console.log("datastory Data",extra_id, filter_title,f_query);
 
   const getCheckboxes = event => {
     if (f_query.length > 1) {
@@ -244,7 +233,7 @@ const SidebarPanel = ({indexPanel ,
 
 
   React.useEffect(() => {
-    update_panel();
+    //update_panel();
     if (firstLoad == 'loaded') { getCheckboxes(); }
   }, []);
 
@@ -285,7 +274,7 @@ const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map})
       <SidebarPanel
           indexPanel={i} key={generateKey(filter)+i}
           index_parent={index} onEachFeature={onEachFeature}
-          filters={filters}
+          filters={filters} filter_title={filters[i].map_filter_title}
           markers={markers} allMarkers={allMarkers} map={map}/>
     )
   });
@@ -317,44 +306,16 @@ const FilterMap = ({ indexFilter, index_parent ,
   let defaultFilterQuery = filters[indexFilter].map_filter_query,
       defaultFilterTitle = filters[indexFilter].map_filter_title;
 
-  // if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
-  //   datastory_data.dynamic_elements.forEach(element => {
-  //     if (element.type == 'map' && element.position == index_parent) {
-  //       if (element.map_filters.length > indexFilter) {
-  //         element.map_filters.forEach((item, i) => {
-  //           if(item.position == indexFilter) {
-  //             defaultFilterQuery = item.map_filter_query;
-  //             defaultFilterTitle = item.map_filter_title;
-  //           }
-  //         });
-  //       }
-  //     }
-  //   })
-  // }
-
   const [filterQuery, setFilterQuery] = React.useState(defaultFilterQuery);
   const filterQueryChange = event => {
     let newArrQ = [...filters];
     newArrQ[indexFilter].map_filter_query = event.target.value;
-    console.log("newArrQ",newArrQ);
-    // console.log("before",filters);
-    //setFilterChange(newArrQ);
-    console.log("newFilter",filters);
-    console.log("hello");
   };
-  // function filterQueryChange = index => event => {
-
-  // };
 
   const [filterTitle, setFilterTitle] = React.useState(defaultFilterTitle);
   const filterTitleChange = event => {
     let newArrQ = [...filters];
     newArrQ[indexFilter].map_filter_title = event.target.value;
-    console.log("newArrQ",newArrQ);
-    // console.log("before",filters);
-    //setFilterChange(newArrQ);
-    console.log("newFilter",filters);
-    console.log("hello");
   };
 
   let filter_id = new Date().getTime();
@@ -389,6 +350,23 @@ const FilterMap = ({ indexFilter, index_parent ,
       </div>
     </div>
   )
+
+}
+
+const MarkerSidebar = ({markerSidebar, setMarkerSidebar , setMarkerSidebarContent, markerSidebarContent}) => {
+  function createMarkup() { return {__html: setMarkerSidebarContent};}
+  if (markerSidebar == 'open') {
+    console.log(markerSidebarContent);
+    return (
+      <div
+        className="map_sidebar map_sidebar_right">
+        <h3 className="map_sidebar_title">DETAIL</h3>
+        <div dangerouslySetInnerHTML={createMarkup()}>
+
+        </div>
+      </div>
+    )
+  }
 
 }
 
@@ -516,10 +494,25 @@ const MapViz = ({ unique_key, index ,
       return markers;
   };
 
+  const [markerSidebar, setMarkerSidebar] = React.useState('close')
+  const [markerSidebarContent, setMarkerSidebarContent] = React.useState('')
+  function openMarkerSidebar(selection, feature) {
+    // sidebar.toggle();
+    if (markerSidebar == 'close') {
+      setMarkerSidebar('open');
+      setMarkerSidebarContent(feature.properties.popupContent);
+    } else { setMarkerSidebar('close'); setMarkerSidebarContent('')}
+    // sidebar.html('<h1> this is ' + selection.feature.popupContent + '</h1>');
+  }
+
   function onEachFeature(feature, layer) {
-      // does this feature have a property named popupContent?
       if (feature.properties && feature.properties.popupContent) {
-          layer.bindPopup(feature.properties.popupContent);
+          //layer.bindPopup(feature.properties.popupContent);
+          layer.on({
+              //mouseover: highlightFeature,
+              //mouseout: resetHighlight,
+              click: function(e){openMarkerSidebar(e, feature) }
+          });
       }
   };
 
@@ -572,18 +565,14 @@ const MapViz = ({ unique_key, index ,
     ]);
   };
 
-  const [toBeRemoved, setToBeRemoved] = React.useState();
-
   const removeFilterBox = (indexFilter) => {
-
     var form = document.getElementById('modifystory_form');
     const formData = new FormData(form);
     var url = window.location.toString()
     url = url.replace(/modify\//, 'modify_bkg\/');
-
     fetch(url, { method: 'POST', body: formData})
-      .then(response => response.text())
-      .then((data) => { if (data) {
+    .then(response => response.text())
+    .then((data) => { if (data) {
         datastory_data = JSON.parse(data);
 
         setFilter(old_filters => {
@@ -593,27 +582,21 @@ const MapViz = ({ unique_key, index ,
               if (element.map_filters && element.map_filters.length) {
                 element.map_filters.forEach((elem,i) => {
                   if (elem.position != indexFilter) {new_filters.push(elem);}
-                  //else {element.map_filters.splice(i,1);}
-                }) ;
-              }
-            }
+                }) } }
           })
-          console.log("AFTER",datastory_data);
           return new_filters} )
-      } })
-      .catch(function (error) {console.log(error);});
+        } })
+    .catch(function (error) {console.log(error);});
   };
 
   if (filters) {
     for (let i = 0; i < filters.length; i++) {
-      console.log("filters to regenerate",filters);
       filterQueriesBox.push(<FilterMap
           indexFilter={i} key={generateKey(filters[i].map_filter_title)+i}
           index_parent={index} setFilterChange={setFilter} filters={filters}
           removeFilterBox={removeFilterBox}/>)
     }
   }
-
 
   // preview
   React.useEffect(() => {
@@ -672,6 +655,13 @@ const MapViz = ({ unique_key, index ,
             allMarkers={allMarkersMap}
             markers={markersMap}
             map={mapRendered} />
+          <MarkerSidebar
+            key={"marker_sidebar_"+unique_key+index}
+            markerSidebar={markerSidebar}
+            setMarkerSidebar={setMarkerSidebar}
+            setMarkerSidebarContent={setMarkerSidebarContent}
+            markerSidebarContent={markerSidebarContent}
+            />
         </div>
         <a id={index+"__addmapfilter"}
           className='btn btn-primary btn-border'
@@ -700,6 +690,13 @@ const MapViz = ({ unique_key, index ,
             allMarkers={allMarkersMap}
             markers={markersMap}
             map={mapRendered} />
+          <MarkerSidebar
+            key={"marker_sidebar_"+unique_key+index}
+            markerSidebar={markerSidebar}
+            setMarkerSidebar={setMarkerSidebar}
+            setMarkerSidebarContent={setMarkerSidebarContent}
+            markerSidebarContent={markerSidebarContent}
+            />
         </div>
       </>
     )

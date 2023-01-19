@@ -3101,10 +3101,10 @@ function chartColor(colorStart, colorEnd, dataLength) {
 // }
 
 // autoresize textarea
-// function auto_grow(element) {
-//     // element.style.height = "5px";
-//     // element.style.height = (element.scrollHeight)+"px";
-// }
+function auto_grow(element) {
+    // element.style.height = "5px";
+    // element.style.height = (element.scrollHeight)+"px";
+}
 
 function getPDF(elem_id) {
     var element = document.getElementById(elem_id);
