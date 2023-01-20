@@ -14,6 +14,7 @@
 .main-header,
 .sidebar {
   display: none;
+  z-index: 30000;
 }
 
 nav {
@@ -489,6 +490,7 @@ div[id*='block_field'] {
 
 #sortable a.up,
 #sortable a.down,
+#sortable a.closeBox,
 #sortable a.trash {
   right: 10px !important;
   float: right;
@@ -500,6 +502,7 @@ div[id*='block_field'] {
   border-radius: 50%;
 }
 
+.closeBox {width: 25px !important; cursor: pointer;}
 #sortable p {
   line-height: 1.5em;
 }

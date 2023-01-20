@@ -522,7 +522,7 @@
                 "section_name": "Bells",
                 "subtitle": "",
                 "curator": "Fabrizio Magnani, Elena Musumeci, Chiara Veninata",
-                "description": "How many churches contain bells in Liguria?",
+                "description": "In Liguria, the art of bell-making is very widespread, thanks also to the historical presence of numerous foundries, now closed. Depending on the location, the number of bells for each bell tower differs.",
                 "action": "save",
                 "dynamic_elements": [
                     {
@@ -546,6 +546,30 @@
                     {
                         "position": 2,
                         "operations": [],
+                        "type": "text",
+                        "text": "<p>In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells. In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower.</p><p>The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "Churches with bells in Liguria",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
+                        "map_filters": [
+                            {
+                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
+                                "extra_id": "1674228106213_0",
+                                "position": 0,
+                                "map_filter_title": "district"
+                            }
+                        ],
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
                         "type": "chart",
                         "chart_type": "barchart",
                         "chart_title": "N. of bells per province",
@@ -559,15 +583,7 @@
                         "map_filters": []
                     },
                     {
-                        "position": 3,
-                        "operations": [],
-                        "type": "text",
-                        "text": "<p>In Liguria, the art of bell-making is very widespread, thanks also to the historical presence of numerous foundries, now closed. Depending on the location, the number of bells for each bell tower differs. In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells. In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower. The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 4,
+                        "position": 5,
                         "operations": [],
                         "type": "chart",
                         "chart_type": "doughnutchart",
@@ -582,7 +598,7 @@
                         "map_filters": []
                     },
                     {
-                        "position": 5,
+                        "position": 6,
                         "operations": [],
                         "type": "text",
                         "text": "<p>Bells made with the intention of producing a functional sound are usually made by casting a bronze alloy. Over the course of history there has been a lot of experimentation to achieve the best results; However, the best recognized composition for melting bells is a ratio of around 80% copper and 20% tin. Other materials occasionally used for casting bells are brass or iron. Steel was tried in the mid 19th century in England for its lower cost than bronze, but it was found to be not durable and production ceased in 1870. Glass was also made. but although the bells of this type produced a pleasant sound, this substance being very fragile was unable to withstand continued use.</p>",
@@ -590,22 +606,22 @@
                         "map_filters": []
                     },
                     {
-                        "position": 6,
+                        "position": 7,
                         "operations": [],
                         "type": "chart",
                         "chart_type": "linechart",
                         "chart_title": "Bells production over time",
                         "chart_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nprefix ti: <https://w3id.org/italia/onto/TI/>\r\n\r\nSELECT ?label\r\nWHERE {\r\n?bell a arco:MusicHeritage ;\r\na-cd:hasDating ?dating ;\r\ndc:subject ?o FILTER(str(?o)='campana') .\r\n?dating a-cd:hasDatingEvent ?datingEv .\r\n?datingEv rdfs:label ?datingEvType FILTER(str(?datingEvType)='realizzazione') .\r\n?datingEv a-cd:specificTime ?when .\r\n?when arco:startTime ?label .\r\n}",
-                        "chart_series": "",
+                        "chart_series": "bells",
                         "chart_legend": {
                             "x": "year",
-                            "y": "N. of bells"
+                            "y": "count"
                         },
                         "extra_queries": [],
                         "map_filters": []
                     },
                     {
-                        "position": 7,
+                        "position": 8,
                         "operations": [],
                         "type": "text",
                         "text": "<p>The bell casting date is very relevant for the reconstruction of the history that characterizes this artifact in the territory, and connects to other relevant information such as the presence of foundries in the area, the shape of the bells and the sound produced. It is also very relevant for the protection of cultural heritage</p>",
@@ -613,26 +629,29 @@
                         "map_filters": []
                     },
                     {
-                        "position": 8,
+                        "position": 9,
                         "operations": [],
                         "type": "map",
-                        "map_title": "Churches with bells in Liguria",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long ?a ?reg\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
+                        "map_title": "hh",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 15",
                         "map_filters": [
                             {
-                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1674055929729_0",
+                                "map_filter_query": "",
+                                "extra_id": "1674228106217_0",
                                 "position": 0,
-                                "map_filter_title": "district"
-                            },
-                            {
-                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1674055929731_1",
-                                "position": 1,
-                                "map_filter_title": "holala"
+                                "map_filter_title": ""
                             }
                         ],
                         "extra_queries": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 15",
+                        "extra_queries": [],
+                        "map_filters": []
                     }
                 ],
                 "https://w3id.org/arco/resource/Province/sp": "https://w3id.org/arco/resource/Province/sp",

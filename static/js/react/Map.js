@@ -5,6 +5,7 @@ const generateKey = (pre) => {
 const FilterCheckbox = ({ key_check, value_check , indexPanel ,
       filter_title , markers, allMarkers, map}) => {
 
+  let checked_filters;
   const [checked, setCheck] = React.useState('not checked');
 
   function addRemoveMarkers() {
@@ -132,7 +133,7 @@ const SidebarPanel = ({indexPanel ,
 
   const getCheckboxes = event => {
     if (f_query.length > 1) {
-      var dataMap = JSON.parse(document.getElementById('dataMap').innerHTML);
+      var dataMap = JSON.parse(document.getElementById('dataMap_'+index_parent).innerHTML);
       var values = "VALUES ?point {";
       dataMap.forEach((item, i) => { values += '<' + item.properties.uri + '> '; });
       values += '}';
@@ -181,9 +182,9 @@ const SidebarPanel = ({indexPanel ,
            });
 
            // update geoJSON in DOM
-           $('#dataMap').remove();
+           $('#dataMap_'+index_parent).remove();
            var $body = $(document.body);
-           $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
+           $body.append("<script id='dataMap_"+index_parent+"' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
 
            // update markers
            markers.eachLayer(layer => {
@@ -256,17 +257,13 @@ const SidebarPanel = ({indexPanel ,
   )
 }
 
-const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map}) => {
+const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map, setIsShown, isShown}) => {
 
   const sidebarPanelsBox = []
-  const [isExpanded, setExpanded] = React.useState(false)
 
-  function gradientbackground(el) {
-      el.style.background = 'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ')';
-  }
 
   React.useEffect(() => {
-    document.querySelectorAll(".map_sidebar").forEach(gradientbackground);
+
   }, []);
 
   filters.forEach((filter, i) => {
@@ -280,23 +277,38 @@ const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map})
   });
 
   const expandSidebar = event => {
-    if (isExpanded == false) { setExpanded(true);
+    if (isShown == false) { setIsShown(true);
     } else {
       // collapse sidebar
     }
 
   }
 
+  // if (filters.length) {
+  //   return (
+  //     {isShown && (
+  //       <div
+  //         className="map_sidebar">
+  //         <h3 className="map_sidebar_title">FILTERS</h3>
+  //         {sidebarPanelsBox}
+  //       </div>
+  //     )}
+  //   )
+  // }
+
   if (filters.length) {
     return (
-      <div
-        onClick={() => expandSidebar}
-        className="map_sidebar">
-        <h3 className="map_sidebar_title">FILTERS</h3>
-        {sidebarPanelsBox}
-      </div>
+        <div
+          style={{background:'linear-gradient(-45deg,' + datastory_data.color_code[0] + ',' + datastory_data.color_code[1] + ')'}}
+          className="map_sidebar">
+          <h3 className="map_sidebar_title">FILTERS</h3>
+          {sidebarPanelsBox}
+        </div>
+
     )
   }
+
+
 
 }
 
@@ -353,18 +365,41 @@ const FilterMap = ({ indexFilter, index_parent ,
 
 }
 
-const MarkerSidebar = ({markerSidebar, setMarkerSidebar , setMarkerSidebarContent, markerSidebarContent}) => {
-  function createMarkup() { return {__html: setMarkerSidebarContent};}
+const MarkerSidebar = ({markerSidebar, setMarkerSidebar ,
+  setMarkerSidebarContent, markerSidebarContent}) => {
+
+  function make_uri(el) {
+    if (el.startsWith('http')) { return <a href={el}>URI <i className="far fa-external-link"></i></a>
+    } else {return el}
+  }
+
+  const closeMarkerSidebar = (e) => {
+    setMarkerSidebar('close');
+  }
+
+
   if (markerSidebar == 'open') {
+
     console.log(markerSidebarContent);
     return (
-      <div
-        className="map_sidebar map_sidebar_right">
-        <h3 className="map_sidebar_title">DETAIL</h3>
-        <div dangerouslySetInnerHTML={createMarkup()}>
+      <div className="map_sidebar map_sidebar_right">
+        <div>
+          <a
+            onClick={() => closeMarkerSidebar()}
+            className="closeBox">
+            <i className="fas fa-times"></i>
+          </a><br/><br/>
+
+            {Object.keys(markerSidebarContent)
+            .map((detail, id) =>
+              <p key={id}>
+                <strong>{detail} </strong>
+                {make_uri(markerSidebarContent[detail])}
+              </p>)}
+
 
         </div>
-      </div>
+    </div>
     )
   }
 
@@ -375,7 +410,7 @@ const MapViz = ({ unique_key, index ,
                 sortComponentUp , sortComponentDown}) => {
 
 
-  let map_title = '', map_points_query = '',
+  let map = null, map_title = '', map_points_query = '',
       waitfilters ,
       markers, allMarkers , map_filters = [],
       mapid = index + "__map_preview_container",
@@ -408,37 +443,34 @@ const MapViz = ({ unique_key, index ,
 
   const [mapInstance, setMap] = React.useState('not initialised');
   const [mapRendered, setMapRender] = React.useState('');
-  const [sidebarInstance,setSidebar] = React.useState('not initialised');
-
+  const [mapReload, setMapReload] = React.useState(1);
+  const [isShown, setIsShown] = React.useState(false);
   const [filters, setFilter] = React.useState(map_filters);
 
   const initMap = event => {
-
-    if (mapInstance != 'initialised') {
-      // document.getElementById(mapid).innerHTML = "<div class='map_preview_container' id='"+index+"__map_preview_container'></div>";
-      // if (map && map.remove) {map.off(); map.remove();}
+    if (mapInstance != 'initialised' && (map == undefined || map == null )) {
+      console.log("mapInstance",mapInstance, map);
       map = L.map(mapid).setView([51.505, -0.09], 3);
       L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
       maxZoom: 19, attribution: '© OpenStreetMap'
       }).addTo(map);
-    }
+    } else if (mapInstance == 'initialised')(map = mapRendered)
 
     if (query.length > 1) {
-      $('#loader').removeClass('hidden');
-      //if (map && map.remove) { map.off(); map.remove(); }
-      fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
-        {
-        method: 'GET',
-        headers: { 'Accept': 'application/sparql-results+json' }
-        }
-      ).then((res) => res.json())
-      .then((data) => {
-
+        $('#loader').removeClass('hidden');
+        //if (map && map.remove) { map.off(); map.remove(); }
+        fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
+          {
+          method: 'GET',
+          headers: { 'Accept': 'application/sparql-results+json' }
+          }
+        ).then((res) => { return res.json()})
+       .then(data => {
           // add markers
           var geoJSONdata = creategeoJSON(data);
           markers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
           allMarkers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
-        })
+       })
        .catch((error) => { console.error('Error:', error); })
        .finally( () => {
          $('#loader').addClass('hidden');
@@ -447,7 +479,7 @@ const MapViz = ({ unique_key, index ,
          setMarkers(markers);
          setAllMarkers(allMarkers);
        });
-    }
+      }
     return map;
   };
 
@@ -459,7 +491,7 @@ const MapViz = ({ unique_key, index ,
           }
       });
       // remove geoJSON
-      $('#dataMap').remove();
+      $('#dataMap_'+index).remove();
 
       // style clusters
       var innerClusterStyle = "display: inline-block; background:" + color_code + ";\
@@ -488,8 +520,7 @@ const MapViz = ({ unique_key, index ,
 
       // add geoJSONdata to DOM
       var $body = $(document.body);
-      $body.append("<script id='dataMap' type='application/json'>" + JSON.stringify(geoJSONdata) + "</script>");
-
+      $body.append("<script id='dataMap_"+index+"' type='application/json'>" + JSON.stringify(geoJSONdata) + "</script>");
 
       return markers;
   };
@@ -527,26 +558,22 @@ const MapViz = ({ unique_key, index ,
         }
       });
 
-      // for (j = 0; j < headings.length; j++) {
-      //     if (headings[j] == ('lat') || headings[j] == ('long') || headings[j] == ('point')) {
-      //         headings.splice(j, 1); j--;
-      //     }
-      // }
 
       // create geoJSON object
       returnedJson.results.bindings.forEach((item, i) => {
         let pointObj = {};
         pointObj.type = "Feature";
         pointObj.properties = {};
-        pointObj.properties.popupContent = "";
+        pointObj.properties.popupContent = {};
 
         headings.forEach((head, i) => {
-          pointObj.properties.popupContent += item[head].value + '.\n\ '
+          pointObj.properties.popupContent[head] = item[head].value
         });
 
         if (there_is_point != -1) {
             pointObj.properties.uri = item['point'].value;
-            pointObj.properties.popupContent += "<br><a target='_blank' href='" + item.point.value + "'>URI</a>"
+            pointObj.properties.popupContent.point = item.point.value
+
         };
         pointObj.geometry = {};
         pointObj.geometry.type = "Point";
@@ -558,6 +585,9 @@ const MapViz = ({ unique_key, index ,
       return geoJSONdata
   };
 
+  function refreshPage() {
+    window.location.reload(true);
+  }
   const filterQueriesBox = []
   const filterChange = event => {
     setFilter(prevExtras => [
@@ -601,6 +631,7 @@ const MapViz = ({ unique_key, index ,
   // preview
   React.useEffect(() => {
     if (mapInstance != 'initialised') { map = initMap(); }
+    else if (mapInstance == 'initialised') {map = mapRendered ;}
   }, []);
 
   // WYSIWYG: render component and preview
@@ -641,7 +672,9 @@ const MapViz = ({ unique_key, index ,
           </textarea>
           <a
             style={{cursor:'pointer'}}
-            onClick={initMap}>Run the query</a>
+            onClick={initMap}>Run the query</a> | <a
+            style={{cursor:'pointer'}}
+            onClick={() => window.location.reload(true)}>Refresh</a>
         </div>
         <h3>{title}</h3>
         <div
@@ -651,6 +684,8 @@ const MapViz = ({ unique_key, index ,
             index={index}
             filters={filters}
             key={"sidebar_"+unique_key+index}
+            onMouseEnter={() => setIsShown(true)}
+            onMouseLeave={() => setIsShown(false)}
             onEachFeature={onEachFeature}
             allMarkers={allMarkersMap}
             markers={markersMap}
@@ -686,6 +721,8 @@ const MapViz = ({ unique_key, index ,
             index={index}
             filters={filters}
             key={"sidebar_"+unique_key+index}
+            onMouseEnter={() => setIsShown(true)}
+            onMouseLeave={() => setIsShown(false)}
             onEachFeature={onEachFeature}
             allMarkers={allMarkersMap}
             markers={markersMap}

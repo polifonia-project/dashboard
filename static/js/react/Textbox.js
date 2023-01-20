@@ -77,7 +77,9 @@ const Textbox = ({unique_key, index ,
             removeComponent={removeComponent}
             key={unique_key} />
 
-            <input name={index+'__text'} type='hidden' id={index+'__text'} defaultValue=''/>
+            <input name={index+'__text'}
+                type='hidden' id={index+'__text'}
+                defaultValue={createMarkup()}/>
             <div className='editor' id={index+'__editor'} dangerouslySetInnerHTML={createMarkup()}></div>
         </div>
       );

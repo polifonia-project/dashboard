@@ -1,41 +1,18 @@
-var checked_filters;
-var markers;
-var allMarkers;
-var sidebar, map;
-var myScatterChart;
+
 addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
 
 window.onload = function () {
-    //if (Object.getOwnPropertyNames(datastory_data).length > 0) { queryCounter(); }
-    //chartViz();
     disableKeypress();
-    //saveHTML(datastory_data.name);
-    var map_ready;
 }
 
 $(document).ready(function () {
 
-  // wrap counters
-
-
-    //$("#exampleFormControlSelect1 option[value='statistics']").removeAttr('disabled');
-    $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded', 'false');
+  $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded', 'false');
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
     }
-
-    var form = document.querySelector('form');
-    // if (form != undefined) {
-    //     form.addEventListener('change', function (e) {
-    //       var map_chechbox = $(this).find('input[class="map_chechbox"]');
-    //       if (map_chechbox != undefined) {
-    //           addRemoveMarkers();
-    //       }
-    //     });
-    //
-    // }
 
 });
 
