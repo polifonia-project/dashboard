@@ -560,7 +560,7 @@
                         "map_filters": [
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1674228106213_0",
+                                "extra_id": "1674232532866_0",
                                 "position": 0,
                                 "map_filter_title": "district"
                             }
@@ -637,7 +637,7 @@
                         "map_filters": [
                             {
                                 "map_filter_query": "",
-                                "extra_id": "1674228106217_0",
+                                "extra_id": "1674232532871_0",
                                 "position": 0,
                                 "map_filter_title": ""
                             }
@@ -649,7 +649,43 @@
                         "operations": [],
                         "type": "map",
                         "map_title": "",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 15",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 10",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 12",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 14,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 17",
                         "extra_queries": [],
                         "map_filters": []
                     }

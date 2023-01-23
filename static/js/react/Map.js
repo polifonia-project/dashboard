@@ -93,7 +93,7 @@ const FilterCheckbox = ({ key_check, value_check , indexPanel ,
         className="map_checkbox"
         data-filter={filter_title}>
       </input>
-      <label htmlFor="key_check">
+      <label className="key_check" htmlFor="key_check">
         {value_check[0] + " (" + value_check[1] + ")"}
       </label>
     </p>
@@ -258,13 +258,9 @@ const SidebarPanel = ({indexPanel ,
 }
 
 const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map, setIsShown, isShown}) => {
-
   const sidebarPanelsBox = []
 
-
-  React.useEffect(() => {
-
-  }, []);
+  React.useEffect(() => { }, []);
 
   filters.forEach((filter, i) => {
     sidebarPanelsBox.push(
@@ -448,12 +444,25 @@ const MapViz = ({ unique_key, index ,
   const [filters, setFilter] = React.useState(map_filters);
 
   const initMap = event => {
+    // craziness of map already initialised
     if (mapInstance != 'initialised' && (map == undefined || map == null )) {
-      console.log("mapInstance",mapInstance, map);
-      map = L.map(mapid).setView([51.505, -0.09], 3);
-      L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
-      maxZoom: 19, attribution: '© OpenStreetMap'
-      }).addTo(map);
+      if (mapRendered.length) {map = mapRendered} else {
+        try {
+          map = L.map(mapid).setView([51.505, -0.09], 3);
+          L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
+          maxZoom: 19, attribution: '© OpenStreetMap'
+          }).addTo(map);
+        } catch (e) {
+          console.log(e);
+          var container = L.DomUtil.get(mapid);
+          if(container != null){ container._leaflet_id = null; }
+          map = L.map(mapid).setView([51.505, -0.09], 3);
+          L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=5303ddca-5934-45fc-bdf1-40fac7966fa7', {
+          maxZoom: 19, attribution: '© OpenStreetMap'
+          }).addTo(map);
+        }
+      }
+
     } else if (mapInstance == 'initialised')(map = mapRendered)
 
     if (query.length > 1) {
