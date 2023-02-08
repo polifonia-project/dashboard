@@ -8,20 +8,19 @@
         {% endfor %}
     </div>
 
-    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-        <div class="col-12">
-            <h1 class="pb-2 fw-bold">
-                <textarea oninput='auto_grow(this)' name="title" type="text" id=""
+    <div class="flex-md-row">
+            <h1 class="pb-2 fw-bold ">
+                <textarea name="title" type="text" id=""
                     cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
                     required>{{ datastory_data.title }}</textarea>
             </h1>
             <h5 class="mb-2 fw-bold">
                 {% if datastory_data.subtitle %}
-                <textarea oninput='auto_grow(this)' name="subtitle" type="text" id=""
-                    cols="{{ datastory_data.subtitle|length }}" rows="1"
+                <textarea name="subtitle" type="text" id=""
+                    cols="{{ datastory_data.subtitle|length }}" rows="2"
                     placeholder="Subtitle">{{ datastory_data.subtitle }}</textarea>
                 {% else %}
-                <textarea oninput='auto_grow(this)' name="subtitle" type="text" id="" rows="1"
+                <textarea name="subtitle" type="text" id="" rows="1"
                     placeholder="Subtitle"></textarea>
                 {%endif%}
             </h5>
@@ -36,10 +35,7 @@
                 {%endif%}
             </h5>
 
-        </div>
-        <div class="ml-md-auto py-2 py-md-0">
-
-        </div>
+        
     </div>
 </div>
 </div>

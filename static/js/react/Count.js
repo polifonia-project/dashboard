@@ -80,10 +80,11 @@ const Count = ({ unique_key, index ,
           index={index}
           removeComponent={removeComponent}
           key={unique_key} />
-          <div className='card-body justify-content-center option-2b count_result col-md-3'>
+          <div className='card-body justify-content-center option-2b count_result col-md-3 col-sm-5'>
             <p className='counter_num' id={index+"__num"}>{count}</p>
             <p className='counter_label' id={index+"__lab"}>{label}</p>
           </div>
+          <label htmlFor='largeInput'>SPARQL query</label>
           <textarea name={index+"__count_query"} type='text'
               spellCheck='false'
               onChange={queryChange}
@@ -93,6 +94,7 @@ const Count = ({ unique_key, index ,
               placeholder='A SPARQL query that returns a number. Use the variable ?count' required>
 
           </textarea>
+          <label htmlFor='largeInput'>Label</label>
           <input name={index+"__count_label"}
               type='text'
               id={index+"__count_label"}

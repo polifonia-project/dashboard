@@ -32,21 +32,34 @@ const Textbox = ({unique_key, index ,
         }
     }
 
+    // const createTextEditor = () => {
+    //     let quill;
+    //     let editor = document.querySelectorAll('#'+index + '__editor');
+    //     for (const [key, value] of Object.entries(editor)) {
+    //       quill = new Quill(value, {
+    //           modules: { toolbar: toolbarOptions() },
+    //           theme: 'snow'
+    //       });
+    //       fromEditorToInput(index);
+    //     }
+    // }
     const createTextEditor = () => {
-        let quill;
-        let editors = document.querySelectorAll('.editor');
-        for (const [key, value] of Object.entries(editors)) {
-            let pos = value.id.split('__')[0];
-            //let name = value.previousElementSibling.id.split('__')[1];
-            if (value.children.length != 3) {
-                quill = new Quill(value, {
-                    modules: { toolbar: toolbarOptions() },
-                    theme: 'snow'
-                });
-            }
-            fromEditorToInput(pos);
-        }
-    }
+      let quill;
+      let editors = document.querySelectorAll('.editor');
+      for (const [key, value] of Object.entries(editors)) {
+          let pos = value.id.split('__')[0];
+          let name = value.previousElementSibling.id.split('__')[1];
+          if (pos == index) {
+              quill = new Quill(value, {
+                  modules: {
+                      toolbar: toolbarOptions()
+                  },
+                  theme: 'snow'
+              });
+          }
+          fromEditorToInput(pos);
+      }
+  }
 
     createTextEditor();
   });
@@ -77,10 +90,12 @@ const Textbox = ({unique_key, index ,
             removeComponent={removeComponent}
             key={unique_key} />
 
-            <input name={index+'__text'}
-                type='hidden' id={index+'__text'}
-                defaultValue={createMarkup()}/>
-            <div className='editor' id={index+'__editor'} dangerouslySetInnerHTML={createMarkup()}></div>
+          <input name={index+'__text'}
+              type='hidden' id={index+'__text'}
+              defaultValue={<>createMarkup()</>}/>
+          <div className='editor'
+              id={index+'__editor'}
+              dangerouslySetInnerHTML={createMarkup()}></div>
         </div>
       );
   } else {

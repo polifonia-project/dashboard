@@ -11,7 +11,6 @@ import bleach
 import components
 import os
 
-
 def read_json(file_name):
 	'''
 	Open and read json file.

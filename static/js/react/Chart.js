@@ -413,7 +413,7 @@ const ChartViz = ({ unique_key, index ,
     else if (ch_type == 'doughnutchart') {
       var colors ;
       if (chartLabels.length == 1) {colors = datastory_data.color_code[0] }
-      else {d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), chartLabels.length )}
+      else {colors = d3.quantize(d3.interpolateHcl(datastory_data.color_code[0], datastory_data.color_code[1]), chartLabels.length )}
 
       ch_type = 'doughnut';
       datasets = [{
@@ -815,246 +815,141 @@ const ChartViz = ({ unique_key, index ,
                     <div className="modal-header">
                         <h4 id="chartsModalLongTitle" className="card-title">
                         Choose the right chart for your query</h4>
-                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+
                     </div>
                     <div className="modal-body">
                         <div className="container">
                             <div className="row">
                                 <p>Check the description of the charts to see which one fits the
                                     data you want to show. Pay particular attention to the naming conventions of the
-                                    variables.</p>
-                                <p>Although this is not the case for all charts, overall a SPARQL
-                                    query to build a chart can be of two types:</p>
-                                <ul>
-                                    <li className="pb-2"><strong>Aggregating</strong>: the query
-                                        retrieves
-                                        aggregated data that are automatically post-processed to be
-                                        displayed in a chart.
-                                        The query returns two or more variables. Check how to name
-                                        them for each chart type.</li>
-                                    <li><strong>Non-aggregating</strong>: the query retrieves
-                                        non-aggregated data, which are not immediately suitable for charting, hence
-                                        data need some post-processing operations, provided by the
-                                        interface.
-                                    </li>
-                                </ul>
+                                    variables. To see the preview of the chart
+                                    (or to receive an alert of mistakes in the query, but this is hopefully
+                                      not your case!) move the mouse out of the text area.</p>
+
                             </div>
                         </div>
 
                         <div className="container">
                             <div className="row">
-                                <h4>Bar Chart</h4>
+                                <h4 className="block_title"><i className="fas fa-signal"></i> Bar Chart</h4>
                             </div>
-                            <div className="row pt-3">
-                                <div className="col-sm-4 col-lg-3 text-center">
-                                    <img className="preview-png"
-                                        src="/melody/static/img/bar-chart.png" />
-                                </div>
-                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                    <p>A bar chart is useful to make comparisons.
-                                        The horizontal (x) axis represents categories.
-                                        The vertical (y) axis represents a value (e.g. a counting) for those
-                                        categories. Values can be percentages or numbers.
-                                    </p>
-                                </div>
+                            <div className="row">
+                              <p>A bar chart is useful to make comparisons. The horizontal (x) axis
+                              may represent categories or numbers/ordinals. The vertical (y) axis
+                              represents a numeric value (e.g. a counting). To build a bar chart,
+                              you can perform two types of queries:
+                              </p>
+                              <p>1. a <strong>non-aggregating</strong> query
+                                        that returns a variable called <code>{"?label"}</code> and flag
+                                        the "<strong>Count</strong>" checkbox. <code>{"?label"}</code> can
+                                        be categorical or numeric and will be shown on the x axis.
+                              </p>
+                              <code className="query-eg">{"SELECT ?label"}<br/>
+                              {"WHERE {"}<br/>
+                              {"?entry ?p <https://w3id.org/musow/vocab/repository> ."}<br/>
+                              {"?entry <https://schema.org/audience> ?audience ."}<br/>
+                              {"?audience rdfs:label ?label .  }"}</code>
+                              <p>2. an <strong>aggregating</strong> query that returns two
+                                    variables: <code>{"?label"}</code> (categorical or numerical values on the x axis)
+                                    and <code>{"?count"}</code> (numerical values on the y axis).
+                              </p>
+                              <code
+                                  className="query-eg">{"PREFIX musow: <https://w3id.org/musow/vocab/>"}<br/>
+                                  {"SELECT ?label (COUNT(?content) AS ?count) "}<br/>
+                                  {"WHERE { "}<br/>
+                                  {"  {?content ?p musow:repository . "}<br/>
+                                  {"  musow:repository rdfs:label ?label .} "}<br/>
+                                  {"  UNION {?content ?p musow:catalogue . "}<br/>
+                                  {"  musow:catalogue rdfs:label ?label .} "}<br/>
+                                  {"  UNION {?content ?p musow:dataset . "}<br/>
+                                  {"  musow:dataset rdfs:label ?label .}  "}<br/>
+                                  {"} GROUP BY ?label"}</code>
                             </div>
-                            <div className="row pt-3">
-                                <p>
-                                    To build it, you can:
-                                </p>
-                                <ul>
-                                    <li className="pb-2">write a <strong>non-aggregating</strong> query
-                                        that
-                                        returns a
-                                        variable called <code>{"?label"}</code> (time periods) and flag
-                                        the "<strong>Count</strong>" checkbox.
-
-                                    </li>
-                                    <code className="query-eg">{"SELECT ?label"}<br/>
-                                    {"WHERE {"}<br/>
-                                    {"?entry ?p <https://w3id.org/musow/vocab/repository> ."}<br/>
-                                    {"?entry <https://schema.org/audience> ?audience ."}<br/>
-                                    {"?audience rdfs:label ?label .  }"}</code>
-                                    <li>write an <strong>aggregating</strong> query that returns two
-                                        variables:
-                                        <ol>
-                                            <li className="pb-2"><code>{"?label"}</code>
-                                                (categorical or numerical values on the x axis)</li>
-                                            <li className="pb-2"><code>{"?count"}</code>
-                                                (numerical values on the y axis).</li>
-                                        </ol>
-                                        <code
-                                            className="query-eg">{"PREFIX musow: <https://w3id.org/musow/vocab/>"}<br/>
-                                            {"SELECT ?label (COUNT(?content) AS ?count) "}<br/>
-                                            {"WHERE { "}<br/>
-                                            {"  {?content ?p musow:repository . "}<br/>
-                                            {"  musow:repository rdfs:label ?label .} "}<br/>
-                                            {"  UNION {?content ?p musow:catalogue . "}<br/>
-                                            {"  musow:catalogue rdfs:label ?label .} "}<br/>
-                                            {"  UNION {?content ?p musow:dataset . "}<br/>
-                                            {"  musow:dataset rdfs:label ?label .}  "}<br/>
-                                            {"} GROUP BY ?label"}</code>
-                                    </li>
-                                </ul>
-                            </div>
-                            <hr />
                         </div>
 
                         <div className="container">
                             <div className="row">
-                                <h4>Line Chart</h4>
+                                <h4 className="block_title"><i className="fas fa-chart-line"></i> Line Chart</h4>
                             </div>
-                            <div className="row pt-3">
-                                <div className="col-sm-4 col-lg-3 text-center">
-                                    <img className="preview-png"
-                                        src="/melody/static/img/line-chart.png" />
-                                </div>
-                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
+                            <div className="row">
                                     <p>Line charts help to visualise trends.
-                                    The horizontal (x) axis includes numeric or ordinal values.
+                                    Similarly to bar charts, the horizontal (x) axis includes numeric or ordinal values.
                                     The vertical (y) axis includes numeric values.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="row pt-3">
-                                <p>
-                                    To build it, you can:
+                                    To build a line chart, you can perform two types of queries:
                                 </p>
-                                <ul>
-                                    <li className="pb-2">write a <strong>non-aggregating</strong> query
-                                        that
-                                        returns a
-                                        variable called <code>{"?label"}</code> and flag
-                                        the "<strong>Count</strong>" operation.<br />
-                                        <code
-                                            className="query-eg">{"SELECT ?label "}<br/>
-                                            {"WHERE { "}<br/>
-                                            {"{ SELECT ?time (DAY(?time) AS ?label) "}<br/>
-                                            {"WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . "}<br/>
-                                            {"} } }"}</code>
-                                    </li>
-                                    <li>write an <strong>aggregating</strong> query that returns two
-                                        variables:
-                                        <ol>
-                                            <li className="pb-2"><code>{"?label"}</code>
-                                                (numerical or ordinal values on the x axis)</li>
-                                            <li className="pb-2"><code>{"?count"}</code>
-                                              (numerical values on the y axis).</li>
-                                        </ol>
-                                        <code
-                                            className="query-eg">{"SELECT ?label (COUNT(?label) AS ?count) "}<br/>
-                                            {"WHERE { "}<br/>
-                                            {"{ SELECT ?time (DAY(?time) AS ?label) "}<br/>
-                                            {"WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . "}<br/>
-                                            {"} } } "}<br/>
-                                            {"GROUP BY ?label "}<br/>
-                                            {"ORDER BY ?label"}</code>
-                                    </li>
-                                </ul>
+                                <p>1. a <strong>non-aggregating</strong> query
+                                        that returns a variable called <code>{"?label"}</code> (that
+                                          can include categorical, numeric or ordinal values) and flag
+                                        the "<strong>Count</strong>" checkbox. For instance:</p>
+                                <code
+                                    className="query-eg">{"SELECT ?label "}<br/>
+                                    {"WHERE { "}<br/>
+                                    {"{ SELECT ?time (DAY(?time) AS ?label) "}<br/>
+                                    {"WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . "}<br/>
+                                    {"} } }"}</code>
 
+                                <p>2. an <strong>aggregating</strong> query that returns two
+                                        variables: <code>{"?label"}</code> (numerical or ordinal values on the x axis)
+                                        and <code>{"?count"}</code> (numerical values on the y axis). For instance:</p>
+
+                                <code
+                                        className="query-eg">{"SELECT ?label (COUNT(?label) AS ?count) "}<br/>
+                                        {"WHERE { "}<br/>
+                                        {"{ SELECT ?time (DAY(?time) AS ?label) "}<br/>
+                                        {"WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . "}<br/>
+                                        {"} } } "}<br/>
+                                        {"GROUP BY ?label "}<br/>
+                                        {"ORDER BY ?label"}</code>
                             </div>
-                            <hr />
                         </div>
 
                         <div className="container">
                             <div className="row">
-                                <h4>Doughnut Chart</h4>
+                                <h4 className="block_title"><i className="fas fa-chart-pie"></i> Doughnut Chart</h4>
                             </div>
-                            <div className="row pt-3">
-                                <div className="col-sm-4 col-lg-3 text-center">
-                                    <img className="preview-png"
-                                        src="/melody/static/img/doughnut-chart.png" />
-                                </div>
-                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                    <p>Doughnut charts are used to express a "part-to-whole"
-                                        relationship,
-                                        where all pieces together represent 100%.<br />
-                                        A doughnut chart works best to display data with a small
-                                        number of
-                                        categories (up to 5).
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="row pt-3">
-                                <p>
-                                    To build it, you can:
+                            <div className="row">
+                                <p>Doughnut charts are used to express a "part-to-whole"
+                                    relation, where all together slices of the pie represent 100%.
+                                    To build a doughnut chart, you can perform two types of queries:
                                 </p>
-                                <ul>
-                                    <li className="pb-2">write a <strong>non-aggregating</strong> query
-                                        that
-                                        returns a
-                                        variable called <code>{"?label"}</code> (the categories) and
-                                        flag
-                                        the "<strong>Count</strong>" checkbox.<br />
-                                        <code
-                                            className="query-eg">{"SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }"}</code>
-                                    </li>
-                                    <li className="pb-2">write an <strong>aggregating</strong> query
-                                        that
-                                        returns two
-                                        variables:
-                                        <ol>
-                                            <li className="pb-2"><code>{"?label"}</code>
-                                                (categorical/numerical
-                                                values that
-                                                represents categories)</li>
-                                            <li className="pb-2"><code>{"?count"}</code> (
-                                                numerical
-                                                values for
-                                                each slice).</li>
-                                        </ol>
-                                        <code
-                                            className="query-eg">{"SELECT ?label (COUNT(?label) AS ?count) "}<br/>
+                                <p>1. a <strong>non-aggregating</strong> query
+                                        that returns a variable called <code>{"?label"}</code> (the categories) and
+                                        flag the "<strong>Count</strong>" checkbox. For instance:</p>
+                                        <code className="query-eg">{"SELECT ?label "}<br/>
+                                        {"WHERE { "}<br/>
+                                        {"?entry ?p <https://w3id.org/musow/vocab/repository> . "}<br/>
+                                        {"?entry <https://schema.org/audience> ?audience . "}<br/>
+                                        {"?audience rdfs:label ?label . }"}</code>
+                                    <p>2. an <strong>aggregating</strong> query
+                                        that returns two variables: <code>{"?label"}</code>
+                                        (categorical/numerical values that represents categories) and
+                                        <code>{"?count"}</code> (a numerical value for each slice). For instance:
+                                    </p>
+                                        <code className="query-eg">{"SELECT ?label (COUNT(?label) AS ?count) "}<br/>
                                             {"WHERE { "}<br/>
                                             {"?entry ?p <https://w3id.org/musow/vocab/repository> . "}<br/>
                                             {"?entry <https://schema.org/audience> ?audience . "}<br/>
                                             {"?audience rdfs:label ?label . } "}<br/>
                                             {"GROUP BY ?label ORDER BY ?label"}</code>
-                                    </li>
-                                </ul>
+
                             </div>
                         </div>
-                        <hr />
 
                         <div className="container">
                             <div className="row">
-                                <h4>Scatter Plot</h4>
+                                <h4 className="block_title"><i className="far fa-chart-scatter"></i> Scatter Plot</h4>
                             </div>
-                            <div className="row pt-3">
-                                <div className="col-sm-4 col-lg-3 text-center">
-                                    <img className="preview-png"
-                                        src="/melody/static/img/scatter-chart.png" />
-                                </div>
-                                <div className="col-sm-8 col-lg-9 pt-4 pt-sm-0">
-                                    <p>Scatter plots help to understand correlation between two variables.
-                                        Data are displayed as a collection of points, each having two variables
-                                        determining the position on the axes (x, y).
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="row pt-3">
-                                <p>
-                                    To build it, you can:
+                            <div className="row">
+                                <p>Scatter plots help to understand whether there is a correlation between two variables.
+                                    Data points have two variables determining their position on the axes (x, y).
+                                    To build a scatterplot, you can perform a query that
+                                    returns two numerical variables called <code>{"?x"}</code> and <code>{"?y"}</code>.
                                 </p>
-                                <ul>
-                                    <li className="pb-2">write a query that returns two variables, each being numerical
-                                        values called <code>{"?x"}</code> and <code>{"?y"}</code>, that
-                                        represent
-                                        the
-                                        coordinates of each point.<br />
-                                    </li>
-                                    <li className="pb-2">You can add more queries to visualise several data series,
-                                    each returning two numerical values called <code>{"?x"}</code> and
-                                        <code>{"?y"}</code> that
-                                        represent the coordinates of each point. <br />
-                                        This is the case in which, for example, you want to
-                                        <strong>compare different datasets</strong>.
-                                        Datasets are distinguished by color.
-                                    </li>
-                                    <code
-                                        className="query-eg">{"PREFIX wdt: <http://www.wikidata.org/prop/direct/> "}<br/>
+                                <p>For instance, the following
+                                query to Wikidata retrieve U.S. box office revenue of movies (x-axis)
+                                and their review score in Rotten Tomatoes (y-axis):
+                                </p>
+                                    <code className="query-eg">{"PREFIX wdt: <http://www.wikidata.org/prop/direct/> "}<br/>
                                         {"PREFIX wd: <http://www.wikidata.org/entity/> "}<br/>
                                         {"PREFIX p: <http://www.wikidata.org/prop/> "}<br/>
                                         {"PREFIX ps: <http://www.wikidata.org/prop/statement/> "}<br/>
@@ -1068,11 +963,11 @@ const ChartViz = ({ unique_key, index ,
                                         {" ?item p:P2142 ?box_office_statement . "}<br/>
                                         {" ?box_office_statement ps:P2142 ?x . "}<br/>
                                         {" ?box_office_statement pq:P3005 wd:Q30 .}"}</code>
-
-                                </ul>
+                                <p>To visualise multiple data series, click on <code>Add series</code> and add more SPARQL queries
+                                each returning two lists of numerical values called <code>{"?x"}</code> and
+                                <code>{"?y"}</code>. Datasets are distinguished by color.</p>
                             </div>
                         </div>
-                        <hr />
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-danger"

@@ -1,16 +1,16 @@
 {
     "sections": {
-        "sound_and_vision": "Sound and Vision",
-        "tonalities": "Tonalities",
-        "wikidata": "Wikidata",
-        "fonn": "Fonn",
-        "musow": "musow",
-        "organs": "organs",
-        "musicbo": "MusicBo",
-        "choco": "choco",
         "tunes": "Tunes",
+        "musicbo": "MusicBo",
+        "bells": "Bells",
+        "tonalities": "Tonalities",
+        "wikidata": "wikidata",
+        "choco": "choco",
+        "organs": "organs",
+        "musow": "musoW",
+        "fonn": "Fonn",
         "zeri": "Zeri",
-        "bells": "Bells"
+        "sound_and_vision": "Sound and Vision"
     },
     "operations": [
         "Count",
@@ -25,24 +25,6 @@
                 "#17cf31"
             ],
             "main_feature": "Present charts and explanations in a personalised canvas. Include bar charts, line charts, doughnut charts and more!"
-        },
-        "template_02": {
-            "name": "maps",
-            "img_path": "/static/img/map.png",
-            "default_color": [
-                "#6e7e3a",
-                "#79f1e9"
-            ],
-            "main_feature": "Configure an interactive map, with filters and interactive charts on demand."
-        },
-        "template_03": {
-            "name": "timeline",
-            "img_path": "/static/img/timeline.png",
-            "default_color": [
-                "#0f64b9",
-                "#e2df1c"
-            ],
-            "main_feature": "Allow users to manipulate time series data. Incrementally build line charts, bar charts, and bubble charts, by adding/removing filters - and see the chart changing!"
         },
         "template_04": {
             "name": "relations",
@@ -517,7 +499,7 @@
                 "title": "Overview of few bells in Liguria",
                 "color_code": [
                     "#39c6b4",
-                    "#d1b100"
+                    "#008cb4"
                 ],
                 "section_name": "Bells",
                 "subtitle": "",
@@ -529,7 +511,7 @@
                         "position": 0,
                         "operations": [],
                         "type": "count",
-                        "count_query": "prefix a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/>\r\n\r\nSELECT (COUNT(?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane') .\r\n}",
+                        "count_query": "prefix a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/>\r\n \r\nSELECT (COUNT(?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane') .\r\n}",
                         "count_label": "Churches with bells in Liguria",
                         "extra_queries": [],
                         "map_filters": []
@@ -537,17 +519,17 @@
                     {
                         "position": 1,
                         "operations": [],
-                        "type": "count",
-                        "count_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\n\r\nSELECT (COUNT(DISTINCT ?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?province .\r\n?province l0:name ?prov FILTER(str(?prov)='GE') .\r\n}",
-                        "count_label": "Churches with bells in Genova",
+                        "type": "text",
+                        "text": "<p>In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells. In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower.&nbsp;</p><p>The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
                         "extra_queries": [],
                         "map_filters": []
                     },
                     {
                         "position": 2,
                         "operations": [],
-                        "type": "text",
-                        "text": "<p>In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells. In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower.</p><p>The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
+                        "type": "count",
+                        "count_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\n\r\nSELECT (COUNT(DISTINCT ?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?province .\r\n?province l0:name ?prov FILTER(str(?prov)='GE') .\r\n}",
+                        "count_label": "Churches with bells in Genova",
                         "extra_queries": [],
                         "map_filters": []
                     },
@@ -560,9 +542,15 @@
                         "map_filters": [
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1674232532866_0",
+                                "extra_id": "1675751677250_0",
                                 "position": 0,
                                 "map_filter_title": "district"
+                            },
+                            {
+                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
+                                "extra_id": "1675751677251_1",
+                                "position": 1,
+                                "map_filter_title": "hello"
                             }
                         ],
                         "extra_queries": []
@@ -625,67 +613,6 @@
                         "operations": [],
                         "type": "text",
                         "text": "<p>The bell casting date is very relevant for the reconstruction of the history that characterizes this artifact in the territory, and connects to other relevant information such as the presence of foundries in the area, the shape of the bells and the sound produced. It is also very relevant for the protection of cultural heritage</p>",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 9,
-                        "operations": [],
-                        "type": "map",
-                        "map_title": "hh",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 15",
-                        "map_filters": [
-                            {
-                                "map_filter_query": "",
-                                "extra_id": "1674232532871_0",
-                                "position": 0,
-                                "map_filter_title": ""
-                            }
-                        ],
-                        "extra_queries": []
-                    },
-                    {
-                        "position": 10,
-                        "operations": [],
-                        "type": "map",
-                        "map_title": "",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 11,
-                        "operations": [],
-                        "type": "map",
-                        "map_title": "",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 12,
-                        "operations": [],
-                        "type": "map",
-                        "map_title": "",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 10",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 13,
-                        "operations": [],
-                        "type": "map",
-                        "map_title": "",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 12",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 14,
-                        "operations": [],
-                        "type": "map",
-                        "map_title": "",
-                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n} LIMIT 17",
                         "extra_queries": [],
                         "map_filters": []
                     }
@@ -840,6 +767,30 @@
                         "type": "text",
                         "text": "<p>What roles did people linked to music and the city of Bologna played? Characters relevant to the music scene that crossed Bologna over the centuries were mostly authors and artists, but also office holders, writers, agents, and editors. Such insights suggest that Bologna was both a point of reference for artistic production and for music-related activities, as criticism and business. Last but not least, Bologna attracted music students.</p>",
                         "extra_queries": []
+                    }
+                ]
+            },
+            "map": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/musicbo/sparql",
+                "template_mode": "statistics",
+                "title": "map",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "musicbo",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "",
+                        "map_points_query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX dbpedia: <http://dbpedia.org/resource/>\r\nPREFIX sc: <http://purl.org/science/owl/sciencecommons/>\r\nPREFIX schema: <http://schema.org/>\r\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX wikibase: <http://wikiba.se/ontology#>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX wd: <http://www.wikidata.org/entity/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\nPREFIX psv: <http://www.wikidata.org/prop/statement/value/>\r\nPREFIX wdr: <http://www.w3.org/2007/05/powder#>\r\nPREFIX amr: <http://www.ontologydesignpatterns.org/ont/amr/> \r\nSELECT DISTINCT ?point ?label (count(distinct ?frameInstance) as ?count) ?lat ?long\r\nWHERE { ?cityUri rdf:type amr:City ;  owl:sameAs ?point ;  amr:name ?label .  \r\n\tFILTER (regex(str(?point), \"http://www.wikidata.org/entity/\", \"i\"))  \r\n\t?frameInstance ?p ?cityUri ; rdf:type ?frame .  \r\nSERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> { \r\n\t?point wdt:P31/wdt:P279* wd:Q515 .  \r\n\t?point p:P625 ?coords_stmt .  \r\n\t?coords_stmt ps:P625 ?coords; \r\n\tpsv:P625 [  wikibase:geoLatitude ?lat;  wikibase:geoLongitude ?long ] . }\r\n} \r\nGROUP BY ?point ?label ?lat ?long\r\nORDER BY DESC(?count)\r\nLIMIT 10",
+                        "extra_queries": [],
+                        "map_filters": []
                     }
                 ]
             }

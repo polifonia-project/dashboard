@@ -347,7 +347,8 @@ const FilterMap = ({ indexFilter, index_parent ,
             placeholder='A SPARQL query that returns two variables' required>
         </textarea>
         <label htmlFor='largeInput'>Filter title</label>
-    		<input className='form-control'
+
+    		<input
             onChange={filterTitleChange}
             type='text'
             id={index_parent+"__map_filter_title_"+filter_id+"_"+indexFilter}
@@ -355,6 +356,7 @@ const FilterMap = ({ indexFilter, index_parent ,
             defaultValue={filterTitle}
             placeholder='The label of the filter'>
         </input>
+        <p>Rerun the main query to update</p>
       </div>
     </div>
   )
@@ -594,9 +596,6 @@ const MapViz = ({ unique_key, index ,
       return geoJSONdata
   };
 
-  function refreshPage() {
-    window.location.reload(true);
-  }
   const filterQueriesBox = []
   const filterChange = event => {
     setFilter(prevExtras => [
@@ -679,11 +678,9 @@ const MapViz = ({ unique_key, index ,
               defaultValue={query}
     					required>
           </textarea>
-          <a
-            style={{cursor:'pointer'}}
-            onClick={initMap}>Run the query</a> | <a
-            style={{cursor:'pointer'}}
-            onClick={() => window.location.reload(true)}>Refresh</a>
+          <a style={{cursor:'pointer'}}
+            onClick={initMap}>Run the query</a> | <a href='#'
+                  role='button' data-toggle='modal' data-target='#mapsModalLong'>Learn more about SPARQL queries for maps</a>
         </div>
         <h3>{title}</h3>
         <div
@@ -713,6 +710,70 @@ const MapViz = ({ unique_key, index ,
           extra='True'
           name={index+"map_filter"}>Add a filter</a>
         {filterQueriesBox}
+      </div>
+      <div className="modal fade"
+          id="mapsModalLong"
+          tabIndex="-1" role="dialog"
+          aria-labelledby="mapsModalLongTitle"
+          aria-hidden="true">
+          <div className="modal-dialog modal-lg" role="document">
+              <div className="modal-content card">
+                  <div className="modal-header">
+                      <h4 id="mapsModalLongTitle" className="card-title">
+                      Populate a map with SPARQL</h4>
+
+                  </div>
+                  <div className="modal-body">
+                      <div className="container">
+                          <div className="row">
+                              <p>A SPARQL query to create a map requires you to include the following variables (names are mandatory).</p>
+                              <ul>
+                                  <li><strong>point</strong>: (URI) the resource to be plotted.</li>
+                                  <li><strong>lat</strong>: (string) the latitude of the point</li>
+                                  <li><strong>long</strong>: (string) the longitude of the point</li>
+                              </ul>
+                              <p>You can add as many other variables as you like.
+                              Values will be shown on the right sidebar when clicking
+                              on a point in the map. To get pretty labels associated to values
+                              (when the latter are URIs) use the notation <code>?var</code> and <code>?varLabel</code> when declaring variables in the SELECT clause.</p>
+                              <p>For instance, a query to Wikidata to return museums in Brittany would look like follows:</p>
+                              <code className="query-eg">{"SELECT DISTINCT ?point ?pointLabel ?villeIdLabel ?lat ?long"}<br/>
+                              {"WHERE {"}<br/>
+                              {"?point wdt:P539 ?museofile; wdt:P131* wd:Q12130; "}<br/>
+                              {"wdt:P131 ?villeId; p:P625 ?statement."}<br/>
+                              {"?statement psv:P625 ?node. "}
+                              {"?node wikibase:geoLatitude ?lat ; wikibase:geoLongitude ?long."}<br/>
+                              {"SERVICE wikibase:label { bd:serviceParam wikibase:language 'en'. } } "}<br/></code>
+                              <p>The map plots points as clusters, showing the number of resources per area.
+                              When moving the mouse over a cluster, the edges of the area is shown.</p>
+                              <p>Please note that to see the preview on the map you must click
+                              on <code>Run the query</code>, to avoid expensive unnecessary queries.</p>
+                              <h4 className="block_title">Filters</h4>
+                              <p>You can add filters to the map, which will appear in the left sidebar.
+                              To add a filter to the map you need a SPARQL query where to specify three variables (names are mandatory):</p>
+                              <ul>
+                                <li><strong>point</strong>: a variable identifying the data points
+                                returned by the previous query. We will replace this variable with
+                                the list of data points returned by the previous query, so you do
+                                not need to repeat the patterns to identify what a point is.</li>
+                                <li><strong>filter</strong>:  the variable to be used as a filter. Can be a URI or a Literal.</li>
+                                <li><strong>filterLabel</strong>: the label of the filter in case the filter is a URI.</li>
+                              </ul>
+                              <p>For instance, a query on Wikidata to return museums' types as filters would look like follows:</p>
+                              <code className="query-eg">{"SELECT DISTINCT ?point ?filter ?filterLabel"}<br/>
+                              {"WHERE {"}<br/>
+                              {"?point wdt:P539 ?museofile; wdt:P131* wd:Q12130. "}<br/>
+                              {"?point wdt:P131 ?filter. ?filter rdfs:label ?filterLabel ."}<br/>
+                              {"FILTER(LANG(?filterLabel) = '' || LANGMATCHES(LANG(?filterLabel), 'en')). }"}<br/></code>
+                          </div>
+                      </div>
+                  </div>
+                  <div className="modal-footer">
+                      <button type="button" className="btn btn-danger"
+                          data-dismiss="modal">Close</button>
+                  </div>
+              </div>
+          </div>
       </div>
 
       </>

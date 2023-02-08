@@ -1,27 +1,35 @@
 
 addEventListener("DOMContentLoaded", function () {
-    if (Object.getOwnPropertyNames(datastory_data).length > 0) { colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
+    if (Object.getOwnPropertyNames(datastory_data).length > 0) {
+      colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]); }
 });
 
-window.onload = function () {
-    disableKeypress();
-}
+window.onload = function () { disableKeypress(); }
 
 $(document).ready(function () {
-
+  // change font color in secondary menu
   $(".navbar-toggler.sidenav-toggler.ml-auto").attr('aria-expanded', 'false');
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         getBrightness(datastory_data.color_code[1]);
     }
+  // auto grow text areas
+  $("textarea").each(function () {
+    this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+  }).on("input", function () {
+    this.style.height = 0;
+    this.style.height = (this.scrollHeight) + "px";
+  });
 
 });
 
 // check for drop down story list and call function
 const storyList = document.getElementById('story-list');
-if (storyList) {
-    fillDropDownList(storyList);
-}
+if (storyList) { fillDropDownList(storyList); }
 
+function auto_grow(element) {
+    // element.style.height = "5px";
+    // element.style.height = (element.scrollHeight)+"px";
+}
 //// WYSIWYG FORM FUNCTIONS ////
 
 // disable submit form when pressing return

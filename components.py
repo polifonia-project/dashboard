@@ -1,5 +1,12 @@
 import bleach
 
+def clean_text(v):
+    bleach.clean(v,
+        tags=['h2', 'h3', 'p', 'em', 'i', 'u', 'strong', 'b', 'li', 'ul', 'ol', 'a'],
+        attributes=['href'],strip=True)
+    v = v.replace('<p><br></p>','')
+    return v
+
 v = ''
 
 components = [
@@ -7,9 +14,7 @@ components = [
         "name":"text",
         "regex_attr": "(text(?!search))",
         "value_type": "string",
-        "postprocess_value": bleach.clean(v,
-            tags=['h2', 'h3', 'p', 'em', 'u', 'strong', 'li', 'ul', 'ol', 'a'],
-            attributes=['href'])
+        "postprocess_value": clean_text(v)
     },
     {
         "name":"textsearch",
