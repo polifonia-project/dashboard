@@ -26,10 +26,7 @@ $(document).ready(function () {
 const storyList = document.getElementById('story-list');
 if (storyList) { fillDropDownList(storyList); }
 
-function auto_grow(element) {
-    // element.style.height = "5px";
-    // element.style.height = (element.scrollHeight)+"px";
-}
+function auto_grow(element) {}
 //// WYSIWYG FORM FUNCTIONS ////
 
 // disable submit form when pressing return

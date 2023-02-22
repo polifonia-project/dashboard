@@ -19,11 +19,11 @@ const Count = ({ unique_key, index ,
 
   const [label, setLabel] = React.useState(count_label);
   const labelChange = event => { setLabel(event.target.value); };
-
+  const [spinner, setSpinner] = React.useState(false);
 
   const fetchQuery = event => {
+    setSpinner(true);
     if (query.length > 1) {
-      $('#loader').removeClass('hidden');
       fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
         {
         method: 'GET',
@@ -31,16 +31,16 @@ const Count = ({ unique_key, index ,
         }
       ).then((res) => res.json())
        .then((data) => {
+         setSpinner(false);
          count = data.results.bindings[0].count.value;
          $("#" + index + "__num").text(count);
         })
        .catch((error) => {
           console.error('Error:', error);
+          alert("There is an error in the query")
           count = "Error!"
        })
-       .finally( () => {
-         $('#loader').addClass('hidden');
-       });
+       .finally( () => { });
 
     }
   }
@@ -48,6 +48,13 @@ const Count = ({ unique_key, index ,
   // preview counter
   React.useEffect(() => {
      fetchQuery();
+
+     $("textarea").each(function () {
+       this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+     }).on("input", function () {
+       this.style.height = 0;
+       this.style.height = (this.scrollHeight) + "px";
+     });
 
      let color_1 = datastory_data.color_code[0], color_2 = datastory_data.color_code[1]
      var counters = document.querySelectorAll(".count_result");
@@ -70,6 +77,7 @@ const Count = ({ unique_key, index ,
   if (window.location.href.indexOf("/modify/") > -1) {
     return (
       <div id={index+"__block_field"} className="block_field">
+      {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
         <h4 className="block_title">Add a counter</h4>
         <SortComponent
           index={index}
@@ -88,7 +96,7 @@ const Count = ({ unique_key, index ,
           <textarea name={index+"__count_query"} type='text'
               spellCheck='false'
               onChange={queryChange}
-              id={index+"__count_query"} rows='3'
+              id={index+"__count_query"}
               defaultValue={query}
               onMouseLeave={fetchQuery}
               placeholder='A SPARQL query that returns a number. Use the variable ?count' required>

@@ -7,14 +7,12 @@ def clean_text(v):
     v = v.replace('<p><br></p>','')
     return v
 
-v = ''
-
 components = [
     {
         "name":"text",
         "regex_attr": "(text(?!search))",
         "value_type": "string",
-        "postprocess_value": clean_text(v)
+        "postprocess_value": 'clean_text'
     },
     {
         "name":"textsearch",

@@ -260,14 +260,14 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 						elements_dict['type'] = component_data['name']
 						elements_dict[k.split('__')[1]] = v \
 							if component_data["postprocess_value"] == "" \
-							else eval(component_data["postprocess_value"])
+							else eval('components.'+component_data["postprocess_value"]+'(v)')
 					if "donothing" not in component_data and component_data['value_type'] == "dict":
 						if component_data['name'] not in elements_dict:
 							elements_dict[component_data['name']] = {}
 						key = re.search(rf"{component_data['regex_key']}", k).group(1)
 						elements_dict[component_data['name']][key] = v \
 							if component_data["postprocess_value"] == "" \
-							else eval(component_data["postprocess_value"])
+							else eval('components.'+component_data["postprocess_value"]+'(v)')
 					if "donothing" in component_data:
 						if component_data['name'] not in elements_dict:
 							elements_dict[component_data['name']] = []

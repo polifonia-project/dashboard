@@ -26,16 +26,16 @@
             </h5>
             <h5 class="text-white op-7 pb-2">
                 {% if datastory_data.curator %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id=""
+                <textarea name="curator" type="text" id=""
                     cols="{{ datastory_data.curator|length }}" rows="1"
                     placeholder="Authors">{{ datastory_data.curator }}</textarea>
                 {% else %}
-                <textarea oninput='auto_grow(this)' name="curator" type="text" id="" rows="1"
+                <textarea name="curator" type="text" id="" rows="1"
                     placeholder="Authors"></textarea>
                 {%endif%}
             </h5>
 
-        
+
     </div>
 </div>
 </div>

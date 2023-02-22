@@ -215,8 +215,8 @@ const SidebarPanel = ({indexPanel ,
          setCollapse('collapsed');
          $("#filter_"+extra_id).collapse();
       })
-      .catch((error) => { console.error('Error:', error); })
-      .finally( () => { $('#loader').addClass('hidden'); setLoad('loaded'); });
+      .catch((error) => { console.error('Error:', error); alert("There is an error in the query"); })
+      .finally( () => { setLoad('loaded'); });
     }
 
   }
@@ -272,25 +272,21 @@ const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map, 
     )
   });
 
-  const expandSidebar = event => {
-    if (isShown == false) { setIsShown(true);
-    } else {
-      // collapse sidebar
-    }
-
-  }
-
-  // if (filters.length) {
-  //   return (
-  //     {isShown && (
-  //       <div
-  //         className="map_sidebar">
-  //         <h3 className="map_sidebar_title">FILTERS</h3>
-  //         {sidebarPanelsBox}
-  //       </div>
-  //     )}
-  //   )
+  // const expandSidebar = event => {
+  //   if (isShown == false) { setIsShown(true);
+  //   } else {
+  //     // collapse sidebar
+  //   }
+  //
   // }
+
+  // const [isActive, setActive] = React.useState("false");
+  // const toggleSidebar = index => {
+  //     setActive(!isActive);
+  // };
+  // className={isActive ? "map_sidebar expanded_sidebar" : "map_sidebar toggled_sidebar"}
+  // <a onClick={() => toggleSidebar(index)} href="#" className="toggleSidebarArrow">
+  // <i className="fas fa-arrow-left"></i></a>
 
   if (filters.length) {
     return (
@@ -356,7 +352,7 @@ const FilterMap = ({ indexFilter, index_parent ,
             defaultValue={filterTitle}
             placeholder='The label of the filter'>
         </input>
-        <p>Rerun the main query to update</p>
+        <p><em>Rerun the main query to update</em></p>
       </div>
     </div>
   )
@@ -444,9 +440,11 @@ const MapViz = ({ unique_key, index ,
   const [mapReload, setMapReload] = React.useState(1);
   const [isShown, setIsShown] = React.useState(false);
   const [filters, setFilter] = React.useState(map_filters);
+  const [spinner, setSpinner] = React.useState(false);
 
   const initMap = event => {
     // craziness of map already initialised
+    setSpinner(true)
     if (mapInstance != 'initialised' && (map == undefined || map == null )) {
       if (mapRendered.length) {map = mapRendered} else {
         try {
@@ -468,7 +466,6 @@ const MapViz = ({ unique_key, index ,
     } else if (mapInstance == 'initialised')(map = mapRendered)
 
     if (query.length > 1) {
-        $('#loader').removeClass('hidden');
         //if (map && map.remove) { map.off(); map.remove(); }
         fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
           {
@@ -482,9 +479,9 @@ const MapViz = ({ unique_key, index ,
           markers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
           allMarkers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
        })
-       .catch((error) => { console.error('Error:', error); })
+       .catch((error) => { console.error('Error:', error); alert("There is an error in the query"); })
        .finally( () => {
-         $('#loader').addClass('hidden');
+         setSpinner(false)
          setMap('initialised');
          setMapRender(map);
          setMarkers(markers);
@@ -640,6 +637,14 @@ const MapViz = ({ unique_key, index ,
   React.useEffect(() => {
     if (mapInstance != 'initialised') { map = initMap(); }
     else if (mapInstance == 'initialised') {map = mapRendered ;}
+
+    $("textarea").each(function () {
+      this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+    }).on("input", function () {
+      this.style.height = 0;
+      this.style.height = (this.scrollHeight) + "px";
+    });
+
   }, []);
 
   // WYSIWYG: render component and preview
@@ -647,6 +652,7 @@ const MapViz = ({ unique_key, index ,
     return (
       <>
       <div id={index+"__block_field"} className="block_field">
+      {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
         <h4 className="block_title">Add a map</h4>
         <SortComponent
           index={index}
@@ -672,7 +678,7 @@ const MapViz = ({ unique_key, index ,
     			<textarea
               className='addplaceholder_points'
     					name={index+"__map_points_query"}
-              type='text' rows='4'
+              type='text'
     					id={index+"__map_points_query"}
               onChange={queryChange}
               defaultValue={query}

@@ -78,11 +78,11 @@ function update_datastory(form) {
   var url = window.location.toString()
   url = url.replace(/modify\//, 'modify_bkg\/');
 
-  
+
   fetch(url, { method: 'POST', body: formData})
     .then(response => response.text())
     .then((data) => { if (data) {datastory_data = JSON.parse(data);} })
-    .catch(function (error) {console.log(error);});
+    .catch(function (error) {console.log(error); });
   return datastory_data;
 }
 
@@ -102,19 +102,15 @@ function AddComponent() {
 
   // save data on keyup
   if (window.location.href.indexOf("/modify/") > -1) {
+
     React.useEffect(() => {
-      form.addEventListener('mouseout', function(event) {
-        datastory_data = update_datastory(form) ;
+
+      form.addEventListener("keyup", (event) => {
+        const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
+        return () => {clearTimeout(timer);};
       });
 
-      // var trash_subcomponents = document.querySelectorAll(".trash_subcomponent");
-      // trash_subcomponents.forEach((element) => {
-      //   element.addEventListener("click", function (evt) {
-      //     datastory_data = update_datastory(form) ;
-      //   });
-      // });
-
-    });
+    }, []);
   }
 
   const [componentList, setComponent] = React.useState(stateComponents);

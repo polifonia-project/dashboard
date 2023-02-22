@@ -136,7 +136,7 @@ const ExtraSeries = ({ indexExtra, index_parent ,
           defaultValue={extraQuery}
           placeholder='A SPARQL query that returns two variables' required>
       </textarea>
-  		<input className='form-control'
+  		<input
           onChange={() => extraLabelChange(indexExtra)}
           type='text'
           id={index_parent+"__extra_series_"+extra_id}
@@ -234,7 +234,7 @@ const ChartViz = ({ unique_key, index ,
 
   const [count, setCount] = React.useState(chart_count);
   const countChange = event => { setCount('count'); };
-
+  const [spinner, setSpinner] = React.useState(false);
   const generateKey = (pre) => {
       return `${ pre }_${ new Date().getTime() }`;
   }
@@ -508,7 +508,6 @@ const ChartViz = ({ unique_key, index ,
 
       let ch_type = 'scatter';
       let promises = [];
-      $('#loader').removeClass('hidden');
       queries.forEach((q, i) => {
         promises.push(fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(q),
           { method: 'GET', headers: { 'Accept': 'application/sparql-results+json' }}
@@ -577,9 +576,7 @@ const ChartViz = ({ unique_key, index ,
 
       })
       .catch(function (error) {console.log(error);})
-      .finally( () => {
-        $('#loader').addClass('hidden');
-      });
+      .finally( () => { });
       // end cp
     }
 
@@ -592,9 +589,9 @@ const ChartViz = ({ unique_key, index ,
   }
 
   const fetchQuery = event => {
+    setSpinner(true);
     if (query.length > 1) {
       chartData = [], chartLabels = []
-      $('#loader').removeClass('hidden');
       // empty the chart container
       document.getElementById(index+"__chartcontainer").innerHTML = '&nbsp;';
       document.getElementById(index+"__chartcontainer").innerHTML = '<canvas id="'+index+'__chartid"></canvas>';
@@ -606,6 +603,7 @@ const ChartViz = ({ unique_key, index ,
         }
       ).then((res) => res.json())
        .then((data) => {
+         setSpinner(false);
          if (window.location.href.indexOf("/modify/") > -1) {
            alertError(data,count,chart);
          }
@@ -658,18 +656,22 @@ const ChartViz = ({ unique_key, index ,
            }
          }
         })
-       .catch((error) => {
-          console.error('Error:', error);
-       })
-       .finally( () => {
-         $('#loader').addClass('hidden');
-       });
+       .catch((error) => { console.error('Error:', error); })
+       .finally( () => { });
     }
   }
 
   // preview
   React.useEffect(() => {
      fetchQuery();
+
+     $("textarea").each(function () {
+       this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+     }).on("input", function () {
+       this.style.height = 0;
+       this.style.height = (this.scrollHeight) + "px";
+     });
+
      if (window.location.href.indexOf("/modify/") > -1) {
        let ch_type = document.getElementById(index+'__chart_type').value;
        add_series_btn(index,ch_type);
@@ -690,6 +692,7 @@ const ChartViz = ({ unique_key, index ,
   if (window.location.href.indexOf("/modify/") > -1) {
     return (
     <div id={index+"__block_field"} className="block_field">
+    {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
       <h4 className="block_title">Add a chart</h4>
       <SortComponent
         index={index}
@@ -724,7 +727,7 @@ const ChartViz = ({ unique_key, index ,
 
           <label htmlFor='largeInput'>Chart Title</label>
     			<input name={index+"__chart_title"}
-                type='text' className='form-control'
+                type='text'
                 id={index+"__chart_title"}
                 onChange={titleChange}
                 defaultValue={title}
@@ -732,10 +735,10 @@ const ChartViz = ({ unique_key, index ,
           </input>
 
           <label htmlFor='largeInput'>SPARQL query</label>
-        	<textarea name={index+"__chart_query"}
+        	<textarea name={index+"__chart_query"} rows="1"
                     onChange={queryChange}
                     defaultValue={query}
-                    type='text' rows='3'
+                    type='text'
                     id={index+"__chart_query"}
                     onMouseLeave={fetchQuery}
                     placeholder='A SPARQL query that returns two variables' required>
@@ -745,7 +748,6 @@ const ChartViz = ({ unique_key, index ,
               style={{display: 'flex'}}>
             <label>Series label</label>
     				<input style={{display: 'block'}}
-              className='form-control'
               onChange={seriesChange}
               defaultValue={series}
               type='text'

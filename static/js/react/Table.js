@@ -18,9 +18,12 @@ const Table = ({unique_key, index ,
     const [tableQuery, setQuery] = React.useState(query);
     const changeQuery = event => { setQuery(event.target.value)}
 
+    const [spinner, setSpinner] = React.useState(false);
+
     const fetchQuery = event => {
+      setSpinner(true)
       if (tableQuery.length > 1) {
-        $('#loader').removeClass('hidden');
+        $("#" + index + "__table").innerHTML = "&nbsp;";
         fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(tableQuery),
           {
           method: 'GET',
@@ -28,15 +31,21 @@ const Table = ({unique_key, index ,
           }
         ).then((res) => res.json())
          .then((data) => {
+           setSpinner(false);
            tabletoappend = '<tr>';
 
            var headings = data.head.vars;
            headings.forEach((item, inde) => {
-             if (!item.includes('Label')) { tabletoappend += "<th>"+item+"</th>"
-             } else {
-               headings.splice(inde, 1);  inde--;
-             }
+             if (!item.includes('Label')) { tabletoappend += "<th>"+item+"</th>";}
+
            });
+
+           headings.forEach((item, inde) => {
+             if (item.includes('Label')) {
+               headings.splice(inde, 1);
+               inde--;}
+           });
+
 
            // format table
            tabletoappend += "</tr>";
@@ -56,13 +65,49 @@ const Table = ({unique_key, index ,
                      res_label = item[headings[inde] + 'Label'].value;
                  }
                  tabletoappend += "<td>";
-                 tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+
+                 // audio
+                 if (res_value.endsWith('.mp3')) {
+                   tabletoappend += "<span>"+res_label+"</span><audio class='table_result'><source src='" + res_value + "'></source></audio>";
+                 }
+                 // img
+                 else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
+                   tabletoappend += "<span>"+res_label+"</span><img class='img_table' src='" + res_value + "'/>";
+                 }
+                 // video
+                 else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
+                   tabletoappend += "<span>"+res_label+"</span><video controls class='table_result'><source src='" + res_value + "'></source></video>";
+                 }
+                 // youtube
+                 else if (res_value.includes("youtube.com/embed/")) {
+                   tabletoappend += '<span>'+res_label+'</span><div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
+                 }
+                 // URL
+                 else {
+                   tabletoappend += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+                 }
+
                  // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
                  tabletoappend += "</td>";
                }
                else {
                    tabletoappend += "<td>";
-                   tabletoappend += "<span class='table_result'>" + res_value + "</span>";
+                   if (res_value.endsWith('.mp3')) {
+                     tabletoappend += "<audio controls src='" + res_value + "' class='table_result'><a href='" + res_value + "'></a></audio>";
+                   }
+                   else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
+                     tabletoappend += "<img class='img_table' src='" + res_value + "'/>";
+                   }
+                   else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
+                     tabletoappend += "<video controls class='table_result'><source src='" + res_value + "'></source></video>";
+                   }
+                   else if (res_value.includes("youtube.com/embed/")) {
+                     tabletoappend += '<div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
+                   }
+                   else {
+                     tabletoappend += "<span class='table_result'>" + res_value + "</span>";
+                   }
+                   //tabletoappend += "<span class='table_result'>" + res_value + "</span>";
                    // var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
                    tabletoappend += "</td>";
                }
@@ -72,21 +117,20 @@ const Table = ({unique_key, index ,
              tabletoappend += "</tr>";
            });
 
+           document.getElementById(index + "__table").innerHTML = '&nbsp;';
            $("#" + index + "__table").append(tabletoappend);
            // if (type.length > 0) {
            //     exportTableHtml(pos, type);
            //     exportTableCsv(pos, type, table_title);
            // }
-           console.log(tabletoappend);
+
 
           })
          .catch((error) => {
             console.error('Error:', error);
-            count = "Error!"
+            alert("There is an error in the query");
          })
-         .finally( () => {
-           $('#loader').addClass('hidden');
-         });
+         .finally( () => { });
 
       }
     }
@@ -176,11 +220,20 @@ const Table = ({unique_key, index ,
     // preview counter
     React.useEffect(() => {
        fetchQuery();
+
+       $("textarea").each(function () {
+         this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+       }).on("input", function () {
+         this.style.height = 0;
+         this.style.height = (this.scrollHeight) + "px";
+       });
+
     }, []);
 
     if (window.location.href.indexOf("/modify/") > -1) {
       return (
       <div id={index+"__block_field"} className="block_field">
+      {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
         <h4 className="block_title">Add a table</h4>
         <SortComponent
           index={index}

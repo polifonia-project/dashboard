@@ -511,7 +511,7 @@
                         "position": 0,
                         "operations": [],
                         "type": "count",
-                        "count_query": "prefix a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/>\r\n \r\nSELECT (COUNT(?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane') .\r\n}",
+                        "count_query": "prefix a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/> \r\n \r\nSELECT (COUNT(?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane') .\r\n}",
                         "count_label": "Churches with bells in Liguria",
                         "extra_queries": [],
                         "map_filters": []
@@ -520,7 +520,7 @@
                         "position": 1,
                         "operations": [],
                         "type": "text",
-                        "text": "<p>In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells. In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower.&nbsp;</p><p>The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
+                        "text": "<p>In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells.</p><p>In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower.&nbsp;</p><p>The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
                         "extra_queries": [],
                         "map_filters": []
                     },
@@ -541,14 +541,14 @@
                         "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
                         "map_filters": [
                             {
-                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1675751677250_0",
+                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/> \r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
+                                "extra_id": "1677065884125_0",
                                 "position": 0,
                                 "map_filter_title": "district"
                             },
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1675751677251_1",
+                                "extra_id": "1677065884125_1",
                                 "position": 1,
                                 "map_filter_title": "hello"
                             }
@@ -562,7 +562,7 @@
                         "chart_type": "barchart",
                         "chart_title": "N. of bells per province",
                         "chart_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\n\r\nSELECT ?label \r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?l ;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?l rdfs:label ?label .\r\n}\r\n",
-                        "chart_series": "",
+                        "chart_series": "bells",
                         "chart_legend": {
                             "x": "Province",
                             "y": "N. of bells"
@@ -615,6 +615,24 @@
                         "text": "<p>The bell casting date is very relevant for the reconstruction of the history that characterizes this artifact in the territory, and connects to other relevant information such as the presence of foundries in the area, the shape of the bells and the sound produced. It is also very relevant for the protection of cultural heritage</p>",
                         "extra_queries": [],
                         "map_filters": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "table",
+                        "table_title": "Listen to the bells",
+                        "table_query": "SELECT ?b ?bLabel ?audio\r\nWHERE {\r\n?b arco:isCulturalPropertyComponentOf <https://w3id.org/arco/resource/MusicHeritage/0700377974-0> ;\r\ncore:description ?bLabel ;\r\ndc:subject?o filter(str(?o)='campana') .\r\n?doc a-cd:isDocumentationOf ?b ;\r\n<https://w3id.org/italia/onto/SM/URL> ?audio ;\r\nrdf:type ?docType FILTER(?docType = a-cd:AudioDocumentation) .\r\n} ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "table",
+                        "table_title": "Watch videos and images",
+                        "table_query": "SELECT ?t ?tLabel ?docURL ?pic\r\nWHERE {\r\n?t rdf:type arco:DemoEthnoAnthropologicalHeritage ;\r\na-loc:hasCulturalPropertyAddress ?l ;\r\nfoaf:depiction ?pic ;\r\ndc:subject ?o FILTER regex(str(?o), \"tastiera\") .\r\n?l rdfs:label ?tLabel .\r\n?doc a-cd:isDocumentationOf ?t ;\r\n<https://w3id.org/italia/onto/SM/URL> ?docURL .\r\n} ",
+                        "extra_queries": [],
+                        "map_filters": []
                     }
                 ],
                 "https://w3id.org/arco/resource/Province/sp": "https://w3id.org/arco/resource/Province/sp",
@@ -640,9 +658,10 @@
                         "position": 0,
                         "operations": [],
                         "type": "count",
-                        "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type fred:Person}",
+                        "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> \r\nSELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type fred:Person}",
                         "count_label": "people",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 1,
@@ -650,15 +669,17 @@
                         "type": "count",
                         "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type fred:Organization}",
                         "count_label": "organizations",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 2,
                         "operations": [],
                         "type": "count",
-                        "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type fred:Country}",
+                        "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> \r\nSELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type fred:Country}",
                         "count_label": "countries",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 3,
@@ -666,7 +687,8 @@
                         "type": "count",
                         "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type fred:City}",
                         "count_label": "cities",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 4,
@@ -674,7 +696,8 @@
                         "type": "count",
                         "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type fred:Event}",
                         "count_label": "events",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 5,
@@ -682,7 +705,8 @@
                         "type": "count",
                         "count_query": "prefix fred: <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#> SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type fred:Publication}",
                         "count_label": "publications",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 6,
@@ -696,14 +720,16 @@
                             "x": "entity type",
                             "y": "count"
                         },
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 7,
                         "operations": [],
                         "type": "text",
                         "text": "<p>We analysed MusicBO corpus through the lens of Named Entities Recognition (NER), a standard Natural Language Processing task. We discovered that the entanglement of Bologna and music history is a composite network of people, places, and organizations. Publications, works of art and books are frequently mentioned in the corpus, revealing that Bologna was an important centre for artistic production.</p>",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 8,
@@ -717,14 +743,16 @@
                             "x": "situation",
                             "y": "frequency"
                         },
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 9,
                         "operations": [],
                         "type": "text",
                         "text": "<p>According to the insights extracted from the MusicBO corpus through NLP and NLU techniques, people linked to Bologna and related to music were mainly involved in events and situations that implied the creation and production of art.</p>",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 10,
@@ -738,14 +766,16 @@
                             "x": "persons",
                             "y": "frequency"
                         },
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 11,
                         "operations": [],
                         "type": "text",
                         "text": "<p>Among the many people in the MusicBO corpus, Rossini is the most frequently mentioned as involved in events and situations.</p>",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 12,
@@ -753,20 +783,22 @@
                         "type": "chart",
                         "chart_type": "doughnutchart",
                         "chart_title": "Top 10 roles played by people in different types of situations",
-                        "chart_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT distinct ?label (count(distinct ?s) as ?count) WHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#Person> . ?frameInstance ?p ?s ; rdf:type ?frame . \r\n  #?frame rdfs:label ?label \r\n  BIND (REPLACE(STR(?p), \"^.*/([^/]*)$\", \"$1\") as ?label) FILTER (!regex(str(?p), \"entity_\")) FILTER (!regex(str(?p), \"#\")) FILTER (!regex(str(?p), \"subset\"))\r\n}  GROUP BY ?label  ORDER BY DESC(?count) LIMIT 10",
+                        "chart_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT distinct ?label (count(distinct ?s) as ?count) WHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/fred/domain.owl#Person> . ?frameInstance ?p ?s ; rdf:type ?frame . \r\n  #?frame rdfs:label ?label \r\n  BIND (REPLACE(STR(?p), \"^.*/([^/]*)$\", \"$1\") as ?label) FILTER (!regex(str(?p), \"entity_\")) FILTER (!regex(str(?p), \"#\")) FILTER (!regex(str(?p), \"subset\"))\r\n}  GROUP BY ?label  ORDER BY DESC(?count) LIMIT 10 ",
                         "chart_series": "",
                         "chart_legend": {
                             "x": "",
                             "y": ""
                         },
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 13,
                         "operations": [],
                         "type": "text",
                         "text": "<p>What roles did people linked to music and the city of Bologna played? Characters relevant to the music scene that crossed Bologna over the centuries were mostly authors and artists, but also office holders, writers, agents, and editors. Such insights suggest that Bologna was both a point of reference for artistic production and for music-related activities, as criticism and business. Last but not least, Bologna attracted music students.</p>",
-                        "extra_queries": []
+                        "extra_queries": [],
+                        "map_filters": []
                     }
                 ]
             },

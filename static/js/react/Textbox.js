@@ -26,10 +26,18 @@ const Textbox = ({unique_key, index ,
         let input = editor.parentNode.querySelector('input');
         input.setAttribute('value', textContent);
         // update content
-        editor.onmouseleave = function () {
-          textContent = qlEditor.innerHTML;
-          input.setAttribute('value', textContent);
-        }
+        editor.addEventListener("keyup", (event) => {
+          const timer = setTimeout(() => {
+            textContent = qlEditor.innerHTML;
+            input.setAttribute('value', textContent);
+            datastory_data = update_datastory(form)
+          }, 2000);
+          return () => {clearTimeout(timer); console.log(timer);};
+        });
+        // editor.onmouseleave = function () {
+        //   textContent = qlEditor.innerHTML;
+        //   input.setAttribute('value', textContent);
+        // }
     }
 
     // const createTextEditor = () => {
