@@ -498,7 +498,7 @@
                 "template_mode": "statistics",
                 "title": "Overview of few bells in Liguria",
                 "color_code": [
-                    "#39c6b4",
+                    "#b18cfe",
                     "#008cb4"
                 ],
                 "section_name": "Bells",
@@ -542,13 +542,13 @@
                         "map_filters": [
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/> \r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1677065884125_0",
+                                "extra_id": "1677167460986_0",
                                 "position": 0,
                                 "map_filter_title": "district"
                             },
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1677065884125_1",
+                                "extra_id": "1677167460987_1",
                                 "position": 1,
                                 "map_filter_title": "hello"
                             }
@@ -631,6 +631,16 @@
                         "type": "table",
                         "table_title": "Watch videos and images",
                         "table_query": "SELECT ?t ?tLabel ?docURL ?pic\r\nWHERE {\r\n?t rdf:type arco:DemoEthnoAnthropologicalHeritage ;\r\na-loc:hasCulturalPropertyAddress ?l ;\r\nfoaf:depiction ?pic ;\r\ndc:subject ?o FILTER regex(str(?o), \"tastiera\") .\r\n?l rdfs:label ?tLabel .\r\n?doc a-cd:isDocumentationOf ?t ;\r\n<https://w3id.org/italia/onto/SM/URL> ?docURL .\r\n} ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "Piemonte",
+                        "textsearch_title": "Search bells",
+                        "textsearch_query": "SELECT DISTINCT ?var ?varLabel ?class ?classLabel\r\nWHERE {\r\n?var rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?varLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?varLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10",
                         "extra_queries": [],
                         "map_filters": []
                     }

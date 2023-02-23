@@ -658,7 +658,7 @@ border-radius: 0.4em!important;
   font-size: 2em;
 }
 
-.datastorypagefields p {
+.datastorypagefields p.card-category {
   font-size: 1.5em;
   line-height: 1.5em;
 }
@@ -716,9 +716,9 @@ border-radius: 0.4em!important;
 }
 
 .textsearch_userinput.modifydatastory {
-  border: solid 1px black !important;
+  border: solid 1px #fff !important;
   border-radius: 4px;
-  color: black;
+  color: #fff;
   transition: none !important;
   transition-property: none !important;
 }
@@ -737,7 +737,8 @@ border-radius: 0.4em!important;
 .textsearch_button {
   shadow: none;
   background-color: transparent;
-  border: solid 1px black !important;
+  border: solid 1px #fff !important;
+  color: #fff !important;
   border-radius: 5px;
   margin-bottom: 0.5em;
 }
@@ -746,10 +747,10 @@ border-radius: 0.4em!important;
   display: block;
   max-width: 50%;
   padding: .3em;
+  margin-left: 1em;
   text-align: center;
   -webkit-transition-duration: 0.4s;
   transition-duration: 0.4s;
-  color: black !important;
 }
 
 .textsearch_button:hover {
@@ -1000,17 +1001,22 @@ hr {
   margin-bottom: 5px !important;
 }
 
-.map_sidebar_panel_title, .map_sidebar_panel_title:visited, .map_sidebar_panel_title:hover {
+.map_sidebar_panel_title,
+.map_sidebar_panel_title:link,
+.map_sidebar_panel_title:visited,
+.map_sidebar_panel_title:hover,
+.map_sidebar_panel_title:active {
   color: black !important;
   font-size: 1.2em;
   font-weight: 600;
   margin-bottom: 1em;
   text-decoration: none !important;
   border-bottom: solid 1px;
+  margin-bottom: 5px;
 }
 
 
-.map_sidebar_panel label.key_check {
+.map_sidebar_panel span.key_check {
   color:black !important;
   padding-left:5px;
   margin-top: 0.2em !important;

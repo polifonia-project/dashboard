@@ -38,7 +38,8 @@ const Count = ({ unique_key, index ,
        .catch((error) => {
           console.error('Error:', error);
           alert("There is an error in the query")
-          count = "Error!"
+          count = "Error!";
+          setSpinner(false);
        })
        .finally( () => { });
 

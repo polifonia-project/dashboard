@@ -2,26 +2,12 @@
 const e = React.createElement;
 
 const components = [
-  {
-    name:"text",
-    action: Textbox
-  },
-  {
-    name:"count",
-    action: Count
-  },
-  {
-    name:"chart",
-    action: ChartViz
-  },
-  {
-    name:"table",
-    action: Table
-  },
-  {
-    name:"map",
-    action: MapViz
-  }
+  { name:"text", action: Textbox },
+  { name:"count", action: Count },
+  { name:"chart", action: ChartViz },
+  { name:"table", action: Table },
+  { name:"map", action: MapViz },
+  { name:"textsearch", action: TextSearch }
 ]
 
 const RemoveComponent = ({index , removeComponent }) => {
@@ -29,7 +15,7 @@ const RemoveComponent = ({index , removeComponent }) => {
   return (
     <>
     <a onClick={() => removeComponent(index)}
-    href="#" className="trash"><i className="far fa-trash-alt"></i></a><br/>
+    href="##" className="trash"><i className="far fa-trash-alt"></i></a><br/>
     </>
   )
 }
@@ -39,9 +25,9 @@ const SortComponent = ({index , sortComponentDown , sortComponentUp }) => {
   return (
     <>
     <a onClick={() => sortComponentDown(index)}
-    href="#" className="down"><i className="fas fa-arrow-down"></i></a>
+     className="down"><i className="fas fa-arrow-down"></i></a>
     <a onClick={() => sortComponentUp(index)}
-    href="#" className="up"><i className="fas fa-arrow-up"></i></a>
+     className="up"><i className="fas fa-arrow-up"></i></a>
     </>
   )
 }
@@ -57,6 +43,7 @@ const ButtonGroup = ({ componentList , componentBoxes , buttons ,
         <section className="addfieldssection col-md-12 col-lg-12 col-sm-12">
         {buttons.map((buttonLabel, i) => (
           <a onClick={() => addComponent(buttonLabel.name,i)}
+              href="#"
               className="btn btn-primary btn-border"
               style={{marginRight: '10px'}}
               key={i} name={buttonLabel.name}>
@@ -184,11 +171,6 @@ function AddComponent() {
         sortComponentDown={sortComponentDown}
         index={i} key={generateKey(componentList[i].name)+i} number={i}/>)
   }
-
-  // console.log("componentList",componentList);
-  // console.log("componentBoxes",componentBoxes);
-
-
 
   return (
     <>

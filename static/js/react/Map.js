@@ -93,9 +93,9 @@ const FilterCheckbox = ({ key_check, value_check , indexPanel ,
         className="map_checkbox"
         data-filter={filter_title}>
       </input>
-      <label className="key_check" htmlFor="key_check">
+      <span className="key_check" htmlFor="key_check" style={{color:'black'}}>
         {value_check[0] + " (" + value_check[1] + ")"}
-      </label>
+      </span>
     </p>
   )
 }
@@ -479,7 +479,7 @@ const MapViz = ({ unique_key, index ,
           markers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
           allMarkers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
        })
-       .catch((error) => { console.error('Error:', error); alert("There is an error in the query"); })
+       .catch((error) => { setSpinner(false); console.error('Error:', error); alert("There is an error in the query"); })
        .finally( () => {
          setSpinner(false)
          setMap('initialised');
