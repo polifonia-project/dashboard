@@ -32,7 +32,7 @@ const Table = ({unique_key, index ,
         ).then((res) => res.json())
          .then((data) => {
            setSpinner(false);
-           tabletoappend = '<tr>';
+           tabletoappend = '<thead><tr>';
 
            var headings = data.head.vars;
            headings.forEach((item, inde) => {
@@ -48,7 +48,7 @@ const Table = ({unique_key, index ,
 
 
            // format table
-           tabletoappend += "</tr>";
+           tabletoappend += "</tr></thead><tbody>";
            //if (returnedJson.length >= 1) {
            data.results.bindings.forEach((item, i) => {
              tabletoappend += "<tr>";
@@ -116,7 +116,7 @@ const Table = ({unique_key, index ,
              });
              tabletoappend += "</tr>";
            });
-
+           tabletoappend += '</tbody>'
            document.getElementById(index + "__table").innerHTML = '&nbsp;';
            $("#" + index + "__table").append(tabletoappend);
            // if (type.length > 0) {
@@ -144,19 +144,6 @@ const Table = ({unique_key, index ,
             var table = document.getElementById(position + '__table');
             var cloneTable = table.cloneNode(true);
             tableHtml = cloneTable.innerHTML;
-        } else if (type && type.includes('textsearch')) {
-            export_btn = document.getElementById('export_' + position);
-            table = document.getElementById(position + '__textsearchid');
-            var cloneTable = table.cloneNode(true);
-            cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-            // remove action buttons
-            var uselessEl = cloneTable.querySelectorAll('.action_button');
-            uselessEl.forEach(el => { el.remove(); })
-            // remove span buttons
-            cloneTable.querySelector('.caret').remove();
-            cloneTable.querySelector('.closetable').remove();
-            cloneTable.querySelector('#export_' + position).remove();
-            tableHtml = cloneTable.innerHTML;
         }
 
         window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
@@ -164,35 +151,13 @@ const Table = ({unique_key, index ,
     }
 
     function exportTableCsv(position, type) {
-        var export_btn = document.getElementById('csv_' + position);
-        var table_id = '';
-        var csv = [];
-        if (type && type.includes('table')) {
-            table_id = position + '__table';
-            var table = document.getElementById(table_id);
-            var cloneTable = table.cloneNode(true);
-            csv = createCsv(cloneTable);
-        } else if (type && type.includes('textsearch')) {
-            table_id = position + '__textsearchid';
-            var cloneTable = table.cloneNode(true);
-            cloneTable.getElementsByTagName('caption')[0].removeAttribute('style');
-            // remove action buttons
-            var uselessEl = cloneTable.querySelectorAll('.action_button');
-            uselessEl.forEach(el => {
-                el.remove();
-            })
-            // remove span buttons
-            cloneTable.querySelector('.caret').remove();
-            cloneTable.querySelector('.closetable').remove();
-            cloneTable.querySelector('#export_' + position).remove();
-            csv = createCsv(cloneTable);
-        }
 
-        var csv_string = csv.join('\n');
-        var filename = 'export.csv';
-        export_btn.setAttribute('target', '_blank');
+        let table = document.getElementById(index + '__table');
+        let export_btn = document.getElementById("csv_"+index);
+        let cloneTable = table.cloneNode(true);
+        let tableCSV = createCsv(cloneTable);
+        var csv_string = tableCSV.join('\n');
         export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
-        export_btn.setAttribute('download', filename);
 
     }
 
@@ -206,7 +171,19 @@ const Table = ({unique_key, index ,
             var row = [], cols = rows[i].querySelectorAll('td, th');
             for (var j = 0; j < cols.length; j++) {
                 // Clean innertext to remove multiple spaces and jumpline (break csv)
-                var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+                //var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+                if (cols[j].querySelector("input") != null) {
+                  let input_val = cols[j].querySelector("input");
+                  var data = input_val.value.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+                } else if ( cols[j].querySelector("audio") != null) {
+                  var data = cols[j].querySelector("audio").getAttribute('src')
+                }
+                else if ( cols[j].querySelector("img") != null) {
+                  var data = cols[j].querySelector("img").getAttribute('src')
+                }
+                else {
+                  var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+                }
                 // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
                 data = data.replace(/"/g, '""');
                 // Push escaped string
@@ -217,6 +194,21 @@ const Table = ({unique_key, index ,
         return csv;
     }
 
+    const edit_table = () => {
+      let table = document.getElementById(index+"__table");
+      let thead = table.querySelectorAll("thead tr")[0]
+      let tbody = table.querySelectorAll("tbody tr")
+      let th = document.createElement('th');
+      th.textContent = 'Notes';
+      thead.appendChild(th);
+
+      for (let tr of tbody) {
+      	let td = document.createElement('td');
+        let input_note = document.createElement('input');
+        td.appendChild(input_note);
+      	tr.appendChild(td);
+      }
+    };
 
     // preview counter
     React.useEffect(() => {
@@ -235,6 +227,7 @@ const Table = ({unique_key, index ,
       return (
       <div id={index+"__block_field"} className="block_field">
       {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
+        <div className="ribbon"></div>
         <h4 className="block_title">Add a table</h4>
         <SortComponent
           index={index}
@@ -285,10 +278,15 @@ const Table = ({unique_key, index ,
               Embed
             </a>
             <a id={"csv_"+index}
+              target='_blank'
+              download={'export_'+index+'.csv'}
               className="btn btn-info btn-border btn-round btn-sm mr-2"
               onClick={() => exportTableCsv(index, 'table')}>
               CSV
             </a>
+            <a id={index+"__edit_table"}
+              className="btn btn-info btn-border btn-round btn-sm mr-2"
+              onClick={edit_table}>Edit</a>
             <a href='#' id={index+"_query_tooltip"}
               role="button"
               data-toggle='modal'
@@ -296,6 +294,7 @@ const Table = ({unique_key, index ,
               className="btn btn-info btn-border btn-round btn-sm">
               Query
             </a>
+
 
 
             <div className="modal fade"

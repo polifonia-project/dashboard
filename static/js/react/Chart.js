@@ -178,7 +178,7 @@ const ChartViz = ({ unique_key, index ,
 
   function add_series_btn(index,ch_type) {
     var queryButton = document.getElementById(index+'__query-btn');
-    var countCheckbox = document.getElementById(index+'__action1');
+    var countCheckbox = document.getElementById(index+'__operation1');
     if (ch_type == 'scatterplot') {
       queryButton.style.display = "block";
       countCheckbox.style.display = "none";
@@ -693,6 +693,7 @@ const ChartViz = ({ unique_key, index ,
     return (
     <div id={index+"__block_field"} className="block_field">
     {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
+      <div className="ribbon"></div>
       <h4 className="block_title">Add a chart</h4>
       <SortComponent
         index={index}
@@ -781,11 +782,11 @@ const ChartViz = ({ unique_key, index ,
             </div>
           </div>
 
-          <div id={index+"__action1"}>
+          <div id={index+"__operation1"}>
             <label>Operations</label><br/>
     				<input type='checkbox'
                   id='count'
-                  name={index+"__action1"}
+                  name={index+"__operation1"}
                   onChange={countChange}
                   defaultValue={count}>
             </input>
@@ -965,7 +966,7 @@ const ChartViz = ({ unique_key, index ,
                                         {" ?item p:P2142 ?box_office_statement . "}<br/>
                                         {" ?box_office_statement ps:P2142 ?x . "}<br/>
                                         {" ?box_office_statement pq:P3005 wd:Q30 .}"}</code>
-                                <p>To visualise multiple data series, click on <code>Add series</code> and add more SPARQL queries
+                                <p>To visualise multiple data series, click on <code>Add a series</code> and add more SPARQL queries
                                 each returning two lists of numerical values called <code>{"?x"}</code> and
                                 <code>{"?y"}</code>. Datasets are distinguished by color.</p>
                             </div>

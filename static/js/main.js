@@ -40,6 +40,10 @@ function disableKeypress() {
     });
 }
 
+function detach_table(index) {
+  document.getElementById(index + "__textsearchresults").innerHTML = '&nbsp;';
+}
+
 // update index of fields in template page (to store the final order)
 // function updateindex() {
 //     $('#sortable [id$="block_field"]').each(function () {

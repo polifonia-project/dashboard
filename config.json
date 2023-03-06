@@ -493,10 +493,10 @@
             }
         },
         "bells": {
-            "overview_of_few_bells_in_liguria": {
+            "overview_of_bells_in_liguria": {
                 "sparql_endpoint": "https://dati.cultura.gov.it/sparql",
                 "template_mode": "statistics",
-                "title": "Overview of few bells in Liguria",
+                "title": "Overview of bells in Liguria",
                 "color_code": [
                     "#b18cfe",
                     "#008cb4"
@@ -542,15 +542,9 @@
                         "map_filters": [
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/> \r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1677167460986_0",
+                                "extra_id": "1678122130489_0",
                                 "position": 0,
                                 "map_filter_title": "district"
-                            },
-                            {
-                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1677167460987_1",
-                                "position": 1,
-                                "map_filter_title": "hello"
                             }
                         ],
                         "extra_queries": []
@@ -638,9 +632,31 @@
                         "position": 11,
                         "operations": [],
                         "type": "textsearch",
-                        "textsearch_userinput": "Piemonte",
+                        "textsearch_userinput": "campa",
+                        "textsearch_col_var_action_12": "false",
+                        "textsearch_col_var_action_13": "false",
+                        "textsearch_col_class_action_12": "false",
+                        "textsearch_col_class_action_13": "false",
                         "textsearch_title": "Search bells",
-                        "textsearch_query": "SELECT DISTINCT ?var ?varLabel ?class ?classLabel\r\nWHERE {\r\n?var rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?varLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?varLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10",
+                        "textsearch_query": "SELECT DISTINCT ?var ?varLabel ?class ?classLabel\r\nWHERE {\r\n?var rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?varLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?varLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10 ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "properties",
+                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "another",
+                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20",
                         "extra_queries": [],
                         "map_filters": []
                     }

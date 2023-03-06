@@ -79,6 +79,7 @@ const Count = ({ unique_key, index ,
     return (
       <div id={index+"__block_field"} className="block_field">
       {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
+        <div className="ribbon"></div>
         <h4 className="block_title">Add a counter</h4>
         <SortComponent
           index={index}

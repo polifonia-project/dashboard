@@ -47,14 +47,8 @@ components = [
         "postprocess_value":""
     },
     {
-        "name":"tablevalueaction",
-        "regex_attr": "(tablevalueaction)",
-        "value_type": "string",
-        "postprocess_value":""
-    },
-    {
-        "name":"tablecomboaction",
-        "regex_attr": "(tablecomboaction)",
+        "name":"action",
+        "regex_attr": "(action)",
         "value_type": "string",
         "postprocess_value":""
     },
@@ -71,7 +65,7 @@ components = [
     },
     {
         "name":"operations",
-        "regex_attr": "(action)",
+        "regex_attr": "(operation)",
         "donothing": True
     },
     {

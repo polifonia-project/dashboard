@@ -272,22 +272,6 @@ const MapSidebar = ({index, filters , onEachFeature, allMarkers , markers, map, 
     )
   });
 
-  // const expandSidebar = event => {
-  //   if (isShown == false) { setIsShown(true);
-  //   } else {
-  //     // collapse sidebar
-  //   }
-  //
-  // }
-
-  // const [isActive, setActive] = React.useState("false");
-  // const toggleSidebar = index => {
-  //     setActive(!isActive);
-  // };
-  // className={isActive ? "map_sidebar expanded_sidebar" : "map_sidebar toggled_sidebar"}
-  // <a onClick={() => toggleSidebar(index)} href="#" className="toggleSidebarArrow">
-  // <i className="fas fa-arrow-left"></i></a>
-
   if (filters.length) {
     return (
         <div
@@ -653,6 +637,7 @@ const MapViz = ({ unique_key, index ,
       <>
       <div id={index+"__block_field"} className="block_field">
       {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
+        <div className="ribbon"></div>
         <h4 className="block_title">Add a map</h4>
         <SortComponent
           index={index}

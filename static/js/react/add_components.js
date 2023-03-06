@@ -7,7 +7,8 @@ const components = [
   { name:"chart", action: ChartViz },
   { name:"table", action: Table },
   { name:"map", action: MapViz },
-  { name:"textsearch", action: TextSearch }
+  { name:"textsearch", action: TextSearch },
+  { name:"action", action: TextSearchAction }
 ]
 
 const RemoveComponent = ({index , removeComponent }) => {

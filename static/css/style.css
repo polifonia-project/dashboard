@@ -363,15 +363,27 @@ input[type='text'].input-border-bottom,
   opacity: 1;
 }
 
+table input {
+  background: transparent !important;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid 2px #fff;
+  opacity: 1;
+  color: #fff;
+}
+
 textarea {
   resize: none;
   min-height: 20px;
   border-bottom: solid 2px var(--light-grey);
 }
+
 #sectionselect:focus,
 input[type='text']:focus,
 input[type='textarea']:focus,
-textarea:focus {
+textarea:focus,
+table input:focus {
   outline: none !important;
   border-bottom: solid 2px var(--main-color);
   -webkit-transition-duration: 0.4s;
@@ -382,6 +394,21 @@ textarea:focus {
 ::placeholder {
   color: var(--extra-light-grey);
   font-style: italic;
+}
+
+.ribbon {
+  width: 0px;
+  height: 35px;
+  background-color: transparent;
+  position: relative;
+  top: -33px;
+  right: 0px;
+  border: solid 15px var(--main-color);
+  border-bottom: solid 15px transparent;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  transition: all 0.2s;
+  cursor: pointer;
 }
 
 .templatepreview img {
@@ -709,6 +736,17 @@ border-radius: 0.4em!important;
 /**********************/
 /* relations template */
 /**********************/
+.add_action {
+  color: #fff;
+  background-color: var(--main-color);
+  border-radius: 50%;
+  width: 20px;
+  display: inline-block;
+  margin-left: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
 .textsearch_title,
 .tablevalueaction_title {
   font-size: 1.3em;
@@ -730,7 +768,11 @@ border-radius: 0.4em!important;
 }
 
 .previewtextsearch input {
-  margin-bottom: 0.5em;
+
+}
+
+.finaltextsearch {
+  padding-left: 1em;
 }
 
 .textsearch_input,
@@ -740,7 +782,7 @@ border-radius: 0.4em!important;
   border: solid 1px #fff !important;
   color: #fff !important;
   border-radius: 5px;
-  margin-bottom: 0.5em;
+  /* margin-bottom: 0.5em; */
 }
 
 .textsearch_button {
@@ -758,7 +800,7 @@ border-radius: 0.4em!important;
   cursor: pointer;
 }
 
-.textsearch_input:focus {
+table input:focus, .textsearch_input:focus {
   -webkit-transition-property: none;
   -moz-transition-property: none;
   -o-transition-property: none;
@@ -850,7 +892,7 @@ td {
   cursor: pointer;
   text-decoration: none !important;
   padding: 0.2em;
-  margin: 0.2em 0.2em 0.2em 0px;
+  margin: 0.2em 0.2em 0.2em 5px;
   border-radius: 3px;
   background-color: transparent;
   color: var(--extra-light-grey) !important;
@@ -860,10 +902,9 @@ td {
   transition-duration: 0.4s;
 }
 
-.action_button:hover {
-  background-color: var(--extra-light-grey);
-  color: var(--dark-grey) !important;
-  border-color: var(--dark-grey);
+.action_button:hover, .active_action {
+  color: var(--main-color) !important;
+  border-color: var(--main-color) !important;
 }
 
 .show_table {
