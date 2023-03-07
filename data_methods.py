@@ -215,7 +215,6 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 	'''
 
 	form_data = request.form.to_dict(flat=True)
-	print(form_data)
 	datastory_title = form_data['title']
 	datastory_title_clean = clean_string(datastory_title)
 	dynamic_elements = []
@@ -266,9 +265,17 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 						if component_data['name'] not in elements_dict:
 							elements_dict[component_data['name']] = {}
 						key = re.search(rf"{component_data['regex_key']}", k).group(1)
-						elements_dict[component_data['name']][key] = v \
-							if component_data["postprocess_value"] == "" \
-							else eval('components.'+component_data["postprocess_value"]+'(v)')
+						if (component_data["postprocess_value"] == "" and "list_value" not in component_data):
+							elements_dict[component_data['name']][key] = v
+						elif (component_data["postprocess_value"] == "" and "list_value" in component_data):
+							if key in elements_dict[component_data['name']]:
+								if v != 'false':
+									elements_dict[component_data['name']][key].append(v)
+							else:
+								if v != 'false':
+									elements_dict[component_data['name']][key] = [v]
+						else:
+							elements_dict[component_data['name']][key] = eval('components.'+component_data["postprocess_value"]+'(v)')
 					if "donothing" in component_data:
 						if component_data['name'] not in elements_dict:
 							elements_dict[component_data['name']] = []

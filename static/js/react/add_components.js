@@ -1,4 +1,6 @@
 
+
+
 const e = React.createElement;
 
 const components = [
@@ -94,8 +96,11 @@ function AddComponent() {
     React.useEffect(() => {
 
       form.addEventListener("keyup", (event) => {
-        const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
-        return () => {clearTimeout(timer);};
+        if (!event.target.classList.contains("textsearch_userinput")) {
+          const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
+          return () => {clearTimeout(timer);};
+        }
+
       });
 
     }, []);
@@ -166,11 +171,13 @@ function AddComponent() {
   // push new and old components to a list and render
   for (let i = 0; i < componentList.length; i++) {
     const TargetComponent = componentList[i].action;
-    componentBoxes.push(<TargetComponent
-        removeComponent={removeComponent}
-        sortComponentUp={sortComponentUp}
-        sortComponentDown={sortComponentDown}
-        index={i} key={generateKey(componentList[i].name)+i} number={i}/>)
+    componentBoxes.push(
+        <TargetComponent
+          removeComponent={removeComponent}
+          sortComponentUp={sortComponentUp}
+          sortComponentDown={sortComponentDown}
+          index={i} key={generateKey(componentList[i].name)+i} number={i}/>
+    )
   }
 
   return (

@@ -16,8 +16,16 @@ components = [
     },
     {
         "name":"textsearch",
-        "regex_attr": "(textsearch)",
+        "regex_attr": "(textsearch(?!_col_))",
         "value_type": "string",
+        "postprocess_value": ""
+    },
+    {
+        "name":"textsearch",
+        "regex_attr": "(textsearch_col_)",
+        "value_type": "dict",
+        "regex_key": "textsearch_col_(.+)_action_",
+        "list_value": "true",
         "postprocess_value": ""
     },
     {

@@ -19,9 +19,10 @@ const TextSearchAction = ({ unique_key, index ,
 
   const [actionquery, setSearchQuery] = React.useState(actionquery_default);
   const actionqueryChange = event => { setSearchQuery(event.target.value); };
-  
+
 
   if (window.location.href.indexOf("/modify/") > -1) {
+    try {
       return (
         <div id={index+"__block_field"} className="block_field">
           <div className="ribbon"></div>
@@ -56,6 +57,8 @@ const TextSearchAction = ({ unique_key, index ,
           </div>
         </div>
       )
-
+    } catch (error) {
+      return <ErrorHandler error={error} />
+    }
   }
 }

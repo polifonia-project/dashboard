@@ -4,7 +4,7 @@ const ColumnListActions = ({index, default_actions, handleSetAction, actions, co
   if ([column_name] in actions) {
     default_active = actions[column_name];
     default_actions.forEach((item, i) => {
-      if (actions[column_name].includes(item[0])) {default_pos.push(item[2])}
+      if (actions[column_name].includes(item[0])) {default_pos.push(item[0])}
     });
 
   }
@@ -21,15 +21,15 @@ const ColumnListActions = ({index, default_actions, handleSetAction, actions, co
     handleSetAction(column_name,elem[0]);
 
     var updatedActivePos = [...actionPos];
-    if (updatedActivePos.includes(elem[2])) {
-      updatedActivePos.splice(updatedActivePos.indexOf(elem[2]), 1);
-    } else { updatedActivePos.push(elem[2]) }
+    if (updatedActivePos.includes(elem[0])) {
+      updatedActivePos.splice(updatedActivePos.indexOf(elem[0]), 1);
+    } else { updatedActivePos.push(elem[0]) }
     setActionPos(updatedActivePos);
   }
 
   const cx = (...list) => list.filter(Boolean).join(' ')
-
-  return (
+  try {
+    return (
     <span key={index+'_action_group_'+column_name}>
       {default_actions.map((el,j) => (
         <span key={index+'_action_group_'+column_name+j}>
@@ -39,22 +39,28 @@ const ColumnListActions = ({index, default_actions, handleSetAction, actions, co
           name={index+'__textsearch_column__'+column_name+'__action__'+el[2]}
           className={cx('action_button', (isActive.includes(el[0])) && 'active_action')}
           key={index+j+'action'+el}
-          value={el[0]}
+          defaultValue={el[0]}
           onClick={() => { addToActive(el)} }></input>
-        <input
-          type="hidden"
-          id={index+'__textsearch_col_'+column_name+'_action_'+el[2]}
-          name={index+'__textsearch_col_'+column_name+'_action_'+el[2]}
-          key={index+j+'hiddenaction'+el}
-          defaultValue={actionPos.indexOf(el[2]) > -1 && el[2]}></input>
+
         </span>
         )
       )}
     </span>
   )
+  } catch (error) {
+    return <ErrorHandler error={error} />
+  }
 }
 
-const TextSearchResults = ({ index , queryResults , queryString , setResults, default_actions}) => {
+const TextSearchResults = ({ index , queryResults , queryString , setResults,
+  default_actions, actions, setAction, handleSetAction}) => {
+
+  // show actions in columns if any
+  const [showActionList,setVisibilityActions] = React.useState(false);
+  const showActions = () => { setVisibilityActions(!showActionList) }
+
+
+  // buttons in the footer of the table
   let empty;
   const detach_table = event => { setResults(empty); }
   const [toggle, setToggle] = React.useState(true);
@@ -118,7 +124,7 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults, de
       inde--;}
   });
 
-  // format table
+  // create table content
   queryResults.results.bindings.forEach((item, i) => {
     tableresults += "<tr>";
     headings.forEach((head, inde) => {
@@ -154,11 +160,11 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults, de
           tableresults += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
         }
 
-        // if (actions.includes(headings[inde])) {
-        //   for (let i = 0; i < actions[headings[inde]].length; i++) {
-        //     tableresults += "<span>"+actions[headings[inde]][i]+"</span>"
-        //   }
-        // }
+        if (actions[headings[inde]]) {
+          for (let i = 0; i < actions[headings[inde]].length; i++) {
+            tableresults += "<span class='action_button'>"+actions[headings[inde]][i]+"</span>"
+          }
+        }
         // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
         tableresults += "</td>";
       }
@@ -179,12 +185,14 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults, de
           else {
             tableresults += "<span class='table_result'>" + res_value + "</span>";
           }
-          //tableresults += "<span class='table_result'>" + res_value + "</span>";
-          // var buttons = addActionButton(actions, headings[j], pos, res_value, res_value);
+
+          if (actions[headings[inde]]) {
+            for (let i = 0; i < actions[headings[inde]].length; i++) {
+              tableresults += "<span class='action_button'>"+actions[headings[inde]][i]+"</span>"
+            }
+          }
           tableresults += "</td>";
       }
-
-
 
     });
     tableresults += "</tr>";
@@ -206,38 +214,12 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults, de
     }
   };
 
-  // show actions in columns if any
-  const [showActionList,setVisibilityActions] = React.useState(false);
-  const showActions = () => { setVisibilityActions(!showActionList) }
-
-  // update list of actions attached to a column
-  const [actions, setAction] = React.useState({});
-  const handleSetAction = (column_name, el) => {
-    console.log("before",actions);
-    var updatedColActions = {...actions};
-    if ([column_name] in updatedColActions) {
-      // remove if exists
-      if (updatedColActions[column_name].includes(el)) {
-        updatedColActions[column_name].splice(updatedColActions[column_name].indexOf(el), 1);
-      }
-      else {
-        updatedColActions[column_name].push(el)
-      }
-    }
-    // create also column if does not exist
-    else {
-      updatedColActions = {...actions, [column_name]:[el] };
-    }
-    setAction(updatedColActions);
-    console.log("after",actions);
-  }
-
   function createTable() { return {__html: tableresults};}
 
   let finalpreview;
   if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
-
-  return (
+  try {
+    return (
     <table className='col-12 textsearchresults' id={index+"__textsearchresults"}>
       <caption
         id={"textsearchresults_caption_"+index}
@@ -291,6 +273,9 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults, de
       }
     </table>
   )
+  } catch (error) {
+    return <ErrorHandler error={error} />
+  }
 }
 
 const TextSearch = ({ unique_key, index ,
@@ -328,9 +313,7 @@ const TextSearch = ({ unique_key, index ,
 
     const [queryvars,setqueryvars] = React.useState([]);
 
-    // update checkbox label if changes in the action box
-    // todo save checked or not
-    // assign to variable in table
+
 
     const fetchTextquery = event => {
       if (query.length > 1) {
@@ -356,131 +339,186 @@ const TextSearch = ({ unique_key, index ,
       else {console.log("no query");}
     }
 
+    // retrieve saved actions from data story
+    let saved_actions = {};
+    if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+      datastory_data.dynamic_elements.forEach(element => {
+        if (element.type == 'textsearch' && element.position == index) {
+          if (element.textsearch) { saved_actions = element.textsearch}
+        }
+      })
+    }
+
+    // update list of actions attached to a column on click
+    console.log("saved_actions",saved_actions);
+
+    const [actions, setAction] = React.useState(saved_actions);
+    const handleSetAction = (column_name, el) => {
+      var updatedColActions = {...actions};
+      if ([column_name] in updatedColActions) {
+        // remove if exists
+        if (updatedColActions[column_name].includes(el)) {
+          updatedColActions[column_name].splice(updatedColActions[column_name].indexOf(el), 1);
+        }
+        else {
+          updatedColActions[column_name].push(el)
+        }
+      }
+      // create also column if does not exist
+      else {
+        updatedColActions = {...actions, [column_name]:[el] };
+      }
+      setAction(updatedColActions);
+    }
+
+    // update checkbox label if changes in the action box
+    // perform action
 
     // WYSIWYG: render component and preview
     if (window.location.href.indexOf("/modify/") > -1) {
+      try {
       return (
-      <div id={index+"__block_field"} className="block_field">
-        {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
-        <div className="ribbon"></div>
-        <h4 className="block_title">Add a text search</h4>
-        <SortComponent
-          index={index}
-          sortComponentUp={sortComponentUp}
-          sortComponentDown={sortComponentDown}
-          key={unique_key} />
-        <RemoveComponent
-          index={index}
-          removeComponent={removeComponent}
-          key={unique_key} />
-        <div className="previewtextsearch row">
-          <h3 className="block_title col-12">{title}</h3>
-          <input className='textsearch_userinput modifydatastory col-8'
-            id={index+"__textsearch_userinput"}
-            type='text'
-            onChange={updateQueryString}
-            name={index+"__textsearch_userinput"}></input>
-          <a id={index+"__textsearch_button"}
-            className='textsearch_button col-3'
-            onClick={fetchTextquery}>Search</a>
-          <a className="col-12"
-            href='#' role='button'
-            data-toggle='modal' data-target='#textModalLong'>Learn more about text searches and actions</a>
-          {queryResultsHTML &&
-            (<TextSearchResults
-             index={index}
-             key={"results_"+unique_key+index}
-             queryResults={queryResultsHTML}
-             queryString={queryString}
-             setResults={setResults}
-             default_actions={default_actions}/>
-            )}
-        </div>
-        <div className='form-group'>
-          <label htmlFor='largeInput'>Search title</label>
-          <input name={index+"__textsearch_title"}
+        <div id={index+"__block_field"} className="block_field">
+          {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
+          <div className="ribbon"></div>
+          <h4 className="block_title">Add a text search</h4>
+          <SortComponent
+            index={index}
+            sortComponentUp={sortComponentUp}
+            sortComponentDown={sortComponentDown}
+            key={unique_key} />
+          <RemoveComponent
+            index={index}
+            removeComponent={removeComponent}
+            key={unique_key} />
+          <div className="previewtextsearch row">
+            <h3 className="block_title col-12">{title}</h3>
+            <input className='textsearch_userinput modifydatastory col-8'
+              id={index+"__textsearch_userinput"}
               type='text'
-              id={index+"__textsearch_title"}
-              onChange={titleChange}
-              defaultValue={title}
-              placeholder='The title of the text search' required ></input>
-          <label htmlFor='largeInput'>SPARQL query</label>
-          <textarea name={index+"__textsearch_query"} type='text'
-              spellCheck='false'
-              onChange={queryChange}
-              id={index+"__textsearch_query"}
-              defaultValue={query}
-              placeholder='A SPARQL query with a placeholder <<searchterm>> for the search term. Return as many variables you like' required>
-          </textarea>
-          <p><em>Try out the text search to run the query</em></p>
+              onChange={updateQueryString}
+              name={index+"__textsearch_userinput"}></input>
+            <a id={index+"__textsearch_button"}
+              className='textsearch_button col-3'
+              onClick={fetchTextquery}>Search</a>
+            <a className="col-12"
+              href='#' role='button'
+              data-toggle='modal' data-target='#textModalLong'>Learn more about text searches and actions</a>
+            {queryResultsHTML &&
+              (<TextSearchResults
+               index={index}
+               key={"results_"+unique_key+index}
+               queryResults={queryResultsHTML}
+               queryString={queryString}
+               setResults={setResults}
+               default_actions={default_actions}
+               actions={actions}
+               setAction={setAction}
+               handleSetAction={handleSetAction}/>
+              )}
+          </div>
+          <div className='form-group'>
+            <label htmlFor='largeInput'>Search title</label>
+            <input name={index+"__textsearch_title"}
+                type='text'
+                id={index+"__textsearch_title"}
+                onChange={titleChange}
+                defaultValue={title}
+                placeholder='The title of the text search' required ></input>
+            <label htmlFor='largeInput'>SPARQL query</label>
+            <textarea name={index+"__textsearch_query"} type='text'
+                spellCheck='false'
+                onChange={queryChange}
+                id={index+"__textsearch_query"}
+                defaultValue={query}
+                placeholder='A SPARQL query with a placeholder <<searchterm>> for the search term. Return as many variables you like' required>
+            </textarea>
+            <p><em>Try out the text search to run the query</em></p>
 
-        </div>
-        <div className="modal fade"
-            id="textModalLong"
-            tabIndex="-1" role="dialog"
-            aria-labelledby="textModalLongTitle"
-            aria-hidden="true">
-            <div className="modal-dialog modal-lg" role="document">
-                <div className="modal-content card">
-                    <div className="modal-header">
-                        <h4 id="textModalLongTitle" className="card-title">
-                        Perform text searches and explore graphs with actions</h4>
-                    </div>
-                    <div className="modal-body">
-                        <div className="container">
-                            <div className="row">
-                                <p>A SPARQL query to create a text search allows you
-                                to return any data relevant to a query string in tabular form.
-                                It requires you to include the following placeholder (names are mandatory).</p>
-                                <ul>
-                                    <li><strong>&lt;&lt;searchterm&gt;&gt;</strong>: a placeholder for the string to be searched.</li>
+          </div>
+          <div className="modal fade"
+              id="textModalLong"
+              tabIndex="-1" role="dialog"
+              aria-labelledby="textModalLongTitle"
+              aria-hidden="true">
+              <div className="modal-dialog modal-lg" role="document">
+                  <div className="modal-content card">
+                      <div className="modal-header">
+                          <h4 id="textModalLongTitle" className="card-title">
+                          Perform text searches and explore graphs with actions</h4>
+                      </div>
+                      <div className="modal-body">
+                          <div className="container">
+                              <div className="row">
+                                  <p>A SPARQL query to create a text search allows you
+                                  to return any data relevant to a query string in tabular form.
+                                  It requires you to include the following placeholder (names are mandatory).</p>
+                                  <ul>
+                                      <li><strong>&lt;&lt;searchterm&gt;&gt;</strong>: a placeholder for the string to be searched.</li>
 
-                                </ul>
-                                <p>You can add as many other variables as you like.
-                                Values will be shown in a table as columns. The same constraints and properties of normal tables
-                                apply to results (e.g. simplified labels, export in HTML/CSV, addition of editable columns in the the final story)</p>
-                                <p>For instance, a query to ArCO to retrieve cultural heritage objects including a string in their label would look like follows:</p>
-                                <code className="query-eg">{"SELECT DISTINCT ?var ?varLabel ?class ?classLabel"}<br/>
-                                {"WHERE {"}<br/>
-                                {"?var rdf:type arco:DemoEthnoAnthropologicalHeritage; "}<br/>
-                                {"rdfs:label ?varLabel; a ?class . ?class rdfs:label ?classLabel ."}<br/>
-                                {"FILTER regex(str(?varLabel), <<searchterm>>, 'i') "}<br/>
-                                {"FILTER (lang(?classLabel) = 'it')"}<br/>
-                                {"} LIMIT 15"}<br/></code>
-                            </div>
-                            <div className="row">
-                              <h3>Add actions to tables</h3>
-                                <p>Once you have created a text search, you can add actions to table results.
-                                To create an action you must write a SPARQL query
-                                that references an entity value in an existing table
-                                (e.g. the value of column <code>?var</code>
-                                in the previous textsearch) and generates a new table.
-                                The SPARQL query of an action can return as many variables as you like.
-                                The only requirement is the following placeholder:
-                                </p>
-                                <ul>
-                                    <li><strong>&lt;&lt;item&gt;&gt;</strong>: a placeholder for the entity to which the action is attached. It can be a placeholder for a URI or a string (in this case, you must enquote the placeholder)</li>
-                                </ul>
-                                <p>Actions appear as buttons in the selected column.
-                                Multiple actions can be attached to the same column, and multiple columns may have different actions.
-                                Lastly, actions can be reused in any new table, whether this is the table resulting from a text search
-                                or one of the following tables created by actions.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-danger"
-                            data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </div>
+                                  </ul>
+                                  <p>You can add as many other variables as you like.
+                                  Values will be shown in a table as columns. The same constraints and properties of normal tables
+                                  apply to results (e.g. simplified labels, export in HTML/CSV, addition of editable columns in the the final story)</p>
+                                  <p>For instance, a query to ArCO to retrieve cultural heritage objects including a string in their label would look like follows:</p>
+                                  <code className="query-eg">{"SELECT DISTINCT ?var ?varLabel ?class ?classLabel"}<br/>
+                                  {"WHERE {"}<br/>
+                                  {"?var rdf:type arco:DemoEthnoAnthropologicalHeritage; "}<br/>
+                                  {"rdfs:label ?varLabel; a ?class . ?class rdfs:label ?classLabel ."}<br/>
+                                  {"FILTER regex(str(?varLabel), <<searchterm>>, 'i') "}<br/>
+                                  {"FILTER (lang(?classLabel) = 'it')"}<br/>
+                                  {"} LIMIT 15"}<br/></code>
+                              </div>
+                              <div className="row">
+                                <h3>Add actions to tables</h3>
+                                  <p>Once you have created a text search, you can add actions to table results.
+                                  To create an action you must write a SPARQL query
+                                  that references an entity value in an existing table
+                                  (e.g. the value of column <code>?var</code>
+                                  in the previous textsearch) and generates a new table.
+                                  The SPARQL query of an action can return as many variables as you like.
+                                  The only requirement for the SPARQL query is the following placeholder:
+                                  </p>
+                                  <ul>
+                                      <li><strong>&lt;&lt;item&gt;&gt;</strong>: a placeholder for the entity to which the action is attached. It can be a placeholder for a URI or a string (in this case, you must enquote the placeholder)</li>
+                                  </ul>
+                                  <p>Actions appear as buttons in the selected column.
+                                  Multiple actions can be attached to the same column, and multiple columns may have different (or the same) actions.
+                                  Lastly, actions can be reused in any new table, whether this is the table resulting from a text search
+                                  or one of the following tables created by actions.</p>
+                                  <p><strong>Be aware</strong> that actions are attached to column names (i.e. SPARQL variables), regardless of the table they belong to. Therefore: <strong>action names and column names must be unique</strong>.</p>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="modal-footer">
+                          <button type="button" className="btn btn-danger"
+                              data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {Object.entries(actions).map(([column_name, action_list]) => (
+            action_list.map( (el,j) => (
+              <input
+                type="hidden"
+                id={index+'__textsearch_col_'+column_name+'_action_'+j}
+                name={index+'__textsearch_col_'+column_name+'_action_'+j}
+                key={index+j+'hiddenaction'+j}
+                defaultValue={actions[column_name].indexOf(el) > -1 && el}>
+              </input>
+            ) )
 
-      )
+
+            )
+          )}
+        </div> )
+      } catch (error) {
+        return <ErrorHandler error={error} />
+      }
     } else {
       // Final story: render preview
-      return (
+      try {
+        return (
         <>
             {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
             <h3 className="block_title">{title}</h3>
@@ -501,8 +539,14 @@ const TextSearch = ({ unique_key, index ,
              queryResults={queryResultsHTML}
              queryString={queryString}
              setResults={setResults}
-             default_actions={default_actions}/>)}
+             default_actions={default_actions}
+             actions={actions}
+             setAction={setAction}
+             handleSetAction={handleSetAction}/>)}
         </>
       )
+      } catch (error) {
+        return <ErrorHandler error={error} />
+      }
     }
 }
