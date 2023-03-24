@@ -1,3 +1,4 @@
+// count component box
 const Count = ({ unique_key, index ,
                 removeComponent , componentList, setComponent,
                 sortComponentUp , sortComponentDown}) => {
@@ -21,9 +22,11 @@ const Count = ({ unique_key, index ,
   const labelChange = event => { setLabel(event.target.value); };
   const [spinner, setSpinner] = React.useState(false);
 
+  // get data and return the counting in the box preview
   const fetchQuery = event => {
-    setSpinner(true);
+
     if (query.length > 1) {
+      setSpinner(true);
       fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
         {
         method: 'GET',
@@ -36,18 +39,18 @@ const Count = ({ unique_key, index ,
          $("#" + index + "__num").text(count);
         })
        .catch((error) => {
-          console.error('Error:', error);
-          alert("There is an error in the query")
-          count = "Error!";
           setSpinner(false);
-       })
-       .finally( () => { });
+          console.error('Error:', error);
+          alert("Count: there is an error in the query")
+          count = "Error!";
+       }).finally(() => {setSpinner(false);});
 
     }
   }
 
   // preview counter
   React.useEffect(() => {
+    try {
      fetchQuery();
 
      $("textarea").each(function () {
@@ -71,12 +74,13 @@ const Count = ({ unique_key, index ,
                 .wrapAll("<div class='row' />");
          });
      }
-
+     } catch (error) { <ErrorHandler error={error} /> }
   }, []);
 
   // WYSIWYG: render component and preview
   if (window.location.href.indexOf("/modify/") > -1) {
-    return (
+    try {
+      return (
       <div id={index+"__block_field"} className="block_field">
       {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
         <div className="ribbon"></div>
@@ -113,13 +117,16 @@ const Count = ({ unique_key, index ,
               placeholder='The label of the counter' required />
         </div>
     );
+    } catch (error) { return <ErrorHandler error={error} /> }
   } else {
     // Final story: render preview
-    return (
+    try {
+      return (
       <div className='card-body justify-content-center option-2b count_result col-md-3'>
         <p className='counter_num' id={index+"__num"}>{count}</p>
         <p className='counter_label' id={index+"__lab"}>{label}</p>
       </div>
-    )
+    );
+    } catch (error) { return <ErrorHandler error={error} /> }
   }
 }

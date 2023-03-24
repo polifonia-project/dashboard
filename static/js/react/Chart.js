@@ -122,7 +122,8 @@ const ExtraSeries = ({ indexExtra, index_parent ,
   }, []);
 
   let extra_id = new Date().getTime();
-  return (
+  try {
+    return (
     <div className="query-div">
     <hr/>
       <h4 style={{ color: 'white'}}>Add a series</h4><br/>
@@ -145,7 +146,8 @@ const ExtraSeries = ({ indexExtra, index_parent ,
           placeholder='The label of the data series'>
       </input>
     </div>
-  )
+  );
+  } catch (error) { return <ErrorHandler error={error} /> }
 }
 
 const ChartViz = ({ unique_key, index ,
@@ -589,8 +591,9 @@ const ChartViz = ({ unique_key, index ,
   }
 
   const fetchQuery = event => {
-    setSpinner(true);
+
     if (query.length > 1) {
+      setSpinner(true);
       chartData = [], chartLabels = []
       // empty the chart container
       document.getElementById(index+"__chartcontainer").innerHTML = '&nbsp;';
@@ -656,7 +659,7 @@ const ChartViz = ({ unique_key, index ,
            }
          }
         })
-       .catch((error) => { console.error('Error:', error); alert("There is an error in the query"); setSpinner(false);})
+       .catch((error) => { console.error('Error:', error); alert("Chart: there is an error in the query"); setSpinner(false);})
        .finally( () => { });
     }
   }
@@ -690,6 +693,7 @@ const ChartViz = ({ unique_key, index ,
 
   // WYSIWYG: render component and preview
   if (window.location.href.indexOf("/modify/") > -1) {
+    try {
     return (
     <div id={index+"__block_field"} className="block_field">
     {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
@@ -983,74 +987,76 @@ const ChartViz = ({ unique_key, index ,
 
     </div>
     );
+    } catch (error) { return <ErrorHandler error={error} /> }
   } else {
     // Final story: render preview
+    try {
+      let q = '';
+      if (!extras || !extras.length) { q = '<p>'+query+'</p>'}
+      else {
+        q += '<p>'+query+'</p><br/>';
+        extras.forEach(element => {
+          q += '<p>'+element.extra_query+'</p><br/><br/>';
+        }) ;
+      }
 
-    let q = '';
-    if (!extras || !extras.length) { q = '<p>'+query+'</p>'}
-    else {
-      q += '<p>'+query+'</p><br/>';
-      extras.forEach(element => {
-        q += '<p>'+element.extra_query+'</p><br/><br/>';
-      }) ;
-    }
-
-    function createMarkup() { return {__html: q};}
-    return (
-      <>
-        <h3 className="block_title">{title}</h3>
-        <input id={index+"__chart_type"} type='hidden' value={chart}></input>
-        <div id={index+"__chartcontainer"} className='chart-container'>
-          <canvas id={index+"__chartid"}></canvas>
-        </div>
-        <div className="exportchart card-tools col-md-12 col-sm-12">
-          <a id={"export_"+index}
-            className="btn btn-info btn-border btn-round btn-sm mr-2"
-            onClick={() => exportChart(index)}>
-            Embed
-          </a>
-          <a id={"print_"+index}
-            className="btn btn-info btn-border btn-round btn-sm mr-2"
-            onClick={() => printChart(index)}>
-            Save
-          </a>
-          <a href='#' id={index+"_query_tooltip"}
-            role="button"
-            data-toggle='modal'
-            data-target={'#'+index+'_query'}
-            className="btn btn-info btn-border btn-round btn-sm">
-            Query
-          </a>
-
-
-          <div className="modal fade"
-              id={index+'_query'}
-              tabIndex="-1" role="dialog"
-              aria-labelledby={index+'_querytitle'}
-              aria-hidden="true">
-              <div className="modal-dialog modal-lg" role="document">
-                  <div className="modal-content card">
-                      <div className="modal-header">
-                          <h4 id={'#'+index+'_querytitle'} className="card-title">
-                          SPARQL query</h4>
-                      </div>
-                      <div className="modal-body">
-                          <div
-                            className="container"
-                            dangerouslySetInnerHTML={createMarkup()}>
-
-                          </div>
-                      </div>
-                      <div className="modal-footer">
-                          <button type="button" className="btn btn-danger"
-                              data-dismiss="modal">Close</button>
-                      </div>
-                  </div>
-              </div>
+      function createMarkup() { return {__html: q};}
+      return (
+        <>
+          <h3 className="block_title">{title}</h3>
+          <input id={index+"__chart_type"} type='hidden' value={chart}></input>
+          <div id={index+"__chartcontainer"} className='chart-container'>
+            <canvas id={index+"__chartid"}></canvas>
           </div>
-        </div>
-      </>
+          <div className="exportchart card-tools col-md-12 col-sm-12">
+            <a id={"export_"+index}
+              className="btn btn-info btn-border btn-round btn-sm mr-2"
+              onClick={() => exportChart(index)}>
+              Embed
+            </a>
+            <a id={"print_"+index}
+              className="btn btn-info btn-border btn-round btn-sm mr-2"
+              onClick={() => printChart(index)}>
+              Save
+            </a>
+            <a href='#' id={index+"_query_tooltip"}
+              role="button"
+              data-toggle='modal'
+              data-target={'#'+index+'_query'}
+              className="btn btn-info btn-border btn-round btn-sm">
+              Query
+            </a>
 
-    );
+
+            <div className="modal fade"
+                id={index+'_query'}
+                tabIndex="-1" role="dialog"
+                aria-labelledby={index+'_querytitle'}
+                aria-hidden="true">
+                <div className="modal-dialog modal-lg" role="document">
+                    <div className="modal-content card">
+                        <div className="modal-header">
+                            <h4 id={'#'+index+'_querytitle'} className="card-title">
+                            SPARQL query</h4>
+                        </div>
+                        <div className="modal-body">
+                            <div
+                              className="container"
+                              dangerouslySetInnerHTML={createMarkup()}>
+
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-danger"
+                                data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </>
+
+      );
+    } catch (error) { return <ErrorHandler error={error} /> }
   }
 }

@@ -215,7 +215,7 @@ const SidebarPanel = ({indexPanel ,
          setCollapse('collapsed');
          $("#filter_"+extra_id).collapse();
       })
-      .catch((error) => { console.error('Error:', error); alert("There is an error in the query"); })
+      .catch((error) => { console.error('Error:', error); alert("Sidebar filters: there is an error in the query"); })
       .finally( () => { setLoad('loaded'); });
     }
 
@@ -428,7 +428,7 @@ const MapViz = ({ unique_key, index ,
 
   const initMap = event => {
     // craziness of map already initialised
-    setSpinner(true)
+
     if (mapInstance != 'initialised' && (map == undefined || map == null )) {
       if (mapRendered.length) {map = mapRendered} else {
         try {
@@ -450,6 +450,7 @@ const MapViz = ({ unique_key, index ,
     } else if (mapInstance == 'initialised')(map = mapRendered)
 
     if (query.length > 1) {
+      setSpinner(true)
         //if (map && map.remove) { map.off(); map.remove(); }
         fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
           {
@@ -463,7 +464,7 @@ const MapViz = ({ unique_key, index ,
           markers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
           allMarkers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
        })
-       .catch((error) => { setSpinner(false); console.error('Error:', error); alert("There is an error in the query"); })
+       .catch((error) => { setSpinner(false); console.error('Error:', error); alert("Map: there is an error in the query"); })
        .finally( () => {
          setSpinner(false)
          setMap('initialised');
@@ -633,7 +634,8 @@ const MapViz = ({ unique_key, index ,
 
   // WYSIWYG: render component and preview
   if (window.location.href.indexOf("/modify/") > -1) {
-    return (
+    try {
+      return (
       <>
       <div id={index+"__block_field"} className="block_field">
       {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
@@ -770,9 +772,11 @@ const MapViz = ({ unique_key, index ,
       </>
 
     );
+    } catch (error) { return <ErrorHandler error={error} /> }
   } else {
     // Final story: render preview
-    return (
+    try {
+      return (
       <>
         <h3 className="block_title float_none">{title}</h3>
         <div
@@ -797,6 +801,7 @@ const MapViz = ({ unique_key, index ,
             />
         </div>
       </>
-    )
+    );
+    } catch (error) { return <ErrorHandler error={error} /> }
   }
 }

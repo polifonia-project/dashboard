@@ -1,5 +1,58 @@
+const ActionTable = ({unique_key, buttonLabel, cell_value, action_query}) => {
+  return (
+    <div key={unique_key}>
+      <p key={unique_key+'p1'}>{buttonLabel}: {cell_value}</p>
+      <p key={unique_key+'p2'}>I'm a table!</p>
+    </div>
+  )
+}
 
-const ColumnListActions = ({index, default_actions, handleSetAction, actions, column_name}) => {
+const ActionButton = ({unique_key, buttonLabel, cell_value,
+  actionResults,setActionResult }) => {
+
+  // get SPARQL query from datastory_data
+  let action_query = '', action_type;
+  if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+    datastory_data.dynamic_elements.forEach(element => {
+      if (element.type == 'action' && element.action_title == buttonLabel) {
+        action_query = element.action_query;
+      }
+    })
+  }
+
+  const performAction = () => {
+    if (action_query.length) {
+      // default behaviour, create a table
+      if (!action_type || action_type == 'table') {
+        let action_result_component = <ActionTable
+                  key={cell_value+action_query+'action_table'}
+                  unique_key={cell_value+action_query+'action_table'}
+                  buttonLabel={buttonLabel}
+                  cell_value={cell_value}
+                  action_query={action_query}/>;
+        let updated_action_results = [...actionResults]
+        updated_action_results.push(action_result_component)
+        setActionResult(updated_action_results)
+        console.log(actionResults);
+      }
+    }
+
+  };
+
+  return (
+    <span
+      key={unique_key}
+      className='action_button'
+      onClick={performAction}>
+      {buttonLabel}
+    </span>
+  )
+}
+
+// the list of available actions shown in table headers. one for each column
+const ColumnListActions = ({index, default_actions,
+                            handleSetAction, actions, column_name}) => {
+
   let default_active = [], default_pos = [];
   if ([column_name] in actions) {
     default_active = actions[column_name];
@@ -12,6 +65,8 @@ const ColumnListActions = ({index, default_actions, handleSetAction, actions, co
   const [isActive, setActive] = React.useState(default_active);
   const [actionPos, setActionPos] = React.useState(default_pos);
 
+  // add/remove titles of actions in arrays
+  // when de/selected from column headers
   const addToActive = (elem) => {
     var updatedActive = [...isActive];
     if (updatedActive.includes(elem[0])) {
@@ -52,13 +107,14 @@ const ColumnListActions = ({index, default_actions, handleSetAction, actions, co
   }
 }
 
+// table of results from a text search
 const TextSearchResults = ({ index , queryResults , queryString , setResults,
-  default_actions, actions, setAction, handleSetAction}) => {
+  default_actions, actions, updated_saved_actions, setAction, handleSetAction,
+  actionResults,setActionResult}) => {
 
   // show actions in columns if any
   const [showActionList,setVisibilityActions] = React.useState(false);
   const showActions = () => { setVisibilityActions(!showActionList) }
-
 
   // buttons in the footer of the table
   let empty;
@@ -75,6 +131,7 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
     window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
   };
 
+  // export table as csv
   function createCsv(table, separator = ',') {
       // Select rows from table_id
       var rows = table.rows, csv = [];
@@ -124,80 +181,58 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
       inde--;}
   });
 
-  // create table content
-  queryResults.results.bindings.forEach((item, i) => {
-    tableresults += "<tr>";
-    headings.forEach((head, inde) => {
-      var res_value = "";
-      if (item[headings[inde]] !== undefined) { res_value = item[headings[inde]].value; };
+  // get cell value
+  function get_cell_value(headings, head, inde, item) {
+    let tableresults = '', res_label, res_value = '';
 
-      if (item[headings[inde] + 'Label'] != undefined) {
-        var res_label = "";
-
-        if (item[headings[inde] + 'Label'].value.length) {
-            res_label = item[headings[inde] + 'Label'].value;
-        }
-        tableresults += "<td>";
-
-        // audio
-        if (res_value.endsWith('.mp3')) {
-          tableresults += "<span>"+res_label+"</span><audio class='table_result'><source src='" + res_value + "'></source></audio>";
-        }
-        // img
-        else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
-          tableresults += "<span>"+res_label+"</span><img class='img_table' src='" + res_value + "'/>";
-        }
-        // video
-        else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
-          tableresults += "<span>"+res_label+"</span><video controls class='table_result'><source src='" + res_value + "'></source></video>";
-        }
-        // youtube
-        else if (res_value.includes("youtube.com/embed/")) {
-          tableresults += '<span>'+res_label+'</span><div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
-        }
-        // URL
-        else {
-          tableresults += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
-        }
-
-        if (actions[headings[inde]]) {
-          for (let i = 0; i < actions[headings[inde]].length; i++) {
-            tableresults += "<span class='action_button'>"+actions[headings[inde]][i]+"</span>"
-          }
-        }
-        // var buttons = addActionButton(actions, headings[j], pos, res_value, res_label);
-        tableresults += "</td>";
+    if (item[headings[inde] + 'Label'] != undefined) {
+      res_label = "";
+      if (item[headings[inde] + 'Label'].value.length) {
+          res_label = item[headings[inde] + 'Label'].value;
       }
+
+      // audio
+      if (res_value.endsWith('.mp3')) {
+        tableresults += "<span>"+res_label+"</span><audio class='table_result'><source src='" + res_value + "'></source></audio>";
+      }
+      // img
+      else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
+        tableresults += "<span>"+res_label+"</span><img class='img_table' src='" + res_value + "'/>";
+      }
+      // video
+      else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
+        tableresults += "<span>"+res_label+"</span><video controls class='table_result'><source src='" + res_value + "'></source></video>";
+      }
+      // youtube
+      else if (res_value.includes("youtube.com/embed/")) {
+        tableresults += '<span>'+res_label+'</span><div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
+      }
+      // URL
       else {
-          tableresults += "<td>";
-          if (res_value.endsWith('.mp3')) {
-            tableresults += "<audio controls src='" + res_value + "' class='table_result'><a href='" + res_value + "'></a></audio>";
-          }
-          else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
-            tableresults += "<img class='img_table' src='" + res_value + "'/>";
-          }
-          else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
-            tableresults += "<video controls class='table_result'><source src='" + res_value + "'></source></video>";
-          }
-          else if (res_value.includes("youtube.com/embed/")) {
-            tableresults += '<div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
-          }
-          else {
-            tableresults += "<span class='table_result'>" + res_value + "</span>";
-          }
-
-          if (actions[headings[inde]]) {
-            for (let i = 0; i < actions[headings[inde]].length; i++) {
-              tableresults += "<span class='action_button'>"+actions[headings[inde]][i]+"</span>"
-            }
-          }
-          tableresults += "</td>";
+        tableresults += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
       }
+    }
+    else {
+        if (res_value.endsWith('.mp3')) {
+          tableresults += "<audio controls src='" + res_value + "' class='table_result'><a href='" + res_value + "'></a></audio>";
+        }
+        else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
+          tableresults += "<img class='img_table' src='" + res_value + "'/>";
+        }
+        else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
+          tableresults += "<video controls class='table_result'><source src='" + res_value + "'></source></video>";
+        }
+        else if (res_value.includes("youtube.com/embed/")) {
+          tableresults += '<div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
+        }
+        else {
+          tableresults += "<span class='table_result'>" + res_value + "</span>";
+        }
+    }
+    return tableresults
+  }
 
-    });
-    tableresults += "</tr>";
-  });
-
+  // allow last column editing
   const edit_table = () => {
     let table = document.getElementById(index+"__textsearchresults");
     let thead = table.querySelectorAll("thead tr")[0]
@@ -214,7 +249,11 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
     }
   };
 
-  function createTable() { return {__html: tableresults};}
+  //function createTable() { return {__html: tableresults};}
+  React.useEffect(() => {
+    try { setActionResult(actionResults)
+    } catch {}
+  });
 
   let finalpreview;
   if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
@@ -247,7 +286,29 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
             </th>)
           )}</tr>
         </thead>
-        <tbody dangerouslySetInnerHTML={createTable()}></tbody>
+        <tbody>
+        {queryResults.results.bindings.map((item, i) => (
+          <tr key={item+i}>
+            {headers.map((head, inde) => (
+              <td key={head+inde}>
+                <span key={head+inde+item+i} dangerouslySetInnerHTML=
+                  {{ __html: get_cell_value(headers,head,inde,item)}}>
+                </span>
+                {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
+                    <ActionButton
+                      key={head+inde+'button'+item+i+el}
+                      unique_key={head+inde+item+i+el}
+                      buttonLabel={el}
+                      cell_value={get_cell_value(headers,head,inde,item)}
+                      actionResults={actionResults}
+                      setActionResult={setActionResult}
+                      />
+                  ))}
+              </td>
+            ))}
+          </tr>
+        ))}
+        </tbody>
         <tfoot>
           <tr>
             <td>
@@ -278,25 +339,44 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
   }
 }
 
+// text search component box
 const TextSearch = ({ unique_key, index ,
                 removeComponent , componentList, setComponent,
                 sortComponentUp , sortComponentDown}) => {
 
-    let title_default= "", query_default ="", tableresults, default_actions = [];
+    let title_default= "",
+        query_default ="",
+        tableresults,
+        default_actions = [], // all actions
+        saved_actions = {}, // actions used in a text search, all columns
+        default_actions_titles = []; // titles of all actions
 
-    // WYSIWYG: get content if any
-    // TODO look for actions if any, and if related to the table
+    // WYSIWYG: get title, query and actions (default and selected) if any
     if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
       datastory_data.dynamic_elements.forEach(element => {
         if (element.type == 'textsearch' && element.position == index) {
           title_default = element.textsearch_title ;
           query_default = element.textsearch_query ;
+          if (element.textsearch) { saved_actions = element.textsearch}
         }
         if (element.type == 'action') {
           default_actions.push([element.action_title, element.action_query, element.position])
+          default_actions_titles.push(element.action_title)
         }
       })
     }
+
+    function send_update() {
+      const form = document.getElementById('modifystory_form');
+      if (form) {
+        const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
+        return () => {clearTimeout(timer);};
+      }
+    }
+    let updated_saved_actions = saved_actions;
+
+    // update list of actions attached to columns on click
+    const [actions, setAction] = React.useState(updated_saved_actions);
 
     const [title, setSearchTitle] = React.useState(title_default);
     const titleChange = event => { setSearchTitle(event.target.value); };
@@ -308,13 +388,10 @@ const TextSearch = ({ unique_key, index ,
     const updateQueryString = event => { setQueryString(event.target.value); };
 
     const [queryResultsHTML, setResults] = React.useState(tableresults);
-
     const [spinner, setSpinner] = React.useState(false);
-
     const [queryvars,setqueryvars] = React.useState([]);
 
-
-
+    // perform the text search and sends data to the TextSearchResults component
     const fetchTextquery = event => {
       if (query.length > 1) {
         setSpinner(true);
@@ -329,30 +406,33 @@ const TextSearch = ({ unique_key, index ,
          .then((data) => {
            setSpinner(false);
            setResults(data);
+
+           // if heading names of table column have changed,
+           // delete saved actions in config json for old variables
+           // TODO: conflict with vars of children tables
+           // var headings = data.head.vars;
+           // var vars_tb_removed = []
+           // Object.entries(updated_saved_actions).map(([col, list_actions]) => {
+           //   if (!headings.includes(col)) {
+           //     vars_tb_removed.push(col)
+           //   }
+           // })
+           // vars_tb_removed.forEach((col) => {
+           //    delete updated_saved_actions[col]
+           // });
+           // saved_actions = updated_saved_actions;
+           // send_update();
           })
          .catch((error) => {
             console.error('Error:', error);
-            alert("There is an error in the query");
+            alert("Text search: there is an error in the query");
             setSpinner(false);
          });
       }
       else {console.log("no query");}
     }
 
-    // retrieve saved actions from data story
-    let saved_actions = {};
-    if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
-      datastory_data.dynamic_elements.forEach(element => {
-        if (element.type == 'textsearch' && element.position == index) {
-          if (element.textsearch) { saved_actions = element.textsearch}
-        }
-      })
-    }
-
-    // update list of actions attached to a column on click
-    console.log("saved_actions",saved_actions);
-
-    const [actions, setAction] = React.useState(saved_actions);
+    // update actions in column headers
     const handleSetAction = (column_name, el) => {
       var updatedColActions = {...actions};
       if ([column_name] in updatedColActions) {
@@ -371,8 +451,35 @@ const TextSearch = ({ unique_key, index ,
       setAction(updatedColActions);
     }
 
+    // add action results (tables, benchmarks, etc) to a list of components
+    const [actionResults,setActionResult] = React.useState([]);
+
     // update checkbox label if changes in the action box
-    // perform action
+    React.useEffect(() => {
+      try {
+        // update default actions if action components are deleted
+        if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+          datastory_data.dynamic_elements.forEach(element => {
+            if (element.type == 'action') {
+              default_actions = [];
+              default_actions.push([element.action_title, element.action_query, element.position])
+            }
+          })
+        }
+        // check if any action component has been deleted, and remove it from saved_actions
+        Object.entries(updated_saved_actions).map( ([col, list_actions]) => {
+          list_actions.forEach((el, i) => {
+            if (!default_actions_titles.includes(el)) {
+              list_actions.splice(i, 1);
+              setAction(updated_saved_actions);
+              send_update();
+            }
+          });
+        });
+
+        setActionResult(actionResults)
+      } catch {}
+    });
 
     // WYSIWYG: render component and preview
     if (window.location.href.indexOf("/modify/") > -1) {
@@ -413,10 +520,15 @@ const TextSearch = ({ unique_key, index ,
                setResults={setResults}
                default_actions={default_actions}
                actions={actions}
+               updated_saved_actions={updated_saved_actions}
                setAction={setAction}
-               handleSetAction={handleSetAction}/>
+               handleSetAction={handleSetAction}
+               actionResults={actionResults}
+               setActionResult={setActionResult}
+               />
               )}
           </div>
+          <>{actionResults}</>
           <div className='form-group'>
             <label htmlFor='largeInput'>Search title</label>
             <input name={index+"__textsearch_title"}
@@ -498,7 +610,7 @@ const TextSearch = ({ unique_key, index ,
               </div>
           </div>
           {Object.entries(actions).map(([column_name, action_list]) => (
-            action_list.map( (el,j) => (
+            action_list.map((el,j) => (
               <input
                 type="hidden"
                 id={index+'__textsearch_col_'+column_name+'_action_'+j}
@@ -506,11 +618,8 @@ const TextSearch = ({ unique_key, index ,
                 key={index+j+'hiddenaction'+j}
                 defaultValue={actions[column_name].indexOf(el) > -1 && el}>
               </input>
-            ) )
-
-
-            )
-          )}
+            ))
+          ))}
         </div> )
       } catch (error) {
         return <ErrorHandler error={error} />
@@ -541,8 +650,11 @@ const TextSearch = ({ unique_key, index ,
              setResults={setResults}
              default_actions={default_actions}
              actions={actions}
+             updated_saved_actions={updated_saved_actions}
              setAction={setAction}
-             handleSetAction={handleSetAction}/>)}
+             handleSetAction={handleSetAction}
+             actionResults={actionResults}
+             setActionResult={setActionResult}/>)}
         </>
       )
       } catch (error) {

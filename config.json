@@ -541,8 +541,8 @@
                         "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
                         "map_filters": [
                             {
-                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/> \r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1678208230831_0",
+                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
+                                "extra_id": "1679587010688_0",
                                 "position": 0,
                                 "map_filter_title": "district"
                             }
@@ -624,7 +624,7 @@
                         "operations": [],
                         "type": "table",
                         "table_title": "Watch videos and images",
-                        "table_query": "SELECT ?t ?tLabel ?docURL ?pic\r\nWHERE {\r\n?t rdf:type arco:DemoEthnoAnthropologicalHeritage ;\r\na-loc:hasCulturalPropertyAddress ?l ;\r\nfoaf:depiction ?pic ;\r\ndc:subject ?o FILTER regex(str(?o), \"tastiera\") .\r\n?l rdfs:label ?tLabel .\r\n?doc a-cd:isDocumentationOf ?t ;\r\n<https://w3id.org/italia/onto/SM/URL> ?docURL .\r\n}  ",
+                        "table_query": "SELECT ?t ?tLabel ?docURL ?pic\r\nWHERE {\r\n?t rdf:type arco:DemoEthnoAnthropologicalHeritage ;\r\na-loc:hasCulturalPropertyAddress ?l ;\r\nfoaf:depiction ?pic ;\r\ndc:subject ?o FILTER regex(str(?o), \"tastiera\") .\r\n?l rdfs:label ?tLabel .\r\n?doc a-cd:isDocumentationOf ?t ;\r\n<https://w3id.org/italia/onto/SM/URL> ?docURL .\r\n} ",
                         "extra_queries": [],
                         "map_filters": []
                     },
@@ -634,11 +634,13 @@
                         "type": "textsearch",
                         "textsearch_userinput": "campa",
                         "textsearch_title": "Search bells",
-                        "textsearch_query": "SELECT DISTINCT ?var ?varLabel ?class ?classLabel\r\nWHERE {\r\n?var rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?varLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?varLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10 ",
+                        "textsearch_query": "SELECT DISTINCT ?vari ?variLabel ?class ?classLabel\r\nWHERE {\r\n?vari rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?variLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?variLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10 ",
                         "textsearch": {
-                            "var": [
-                                "properties",
-                                "another"
+                            "class": [
+                                "hello2"
+                            ],
+                            "vari": [
+                                "hello2"
                             ]
                         },
                         "extra_queries": [],
@@ -648,17 +650,8 @@
                         "position": 12,
                         "operations": [],
                         "type": "action",
-                        "action_title": "another",
-                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20",
-                        "extra_queries": [],
-                        "map_filters": []
-                    },
-                    {
-                        "position": 13,
-                        "operations": [],
-                        "type": "action",
-                        "action_title": "properties",
-                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20",
+                        "action_title": "hello2",
+                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20 ",
                         "extra_queries": [],
                         "map_filters": []
                     }

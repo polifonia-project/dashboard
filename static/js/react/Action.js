@@ -1,3 +1,4 @@
+// component box to define an action. Actions become buttons attached to results of atext search
 const TextSearchAction = ({ unique_key, index ,
                 removeComponent , componentList, setComponent,
                 sortComponentUp , sortComponentDown }) => {
@@ -19,7 +20,6 @@ const TextSearchAction = ({ unique_key, index ,
 
   const [actionquery, setSearchQuery] = React.useState(actionquery_default);
   const actionqueryChange = event => { setSearchQuery(event.target.value); };
-
 
   if (window.location.href.indexOf("/modify/") > -1) {
     try {

@@ -1,8 +1,6 @@
-
-
-
 const e = React.createElement;
 
+// list of components, mapped to buttons in WYSIWYG and to react components
 const components = [
   { name:"text", action: Textbox },
   { name:"count", action: Count },
@@ -13,6 +11,7 @@ const components = [
   { name:"action", action: TextSearchAction }
 ]
 
+// remove component button
 const RemoveComponent = ({index , removeComponent }) => {
 
   return (
@@ -23,6 +22,7 @@ const RemoveComponent = ({index , removeComponent }) => {
   )
 }
 
+// sort buttons in components
 const SortComponent = ({index , sortComponentDown , sortComponentUp }) => {
 
   return (
@@ -35,10 +35,10 @@ const SortComponent = ({index , sortComponentDown , sortComponentUp }) => {
   )
 }
 
+// show the ADD component buttons if WYSIWYG
 const ButtonGroup = ({ componentList , componentBoxes , buttons ,
                        addComponent , removeComponent ,
                        sortComponentUp , sortComponentDown}) => {
-
   if (window.location.href.indexOf("/modify/") > -1) {
     return (
       <>
@@ -59,15 +59,13 @@ const ButtonGroup = ({ componentList , componentBoxes , buttons ,
   } else {
     return (<>{componentBoxes}</>)
   }
-
-
 };
 
+// UPDATE config.json on demand
 function update_datastory(form) {
   const formData = new FormData(form);
   var url = window.location.toString()
   url = url.replace(/modify\//, 'modify_bkg\/');
-
 
   fetch(url, { method: 'POST', body: formData})
     .then(response => response.text())
@@ -76,11 +74,12 @@ function update_datastory(form) {
   return datastory_data;
 }
 
+// main function creating/removing/sorting the components on click
 function AddComponent() {
 
   const form = document.getElementById('modifystory_form');
 
-  // retrieve existing components
+  // retrieve existing components from config.json
   const stateComponents = [];
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
     datastory_data.dynamic_elements.forEach(element => {
@@ -90,18 +89,23 @@ function AddComponent() {
     })
   }
 
+  function send_update(form) {
+    const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
+    return () => {clearTimeout(timer);};
+  }
   // save data on keyup
   if (window.location.href.indexOf("/modify/") > -1) {
-
     React.useEffect(() => {
+      try {
+        form.addEventListener("keyup", (event) => {
+          if (!event.target.classList.contains("textsearch_userinput")) {
+            send_update(form);
+          } else {console.log("user input here");}
+        });
+      } catch (error) {
+        return <ErrorHandler error={error} />
+      }
 
-      form.addEventListener("keyup", (event) => {
-        if (!event.target.classList.contains("textsearch_userinput")) {
-          const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
-          return () => {clearTimeout(timer);};
-        }
-
-      });
 
     }, []);
   }
@@ -115,7 +119,8 @@ function AddComponent() {
       setComponent(prevComponents => [
         ...prevComponents, {name:buttonLabel,action:comp}
       ])
-
+      datastory_data = update_datastory(form)
+      send_update(form)
   }
 
   // remove a component
@@ -128,6 +133,7 @@ function AddComponent() {
         datastory_data.dynamic_elements.splice(i, 1);
         datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
         datastory_data = update_datastory(form)
+        send_update(form)
       }
   }
 
@@ -144,6 +150,7 @@ function AddComponent() {
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
       datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
       datastory_data = update_datastory(form)
+      send_update(form)
     }
   }
 
@@ -161,9 +168,11 @@ function AddComponent() {
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
       datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
       datastory_data = update_datastory(form)
+      send_update(form)
     }
   }
 
+  // generate unique keys for each component
   const generateKey = (pre) => {
       return `${ pre }_${ new Date().getTime() }`;
   }

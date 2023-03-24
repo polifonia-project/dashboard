@@ -1,3 +1,4 @@
+// table component box
 const Table = ({unique_key, index ,
                 removeComponent , componentList, setComponent,
                 sortComponentUp , sortComponentDown}) => {
@@ -20,9 +21,10 @@ const Table = ({unique_key, index ,
 
     const [spinner, setSpinner] = React.useState(false);
 
+    // retrieve data and build results table
     const fetchQuery = event => {
-      setSpinner(true)
       if (tableQuery.length > 1) {
+        setSpinner(true)
         $("#" + index + "__table").innerHTML = "&nbsp;";
         fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(tableQuery),
           {
@@ -128,7 +130,7 @@ const Table = ({unique_key, index ,
           })
          .catch((error) => {
             console.error('Error:', error);
-            alert("There is an error in the query");
+            alert("Table: there is an error in the query");
             setSpinner(false);
          })
          .finally( () => { });
@@ -136,6 +138,7 @@ const Table = ({unique_key, index ,
       }
     }
 
+    // export table as html
     function exportTableHtml(position, type) {
         var export_btn;
         var tableHtml;
@@ -149,7 +152,7 @@ const Table = ({unique_key, index ,
         window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
 
     }
-
+    // export table as csv
     function exportTableCsv(position, type) {
 
         let table = document.getElementById(index + '__table');
@@ -194,6 +197,7 @@ const Table = ({unique_key, index ,
         return csv;
     }
 
+    // allow column editing, only in final preview
     const edit_table = () => {
       let table = document.getElementById(index+"__table");
       let thead = table.querySelectorAll("thead tr")[0]
@@ -212,6 +216,7 @@ const Table = ({unique_key, index ,
 
     // preview counter
     React.useEffect(() => {
+      try {
        fetchQuery();
 
        $("textarea").each(function () {
@@ -220,11 +225,12 @@ const Table = ({unique_key, index ,
          this.style.height = 0;
          this.style.height = (this.scrollHeight) + "px";
        });
-
+       } catch (error) { <ErrorHandler error={error} /> }
     }, []);
 
     if (window.location.href.indexOf("/modify/") > -1) {
-      return (
+      try {
+        return (
       <div id={index+"__block_field"} className="block_field">
       {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
         <div className="ribbon"></div>
@@ -264,10 +270,13 @@ const Table = ({unique_key, index ,
       </div>
 
     );
-
+      } catch (error) {
+        return <ErrorHandler error={error} />
+      }
     } else {
       function createMarkup() { return {__html: tableQuery};}
-      return (
+      try {
+        return (
         <>
           <h3 className="block_title">{tableTitle}</h3>
           <table className='col-12' id={index+'__table'}>{tabletoappend}</table>
@@ -325,7 +334,9 @@ const Table = ({unique_key, index ,
           </div>
         </>
       )
-
+      } catch (error) {
+        return <ErrorHandler error={error} />
+      }
     }
 
 

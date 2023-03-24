@@ -1,3 +1,4 @@
+// error boundaries attached to each component
 function ErrorHandler({error}) {
   return (
     <div role="alert">

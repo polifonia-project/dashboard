@@ -11,7 +11,7 @@ def empty_temp():
     '''
     today = datetime.today().isocalendar()
     file_list = os.listdir('static/temp')
-    if len(file_list) > 0:
+    if os.path.exists('static/temp') and len(file_list) > 0:
         for f in file_list:
             file_path = 'static/temp/' + f
             creation_timestamp = os.path.getmtime(file_path)
