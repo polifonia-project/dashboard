@@ -1,17 +1,196 @@
-const ActionTable = ({unique_key, buttonLabel, cell_value, action_query}) => {
-  return (
-    <div key={unique_key}>
-      <p key={unique_key+'p1'}>{buttonLabel}: {cell_value}</p>
-      <p key={unique_key+'p2'}>I'm a table!</p>
-    </div>
-  )
+// get cell value
+function get_cell_value(headings, head, inde, item) {
+  let tableresults = '',
+      res_label,
+      res_value = item[headings[inde]].value;
+
+  if (item[headings[inde] + 'Label'] != undefined) {
+    res_label = "";
+    if (item[headings[inde] + 'Label'].value.length) {
+        res_label = item[headings[inde] + 'Label'].value;
+    }
+
+    // audio
+    if (res_value.endsWith('.mp3')) {
+      tableresults += "<span>"+res_label+"</span><audio class='table_result'><source src='" + res_value + "'></source></audio>";
+    }
+    // img
+    else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
+      tableresults += "<span>"+res_label+"</span><img class='img_table' src='" + res_value + "'/>";
+    }
+    // video
+    else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
+      tableresults += "<span>"+res_label+"</span><video controls class='table_result'><source src='" + res_value + "'></source></video>";
+    }
+    // youtube
+    else if (res_value.includes("youtube.com/embed/")) {
+      tableresults += '<span>'+res_label+'</span><div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
+    }
+    // URL
+    else {
+      tableresults += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
+    }
+  }
+  else {
+      if (res_value.endsWith('.mp3')) {
+        tableresults += "<audio controls src='" + res_value + "' class='table_result'><a href='" + res_value + "'></a></audio>";
+      }
+      else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
+        tableresults += "<img class='img_table' src='" + res_value + "'/>";
+      }
+      else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
+        tableresults += "<video controls class='table_result'><source src='" + res_value + "'></source></video>";
+      }
+      else if (res_value.includes("youtube.com/embed/")) {
+        tableresults += '<div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
+      }
+      else {
+        tableresults += "<span class='table_result'>" + res_value + "</span>";
+      }
+  }
+  return tableresults
 }
 
-const ActionButton = ({unique_key, buttonLabel, cell_value,
-  actionResults,setActionResult }) => {
+
+const ActionTable = ({unique_key, setAction, buttonLabel, cell_value,
+  actionResults,setActionResult,
+  actionQueryResults, setActionQueryResults,
+  action_query, showActionList,setVisibilityActions,handleSetAction, default_actions, actions}) => {
+
+  let empty, headers = [];
+  let index = Date.now();
+  console.log("index",index);
+  console.log("unique_key",unique_key);
+  let headings = actionQueryResults.head.vars;
+  headings.forEach((item, inde) => { if (!item.includes('Label')) { headers.push(item);}});
+  headings.forEach((item, inde) => {
+    if (item.includes('Label')) {
+      headings.splice(inde, 1);
+      inde--;}
+  });
+
+  function send_update() {
+    const form = document.getElementById('modifystory_form');
+    if (form) {
+      const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
+      return () => {clearTimeout(timer);};
+    }
+  }
+  // TODO get actionresults from fetch, var data: setActionResults(data)
+  // TODO export html, csv and edit require textsearchresults class with unique index
+
+  const [toggle, setToggle] = React.useState(true);
+  const collapse_table = () => { setToggle(!toggle);};
+  const detach_table = event => { setActionQueryResults(empty); }
+  const [showActionListTable,setVisibilityActionsList] = React.useState(false);
+  const showActions = () => { setVisibilityActionsList(!showActionListTable) }
+
+  function createMarkup() { return {__html: cell_value};}
+
+  let finalpreview;
+  if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
+
+  // update config.json
+  let default_actions_titles = [],
+      saved_actions = {};
+
+  if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+    datastory_data.dynamic_elements.forEach(element => {
+      if (element.type == 'textsearch' && element.position == index) {
+        title_default = element.textsearch_title ;
+        query_default = element.textsearch_query ;
+        if (element.textsearch) { saved_actions = element.textsearch}
+      }
+      if (element.type == 'action') {
+        default_actions.push([element.action_title, element.action_query, element.position])
+        default_actions_titles.push(element.action_title)
+      }
+    })
+  };
+
+  React.useEffect(() => {
+    try {
+      setAction(actions);
+      send_update();
+    } catch {}
+  })
+
+  try {
+    return (
+        <table className='col-12 actionresults' id={index+"__actionresults"}>
+          <caption
+            id={"actionresults_caption_"+index}
+            className="resulttable_caption">{buttonLabel}: <em><span dangerouslySetInnerHTML={createMarkup()}></span></em>
+            <span className="caret" onClick={collapse_table}></span>
+            <span className="closetable" onClick={detach_table}>x</span>
+          </caption>
+          {toggle ?
+            <>
+            <thead>
+              <tr>{headers.map((heading, i) => (
+                <th key={heading}>{heading}
+                {!finalpreview && default_actions.length > 0 && (
+                    <span className="add_action" onClick={showActions}>+</span>
+                  )}
+                  {!finalpreview && showActionListTable ?
+                    <ColumnListActions
+                        index={index}
+                        key={index+heading+'actiontable_actionlist'}
+                        default_actions={default_actions}
+                        handleSetAction={handleSetAction}
+                        actions={actions}
+                        column_name={heading}/>
+                    : <></>}
+                </th>)
+              )}</tr>
+            </thead>
+            <tbody>
+            {actionQueryResults.results.bindings.map((item, i) => (
+              <tr key={item+i}>
+                {headers.map((head, inde) => (
+                  <td key={head+inde}>
+                    <span key={head+inde+item+i} dangerouslySetInnerHTML=
+                      {{ __html: get_cell_value(headers,head,inde,item)}}>
+                    </span>
+                    {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
+                        <ActionButton
+                          key={head+inde+index+'button_action'+item+i+el}
+                          unique_key={head+inde+index+item+i+el}
+                          setAction={setAction}
+                          buttonLabel={el}
+                          cell_value={get_cell_value(headers,head,inde,item)}
+                          actionResults={actionResults}
+                          setActionResult={setActionResult}
+                          showActionList={showActionListTable}
+                          setVisibilityActions={setVisibilityActionsList}
+                          handleSetAction={handleSetAction}
+                          default_actions={default_actions}
+                          actions={actions}
+                          />
+                      ))}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            </tbody>
+
+            </> : <></>
+          }
+        </table>
+
+    )
+  }
+  catch (error) {
+    return <ErrorHandler error={error} />
+  }
+}
+
+const ActionButton = ({unique_key, setAction, buttonLabel, cell_value,
+  actionResults,setActionResult, showActionList,setVisibilityActions,handleSetAction,
+  default_actions, actions }) => {
 
   // get SPARQL query from datastory_data
-  let action_query = '', action_type;
+  let action_query = '', action_type, headers = [];
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
     datastory_data.dynamic_elements.forEach(element => {
       if (element.type == 'action' && element.action_title == buttonLabel) {
@@ -20,25 +199,82 @@ const ActionButton = ({unique_key, buttonLabel, cell_value,
     })
   }
 
+  let actionresults;
+  const [actionQueryResults, setActionQueryResults] = React.useState(actionresults);
+  const [spinner, setSpinner] = React.useState(false);
+
   const performAction = () => {
     if (action_query.length) {
       // default behaviour, create a table
       if (!action_type || action_type == 'table') {
-        let action_result_component = <ActionTable
-                  key={cell_value+action_query+'action_table'}
-                  unique_key={cell_value+action_query+'action_table'}
-                  buttonLabel={buttonLabel}
-                  cell_value={cell_value}
-                  action_query={action_query}/>;
-        let updated_action_results = [...actionResults]
-        updated_action_results.push(action_result_component)
-        setActionResult(updated_action_results)
-        console.log(actionResults);
+
+        // modify query, replace placeholder with cell value
+        let queryString, data = [];
+        if (!cell_value.includes('href')) {queryString = cell_value}
+        else {
+          let q = document.createElement('p');
+          q.innerHTML = cell_value;
+          queryString = q.firstElementChild.getAttribute('href');
+        };
+
+        // perform SPARQL query
+        if (action_query.length > 1) {
+          setSpinner(true);
+
+          // replace queryString in query
+          let textsearch_query;
+          if (!cell_value.includes('href')) {
+            textsearch_query = action_query.replace('<<item>>', '\"'+queryString+'\"');
+          } else {
+            textsearch_query = action_query.replace('<<item>>', '<'+queryString+'>');
+          }
+
+          fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(textsearch_query),
+            {
+            method: 'GET',
+            headers: { 'Accept': 'application/sparql-results+json' }
+            }
+          ).then((res) => res.json())
+           .then((data) => {
+             setSpinner(false);
+             setActionQueryResults(data);
+             // create table component
+             let action_result_component = <ActionTable
+                       key={cell_value+action_query+'action_table'}
+                       unique_key={cell_value+action_query+'action_table'}
+                       setAction={setAction}
+                       buttonLabel={buttonLabel}
+                       cell_value={cell_value}
+                       actionResults={actionResults}
+                       setActionResult={setActionResult}
+                       actionQueryResults={data}
+                       setActionQueryResults={setActionQueryResults}
+                       action_query={action_query}
+                       showActionList={showActionList}
+                       setVisibilityActions={setVisibilityActions}
+                       handleSetAction={handleSetAction}
+                       default_actions={default_actions}
+                       actions={actions}/>;
+             // push component in the array visualised after TextSearchResults
+             let updated_action_results = [...actionResults]
+             console.log("before actionResults",actionResults);
+             updated_action_results.push(action_result_component)
+             setActionResult(updated_action_results)
+             console.log("here actionResults",updated_action_results);
+
+            })
+           .catch((error) => {
+              console.error('Error:', error);
+              alert("Action ",buttonLabel,": there is an error in the query");
+              setSpinner(false);
+           });
+        }
+        else {console.log("no query");}
       }
     }
 
   };
-
+  console.log("after actionResults",actionResults);
   return (
     <span
       key={unique_key}
@@ -54,14 +290,17 @@ const ColumnListActions = ({index, default_actions,
                             handleSetAction, actions, column_name}) => {
 
   let default_active = [], default_pos = [];
+  console.log("actions",actions);
   if ([column_name] in actions) {
     default_active = actions[column_name];
     default_actions.forEach((item, i) => {
       if (actions[column_name].includes(item[0])) {default_pos.push(item[0])}
     });
 
-  }
 
+    console.log("default_actions",default_actions);
+  }
+  default_actions = [...new Set(default_actions)];
   const [isActive, setActive] = React.useState(default_active);
   const [actionPos, setActionPos] = React.useState(default_pos);
 
@@ -181,56 +420,6 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
       inde--;}
   });
 
-  // get cell value
-  function get_cell_value(headings, head, inde, item) {
-    let tableresults = '', res_label, res_value = '';
-
-    if (item[headings[inde] + 'Label'] != undefined) {
-      res_label = "";
-      if (item[headings[inde] + 'Label'].value.length) {
-          res_label = item[headings[inde] + 'Label'].value;
-      }
-
-      // audio
-      if (res_value.endsWith('.mp3')) {
-        tableresults += "<span>"+res_label+"</span><audio class='table_result'><source src='" + res_value + "'></source></audio>";
-      }
-      // img
-      else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
-        tableresults += "<span>"+res_label+"</span><img class='img_table' src='" + res_value + "'/>";
-      }
-      // video
-      else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
-        tableresults += "<span>"+res_label+"</span><video controls class='table_result'><source src='" + res_value + "'></source></video>";
-      }
-      // youtube
-      else if (res_value.includes("youtube.com/embed/")) {
-        tableresults += '<span>'+res_label+'</span><div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
-      }
-      // URL
-      else {
-        tableresults += "<a class='table_result' href='" + res_value + "'>" + res_label + "</a>";
-      }
-    }
-    else {
-        if (res_value.endsWith('.mp3')) {
-          tableresults += "<audio controls src='" + res_value + "' class='table_result'><a href='" + res_value + "'></a></audio>";
-        }
-        else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {
-          tableresults += "<img class='img_table' src='" + res_value + "'/>";
-        }
-        else if (res_value.endsWith('.mp4') || res_value.endsWith('.ogg')) {
-          tableresults += "<video controls class='table_result'><source src='" + res_value + "'></source></video>";
-        }
-        else if (res_value.includes("youtube.com/embed/")) {
-          tableresults += '<div id=embed-google-map style="height:100%; width:100%;max-width:100%;"><iframe allowFullScreen="allowFullScreen" src="'+res_value+'?ecver=1&amp;iv_load_policy=1&amp;rel=0&amp;yt:stretch=16:9&amp;autohide=1&amp;color=red&amp;width=186&amp;width=186" width="186" height="105" allowtransparency="true" frameborder="0"></iframe>';
-        }
-        else {
-          tableresults += "<span class='table_result'>" + res_value + "</span>";
-        }
-    }
-    return tableresults
-  }
 
   // allow last column editing
   const edit_table = () => {
@@ -250,10 +439,10 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
   };
 
   //function createTable() { return {__html: tableresults};}
-  React.useEffect(() => {
-    try { setActionResult(actionResults)
-    } catch {}
-  });
+  // React.useEffect(() => {
+  //   try { setActionResult(actionResults)
+  //   } catch {}
+  // });
 
   let finalpreview;
   if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
@@ -297,11 +486,17 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
                 {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
                     <ActionButton
                       key={head+inde+'button'+item+i+el}
+                      setAction={setAction}
                       unique_key={head+inde+item+i+el}
                       buttonLabel={el}
                       cell_value={get_cell_value(headers,head,inde,item)}
                       actionResults={actionResults}
                       setActionResult={setActionResult}
+                      showActionList={showActionList}
+                      setVisibilityActions={setVisibilityActions}
+                      handleSetAction={handleSetAction}
+                      default_actions={default_actions}
+                      actions={actions}
                       />
                   ))}
               </td>
@@ -407,21 +602,6 @@ const TextSearch = ({ unique_key, index ,
            setSpinner(false);
            setResults(data);
 
-           // if heading names of table column have changed,
-           // delete saved actions in config json for old variables
-           // TODO: conflict with vars of children tables
-           // var headings = data.head.vars;
-           // var vars_tb_removed = []
-           // Object.entries(updated_saved_actions).map(([col, list_actions]) => {
-           //   if (!headings.includes(col)) {
-           //     vars_tb_removed.push(col)
-           //   }
-           // })
-           // vars_tb_removed.forEach((col) => {
-           //    delete updated_saved_actions[col]
-           // });
-           // saved_actions = updated_saved_actions;
-           // send_update();
           })
          .catch((error) => {
             console.error('Error:', error);
