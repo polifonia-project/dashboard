@@ -135,7 +135,7 @@ const ActionTable = ({unique_key,indexTextsearch,buttonLabel,
   cell_value,queryResults,
   actionComponents,setActionComponent,
   all_actions,setAction,actions}) => {
-  console.log("actionComponents",actionComponents);
+
   let empty, headers = [];
   let index = Date.now();
   let headings = queryResults.head.vars;
@@ -143,6 +143,8 @@ const ActionTable = ({unique_key,indexTextsearch,buttonLabel,
   headings.forEach((item, inde) => {
     if (item.includes('Label')) { headings.splice(inde, 1); inde--;}
   });
+
+  const [tableactions, setTableActions] = React.useState(actions);
 
   // toggle table
   const [toggle, setToggle] = React.useState(true);
@@ -180,12 +182,14 @@ const ActionTable = ({unique_key,indexTextsearch,buttonLabel,
                     )}
                     {!finalpreview && showActionListTable ?
                       <><ColumnListActions
-                          index={index}
+                          index={indexTextsearch}
                           key={index+heading+'actiontable_actionlist'}
                           column_name={heading}
                           all_actions={all_actions}
                           actions={actions}
-                          setAction={setAction}/>
+                          setAction={setAction}
+                          setTableActions={setTableActions}
+                          tableactions={tableactions}/>
                   </>: <></>}
                   </th>)
                 )}</tr>
@@ -198,7 +202,7 @@ const ActionTable = ({unique_key,indexTextsearch,buttonLabel,
                       <span key={head+inde+item+i} dangerouslySetInnerHTML=
                         {{ __html: get_cell_value(headers,head,inde,item)}}>
                       </span>
-                      {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
+                      {tableactions[headers[inde]] && tableactions[headers[inde]].map((el, i) => (
                           <ActionButton
                             key={head+inde+index+'button_action'+item+i+el}
                             unique_key={head+inde+index+'button_action'+item+i+el}
@@ -305,7 +309,7 @@ const ActionButton = ({unique_key,indexTextsearch,buttonLabel,cell_value,
                        setAction={setAction}
                        actions={actions}/>;
              // push component in the array visualised after TextSearchResults
-             updated_action_results.push(action_result_component)
+             updated_action_results = [...actionComponents,action_result_component]
              setActionComponent(updated_action_results)
             })
            .catch((error) => {
@@ -331,7 +335,7 @@ const ActionButton = ({unique_key,indexTextsearch,buttonLabel,cell_value,
 
 
 const ColumnListActions = ({index,column_name,
-  all_actions,actions,setAction}) => {
+  all_actions,actions,setAction,setTableActions,tableactions}) => {
 
   // pick the actions that have been selected for the column at hand
   let actions_column = [];
@@ -341,17 +345,38 @@ const ColumnListActions = ({index,column_name,
   const cx = (...list) => list.filter(Boolean).join(' ');
 
   // update actions when the user selects an action
-  let updatedColActions = {...actions};
+
+
   const addToActive = (elem) => {
     var updatedActive = [...isActive];
+
+    let updatedColActions = {}, saved_actions = {};
+    if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+      datastory_data.dynamic_elements.forEach(element => {
+        if (element.type == 'textsearch' && element.position == index) {
+          if (element.textsearch) { saved_actions = element.textsearch}
+        }
+      })
+    }
+    updatedColActions = {...saved_actions};
+    console.log("saved_actions",saved_actions);
     // on click, if the array already includes the action name, remove or add it
     if (updatedActive.includes(elem[0])) {
       updatedActive.splice(updatedActive.indexOf(elem[0]), 1);
-    } else { updatedActive.push(elem[0]) }
+      console.log("remove:",elem[0]);
+      console.log("updatedActive:",updatedActive);
+    } else {
+      updatedActive.push(elem[0]);
+      console.log("add:",elem[0]);
+      console.log("updatedActive:",updatedActive);
+    }
     setActive(updatedActive);
-    updatedColActions = {...actions, [column_name]:updatedActive }
+    updatedColActions = {...saved_actions, [column_name]:updatedActive }
     setAction(updatedColActions);
     update_config();
+    if (setTableActions) {
+      setTableActions(updatedColActions)
+    }
   }
 
   try {
@@ -427,7 +452,9 @@ const TextSearchResults = ({ index,
                       column_name={heading}
                       all_actions={all_actions}
                       actions={actions}
-                      setAction={setAction}/>
+                      setAction={setAction}
+                      setTableActions={empty}
+                      tableactions={empty}/>
 
                 : <></>}
             </th>)
@@ -620,7 +647,7 @@ const TextSearch = ({ unique_key, index ,
               data-toggle='modal' data-target='#textModalLong'>Learn more about text searches and actions</a>
             {queryResults &&
               (<TextSearchResults
-               key={"results_"+unique_key+index}
+               key={"results_"+unique_key+index+Date.now()}
                index={index}
                queryResults={queryResults}
                queryString={queryString}
@@ -748,7 +775,7 @@ const TextSearch = ({ unique_key, index ,
           {queryResults &&
             (<><TextSearchResults
              index={index}
-             key={"results_"+unique_key+index}
+             key={"results_"+unique_key+index+Date.now()}
              queryResults={queryResults}
              queryString={queryString}
              setResults={setResults}

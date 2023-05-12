@@ -305,14 +305,14 @@
                         "textsearch_query": "SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search <<searchterm>>;\r\n                      mwapi:language \"en\".\r\n      ?item wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  ?item (wdt:P279|wdt:P31) wd:Q207694 ; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 20 ",
                         "textsearch": {
                             "item": [
-                                "properties"
+                                "properties",
+                                "objects"
                             ],
                             "prop": [
                                 "objects"
                             ],
                             "title": [
-                                "properties",
-                                "objects"
+                                "properties"
                             ]
                         },
                         "extra_queries": [],
