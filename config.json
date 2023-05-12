@@ -1,16 +1,16 @@
 {
     "sections": {
-        "tunes": "Tunes",
-        "musicbo": "MusicBo",
-        "bells": "Bells",
-        "tonalities": "Tonalities",
-        "wikidata": "wikidata",
-        "choco": "choco",
-        "organs": "organs",
+        "tunes": "tunes",
         "musow": "musoW",
+        "musicbo": "musicbo",
+        "choco": "choco",
+        "sound_and_vision": "Sound and Vision",
+        "wikidata": "Wikidata",
+        "organs": "organs",
         "fonn": "Fonn",
         "zeri": "Zeri",
-        "sound_and_vision": "Sound and Vision"
+        "tonalities": "Tonalities",
+        "bells": "Bells"
     },
     "operations": [
         "Count",
@@ -282,6 +282,61 @@
                     }
                 ],
                 "action": "save"
+            },
+            "search_me": {
+                "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
+                "template_mode": "statistics",
+                "title": "search me",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "wikidata",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "orsay",
+                        "textsearch_title": "search me",
+                        "textsearch_query": "SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search <<searchterm>>;\r\n                      mwapi:language \"en\".\r\n      ?item wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  ?item (wdt:P279|wdt:P31) wd:Q207694 ; wdt:P17 ?country .\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 20 ",
+                        "textsearch": {
+                            "item": [
+                                "properties"
+                            ],
+                            "prop": [
+                                "objects"
+                            ],
+                            "title": [
+                                "properties",
+                                "objects"
+                            ]
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "properties",
+                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20 ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "objects",
+                        "action_query": "SELECT DISTINCT ?title \r\nWHERE {?subj <<item>> ?title}\r\nLIMIT 10",
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
             }
         },
         "zeri": {
@@ -542,7 +597,7 @@
                         "map_filters": [
                             {
                                 "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
-                                "extra_id": "1682342200419_0",
+                                "extra_id": "1683809068906_0",
                                 "position": 0,
                                 "map_filter_title": "district"
                             }
@@ -636,14 +691,16 @@
                         "textsearch_title": "Search bells",
                         "textsearch_query": "SELECT DISTINCT ?vari ?variLabel ?class ?classLabel\r\nWHERE {\r\n?vari rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?variLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?variLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10 ",
                         "textsearch": {
-                            "class": [
-                                "hello2"
-                            ],
                             "prop": [
-                                "hello2"
+                                "objects",
+                                "properties"
+                            ],
+                            "title": [
+                                "properties",
+                                "objects"
                             ],
                             "vari": [
-                                "hello2"
+                                "properties"
                             ]
                         },
                         "extra_queries": [],
@@ -653,8 +710,17 @@
                         "position": 12,
                         "operations": [],
                         "type": "action",
-                        "action_title": "hello2",
+                        "action_title": "properties",
                         "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20 ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "objects",
+                        "action_query": "SELECT DISTINCT ?title \r\nWHERE {?subj <<item>> ?title}\r\nLIMIT 10",
                         "extra_queries": [],
                         "map_filters": []
                     }

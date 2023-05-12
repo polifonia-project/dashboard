@@ -1,3 +1,11 @@
+function update_config() {
+  const form = document.getElementById('modifystory_form');
+  if (form) {
+    const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 1000);
+    return () => {clearTimeout(timer);};
+  }
+}
+
 // get cell value
 function get_cell_value(headings, head, inde, item) {
   let tableresults = '',
@@ -51,37 +59,98 @@ function get_cell_value(headings, head, inde, item) {
   return tableresults
 }
 
+function export_html(id_el) {
+  let table = document.getElementById(id_el);
+  let cloneTable = table.cloneNode(true);
+  cloneTable.querySelector('.caret').remove();
+  cloneTable.querySelector('.closetable').remove();
+  cloneTable.querySelector('tfoot').remove();
+  let tableHtml = cloneTable.innerHTML;
+  window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
+};
 
-const ActionTable = ({unique_key, setAction, buttonLabel, cell_value,
-  actionResults,setActionResult,
-  actionQueryResults, setActionQueryResults,
-  action_query, showActionList,setVisibilityActions,handleSetAction, default_actions, actions}) => {
+// export table as csv
+function createCsv(table, separator = ',') {
+    // Select rows from table_id
+    var rows = table.rows, csv = [];
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            if (cols[j].querySelector("input") != null) {
+              let input_val = cols[j].querySelector("input");
+              var data = input_val.value.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+            } else if ( cols[j].querySelector("audio") != null) {
+              var data = cols[j].querySelector("audio").getAttribute('src')
+            } else if ( cols[j].querySelector("img") != null) {
+              var data = cols[j].querySelector("img").getAttribute('src')
+            } else {
+              var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
+            }
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+    }
+    return csv;
+}
 
+function export_csv(id_el,id_btn) {
+  let table = document.getElementById(id_el);
+  let export_btn = document.getElementById(id_btn);
+  let cloneTable = table.cloneNode(true);
+  cloneTable.querySelector('.caret').remove();
+  cloneTable.querySelector('.closetable').remove();
+  cloneTable.querySelector('tfoot').remove();
+  let tableCSV = createCsv(cloneTable);
+  var csv_string = tableCSV.join('\n');
+  export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+};
+
+function edit_table(id_el) {
+  let table = document.getElementById(id_el);
+  let thead = table.querySelectorAll("thead tr")[0]
+  let tbody = table.querySelectorAll("tbody tr")
+  let th = document.createElement('th');
+  th.textContent = 'Notes';
+  thead.appendChild(th);
+
+  for (let tr of tbody) {
+    let td = document.createElement('td');
+    let input_note = document.createElement('input');
+    td.appendChild(input_note);
+    tr.appendChild(td);
+  }
+};
+
+function extractContent(html) {
+  return new DOMParser()
+      .parseFromString(html, "text/html")
+      .documentElement.textContent;
+};
+
+const ActionTable = ({unique_key,indexTextsearch,buttonLabel,
+  cell_value,queryResults,
+  actionComponents,setActionComponent,
+  all_actions,setAction,actions}) => {
+  console.log("actionComponents",actionComponents);
   let empty, headers = [];
   let index = Date.now();
-  console.log("index",index);
-  console.log("unique_key",unique_key);
-  let headings = actionQueryResults.head.vars;
+  let headings = queryResults.head.vars;
   headings.forEach((item, inde) => { if (!item.includes('Label')) { headers.push(item);}});
   headings.forEach((item, inde) => {
-    if (item.includes('Label')) {
-      headings.splice(inde, 1);
-      inde--;}
+    if (item.includes('Label')) { headings.splice(inde, 1); inde--;}
   });
 
-  function send_update() {
-    const form = document.getElementById('modifystory_form');
-    if (form) {
-      const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
-      return () => {clearTimeout(timer);};
-    }
-  }
-  // TODO get actionresults from fetch, var data: setActionResults(data)
-  // TODO export html, csv and edit require textsearchresults class with unique index
-
+  // toggle table
   const [toggle, setToggle] = React.useState(true);
   const collapse_table = () => { setToggle(!toggle);};
-  const detach_table = event => { setActionQueryResults(empty); }
+  // detach table
+  const [tablecontent, setEmpty] = React.useState(queryResults);
+  const detach_table = event => { setEmpty(empty);}
+  // show action buttons in table headers
   const [showActionListTable,setVisibilityActionsList] = React.useState(false);
   const showActions = () => { setVisibilityActionsList(!showActionListTable) }
 
@@ -90,33 +159,10 @@ const ActionTable = ({unique_key, setAction, buttonLabel, cell_value,
   let finalpreview;
   if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
 
-  // update config.json
-  let default_actions_titles = [],
-      saved_actions = {};
-
-  if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
-    datastory_data.dynamic_elements.forEach(element => {
-      if (element.type == 'textsearch' && element.position == index) {
-        title_default = element.textsearch_title ;
-        query_default = element.textsearch_query ;
-        if (element.textsearch) { saved_actions = element.textsearch}
-      }
-      if (element.type == 'action') {
-        default_actions.push([element.action_title, element.action_query, element.position])
-        default_actions_titles.push(element.action_title)
-      }
-    })
-  };
-
-  React.useEffect(() => {
-    try {
-      setAction(actions);
-      send_update();
-    } catch {}
-  })
-
   try {
     return (
+      <>
+      {tablecontent ?
         <table className='col-12 actionresults' id={index+"__actionresults"}>
           <caption
             id={"actionresults_caption_"+index}
@@ -126,70 +172,73 @@ const ActionTable = ({unique_key, setAction, buttonLabel, cell_value,
           </caption>
           {toggle ?
             <>
-            <thead>
-              <tr>{headers.map((heading, i) => (
-                <th key={heading}>{heading}
-                {!finalpreview && default_actions.length > 0 && (
-                    <span className="add_action" onClick={showActions}>+</span>
-                  )}
-                  {!finalpreview && showActionListTable ?
-                    <ColumnListActions
-                        index={index}
-                        key={index+heading+'actiontable_actionlist'}
-                        default_actions={default_actions}
-                        handleSetAction={handleSetAction}
-                        actions={actions}
-                        column_name={heading}/>
-                    : <></>}
-                </th>)
-              )}</tr>
-            </thead>
-            <tbody>
-            {actionQueryResults.results.bindings.map((item, i) => (
-              <tr key={item+i}>
-                {headers.map((head, inde) => (
-                  <td key={head+inde}>
-                    <span key={head+inde+item+i} dangerouslySetInnerHTML=
-                      {{ __html: get_cell_value(headers,head,inde,item)}}>
-                    </span>
-                    {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
-                        <ActionButton
-                          key={head+inde+index+'button_action'+item+i+el}
-                          unique_key={head+inde+index+item+i+el}
-                          setAction={setAction}
-                          buttonLabel={el}
-                          cell_value={get_cell_value(headers,head,inde,item)}
-                          actionResults={actionResults}
-                          setActionResult={setActionResult}
-                          showActionList={showActionListTable}
-                          setVisibilityActions={setVisibilityActionsList}
-                          handleSetAction={handleSetAction}
-                          default_actions={default_actions}
+              <thead>
+                <tr>{headers.map((heading, i) => (
+                  <th key={heading}>{heading}
+                  {!finalpreview && all_actions.length > 0 && (
+                      <span className="add_action" onClick={showActions}>+</span>
+                    )}
+                    {!finalpreview && showActionListTable ?
+                      <><ColumnListActions
+                          index={index}
+                          key={index+heading+'actiontable_actionlist'}
+                          column_name={heading}
+                          all_actions={all_actions}
                           actions={actions}
-                          />
-                      ))}
-                  </td>
-                ))}
-              </tr>
-            ))}
-            </tbody>
+                          setAction={setAction}/>
+                  </>: <></>}
+                  </th>)
+                )}</tr>
+              </thead>
+              <tbody>
+              {queryResults.results.bindings.map((item, i) => (
+                <tr key={item+i}>
+                  {headers.map((head, inde) => (
+                    <td key={head+inde}>
+                      <span key={head+inde+item+i} dangerouslySetInnerHTML=
+                        {{ __html: get_cell_value(headers,head,inde,item)}}>
+                      </span>
+                      {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
+                          <ActionButton
+                            key={head+inde+index+'button_action'+item+i+el}
+                            unique_key={head+inde+index+'button_action'+item+i+el}
+                            indexTextsearch={indexTextsearch}
+                            buttonLabel={el}
+                            cell_value={get_cell_value(headers,head,inde,item)}
+                            actionComponents={actionComponents}
+                            setActionComponent={setActionComponent}
+                            all_actions={all_actions}
+                            setAction={setAction}
+                            actions={actions}/>
+                        ))}
 
-            </> : <></>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              </tbody>
+            </>
+            : <></>
           }
         </table>
-
+        : <></>}
+      </>
     )
   }
   catch (error) {
+    console.log(error);
     return <ErrorHandler error={error} />
   }
+
+  // END ActionTable
 }
 
-const ActionButton = ({unique_key, setAction, buttonLabel, cell_value,
-  actionResults,setActionResult, showActionList,setVisibilityActions,handleSetAction,
-  default_actions, actions }) => {
 
-  // get SPARQL query from datastory_data
+const ActionButton = ({unique_key,indexTextsearch,buttonLabel,cell_value,
+  actionComponents,setActionComponent,
+  showActionList,setVisibilityActions,
+  all_actions,setAction,actions}) => {
+
   let action_query = '', action_type, headers = [];
   if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
     datastory_data.dynamic_elements.forEach(element => {
@@ -203,11 +252,11 @@ const ActionButton = ({unique_key, setAction, buttonLabel, cell_value,
   const [actionQueryResults, setActionQueryResults] = React.useState(actionresults);
   const [spinner, setSpinner] = React.useState(false);
 
+
   const performAction = () => {
     if (action_query.length) {
       // default behaviour, create a table
       if (!action_type || action_type == 'table') {
-
         // modify query, replace placeholder with cell value
         let queryString, data = [];
         if (!cell_value.includes('href')) {queryString = cell_value}
@@ -220,11 +269,13 @@ const ActionButton = ({unique_key, setAction, buttonLabel, cell_value,
         // perform SPARQL query
         if (action_query.length > 1) {
           setSpinner(true);
-
           // replace queryString in query
           let textsearch_query;
           if (!cell_value.includes('href')) {
-            textsearch_query = action_query.replace('<<item>>', '\"'+queryString+'\"');
+            if (!queryString.includes('http'))
+              {textsearch_query = action_query.replace('<<item>>', '\"'+queryString+'\"');}
+            else {
+              textsearch_query = action_query.replace('<<item>>', '<'+extractContent(queryString)+'>');}
           } else {
             textsearch_query = action_query.replace('<<item>>', '<'+queryString+'>');
           }
@@ -239,42 +290,34 @@ const ActionButton = ({unique_key, setAction, buttonLabel, cell_value,
              setSpinner(false);
              setActionQueryResults(data);
              // create table component
+             let updated_action_results = [...actionComponents]
              let action_result_component = <ActionTable
                        key={cell_value+action_query+'action_table'}
                        unique_key={cell_value+action_query+'action_table'}
-                       setAction={setAction}
+                       indexTextsearch={indexTextsearch}
                        buttonLabel={buttonLabel}
                        cell_value={cell_value}
-                       actionResults={actionResults}
-                       setActionResult={setActionResult}
+                       queryResults={data}
+                       actionComponents={actionComponents}
+                       setActionComponent={setActionComponent}
                        actionQueryResults={data}
-                       setActionQueryResults={setActionQueryResults}
-                       action_query={action_query}
-                       showActionList={showActionList}
-                       setVisibilityActions={setVisibilityActions}
-                       handleSetAction={handleSetAction}
-                       default_actions={default_actions}
+                       all_actions={all_actions}
+                       setAction={setAction}
                        actions={actions}/>;
              // push component in the array visualised after TextSearchResults
-             let updated_action_results = [...actionResults]
-             console.log("before actionResults",actionResults);
              updated_action_results.push(action_result_component)
-             setActionResult(updated_action_results)
-             console.log("here actionResults",updated_action_results);
-
+             setActionComponent(updated_action_results)
             })
            .catch((error) => {
-              console.error('Error:', error);
-              alert("Action ",buttonLabel,": there is an error in the query");
+              console.error('Error:', error); alert("Action ",error);
               setSpinner(false);
            });
         }
         else {console.log("no query");}
       }
     }
-
   };
-  console.log("after actionResults",actionResults);
+
   return (
     <span
       key={unique_key}
@@ -283,169 +326,82 @@ const ActionButton = ({unique_key, setAction, buttonLabel, cell_value,
       {buttonLabel}
     </span>
   )
+  // END ActionButton
 }
 
-// the list of available actions shown in table headers. one for each column
-const ColumnListActions = ({index, default_actions,
-                            handleSetAction, actions, column_name}) => {
 
-  let default_active = [], default_pos = [];
-  console.log("actions",actions);
-  if ([column_name] in actions) {
-    default_active = actions[column_name];
-    default_actions.forEach((item, i) => {
-      if (actions[column_name].includes(item[0])) {default_pos.push(item[0])}
-    });
+const ColumnListActions = ({index,column_name,
+  all_actions,actions,setAction}) => {
 
+  // pick the actions that have been selected for the column at hand
+  let actions_column = [];
+  if ([column_name] in actions) { actions_column = actions[column_name];}
+  const [isActive, setActive] = React.useState(actions_column);
+  // get class of active actions
+  const cx = (...list) => list.filter(Boolean).join(' ');
 
-    console.log("default_actions",default_actions);
-  }
-  default_actions = [...new Set(default_actions)];
-  const [isActive, setActive] = React.useState(default_active);
-  const [actionPos, setActionPos] = React.useState(default_pos);
-
-  // add/remove titles of actions in arrays
-  // when de/selected from column headers
+  // update actions when the user selects an action
+  let updatedColActions = {...actions};
   const addToActive = (elem) => {
     var updatedActive = [...isActive];
+    // on click, if the array already includes the action name, remove or add it
     if (updatedActive.includes(elem[0])) {
       updatedActive.splice(updatedActive.indexOf(elem[0]), 1);
     } else { updatedActive.push(elem[0]) }
     setActive(updatedActive);
-    handleSetAction(column_name,elem[0]);
-
-    var updatedActivePos = [...actionPos];
-    if (updatedActivePos.includes(elem[0])) {
-      updatedActivePos.splice(updatedActivePos.indexOf(elem[0]), 1);
-    } else { updatedActivePos.push(elem[0]) }
-    setActionPos(updatedActivePos);
+    updatedColActions = {...actions, [column_name]:updatedActive }
+    setAction(updatedColActions);
+    update_config();
   }
 
-  const cx = (...list) => list.filter(Boolean).join(' ')
   try {
     return (
     <span key={index+'_action_group_'+column_name}>
-      {default_actions.map((el,j) => (
+      {all_actions.map((el,j) => (
         <span key={index+'_action_group_'+column_name+j}>
         <input
           type="button"
           id={index+'__textsearch_column__'+column_name+'__action__'+el[2]}
           name={index+'__textsearch_column__'+column_name+'__action__'+el[2]}
           className={cx('action_button', (isActive.includes(el[0])) && 'active_action')}
-          key={index+j+'action'+el}
+          key={column_name+index+j+'action'+el}
           defaultValue={el[0]}
-          onClick={() => { addToActive(el)} }></input>
-
+          onClick={() => {addToActive(el)}}></input>
         </span>
         )
       )}
     </span>
   )
-  } catch (error) {
-    return <ErrorHandler error={error} />
-  }
+  } catch (error) { return <ErrorHandler error={error} /> }
+
+  // END ColumnListActions
 }
 
-// table of results from a text search
-const TextSearchResults = ({ index , queryResults , queryString , setResults,
-  default_actions, actions, updated_saved_actions, setAction, handleSetAction,
-  actionResults,setActionResult}) => {
+
+const TextSearchResults = ({ index,
+  queryResults,queryString,setResults,
+  all_actions,actions,setAction,
+  actionComponents,setActionComponent }) => {
 
   // show actions in columns if any
   const [showActionList,setVisibilityActions] = React.useState(false);
   const showActions = () => { setVisibilityActions(!showActionList) }
 
   // buttons in the footer of the table
-  let empty;
+  let empty, finalpreview ;
+  if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
   const detach_table = event => { setResults(empty); }
   const [toggle, setToggle] = React.useState(true);
   const collapse_table = () => { setToggle(!toggle);};
-  const export_html = () => {
-    let table = document.getElementById(index + '__textsearchresults');
-    let cloneTable = table.cloneNode(true);
-    cloneTable.querySelector('.caret').remove();
-    cloneTable.querySelector('.closetable').remove();
-    cloneTable.querySelector('tfoot').remove();
-    let tableHtml = cloneTable.innerHTML;
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", '<table>' + tableHtml + '</table>');
-  };
-
-  // export table as csv
-  function createCsv(table, separator = ',') {
-      // Select rows from table_id
-      var rows = table.rows, csv = [];
-      for (var i = 0; i < rows.length; i++) {
-          var row = [], cols = rows[i].querySelectorAll('td, th');
-          for (var j = 0; j < cols.length; j++) {
-              // Clean innertext to remove multiple spaces and jumpline (break csv)
-              if (cols[j].querySelector("input") != null) {
-                let input_val = cols[j].querySelector("input");
-                var data = input_val.value.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
-              } else if ( cols[j].querySelector("audio") != null) {
-                var data = cols[j].querySelector("audio").getAttribute('src')
-              } else if ( cols[j].querySelector("img") != null) {
-                var data = cols[j].querySelector("img").getAttribute('src')
-              } else {
-                var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ').trim();
-              }
-              // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
-              data = data.replace(/"/g, '""');
-              // Push escaped string
-              row.push('"' + data + '"');
-          }
-          csv.push(row.join(separator));
-      }
-      return csv;
-  }
-
-  function export_csv() {
-    let table = document.getElementById(index + '__textsearchresults');
-    let export_btn = document.getElementById(index +'__export_csv');
-    let cloneTable = table.cloneNode(true);
-    cloneTable.querySelector('.caret').remove();
-    cloneTable.querySelector('.closetable').remove();
-    cloneTable.querySelector('tfoot').remove();
-    let tableCSV = createCsv(cloneTable);
-    var csv_string = tableCSV.join('\n');
-    export_btn.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
-  };
 
   var tableresults = '';
   let headers = [];
   var headings = queryResults.head.vars;
   headings.forEach((item, inde) => { if (!item.includes('Label')) { headers.push(item);}});
   headings.forEach((item, inde) => {
-    if (item.includes('Label')) {
-      headings.splice(inde, 1);
-      inde--;}
+    if (item.includes('Label')) { headings.splice(inde, 1); inde--;}
   });
-
-
-  // allow last column editing
-  const edit_table = () => {
-    let table = document.getElementById(index+"__textsearchresults");
-    let thead = table.querySelectorAll("thead tr")[0]
-    let tbody = table.querySelectorAll("tbody tr")
-    let th = document.createElement('th');
-    th.textContent = 'Notes';
-    thead.appendChild(th);
-
-    for (let tr of tbody) {
-    	let td = document.createElement('td');
-      let input_note = document.createElement('input');
-      td.appendChild(input_note);
-    	tr.appendChild(td);
-    }
-  };
-
-  //function createTable() { return {__html: tableresults};}
-  // React.useEffect(() => {
-  //   try { setActionResult(actionResults)
-  //   } catch {}
-  // });
-
-  let finalpreview;
-  if (window.location.href.indexOf("/modify/") == -1) {finalpreview = true};
+  // render
   try {
     return (
     <table className='col-12 textsearchresults' id={index+"__textsearchresults"}>
@@ -460,17 +416,19 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
         <thead>
           <tr>{headers.map((heading, i) => (
             <th key={heading}>{heading}
-            {!finalpreview && default_actions.length > 0 && (
+            {!finalpreview && all_actions.length > 0 && (
                 <span className="add_action" onClick={showActions}>+</span>
               )}
               {!finalpreview && showActionList ?
-                <ColumnListActions
-                    index={index}
-                    key={index+heading+'actionlist'}
-                    default_actions={default_actions}
-                    handleSetAction={handleSetAction}
-                    actions={actions}
-                    column_name={heading}/>
+
+                  <ColumnListActions
+                      index={index}
+                      key={index+heading+'actionlist'}
+                      column_name={heading}
+                      all_actions={all_actions}
+                      actions={actions}
+                      setAction={setAction}/>
+
                 : <></>}
             </th>)
           )}</tr>
@@ -483,22 +441,21 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
                 <span key={head+inde+item+i} dangerouslySetInnerHTML=
                   {{ __html: get_cell_value(headers,head,inde,item)}}>
                 </span>
+
                 {actions[headers[inde]] && actions[headers[inde]].map((el, i) => (
                     <ActionButton
                       key={head+inde+'button'+item+i+el}
-                      setAction={setAction}
                       unique_key={head+inde+item+i+el}
+                      indexTextsearch={index}
                       buttonLabel={el}
                       cell_value={get_cell_value(headers,head,inde,item)}
-                      actionResults={actionResults}
-                      setActionResult={setActionResult}
-                      showActionList={showActionList}
-                      setVisibilityActions={setVisibilityActions}
-                      handleSetAction={handleSetAction}
-                      default_actions={default_actions}
-                      actions={actions}
-                      />
+                      actionComponents={actionComponents}
+                      setActionComponent={setActionComponent}
+                      all_actions={all_actions}
+                      setAction={setAction}
+                      actions={actions}/>
                   ))}
+
               </td>
             ))}
           </tr>
@@ -509,16 +466,16 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
             <td>
               <a id={index+"__export_html"}
                 className="btn btn-info btn-border btn-round btn-sm mr-2"
-                onClick={export_html}>Embed</a>
+                onClick={() => {export_html(index+"__textsearchresults")}}>Embed</a>
               <a id={index+"__export_csv"}
                 target='_blank'
                 download={'export_'+index+'.csv'}
                 className="btn btn-info btn-border btn-round btn-sm mr-2"
-                onClick={() => export_csv()}>CSV</a>
+                onClick={() => {export_csv(index+"__textsearchresults", index+"__export_csv")}}>CSV</a>
                 {finalpreview &&
                 <a id={index+"__edit_table"}
                   className="btn btn-info btn-border btn-round btn-sm mr-2"
-                  onClick={edit_table}>Edit</a>
+                  onClick={() => {edit_table(index+"__textsearchresults")}}>Edit</a>
                 }
             </td>
           </tr>
@@ -529,65 +486,60 @@ const TextSearchResults = ({ index , queryResults , queryString , setResults,
       }
     </table>
   )
-  } catch (error) {
-    return <ErrorHandler error={error} />
+  } catch (error) { return <ErrorHandler error={error} /> }
+
+  // END TextSearchResults
   }
-}
+
 
 // text search component box
 const TextSearch = ({ unique_key, index ,
-                removeComponent , componentList, setComponent,
-                sortComponentUp , sortComponentDown}) => {
+  removeComponent , componentList, setComponent,
+  sortComponentUp , sortComponentDown}) => {
 
-    let title_default= "",
-        query_default ="",
-        tableresults,
-        default_actions = [], // all actions
-        saved_actions = {}, // actions used in a text search, all columns
-        default_actions_titles = []; // titles of all actions
+    let title_search = '',
+        sparql_query = '',
+        results_table,
+        all_actions = [],
+        all_actions_titles = [],
+        saved_actions = {};
 
     // WYSIWYG: get title, query and actions (default and selected) if any
     if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
       datastory_data.dynamic_elements.forEach(element => {
         if (element.type == 'textsearch' && element.position == index) {
-          title_default = element.textsearch_title ;
-          query_default = element.textsearch_query ;
+          title_search = element.textsearch_title ;
+          sparql_query = element.textsearch_query ;
           if (element.textsearch) { saved_actions = element.textsearch}
         }
         if (element.type == 'action') {
-          default_actions.push([element.action_title, element.action_query, element.position])
-          default_actions_titles.push(element.action_title)
+          all_actions.push([element.action_title, element.action_query, element.position])
+          all_actions_titles.push(element.action_title)
         }
       })
     }
-
-    function send_update() {
-      const form = document.getElementById('modifystory_form');
-      if (form) {
-        const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
-        return () => {clearTimeout(timer);};
-      }
-    }
-    let updated_saved_actions = saved_actions;
-
     // update list of actions attached to columns on click
-    const [actions, setAction] = React.useState(updated_saved_actions);
+    const [actions, setAction] = React.useState(saved_actions);
 
-    const [title, setSearchTitle] = React.useState(title_default);
+    const [title, setSearchTitle] = React.useState(title_search);
     const titleChange = event => { setSearchTitle(event.target.value); };
 
-    const [query, setSearchQuery] = React.useState(query_default);
+    const [query, setSearchQuery] = React.useState(sparql_query);
     const queryChange = event => { setSearchQuery(event.target.value); };
 
     const [queryString, setQueryString] = React.useState('');
     const updateQueryString = event => { setQueryString(event.target.value); };
 
-    const [queryResultsHTML, setResults] = React.useState(tableresults);
+    const [queryResults, setResults] = React.useState(results_table);
     const [spinner, setSpinner] = React.useState(false);
+
     const [queryvars,setqueryvars] = React.useState([]);
 
+    // add action results (tables, benchmarks, etc) to a list of components
+    const [actionComponents,setActionComponent] = React.useState([]);
+
     // perform the text search and sends data to the TextSearchResults component
-    const fetchTextquery = event => {
+    const fetchTextquery = (event) => {
       if (query.length > 1) {
         setSpinner(true);
         // replace queryString in query
@@ -601,67 +553,42 @@ const TextSearch = ({ unique_key, index ,
          .then((data) => {
            setSpinner(false);
            setResults(data);
-
           })
          .catch((error) => {
             console.error('Error:', error);
             alert("Text search: there is an error in the query");
             setSpinner(false);
          });
-      }
-      else {console.log("no query");}
+      } else {console.log("no query");}
     }
-
-    // update actions in column headers
-    const handleSetAction = (column_name, el) => {
-      var updatedColActions = {...actions};
-      if ([column_name] in updatedColActions) {
-        // remove if exists
-        if (updatedColActions[column_name].includes(el)) {
-          updatedColActions[column_name].splice(updatedColActions[column_name].indexOf(el), 1);
-        }
-        else {
-          updatedColActions[column_name].push(el)
-        }
-      }
-      // create also column if does not exist
-      else {
-        updatedColActions = {...actions, [column_name]:[el] };
-      }
-      setAction(updatedColActions);
-    }
-
-    // add action results (tables, benchmarks, etc) to a list of components
-    const [actionResults,setActionResult] = React.useState([]);
 
     // update checkbox label if changes in the action box
     React.useEffect(() => {
       try {
         // update default actions if action components are deleted
         if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+          all_actions = [];
           datastory_data.dynamic_elements.forEach(element => {
             if (element.type == 'action') {
-              default_actions = [];
-              default_actions.push([element.action_title, element.action_query, element.position])
+              all_actions.push([element.action_title, element.action_query, element.position])
             }
           })
         }
         // check if any action component has been deleted, and remove it from saved_actions
-        Object.entries(updated_saved_actions).map( ([col, list_actions]) => {
+        Object.entries(saved_actions).map( ([col, list_actions]) => {
           list_actions.forEach((el, i) => {
-            if (!default_actions_titles.includes(el)) {
+            if (!all_actions_titles.includes(el)) {
               list_actions.splice(i, 1);
-              setAction(updated_saved_actions);
-              send_update();
+              setAction(saved_actions);
+              update_config();
             }
           });
         });
-
-        setActionResult(actionResults)
-      } catch {}
+        //setActionResult(actionResults)
+      } catch (error){console.log(error);}
     });
 
-    // WYSIWYG: render component and preview
+    // render component WYSIWYG and preview
     if (window.location.href.indexOf("/modify/") > -1) {
       try {
       return (
@@ -691,24 +618,21 @@ const TextSearch = ({ unique_key, index ,
             <a className="col-12"
               href='#' role='button'
               data-toggle='modal' data-target='#textModalLong'>Learn more about text searches and actions</a>
-            {queryResultsHTML &&
+            {queryResults &&
               (<TextSearchResults
-               index={index}
                key={"results_"+unique_key+index}
-               queryResults={queryResultsHTML}
+               index={index}
+               queryResults={queryResults}
                queryString={queryString}
                setResults={setResults}
-               default_actions={default_actions}
+               all_actions={all_actions}
                actions={actions}
-               updated_saved_actions={updated_saved_actions}
                setAction={setAction}
-               handleSetAction={handleSetAction}
-               actionResults={actionResults}
-               setActionResult={setActionResult}
-               />
+               actionComponents={actionComponents}
+               setActionComponent={setActionComponent}/>
               )}
           </div>
-          <>{actionResults}</>
+          <>{actionComponents}</>
           <div className='form-group'>
             <label htmlFor='largeInput'>Search title</label>
             <input name={index+"__textsearch_title"}
@@ -795,7 +719,7 @@ const TextSearch = ({ unique_key, index ,
                 type="hidden"
                 id={index+'__textsearch_col_'+column_name+'_action_'+j}
                 name={index+'__textsearch_col_'+column_name+'_action_'+j}
-                key={index+j+'hiddenaction'+j}
+                key={index+'hiddenaction'+j}
                 defaultValue={actions[column_name].indexOf(el) > -1 && el}>
               </input>
             ))
@@ -805,40 +729,40 @@ const TextSearch = ({ unique_key, index ,
         return <ErrorHandler error={error} />
       }
     } else {
-      // Final story: render preview
-      try {
-        return (
-        <>
-            {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
-            <h3 className="block_title">{title}</h3>
-            <div className="row finaltextsearch">
-              <input className='textsearch_userinput modifydatastory col-6'
-                id={index+"__textsearch_userinput"}
-                type='text'
-                onChange={updateQueryString}
-                name={index+"__textsearch_userinput"}></input>
-              <a id={index+"__textsearch_button"}
-                className='textsearch_button col-3'
-                onClick={fetchTextquery}>Search</a>
-            </div>
-            {queryResultsHTML &&
-            (<TextSearchResults
+    // Final story: render preview
+    try {
+      return (
+      <>
+          {spinner && (<span id='loader' className='lds-dual-ring overlay'></span>)}
+          <h3 className="block_title">{title}</h3>
+          <div className="row finaltextsearch">
+            <input className='textsearch_userinput modifydatastory col-6'
+              id={index+"__textsearch_userinput"}
+              type='text'
+              onChange={updateQueryString}
+              name={index+"__textsearch_userinput"}></input>
+            <a id={index+"__textsearch_button"}
+              className='textsearch_button col-3'
+              onClick={fetchTextquery}>Search</a>
+          </div>
+          {queryResults &&
+            (<><TextSearchResults
              index={index}
              key={"results_"+unique_key+index}
-             queryResults={queryResultsHTML}
+             queryResults={queryResults}
              queryString={queryString}
              setResults={setResults}
-             default_actions={default_actions}
+             all_actions={all_actions}
              actions={actions}
-             updated_saved_actions={updated_saved_actions}
              setAction={setAction}
-             handleSetAction={handleSetAction}
-             actionResults={actionResults}
-             setActionResult={setActionResult}/>)}
-        </>
-      )
-      } catch (error) {
-        return <ErrorHandler error={error} />
-      }
-    }
-}
+             actionComponents={actionComponents}
+             setActionComponent={setActionComponent}
+             />
+             {actionComponents}</>
+           )}
+
+      </>
+    )} catch (error) { return <ErrorHandler error={error} /> }
+  }
+  // END TextSearch
+  }

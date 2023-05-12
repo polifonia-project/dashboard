@@ -747,6 +747,8 @@ border-radius: 0.4em!important;
   cursor: pointer;
 }
 
+.refresh {cursor: pointer;}
+
 .textsearch_title,
 .tablevalueaction_title {
   font-size: 1.3em;
