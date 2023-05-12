@@ -339,7 +339,24 @@ const ColumnListActions = ({index,column_name,
 
   // pick the actions that have been selected for the column at hand
   let actions_column = [];
-  if ([column_name] in actions) { actions_column = actions[column_name];}
+  // if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
+  //   datastory_data.dynamic_elements.forEach(element => {
+  //     if (element.type == 'textsearch' && element.position == index) {
+  //       if (element.textsearch) {
+  //         saved_actions = element.textsearch
+  //       }
+  //       // if (element.textsearch[column_name]) {
+  //       //   actions_column = element.textsearch[column_name]
+  //       // }
+  //     }
+  //   })
+  // }
+  if (tableactions) {
+    if ([column_name] in tableactions) { actions_column = tableactions[column_name];}
+  } else {
+    if ([column_name] in actions) { actions_column = actions[column_name];}
+  }
+  //if ([column_name] in actions) { actions_column = actions[column_name];}
   const [isActive, setActive] = React.useState(actions_column);
   // get class of active actions
   const cx = (...list) => list.filter(Boolean).join(' ');
@@ -349,7 +366,6 @@ const ColumnListActions = ({index,column_name,
 
   const addToActive = (elem) => {
     var updatedActive = [...isActive];
-
     let updatedColActions = {}, saved_actions = {};
     if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
       datastory_data.dynamic_elements.forEach(element => {
