@@ -221,6 +221,25 @@ const ActionTable = ({unique_key,indexTextsearch,buttonLabel,
                 </tr>
               ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td>
+                    <a id={index+"__export_html"}
+                      className="btn btn-info btn-border btn-round btn-sm mr-2"
+                      onClick={() => {export_html(index+"__actionresults")}}>Embed</a>
+                    <a id={index+"__export_csv"}
+                      target='_blank'
+                      download={'export_'+index+'.csv'}
+                      className="btn btn-info btn-border btn-round btn-sm mr-2"
+                      onClick={() => {export_csv(index+"__actionresults", index+"__export_csv")}}>CSV</a>
+                      {finalpreview &&
+                      <a id={index+"__edit_table"}
+                        className="btn btn-info btn-border btn-round btn-sm mr-2"
+                        onClick={() => {edit_table(index+"__actionresults")}}>Edit</a>
+                      }
+                  </td>
+                </tr>
+              </tfoot>
             </>
             : <></>
           }
@@ -339,18 +358,6 @@ const ColumnListActions = ({index,column_name,
 
   // pick the actions that have been selected for the column at hand
   let actions_column = [];
-  // if (datastory_data.dynamic_elements && datastory_data.dynamic_elements.length) {
-  //   datastory_data.dynamic_elements.forEach(element => {
-  //     if (element.type == 'textsearch' && element.position == index) {
-  //       if (element.textsearch) {
-  //         saved_actions = element.textsearch
-  //       }
-  //       // if (element.textsearch[column_name]) {
-  //       //   actions_column = element.textsearch[column_name]
-  //       // }
-  //     }
-  //   })
-  // }
   if (tableactions) {
     if ([column_name] in tableactions) { actions_column = tableactions[column_name];}
   } else {
@@ -362,8 +369,6 @@ const ColumnListActions = ({index,column_name,
   const cx = (...list) => list.filter(Boolean).join(' ');
 
   // update actions when the user selects an action
-
-
   const addToActive = (elem) => {
     var updatedActive = [...isActive];
     let updatedColActions = {}, saved_actions = {};
