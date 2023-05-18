@@ -165,7 +165,7 @@ def modify_datastory(section_name, datastory_name):
 								return str(e),'Something went wrong, modify'
 
 						elif request.form['action'] == 'delete':
-							data_methods.delete_story(general_data,session['user_type'])
+							data_methods.delete_story(general_data,section_name,datastory_name,session['user_type'])
 							return redirect(PREFIX)
 						else:
 							print('no idea..')

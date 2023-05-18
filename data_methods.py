@@ -328,7 +328,7 @@ def manage_datastory_data(user_type, general_data, file, section_name, datastory
 	return datastory_title_clean
 
 
-def delete_story(general_data,user_type):
+def delete_story(general_data,section_name,datastory_name,user_type):
 	"""Delete a datastory from the config file"""
 	if user_type == 'polifonia':
 		general_data['data_sources'][section_name].pop( datastory_name, 'None')

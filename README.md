@@ -1,24 +1,23 @@
 ---
 component-id: melody
-name: melody
+name: MELODY
 description: MELODY is a dashboarding system for designing and publishing data stories based on Linked Open Data.
-type: software
-release-date: 2022-06-13
-release-number: 0.1.1
-work-package: WP1
-pilot: 
-keywords:
-  - storytelling
-  - linked open data
-  - dashboard
-licence: ISC
-release link: https://github.com/polifonia-project/dashboard/releases/latest
-links: 
-  - documentation https://polifonia-project.github.io/dashboard/
-credits:
-  - Giulia Renda, University of Bologna
-  - Marilena Daquino, University of Bologna
---- 
+work-package:
+- WP1
+project: polifonia-project
+resource: https://github.com/polifonia-project/dashboard/releases
+demo: https://projects.dharc.unibo.it/melody/
+release-date: 2022/05/12
+release-number: v0.1.1
+release-link: https://github.com/polifonia-project/dashboard/releases/latest
+doi: 10.5281/zenodo.6637345
+changelog: https://github.com/polifonia-project/dashboard/releases/latest
+licence:
+- IscLicense
+contributors:
+- Marilena Daquino <https://github.com/marilenadaquino>
+- Giulia Renda <https://github.com/mondoboia>
+---
 
 # Polifonia Dashboard
 
@@ -44,7 +43,7 @@ See the full documentation at https://polifonia-project.github.io/dashboard/.
 
 > **Step #2 - Set up the environment**
 
-1. Python3 should be installed properly in the workstation. If you are not sure if Python is 
+1. Python3 should be installed properly in the workstation. If you are not sure if Python is
 properly installed, please open a terminal and type python --version.
 2. Enter the project folder using the terminal/powershel/bash.
 3. Install modules using a [Virtual Environment](https://docs.python.org/3/library/venv.html)

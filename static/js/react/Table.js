@@ -69,7 +69,7 @@ const Table = ({unique_key, index ,
                  tabletoappend += "<td>";
 
                  // audio
-                 if (res_value.endsWith('.mp3')) {
+                 if (res_value.endsWith('.mp3') || res_value.endsWith('.flac')) {
                    tabletoappend += "<span>"+res_label+"</span><audio class='table_result'><source src='" + res_value + "'></source></audio>";
                  }
                  // img
@@ -94,7 +94,7 @@ const Table = ({unique_key, index ,
                }
                else {
                    tabletoappend += "<td>";
-                   if (res_value.endsWith('.mp3')) {
+                   if (res_value.endsWith('.mp3') || res_value.endsWith('.flac')) {
                      tabletoappend += "<audio controls src='" + res_value + "' class='table_result'><a href='" + res_value + "'></a></audio>";
                    }
                    else if (res_value.endsWith('.jpg') || res_value.endsWith('.png')) {

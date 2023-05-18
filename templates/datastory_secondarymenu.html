@@ -26,7 +26,7 @@
     <!-- modify button -->
     {% if datastory_data.id and session['user_type'] == 'extra' or session['user_type'] == 'random' %}
     <a class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
-      href="{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
+      href="/melody{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
       Modify
     </a>
     {% endif %}
