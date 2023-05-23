@@ -10,7 +10,9 @@ function update_config() {
 function get_cell_value(headings, head, inde, item) {
   let tableresults = '',
       res_label,
-      res_value = item[headings[inde]].value;
+      res_value ;
+  if (headings[inde] in item) { res_value = item[headings[inde]].value }
+  else {res_value = ""};
 
   if (item[headings[inde] + 'Label'] != undefined) {
     res_label = "";

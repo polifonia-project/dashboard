@@ -436,7 +436,7 @@ const ChartViz = ({ unique_key, index ,
           }
       };
     }
-    else if (ch_type == 'scatterplot' && !extras) {
+    else if (ch_type == 'scatterplot' && !extras.length) {
       ch_type = 'scatter';
       datasets = [{
           label: series,
@@ -487,6 +487,7 @@ const ChartViz = ({ unique_key, index ,
       });
       basicChart.options = options;
       basicChart.update();
+      console.log(basicChart);
     }
     else {
       let labels = [] , queries = [] , title = "", x ='', y='';
@@ -511,9 +512,11 @@ const ChartViz = ({ unique_key, index ,
       let ch_type = 'scatter';
       let promises = [];
       queries.forEach((q, i) => {
-        promises.push(fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(q),
-          { method: 'GET', headers: { 'Accept': 'application/sparql-results+json' }}
-        ))
+        if (q.length) {
+          promises.push(fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(q),
+            { method: 'GET', headers: { 'Accept': 'application/sparql-results+json' }}
+          ))
+        }
       })
 
       Promise.all(promises)
@@ -522,24 +525,26 @@ const ChartViz = ({ unique_key, index ,
     		return response.json();
     	}));})
       .then(function (resultdata) {
-        resultdata.forEach((data,i) => {
-          let dataset = {}, seriesData = [], seriesLabels = [];
-          if (data.head.vars.includes('x')
-           && data.head.vars.includes('y')) {
-            data.results.bindings.forEach(element => {
-              const xValue = parseInt(element.x.value);
-              const yValue = parseInt(element.y.value);
-              const entryObj = { x: xValue, y: yValue }
-              seriesLabels.push(xValue);
-              seriesData.push(entryObj);
-            });
-            dataset.label = labels[i];
-            dataset.data = seriesData;
-            dataset.backgroundColor = colors[i];
-            datasets.push(dataset);
+        if (resultdata) {
+          resultdata.forEach((data,i) => {
+            let dataset = {}, seriesData = [], seriesLabels = [];
+            if (data.head.vars.includes('x')
+             && data.head.vars.includes('y')) {
+              data.results.bindings.forEach(element => {
+                const xValue = parseInt(element.x.value);
+                const yValue = parseInt(element.y.value);
+                const entryObj = { x: xValue, y: yValue }
+                seriesLabels.push(xValue);
+                seriesData.push(entryObj);
+              });
+              dataset.label = labels[i];
+              dataset.data = seriesData;
+              dataset.backgroundColor = colors[i];
+              datasets.push(dataset);
+           }
+         });
+        }
 
-         }
-       });
         data_scatter = datasets
         return datasets
 
@@ -611,8 +616,7 @@ const ChartViz = ({ unique_key, index ,
            alertError(data,count,chart);
          }
          if (chart == 'barchart' || chart == 'linechart' || chart == 'doughnutchart' || chart == 'scatterplot' ) {
-
-             if (data.head.vars.length === 1 && data.head.vars.includes('label')){
+            if (data.head.vars.length === 1 && data.head.vars.includes('label')){
                let labels = [];
                data.results.bindings.forEach(element => {
                  let lab = (element.label.value === '') ? 'Unknown': element.label.value;
@@ -622,7 +626,6 @@ const ChartViz = ({ unique_key, index ,
                chartData = Object.values(elCount);
                chartLabels = Object.keys(elCount);
              }
-
 
            else {
              if (data.head.vars.includes('count')
@@ -649,13 +652,14 @@ const ChartViz = ({ unique_key, index ,
            }
 
            if (chartData.length && chartLabels.length) {
+             console.log("and here",index);
              let el_id  = index+'__chartid' ,
                 ch_type = chart ,
                 ch_series = series,
                 color   = datastory_data.color_code[0],
                 x       = seriesX ,
                 y       = seriesY ;
-             basic_chart(el_id, ch_type, ch_series, color, chartData, chartLabels, x, y, extras)
+              basic_chart(el_id, ch_type, ch_series, color, chartData, chartLabels, x, y, extras)
            }
          }
         })
@@ -666,6 +670,7 @@ const ChartViz = ({ unique_key, index ,
 
   // preview
   React.useEffect(() => {
+
      fetchQuery();
 
      $("textarea").each(function () {
@@ -715,14 +720,14 @@ const ChartViz = ({ unique_key, index ,
 
         <div className='form-group' id={index+"__form_group"}>
         	<label htmlFor='exampleFormControlSelect2'>Chart Type</label>
-  				<select defaultValue={chart} name={index+"__chart_type"}
+  				<select value={chart} name={index+"__chart_type"}
             className='form-control'
             id={index+"__chart_type"}
             onChange={chartChange}>
-  					<option defaultValue="linechart" name={index+"__linechart"} id={index+"__linechart"}>linechart</option>
-  					<option defaultValue="barchart" name={index+"__barchart"} id={index+"__barchart"}>barchart</option>
-  					<option defaultValue="doughnutchart" name={index+"__doughnutchart"} id={index+"__doughnutchart"}>doughnutchart</option>
-  					<option defaultValue="scatterplot" name={index+"__scatterplot"} id={index+"__scatterplot"}>scatterplot</option>
+  					<option value="linechart" name={index+"__linechart"} id={index+"__linechart"}>linechart</option>
+  					<option value="barchart" name={index+"__barchart"} id={index+"__barchart"}>barchart</option>
+  					<option value="doughnutchart" name={index+"__doughnutchart"} id={index+"__doughnutchart"}>doughnutchart</option>
+  					<option value="scatterplot" name={index+"__scatterplot"} id={index+"__scatterplot"}>scatterplot</option>
   				</select>
 
           <a href='#' className='form-text'

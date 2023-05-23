@@ -144,9 +144,88 @@ const SidebarPanel = ({indexPanel ,
       decoded_query = decoded_query_parts[0] + '{' + values + decoded_query_parts[1];
       var encoded_query = encodeURIComponent(decoded_query.replace('\n', ' '));
 
-      fetch(datastory_data.sparql_endpoint+'?query='+encoded_query,
+      var method = 'GET';
+      if (encoded_query.length > 2000) {
+        method = 'POST'
+        fetch(datastory_data.sparql_endpoint+'?query=',
+            {
+            method: method,
+            headers: { 'Accept': 'application/sparql-results+json' },
+            body: encoded_query
+            }
+        ).then((res) => res.json())
+        .then((data) => {
+           let labels_values_count = {}, headings = data.head.vars,
+                has_label = false;
+
+           data.results.bindings.forEach((res, i) => {
+             // check if the filter is a string or a uri+string
+             if (headings.includes('filterLabel')) { has_label = true; }
+
+             dataMap.forEach((elem, i) => {
+               if (elem.properties.uri == res.point.value) {
+                 if (has_label == true) {
+                   elem.properties[filter_title + "#label"] = res.filterLabel.value;
+                   elem.properties[filter_title + "#value"] = res.filter.value;
+                   if (labels_values_count[res.filter.value] == undefined) {
+                       labels_values_count[res.filter.value] = [res.filterLabel.value, 1]
+                   } else {
+                       labels_values_count[res.filter.value] = [res.filterLabel.value, labels_values_count[res.filter.value][1] + 1]
+                   }
+                 }
+                 else {
+                   elem.properties[filter_title + "#label"] = res.filter.value;
+                   elem.properties[filter_title + "#value"] = res.filter.value;
+                   if (labels_values_count[res.filter.value] == undefined) {
+                       labels_values_count[res.filter.value] = [res.filter.value, 1]
+                   } else {
+                       labels_values_count[res.filter.value] = [res.filter.value, labels_values_count[res.filter.value][1] + 1]
+                   }
+                 }
+               }
+             });
+
+             // update geoJSON in DOM
+             $('#dataMap_'+index_parent).remove();
+             var $body = $(document.body);
+             $body.append("<script id='dataMap_"+index_parent+"' type='application/json'>" + JSON.stringify(dataMap) + "</script>");
+
+             // update markers
+             markers.eachLayer(layer => {
+                 if (layer.feature.properties.uri == res.point.value) {
+                     if (has_label == true) {
+                         layer.feature.properties[filter_title + "#label"] = res.filterLabel.value;
+                     } else {
+                         layer.feature.properties[filter_title + "#label"] = res.filter.value;
+                     }
+                     layer.feature.properties[filter_title + "#value"] = res.filter.value;
+                 }
+             });
+
+           });
+
+           // get markers from geoJSON, bind popupContent
+           var data_layers = L.geoJSON(dataMap, { onEachFeature: onEachFeature  });
+
+           // add checkboxes
+           let filter_names = Object.keys(labels_values_count)
+           setCheckbox([])
+           filter_names.forEach((filter_name, i) => {
+             setCheckbox(prevCheckboxes => [
+               ...prevCheckboxes, { key_check: filter_name, value_check: labels_values_count[filter_name]}
+             ])
+           });
+
+           setCollapse('collapsed');
+           $("#filter_"+extra_id).collapse();
+        })
+        .catch((error) => { console.error('Error:', error); alert("Sidebar filters: there is an error in the query"); })
+        .finally( () => { setLoad('loaded'); });
+
+      } else
+      {fetch(datastory_data.sparql_endpoint+'?query='+encoded_query,
           {
-          method: 'GET',
+          method: method,
           headers: { 'Accept': 'application/sparql-results+json' }
           }
       ).then((res) => res.json())
@@ -216,7 +295,7 @@ const SidebarPanel = ({indexPanel ,
          $("#filter_"+extra_id).collapse();
       })
       .catch((error) => { console.error('Error:', error); alert("Sidebar filters: there is an error in the query"); })
-      .finally( () => { setLoad('loaded'); });
+      .finally( () => { setLoad('loaded'); });}
     }
 
   }
@@ -452,9 +531,35 @@ const MapViz = ({ unique_key, index ,
     if (query.length > 1) {
       setSpinner(true)
         //if (map && map.remove) { map.off(); map.remove(); }
-        fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
+        var method = 'GET';
+        if (query.length > 2000) {
+          method = 'POST'
+          fetch(datastory_data.sparql_endpoint+'?query=',
+            {
+            method: method,
+            headers: { 'Accept': 'application/sparql-results+json' },
+            body: encodeURIComponent(query)
+            }
+          ).then((res) => { return res.json()})
+         .then(data => {
+            // add markers
+            var geoJSONdata = creategeoJSON(data);
+            markers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
+            allMarkers = setViewMarkers(map, mapid, geoJSONdata, waitfilters, datastory_data.color_code[0]);
+         })
+         .catch((error) => { setSpinner(false); console.error('Error:', error); alert("Map: there is an error in the query"); })
+         .finally( () => {
+           setSpinner(false)
+           setMap('initialised');
+           setMapRender(map);
+           setMarkers(markers);
+           setAllMarkers(allMarkers);
+         });
+
+        }
+        else {fetch(datastory_data.sparql_endpoint+'?query='+encodeURIComponent(query),
           {
-          method: 'GET',
+          method: method,
           headers: { 'Accept': 'application/sparql-results+json' }
           }
         ).then((res) => { return res.json()})
@@ -471,7 +576,7 @@ const MapViz = ({ unique_key, index ,
          setMapRender(map);
          setMarkers(markers);
          setAllMarkers(allMarkers);
-       });
+       });}
       }
     return map;
   };

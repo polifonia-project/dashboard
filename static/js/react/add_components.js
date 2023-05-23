@@ -16,7 +16,7 @@ const RemoveComponent = ({index , removeComponent }) => {
 
   return (
     <>
-    <a onClick={() => removeComponent(index)}
+    <a onClick={() => removeComponent(index) }
     href="##" className="trash"><i className="far fa-trash-alt"></i></a><br/>
     </>
   )
@@ -89,8 +89,13 @@ function AddComponent() {
     })
   }
 
-  function send_update(form) {
-    const timer = setTimeout(() => {datastory_data = update_datastory(form)}, 3000);
+  const [spinner, setSpinner] = React.useState(false);
+
+  function send_update(form, spinning=undefined) {
+    if (spinning) {setSpinner(true);}
+    const timer = setTimeout(() => {
+      datastory_data = update_datastory(form);
+      if (spinning) {setSpinner(false)}; }, 3000);
     return () => {clearTimeout(timer);};
   }
   // save data on keyup
@@ -133,7 +138,7 @@ function AddComponent() {
         datastory_data.dynamic_elements.splice(i, 1);
         datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
         datastory_data = update_datastory(form)
-        send_update(form)
+        send_update(form, true)
       }
   }
 
@@ -150,7 +155,7 @@ function AddComponent() {
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
       datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
       datastory_data = update_datastory(form)
-      send_update(form)
+      send_update(form, true)
     }
   }
 
@@ -168,7 +173,7 @@ function AddComponent() {
       datastory_data.dynamic_elements.splice(new_i, 0, cutOut);
       datastory_data.dynamic_elements = datastory_data.dynamic_elements.map((item, index) =>  { delete item['position']; return {"position" :index, ...item} } )
       datastory_data = update_datastory(form)
-      send_update(form)
+      send_update(form, true)
     }
   }
 
@@ -191,6 +196,7 @@ function AddComponent() {
 
   return (
     <>
+    {spinner && (<span id='loader_delete' className='lds-dual-ring overlay'></span>)}
       <ButtonGroup
         componentList={componentList}
         addComponent={addComponent}
