@@ -95,7 +95,7 @@ function AddComponent() {
     if (spinning) {setSpinner(true);}
     const timer = setTimeout(() => {
       datastory_data = update_datastory(form);
-      if (spinning) {setSpinner(false)}; }, 3000);
+      if (spinning) {setSpinner(false); window.location.reload(false);}; }, 3000);
     return () => {clearTimeout(timer);};
   }
   // save data on keyup
