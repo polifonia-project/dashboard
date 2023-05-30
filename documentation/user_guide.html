@@ -70,7 +70,7 @@
                     <li>
                       <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
                         data-bs-target="#statisticsel-collapse" aria-expanded="false">
-                        <a href="#statistics_template" class="link-dark rounded">Statistics</a>
+                        <a href="#statistics_template" class="link-dark rounded">Components</a>
                       </button>
                       <div class="show" id="statisticsel-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
@@ -86,24 +86,11 @@
                           <li>
                             <a href="#simple_table" class="link-dark rounded">Table</a>
                           </li>
-                        </ul>
-                      </div>
-                    </li>
-                    <li>
-                      <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                        data-bs-target="#relationsel-collapse" aria-expanded="false">
-                        <a href="#relations_template" class="link-dark rounded">Relations</a>
-                      </button>
-                      <div class="show" id="relationsel-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
                           <li>
                             <a href="#textsearch" class="link-dark rounded">Text search</a>
                           </li>
                           <li>
                             <a href="#action" class="link-dark rounded">Action on results</a>
-                          </li>
-                          <li>
-                            <a href="#combine" class="link-dark rounded">Combine results</a>
                           </li>
                         </ul>
                       </div>
@@ -117,13 +104,13 @@
                       <div class="show" id="maps-collapse">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ">
                           <li>
-                            <a href="#data_point" class="link-dark rounded">Data Points</a>
+                            <a href="#data_point" class="link-dark rounded">Data Points on a map</a>
                           </li>
                           <li>
-                            <a href="#tooltip" class="link-dark rounded">Tooltips</a>
+                            <a href="#tooltip" class="link-dark rounded">Metadata sidebar</a>
                           </li>
                           <li>
-                            <a href="#map_filters" class="link-dark rounded">Map Filters</a>
+                            <a href="#map_filters" class="link-dark rounded">Map Filters sidebar</a>
                           </li>
                         </ul>
                       </div>
@@ -335,17 +322,16 @@
               the section you chose.
             </p>
             <h2 id="templates" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
-              Templates
+              Components
             </h2>
-            <p>Regardless of the template you chose,
-              your task is to select the UI elements to be added to your canvas (e.g. texts, bart charts, text
-              searches),
-              write a SPARQL query to populate the elements, and browse the preview of the results.
+            <p>Your task is to (1) select the components to be added to your canvas (e.g. texts, bart charts, text
+              searches), (2) write a SPARQL query to populate the elements,
+              and (3) browse the preview of results.
               The interface is WYSIWYG (What You See Is What You Get),
               meaning you will be able to (i) see immediately results of your queries as charts,
-              (ii) modify the order of contents (when applicable)
+              (ii) modify the order of components in the page
               and (iii) preview the final data story to be published.</p>
-            <p>All templates share a few elements</p>
+            <p>The first components you will be asked to fill in are the following:</p>
             <ul class="list-group-numbered pl-3">
               <li>Color picker</li>
               <li>Title <span style="color: red;">(mandatory)</span> </li>
@@ -363,26 +349,21 @@
             <p class="figcaption">Color picker, title, subtitle, description, and curators.</p>
 
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="statistics_template">The
-              Statistics template</h2>
-            <p class="mb-3">The Statistics template is designed for a <i>classic</i> data story,
-              where you can combine textual information with statistical information such as counters and
+              Statistics components</h2>
+            <p class="mb-3">The Statistics components are designed for an article-like data story,
+              where you can combine textual information with statistical information, such as counters and
               charts to create a sequential narrative.</p>
-            <p>The elements of the page are:</p>
-            <ul class="list-group-numbered pl-3">
-              <li>Text boxes</li>
-              <li>Counters</li>
-              <li>Charts</li>
-              <li>Tables</li>
-            </ul>
-            <p>You can add as many elements as you want. To add a new element use the respective button, and a box will
-              appear.
-              Each box can be moved up and down or removed.</p>
+
+            <p>You can add as many elements as you want.
+              To add a new element use the respective button, and a box will
+              appear on top. Each box can be moved up and down or removed.</p>
             <img src="img/buttons.png" alt="">
-            <p class="figcaption">The buttons to add elements to the page.</p>
+            <p class="figcaption">Some buttons to add elements to the page.</p>
             <!-- TEXTBOX -->
             <h2 id="textboxes" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Textboxes
             </h2>
-            <p class="mb-3">Text boxes are meant to include free text descriptions. You can edit your content in a simple
+            <p class="mb-3">Text boxes are meant to include free text descriptions.
+              You can edit your content in a simple
               <strong>text editor</strong> that allows you to style text in bold,
               italics, underlined, ordered and unordered lists, and to include hypertext link.</br>
               If you want to add a <strong>title</strong>, you can choose between two dimensions (heading 2 and heading 3), or
@@ -552,7 +533,7 @@ LIMIT 20</pre></code>
 
             <!-- relations template -->
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="relations_template">The
-              Relations template</h2>
+              Relations components</h2>
             <p class="mb-3">The Relations template provides an interactive, iterative,
               text search to show relations between data,
               designed according to authors' preferences.
@@ -563,15 +544,13 @@ LIMIT 20</pre></code>
             <img src="img/relations1.png" alt="">
             <p class="figcaption">Relations: create interactive, iterative text searches on a dataset.</p>
 
-            <p class="mb-3">The main elements of the template are:</p>
+            <p class="mb-3">The main components are:</p>
             <ul class="list-group-numbered pl-3">
               <li>Text search</li>
               <li>Action on results</li>
-              <li>Combine results</li>
             </ul>
             <p class="mb-3">You can add as many searches as you want.
-              Actions and combinations of results can be hierarchically
-              attached to any search results (even to results of actions or
+              Actions can be  attached to any search results (even to results of actions or
               combinations). In this template, elements can be deleted but
               cannot be moved up/down, since anyway is the hierarchical order that matters.</p>
             <h2 id="textsearch" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Text search
@@ -603,7 +582,7 @@ SELECT DISTINCT ?item ?itemLabel ?country ?countryLabel WHERE {
   SERVICE wikibase:mwapi {
       bd:serviceParam wikibase:endpoint "www.wikidata.org";
                       wikibase:api "EntitySearch";
-                      mwapi:search "&lt;&lt;searchterm&gt;&gt;";
+                      mwapi:search &lt;&lt;searchterm&gt;&gt;;
                       mwapi:language "en".
       ?item wikibase:apiOutputItem mwapi:item.
   }
@@ -639,30 +618,25 @@ SERVICE wikibase:label {
               and these appear as buttons in the former table.</p>
             <img src="img/relations3.png" alt="">
             <p class="figcaption">Actions appear as buttons near results of a previous search (or action).</p>
-            <p class="mb-3">To add an action click on the button <b>Add action to results</b>
+            <p class="mb-3">To add an action click on the button <b>Add action</b>
               below the previous SPARQL query</p>
             <img src="img/relations4.png" alt="">
             <p class="figcaption">Add an action to results of a SPARQL query.</p>
-            <p class="mb-3">An action consists of three areas to be filled in, namely:</p>
+            <p class="mb-3">An action consists of two areas to be filled in, namely:</p>
             <ul class="list-group-numbered pl-3">
               <li>The name of action <span style="color:red;">(required)</span>. It will appear as a button in the table
               </li>
-              <li>The name of the column <span style="color:red;">(required)</span>.
-                The name of the column of the previous search to which to attach the action. The button will appear for
-                each element in that column.</li>
               <li>The SPARQL query <span style="color:red;">(required)</span>.
-                It does not have any constraint on the variable names,
-                it can return as many values as needed,
-                and the same rule for replacing URIs with their labels apply also here.
+                There is no constraint on the variable names,
+                and the query can return as many values as needed.
+                The same rule for replacing URIs with their labels apply also here.
               </li>
             </ul>
-            <p class="mb-3">However, a placeholder with the name of the column MUST be included in the query in the
+            <p class="mb-3">However, a placeholder MUST be included in the query in the
               following form</p>
-            <code><pre>&lt;&lt;{variable}&gt;&gt;</pre></code>
-            <p class="mb-3">For instance, if the column name is <b>?item</b>,
-              the placeholder will be <b>&lt;&lt;item&gt;&gt;</b> (see the picture below,
-              where an action called <b>show similar museums</b> is
-              attached to the column <b>item</b> of the text search described above).</p>
+            <code><pre>&lt;&lt;item&gt;&gt;</pre></code>
+            <p class="mb-3">For instance, an action called <b>show similar museums</b> can be
+              attached to the column <b>item</b> of the text search described above (the column name is called <b>item</b> too just by chance).</p>
             <p class="mb-3">Multiple actions can be attached to the same column, as well as to different columns.</p>
 
             <img src="img/relations5.png" alt="">
@@ -679,67 +653,14 @@ SERVICE wikibase:label {
             <p class="mb-3">In the above examples you can already see that results
               of an action (<em>Show similar museums</em>) can
               be further associated with new actions (e.g. <em>shared artists</em>).
-              To attach an action to results of a previous action,
+              To attach an action to a table use the green button that appears next to column names,
               use the button you find below the latter.
             </p>
-            <img src="img/relations7.png" alt="">
-            <p class="figcaption">Actions: attach a new action to results of an action.</p>
-            <p class="mb-3">Actions are <b>strictly hierarchically</b> organised, i.e. an action can be attached
-              to an immediate parent action or search, but not to anchestors.
-              There is no limit in the hierarchy, so you can create an infinite flow
-              of research paths. </p>
-            <h2 id="combine" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Combine results
-            </h2>
-            <p class="mb-3">Results of an action can be associated with a <b>combine results</b> action
-              that combines (a) the user-selected value from the initial search
-              and (b) the user-selected value from the action results. In other terms, once you have at least one text
-              search and one action,
-              you can perform new queries that include individuals from the two sets of results,
-              and show results in a new table.
-            </p>
 
-            <p class="mb-3">For instance, the above text search returns a list
-              of museums that include the search term <em>Orsay</em>.
-              The column <b>item</b> of this set of results
-              is associated with an action that shows similar museums
-              (i.e., the action <b>show similar museums</b>).
-              The table with similar museums includes a column called <b>museum</b>.
-              Now, we could combine (a) Musee d'Orsay (<b>item</b>)
-              and (b) Metropolitan Museum of Art (<b>museum</b>) in a new query
-              to show the artists these museums have in common.
-              We can call this combined-results-action <b>shared artists</b>.</p>
-            <p class="mb-3">The box <b>combine results</b> action looks exactly like an action,
-              including three text areas, namely:</p>
-            <ul class="list-group-numbered pl-3">
-              <li>The name of the action <span style="color:red;">(required)</span>. It appears as button in the table.
-              </li>
-              <li>The name of the column <span style="color:red;">(required)</span>.
-                Specify the column name of the table (result of an action) to which to attach the combine-results-action
-                (in the above example it would be <b>museum</b>).</li>
-              <li>The SPARQL query <span style="color:red;">(required)</span>.
-                In a combine-results-action there MUST be two placeholders,
-                respectively identifying: (a) the column name of the action to be attached (e.g. <b>museum</b>)
-                and (b) the column name of the parent text search or action (e.g. <b>item</b>).</li>
-            </ul>
-            <p class="mb-3"><b>N.B.</b> Be aware that the two placeholders,
-              hence the two columns from the two sets of results, MUST NOT have the same name.</p>
-            <p class="mb-3">Following the previous example, the SPARQL query below returns
-              all artists whose artworks are on display in both the selected museums.</p>
-            <img src="img/relations8.png" alt="">
-            <p class="figcaption">Combine results: a SPARQL query that combines individuals of two sets of results.</p>
-
-            <p class="mb-3">To see the results of a combine-results action,
-              perform a new text search in the preview (e.g. search <em>Orsay</em>),
-              then click on the button that performs the first action (<em>Show similar museums</em>),
-              and finally click on the button of the combine-results action (<em>Shared artists</em>)</p>
-            <p class="mb-3">The result of the combine-results action would look like follows.</p>
-            <img src="img/relations9.png" alt="">
-            <p class="figcaption">Combine results: follow the flow of queries and see results of a combine-results
-              action.</p>
             <!-- maps template -->
             <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2" id="maps_template">The
-              Maps template</h2>
-            <p class="mb-3">The Maps template provides an interactive geographic map.
+              Maps components</h2>
+            <p class="mb-3">The Maps components provide an interactive geographic map.
               Data points can be associated with tooltips with customisable content and
               filters can be applied to filter out points on the map.
             </p>
@@ -748,7 +669,7 @@ SERVICE wikibase:label {
             <p class="mb-3">The main elements of the template are:</p>
             <ul class="list-group-numbered pl-3">
               <li>A SPARQL query to retrieve the data points <span style="color:red;">(required)</span></li>
-              <li>Tooltips</li>
+              <li>Metadata sidebar</li>
               <li>Filters</li>
             </ul>
             <p class="mb-3">In a story you can add only one map, but you can add as many filters as you want.</p>
@@ -790,8 +711,8 @@ WHERE
             <p class="figcaption">A SPARQL query to retrieve coordinates of geographic points in Wikidata.</p>
             <h2 id="tooltip" class="text-lg sm:text-xl text-gray-900 title-font mb-2">Tooltips
             </h2>
-            <p class="mb-3">Clicking on each data point shows a tooltip.
-              The content of the tooltips is defined in the same SPARQL query to retrieve the data points.
+            <p class="mb-3">Clicking on each data point shows a sidebar.
+              The content of the sidebar is defined in the same SPARQL query to retrieve the data points.
               In particular, each non-mandatory variable returned in the query appears
               in the tooltip in the same order as the corresponding variable is returned, separated by period.
               Following the previous example, we can show the
