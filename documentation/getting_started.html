@@ -145,13 +145,21 @@
                         </div>
                         <p>Running at <a class="text-green-500" href="http://127.0.0.1:5000/melody"
                                 target="_blank">http://127.0.0.1:5000/melody</a>.</p>
+                        <p>Before running the application, follow the instruction to setup the authentication.</p>
 
                         <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
                             Authentication
                         </h2>
-                        <p>MELODY has a tight-knit relation with GitHub. To use MELODY both locally
-                            and in a production environment,
-                            your instance must be paired with a GitHub repository and an OAuth Application for the authentication
+                        <p>Preparation checklist</p>
+                        <ul>
+                          <li>get a GitHub account</li>
+                          <li>create a bearer token bind to your account</li>
+                          <li>create a repository</li>
+                          <li>create a OAuth application paired with your repository</li>
+                        </ul>
+                        <p>MELODY has a tight-knit relation with GitHub. To use MELODY locally
+                            or in a production environment, your instance must be paired
+                            with <b>a GitHub repository and an OAuth Application</b> for the authentication
                             (see <a class="text-green-500" target="_blank"
                                 href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app">how
                                 to create an OAuth app</a>
@@ -160,48 +168,55 @@
                                 href="https://docs.github.com/en/organizations/restricting-access-to-your-organizations-data/approving-oauth-apps-for-your-organization">how
                                 to approve the app on your repository</a>).
                         </p>
-                        <p>If you run the application locally, you need an OAuth app anyway.
-                            Only collaborators of the repository can sign in with their GitHub account and can publish a
-                            story, which will appear in the left sidebar. While configuring the OAuth Application for your local instance, use the following settings:</p>
+                        <p>The benefit of having a repository attached to your instance is that
+                          only collaborators of the repository can sign in with their GitHub account
+                          and publish a story on the online MELODY website, which will appear in the left sidebar.
+                          While configuring the OAuth Application for your local instance,
+                          use the following settings:</p>
                         <img src="img/oauth_local.png" style="max-width:50%">
+                        <p>If you are deploying MELODY online, replace localhost with your URL base,
+                          but keep <b>/melody</b> endpoint.</p>
                         <h2 id="auth" class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">
                             Configuration
                         </h2>
-                        <p>After creating the OAuth app, modify the file <b>conf.py</b>
-                            in the root directory to configure the login.</p>
+                        <p>After creating the OAuth app, you will get a Client ID and a CLient secret ID.
+                          Modify the file <b>conf.py</b> in the root directory, and include the codes to configure the login.</p>
                         <code>
                                   <pre>
         clientID='OAUth client id'
         clientSecret='OAUth client secret id'
-        owner='the owner of the repository'
+        owner='the owner of the repository, e.g. your username'
         repo_name='the repository name'
         token='the bearer token of the admin of the repository'</pre>
                                 </code>
 
                         <h3><strong>Allow external collaborators (optional)</strong></h3>
-                        <p>If you want to allow external collaborators to create stories, but you don't want these to be published with yours, you can create another online environment where external users'
+                        <p>If you want to allow external collaborators to create stories too,
+                          but you don't want their stories to be published with yours,
+                           you can create another online environment dedicated to them, where external users'
                             stories are published. To do so, you will need:</p>
                         <ul>
-                          <li>1. another GitHub repository with Github Pages enabled</li>
-                          <li>2. copy the <a class="text-green-500" target="_blank" href="https://github.com/polifonia-project/dashboard/tree/main/static" target="_blank">static</a> folder in the new repository</li>
-                          <li>3. add a few parameters to the configuration file on your dashboard</li>
+                          <li>another GitHub repository with Github Pages enabled</li>
+                          <li>a bearer token</li>
+                          <li>copy the <a class="text-green-500" target="_blank" href="https://github.com/polifonia-project/dashboard/tree/main/static" target="_blank">static</a> folder in the new repository</li>
+                          <li>add a few parameters to the configuration file on your instance of MELODY</li>
                         </ul>
                         <code>
                                   <pre>
         melody_owner = 'the owner of the repository where external users can publish stories'
         melody_repo_name = 'the name of the repository where external users can publish stories'
-        melody_sub_dir = 'the folder where stories are stored (copy here the folder "static")'
+        melody_sub_dir = 'the folder or path in the repository where external stories will be stored (NB. paste here the folder "static")'
         melody_token = 'the bearer token of the admin of the repository'
-        gituser = 'the name of the github user that will push commits'
+        gituser = 'the name of the github user that will push commits on behalf of external users'
         email = 'the email of the github user that will push commits'</pre>
                                 </code>
-                        <p>These parameters may be the same as the previous ones
-                          (if you want all users to publish on the website of the dashboard)
-                          or may be different (stories by external users are published elsewhere).</p>
-                        <p>We do not ask many permissions to (external) users that login to MELODY
-                          (only read user information). While we preserve the username and email of stories creators,
-                          the publication of stories is managed by an admin (<b>gituser</b> | <b>email</b>), who can be the same as <b>melody_owner</b> and/or <b>owner</b>.</p>
-                        
+                    <p>The github user may be the same as the one you used for MELODY
+                      or may be different. Note that this user will be the one asking users permissions
+                      to read their contact info (for the only purpose to understand whether they are MELODY collaborators
+                      or external users). While we preserve the username and email of stories creators,
+                      the commits and publication of stories are managed by the user you choose
+                      (i.e. <b>gituser</b> | <b>email</b>, who can be the same as <b>melody_owner</b> and/or <b>owner</b>).</p>
+
 
 
                     </div>
