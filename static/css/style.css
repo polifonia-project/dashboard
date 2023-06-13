@@ -579,7 +579,7 @@ div[id*='block_field'] {
 #sortable .block_title {
   float: left;
   color: white !important;
-  width: 80%;
+  width: 100%;
 }
 
 .block_title.float_none {
