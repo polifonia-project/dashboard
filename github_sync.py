@@ -229,11 +229,11 @@ def publish_datastory(host,PREFIX,section_name,datastory_name,session):
                     data_methods.update_json(
                         'static/temp/stories_list.json', stories_list)
                     break
-            else:
-                # append new story
-                stories_list.append(new_story)
-                data_methods.update_json(
-                    'static/temp/stories_list.json', stories_list)
+                else:
+                    # append new story
+                    stories_list.append(new_story)
+                    data_methods.update_json(
+                        'static/temp/stories_list.json', stories_list)
     else:
         stories_list = []
         stories_list.append(new_story)
