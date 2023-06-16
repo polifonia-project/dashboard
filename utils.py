@@ -112,14 +112,14 @@ def static_modifications(dev=False):
                         if modified_yesterday(today, m_date):
                             file_path = main_folder + '/' + \
                                 folder + '/' + file.split('\\')[1]
-                            github_sync.push(
-                                file_path, 'main', conf.gituser, conf.email, conf.melody_token, path=True)
+                            github_sync.push('static zip',
+                                [file_path], True, conf.gituser, conf.email, conf.melody_token, path=True)
                 elif len(folder_files) == 0:
                     file_stats = os.stat(main_folder + '/' + folder)
                     m_date = modification_date(file_stats)
                     if modified_yesterday(today, m_date):
                         file_path = main_folder + '/' + folder
-                        github_sync.push(file_path, 'main', conf.gituser,
+                        github_sync.push('static zip', [file_path], True, conf.gituser,
                                          conf.email, conf.melody_token, path=True)
 
 

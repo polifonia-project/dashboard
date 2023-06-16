@@ -1,6 +1,6 @@
 import os
 import requests
-from github import Github, InputGitAuthor
+from github import Github, InputGitAuthor, InputGitTreeElement
 import conf
 import data_methods
 
@@ -99,13 +99,35 @@ def validate_credentials(code):
         user_name, user_type = 'None' , 'extra'
     return user_name, user_type
 
-def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=None, action='', path=False):
-    """ Create a new file or update an existing file in a Github repository.
+def content_per_commit(repo, file_path, path):
+    """For each file to commit, prepare its content."""
+    if path == False:
+        # necessary to commit filename without path
+        absolute_file_path = os.path.basename(file_path)
+    else:
+        absolute_file_path = file_path
+
+    # Both create/update file replace the file with the local one
+    with open(file_path) as f:
+        data = f.read()
+
+    blob = repo.create_git_blob(data, 'utf-8')
+    element = InputGitTreeElement(path=conf.melody_sub_dir+'/'+absolute_file_path, mode='100644', type='blob', sha=blob.sha)
+    
+    return element
+    
+
+
+
+def push(story_id, local_files_path_list, update, gituser=None, email=None, bearer_token=None, action='', path=False):
+    """ Create or update existing files in a Github repository.
 
     This function allows to publish and/or update content on another Github repository.
 
     Args:
-        local_file_path (str): a string representing the local path of the file that needs to be published or updated.
+        story_id (str): a string containing the identification umber for the story.
+        local_files_path_list (list): a list containing all the local path of the files that need to be published or updated.
+        update (boolean): a boolean whose value defines if the commit contains updated content (True) or not (False).
         branch (str): a string representing the branch from/to which publicate or update. 'main' is default.
         gituser (str): a string representing the Github user that will carry out the action. 'None' is default.
         email (str): a string representing the email address of gituser. 'None' is default.
@@ -122,38 +144,27 @@ def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=
     g = Github(token)
     repo = g.get_repo(owner+"/"+repo_name)
     author = InputGitAuthor(user, usermail)  #  commit author
-    if path == False:
-        # necessary to commit filename without path
-        absolute_file_path = os.path.basename(local_file_path)
+
+    # set message content
+    if update == True:
+        message = 'update ' + story_id +' ' + action
     else:
-        absolute_file_path = local_file_path
+        message = 'create ' + story_id +' ' + action
+    
+    # put content for commit in list
+    elements_for_commit = []
 
-    try:
-        # Retrieve the online file to get its SHA and path
-        contents = repo.get_contents(
-            conf.melody_sub_dir+'/'+absolute_file_path)
-        update = True
-        message = "updated file "+absolute_file_path+" "+action
-    except:
-        update = False
-        message = "created file "+absolute_file_path+" "+action
-
-    # Both create/update file replace the file with the local one
-    with open(local_file_path) as f:
-        data = f.read()  # could be done in a smarter way
-
-    if update == True:  # If file already exists, update it
-        # Add, commit and push branch
-        repo.update_file(contents.path, message, data,
-                         contents.sha, author=author)
-    else:
-        try:
-            # If file doesn't exist, create it in the same relative path of the local file
-            # Add, commit and push branch
-            repo.create_file(conf.melody_sub_dir+'/'+absolute_file_path, message, data,
-                             branch=branch, author=author)
-        except Exception as e:
-            print(e)
+    for file_path in local_files_path_list:
+        element = content_per_commit(repo, file_path, path)
+        elements_for_commit.append(element)
+    
+    head_sha = repo.get_branch('main').commit.sha
+    base_tree = repo.get_git_tree(sha=head_sha)
+    tree = repo.create_git_tree(elements_for_commit, base_tree)
+    parent = repo.get_git_commit(sha=head_sha)
+    commit = repo.create_git_commit(message, tree, [parent])
+    masters_refs = repo.get_git_ref('heads/main')
+    masters_refs.edit(sha=commit.sha)
 
 
 def delete_file(local_file_path, branch, gituser=None, email=None, bearer_token=None):
@@ -197,14 +208,19 @@ def publish_datastory(host,PREFIX,section_name,datastory_name,session):
     Publish a data story on the external catalogue
     """
 
+    stories_list_path = 'static/temp/stories_list.json'
+    story_config_path = 'static/temp/config_'+section_name+'.json'
+    story_html_path = 'static/temp/story_'+section_name+'.html'
+
+    story_update = False
+
     r = requests.get(host + PREFIX[1:] + section_name +
                      '/' + datastory_name)
 
     # open and create html file
     data_methods.create_html(r, datastory_name, section_name)
 
-    story_data = data_methods.read_json(
-        'static/temp/config_'+section_name+'.json')
+    story_data = data_methods.read_json(story_config_path)
 
     new_story = {
         'user_name': session['name'],
@@ -217,40 +233,41 @@ def publish_datastory(host,PREFIX,section_name,datastory_name,session):
 
     if stories_list is not None:
         data_methods.update_json(
-            'static/temp/stories_list.json', stories_list)
+            stories_list_path, stories_list)
         if new_story in stories_list:
-            pass
+            story_update = True
         elif new_story not in stories_list:
             for story in stories_list:
                 # check if story id is present
                 if new_story['id'] in story.values():
+                    story_update = True
                     # update title
                     story['title'] = new_story['title']
                     data_methods.update_json(
-                        'static/temp/stories_list.json', stories_list)
+                        stories_list_path, stories_list)
                     break
                 else:
                     # append new story
                     stories_list.append(new_story)
                     data_methods.update_json(
-                        'static/temp/stories_list.json', stories_list)
+                        stories_list_path, stories_list)
     else:
         stories_list = []
         stories_list.append(new_story)
         data_methods.update_json(
-            'static/temp/stories_list.json', stories_list)
-
+            stories_list_path, stories_list)
+        
     # commit config and html to repo
-    push('static/temp/config_'+section_name+'.json', 'main', conf.gituser,
-                     conf.email, conf.melody_token, '@'+session['name'])
-    push('static/temp/story_'+section_name+'.html', 'main', conf.gituser,
-                     conf.email, conf.melody_token, '@'+session['name'])
 
-    # commit stories list to repo
-    push('static/temp/stories_list.json', 'main', conf.gituser,
-                     conf.email, conf.melody_token)
+    files_to_commit = [story_config_path, story_html_path, stories_list_path]
+    push(section_name, files_to_commit, story_update, conf.gituser, conf.email, conf.melody_token, '@'+session['name'])
+    # push(story_config_path, 'main', conf.gituser, conf.email, conf.melody_token, '@'+session['name'])
+    # push(story_html_path, 'main', conf.gituser, conf.email, conf.melody_token, '@'+session['name'])
+
+    # # commit stories list to repo
+    # push(stories_list_path, 'main', conf.gituser, conf.email, conf.melody_token)
 
     # remove the files
-    os.remove('static/temp/config_'+section_name+'.json')
-    os.remove('static/temp/story_'+section_name+'.html')
-    os.remove('static/temp/stories_list.json')
+    os.remove(story_config_path)
+    os.remove(story_html_path)
+    os.remove(stories_list_path)
