@@ -18,6 +18,13 @@ licence:
 contributors:
 - Marilena Daquino <https://github.com/marilenadaquino>
 - Giulia Renda <https://github.com/mondoboia>
+related-components:
+  - serves: 
+     - broadcast-concerts-knowledge-graph
+     - led
+     - meetups-knowledge-graph
+     - musicbo-knowledge-graph
+     - bells-knowledge-graph
 ---
 
 
