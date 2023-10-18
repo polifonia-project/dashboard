@@ -13,7 +13,7 @@ release-number: v0.1.1
 release-link: https://github.com/polifonia-project/dashboard/releases/tag/v0.1.1
 doi: 10.5281/zenodo.6637345
 changelog: https://github.com/polifonia-project/dashboard/releases/latest
-license:
+licence:
 - IscLicense
 contributors:
 - Marilena Daquino <https://github.com/marilenadaquino>
