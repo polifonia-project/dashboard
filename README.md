@@ -29,8 +29,7 @@ related-components:
 - documentation:
   - melody-prototypes
 bibliography:
-- main-publication:
-  "Giulia Renda, Marilena Daquino, and Valentina Presutti (2023). Melody: A Platform for Linked Open Data Visualisation and Curated Storytelling. In Proceedings of the 34th ACM Conference on Hypertext and Social Media (HT '23). Association for Computing Machinery, New York, NY, USA, Article 27, 1–8. https://doi.org/10.1145/3603163.3609035"
+- main-publication:"Giulia Renda, Marilena Daquino, and Valentina Presutti (2023). Melody: A Platform for Linked Open Data Visualisation and Curated Storytelling. In Proceedings of the 34th ACM Conference on Hypertext and Social Media (HT '23). Association for Computing Machinery, New York, NY, USA, Article 27, 1–8. https://doi.org/10.1145/3603163.3609035"
 - publication:
   - "Giulia Renda, Marilena Daquino (2023). Storytelling with Linked Open Data. In La memoria digitale: forme del testo e organizzazione della conoscenza. Atti del XII Convegno Annuale AIUCD. Siena: Università degli Studi di Siena. https://zenodo.org/doi/10.5281/zenodo.8070707"
 ---
