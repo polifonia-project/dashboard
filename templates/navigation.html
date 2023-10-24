@@ -21,7 +21,7 @@
 	<!-- Navbar Header -->
 	<nav class="navbar navbar-header navbar-expand-lg" data-background-color="dark">
 
-		<div class="container-fluid">
+		<div class="container">
 			<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
 				{% if session['user_type'] and session['user_type'] == 'extra' %}
 				<li class="nav-item dropdown">
@@ -35,17 +35,10 @@
 				</li>
 				{% endif %}
 				<li class="nav-item">
-					{% if session['name'] and session['name'] != 'anonym' %}
 					<a class="nav-link" href="/melody/setup" role="button" aria-expanded="false"
 						aria-controls="search-nav">
 						Create a story
 					</a>
-					{% else %}
-					<a class="nav-link" href="/melody/asklogin" role="button" aria-expanded="false"
-						aria-controls="search-nav">
-						Create a story
-					</a>
-					{% endif %}
 				</li>
 				{% if session['name'] and session['name'] != 'anonym' %}
 				<li class="nav-item"><a class="nav-link" href="/melody/signout" role="button" aria-expanded="false"

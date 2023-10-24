@@ -1,0 +1,21 @@
+{% if session['user_type'] == 'extra' and datastory_data.id %}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+  data-notify-position="bottom-right"
+  style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+  data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+    style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+    class="flaticon-alarm-1"></span> <span data-notify="title">Important</span>
+  <span data-notify="message">If you leave without downloading or publishing your data story, it will be
+    deleted.</span><a href="#" target="_blank" data-notify="url"></a>
+</div>
+{% elif session['user_type'] == 'random' and datastory_data.id%}
+<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
+  data-notify-position="bottom-right"
+  style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
+  data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
+    style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
+    class="flaticon-alarm-1"></span> <span data-notify="title">Important</span>
+  <span data-notify="message">If you leave without downloading your data story, it will be deleted.</span><a href="#"
+    target="_blank" data-notify="url"></a>
+</div>
+{% endif %}

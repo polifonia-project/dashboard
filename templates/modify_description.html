@@ -1,0 +1,14 @@
+<div class="card-header">
+    <div class="card-head-row card-tools-still-right">
+        <!-- <h4 class="card-title">About the Project</h4> -->
+    </div>
+    <p class="card-category">
+        {% if datastory_data.description %}
+        <textarea  name="description" type="text" id=""
+            placeholder="A brief introdution to the project.">{{ datastory_data.description }}</textarea>
+        {% else %}
+        <textarea name="description" type="text" id=""
+            placeholder="A brief introdution to the project."></textarea>
+        {%endif%}
+    </p>
+</div>

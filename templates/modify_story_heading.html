@@ -1,0 +1,41 @@
+<div class=" panel-header bg-primary-gradient">
+<div class="page-inner">
+    <!-- color picker -->
+    <div id="colors">
+        <p>Pick the colors of your story</p>
+        {% for color in datastory_data.color_code|reverse %}
+        <input type="color" id="{{loop.index}}_color" name="{{loop.index}}_color" value="{{color}}">
+        {% endfor %}
+    </div>
+
+    <div class="flex-md-row">
+            <h1 class="pb-2 fw-bold ">
+                <textarea name="title" type="text" id=""
+                    cols="{{ datastory_data.title|length }}" rows="1" placeholder="The title of your story"
+                    required>{{ datastory_data.title }}</textarea>
+            </h1>
+            <h5 class="mb-2 fw-bold">
+                {% if datastory_data.subtitle %}
+                <textarea name="subtitle" type="text" id=""
+                    cols="{{ datastory_data.subtitle|length }}" rows="2"
+                    placeholder="Subtitle">{{ datastory_data.subtitle }}</textarea>
+                {% else %}
+                <textarea name="subtitle" type="text" id="" rows="1"
+                    placeholder="Subtitle"></textarea>
+                {%endif%}
+            </h5>
+            <h5 class="text-white op-7 pb-2">
+                {% if datastory_data.curator %}
+                <textarea name="curator" type="text" id=""
+                    cols="{{ datastory_data.curator|length }}" rows="1"
+                    placeholder="Authors">{{ datastory_data.curator }}</textarea>
+                {% else %}
+                <textarea name="curator" type="text" id="" rows="1"
+                    placeholder="Authors"></textarea>
+                {%endif%}
+            </h5>
+
+
+    </div>
+</div>
+</div>

@@ -1,245 +1,81 @@
 {% extends "base.html" %}
 
-{% block title %} {{ datastory_data.title }} {% endblock %}
-
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
+<link rel="stylesheet" href="/melody/static/css/templates.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-	integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
-	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/react@18/umd/react.{{ react_version }}" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.{{ react_version }}" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/@jitbit/htmlsanitizer@latest/HtmlSanitizer.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+      integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+      crossorigin="" />
+  <link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
+  <link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="/melody/static/css/leaflet-sidebar.css">
+
+  <script type="text/javascript">
+    var datastory_data = {{ datastory_data | tojson }};
+  </script>
 {% endblock stylesheets %}
 
 {% block content %}
-
+{% set count = datastory_data.dynamic_elements|length %}
 <div class="content row datastorypage" id="dwn">
-	<section id="secondarymenu" class="secondarymenu col-md-3 col-sm-12">
-		<section id="secondarymenuinner" class="secondarymenuinner">
-			<h4>About</h4>
-			{% if datastory_data.curator %}
-			<p>Authors: {{ datastory_data.curator }} </p>
-			{%endif%}
-			{% if session['user_type'] == 'polifonia' %}
-			<p>Part of: {{ datastory_data.section_name }}</p>
-			{%endif%}
-			<p>Source: <a href="{{datastory_data.sparql_endpoint}}" target="_blank">SPARQL endpoint</a></p>
-			<p>Export</p>
-			<button class="exportbutton" onclick="getPDF('dwn')" type="button" name="button">PDF</button>
-			<button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
-					download="{{datastory_data.title}}.html">HTML</a></button>
-			<!-- publish button -->
-			{% if datastory_data.id and session['user_type'] == 'extra' %}
-			<hr>
-			<form method="post">
-				<button type="submit" method="post" class="btn btn-success prevent_alert publish_btn">Publish
-					now!</button>
-			</form>
-			{% endif %}
-			<!-- modify button -->
-			{% if datastory_data.id and session['user_type'] == 'extra' or session['user_type'] == 'random' %}
-			<a class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
-				href="/melody{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
-				Modify
-			</a>
-			{% endif %}
-		</section>
+  {% include 'datastory_secondarymenu.html' %}
+  <div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
+    <div class="page-inner py-5">
+      <div class="align-items-left align-items-md-center flex-column flex-md-row">
 
-	</section>
-	<div class="panel-header bg-primary-gradient col-md-9 col-sm-12 datastorypagefields">
-		<div class="page-inner py-5">
-			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-				<div>
-					<h1 class="text-white pb-2 fw-bold">{{ datastory_data.title }}</h1>
-					{% if datastory_data.subtitle %}
-					<h2 class="text-white op-7 mb-2">
-						{{ datastory_data.subtitle }}
-					</h2>
-					{%endif%}
-					{% if datastory_data.description %}
-					<p class="card-category">
-						{{ datastory_data.description }}
-					</p>
-					{%endif%}
+          {% include 'datastory_heading.html' %}
+          <span id='loader' class='lds-dual-ring hidden overlay'></span>
+          <div id="sortable"></div>
+          <script src="/melody/static/js/react/Error.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/Map.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/Table.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/Chart.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/Textbox.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/Count.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/Action.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/TextSearch.js" type="text/babel"></script>
+          <script src="/melody/static/js/react/add_components.js" type="text/babel"></script>
 
-					<div class="card-body row">
-						<span id='loader' class='lds-dual-ring hidden overlay'></span>
-						{% for dict in datastory_data.dynamic_elements %}
-
-						{% if dict.type == 'section_title' %}
-						<!-- section title -->
-						<div class="col-md-12 col-sm-12 card-title" id="{{dict.position}}">
-							{{dict.section_title|safe}}
-						</div>
-
-						{% elif dict.type == 'text' %}
-						{% if dict.text[1] == 'p' %}
-						<!-- text -->
-						<div class="typography-line col-md-12 col-sm-12" id="{{dict.position}}">
-							{{dict.text|safe}}
-						</div>
-						{% elif dict.text[1] == 'h' %}
-						<!-- section title -->
-						<div class="col-md-12 col-sm-12 card-title" id="{{dict.position}}">
-							{{dict.text|safe}}
-						</div>
-						{% endif %}
-
-						{% elif dict.type == 'count' %}
-						<!-- count -->
-						<div class="count_result col-md-3 col-sm-12" id="{{dict.position}}"></div>
-
-						{% elif dict.type == 'table' %}
-						<!-- table -->
-						<div class='col-md-12 col-sm-12' id='{{dict.position}}'>
-							<table class='col-12' id='{{dict.position}}__table'></table>
-						</div>
-						<div class="exportchart card-tools col-md-12 col-sm-12">
-							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								Export HTML
-							</a>
-							<a id="csv_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								Export CSV
-							</a>
-							<a href="#" role="button" data-toggle="modal" data-target="#queryModal_{{dict.position}}"
-								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
-								See query
-							</a>
-						</div>
-						<!-- SPARQL query modal -->
-						<div class="modal fade" id="queryModal_{{dict.position}}" tabindex="-1" role="dialog"
-							aria-labelledby="queryModalLabel" aria-hidden="true">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content card">
-									<div class="modal-header">
-										<h4 class="card-title" id="queryModalLabel_{{dict.position}}">SPARQL query
-										</h4>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-									</div>
-									<div class="modal-body">
-										<div class="typography-line col-md-12 col-sm-12">
-											<h3 class="text-white">TABLE QUERY</h3>
-											<p>{{dict.table_query}}</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						{% elif dict.type == 'chart' %}
-						<!-- chart -->
-						<div class="chartstory col-md-12 col-sm-12" id="{{dict.position}}">
-
-						</div>
-						<div class="exportchart card-tools col-md-12 col-sm-12">
-							<a id="export_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								Embed
-							</a>
-							<a id="print_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm mr-2">
-								<span class="btn-label">
-									<i class="fa fa-print"></i>
-								</span>
-								Save picture
-							</a>
-							<a href="#" role="button" data-toggle="modal" data-target="#queryModal_{{dict.position}}"
-								id="sparqlQuery_{{dict.position}}" class="btn btn-info btn-border btn-round btn-sm">
-								See query
-							</a>
-						</div>
-						<!-- SPARQL query modal -->
-						<div class="modal fade" id="queryModal_{{dict.position}}" tabindex="-1" role="dialog"
-							aria-labelledby="queryModalLabel" aria-hidden="true">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content card">
-									<div class="modal-header">
-										<h4 class="card-title" id="queryModalLabel_{{dict.position}}">SPARQL query</h4>
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-									</div>
-									<div class="modal-body">
-										<div class="typography-line col-md-12 col-sm-12">
-											<h3 class="text-white">MAIN QUERY</h3>
-											<p>{{dict.chart_query}}</p>
-											{% if dict.extra_queries %}
-											{% for extra in dict.extra_queries %}
-											<hr>
-											<h3 class="text-white">ADDITIONAL QUERY</h3>
-											<p>{{extra.extra_query}}</p>
-											{% endfor %}
-											{% endif %}
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						{% endif %}
-
-						{% endfor %}
-
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+      </div>
+    </div>
+  </div>
 </div>
-<!-- alerts -->
-{% if session['user_type'] == 'extra' and datastory_data.id %}
-<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
-	data-notify-position="bottom-right"
-	style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
-	data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
-		style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
-		class="flaticon-alarm-1"></span> <span data-notify="title">Important</span>
-	<span data-notify="message">If you leave without downloading or publishing your data story, it will be
-		deleted.</span><a href="#" target="_blank" data-notify="url"></a>
-</div>
-{% elif session['user_type'] == 'random' and datastory_data.id%}
-<div data-notify="container" class="col-10 col-xs-11 col-sm-4 alert alert-info" role="alert"
-	data-notify-position="bottom-right"
-	style="display: inline-block; margin: 0px auto; padding-left: 65px; position: fixed; transition: all 0.5s ease-in-out 0s; z-index: 1031; bottom: 20px; right: 20px;"
-	data-closing="true"><button type="button" aria-hidden="true" class="close" data-dismiss="alert"
-		style="position: absolute; right: 10px; top: 5px; z-index: 1033;">×</button><span data-notify="icon"
-		class="flaticon-alarm-1"></span> <span data-notify="title">Important</span>
-	<span data-notify="message">If you leave without downloading your date story, it will be deleted.</span><a href="#"
-		target="_blank" data-notify="url"></a>
-</div>
-{% endif %}
-
-
+{% include 'alert_save.html'%}
 {% endblock content %}
-
-<!-- Specific Page JS goes HERE  -->
-
 
 {% block javascripts %}
 <script type="text/javascript">
-	var datastory_data = {{ datastory_data | tojson }};
-	$('footer').detach();
+  $('footer').detach();
 </script>
 {% if datastory_data.user_name %}
 <script>
-	let hostname = window.location.hostname;
-	if (!hostname.includes('github')) {
-		let beforeUnloadAlert = true;
-		window.addEventListener('beforeunload', function (e) {
-			if (!beforeUnloadAlert) return;
+  let hostname = window.location.hostname;
+  if (!hostname.includes('github')) {
+    let beforeUnloadAlert = true;
+    window.addEventListener('beforeunload', function (e) {
+      if (!beforeUnloadAlert) return;
 
-			// etc
-			e.preventDefault();
-			e.returnValue = '';
-		});
+      // etc
+      e.preventDefault();
+      e.returnValue = '';
+    });
 
-		function myFunction() {
-			beforeUnloadAlert = false;
-		}
-		var myObj = document.getElementsByClassName('prevent_alert')
-		console.log(myObj);
-		for (el of myObj) {
-			el.addEventListener('click', myFunction);
-		}
-	}
+    function myFunction() {
+      beforeUnloadAlert = false;
+    }
+    var myObj = document.getElementsByClassName('prevent_alert')
+    console.log(myObj);
+    for (el of myObj) {
+      el.addEventListener('click', myFunction);
+    }
+  }
 </script>
 {% endif %}
-
 {% endblock javascripts %}

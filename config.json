@@ -1,8 +1,15 @@
 {
     "sections": {
+        "tunes": "tunes",
+        "choco": "choco",
         "musow": "musoW",
+        "organs": "organs",
+        "fonn": "fonn",
         "wikidata": "Wikidata",
-        "zeri": "Zeri"
+        "tonalities": "Tonalities",
+        "bells": "Bells",
+        "musicbo": "MusicBo",
+        "sound_and_vision": "Sound and Vision"
     },
     "operations": [
         "Count",
@@ -17,33 +24,6 @@
                 "#17cf31"
             ],
             "main_feature": "Present charts and explanations in a personalised canvas. Include bar charts, line charts, doughnut charts and more!"
-        },
-        "template_02": {
-            "name": "maps",
-            "img_path": "/static/img/map.png",
-            "default_color": [
-                "#6e7e3a",
-                "#79f1e9"
-            ],
-            "main_feature": "Configure an interactive map, with filters and interactive charts on demand."
-        },
-        "template_03": {
-            "name": "timeline",
-            "img_path": "/static/img/timeline.png",
-            "default_color": [
-                "#0f64b9",
-                "#e2df1c"
-            ],
-            "main_feature": "Allow users to manipulate time series data. Incrementally build line charts, bar charts, and bubble charts, by adding/removing filters - and see the chart changing!"
-        },
-        "template_04": {
-            "name": "relations",
-            "img_path": "/static/img/relations.png",
-            "default_color": [
-                "#0f64b9",
-                "#e2df1c"
-            ],
-            "main_feature": "Allow users to explore a dataset from an entity and to iteratively perform actions on results of queries."
         }
     },
     "chart_types": [
@@ -73,80 +53,78 @@
                 "description": "musoW is a catalogue of musical resources available on the web realized with the idea to support teachers in music education, creative industries, historians, and musicologists in finding what they need.",
                 "dynamic_elements": [
                     {
-                        "position": 1,
+                        "position": 0,
+                        "operations": [],
                         "type": "text",
-                        "text": "The catalogue includes descriptions of several music-related web resources, with a focus on those that serve or allow users to manipulate music data in any form.",
-                        "operations": []
+                        "text": "<p>The catalogue includes descriptions of several music-related web resources, with a focus on those that serve or allow users to manipulate music data in any form.</p>",
+                        "extra_queries": []
                     },
                     {
-                        "position": 2,
+                        "position": 1,
+                        "operations": [],
                         "type": "count",
                         "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/repository>.}",
                         "count_label": "Repositories",
-                        "operations": []
+                        "extra_queries": []
                     },
                     {
-                        "position": 3,
+                        "position": 2,
+                        "operations": [],
                         "type": "count",
                         "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/catalogue>.}",
                         "count_label": "Catalogues",
-                        "operations": []
+                        "extra_queries": []
                     },
                     {
-                        "position": 4,
+                        "position": 3,
+                        "operations": [],
                         "type": "count",
                         "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/dataset>.}",
                         "count_label": "Datasets",
-                        "operations": []
+                        "extra_queries": []
                     },
                     {
-                        "position": 5,
+                        "position": 4,
+                        "operations": [],
                         "type": "count",
                         "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/digital-library>.}",
                         "count_label": "Digital Libraries",
-                        "operations": []
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Content Overview",
+                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> \r\nSELECT ?label (COUNT(?content) AS ?count) \r\nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?label .} UNION {?content ?p musow:software . musow:software rdfs:label ?label .} } GROUP BY ?label",
+                        "chart_series": "resources",
+                        "chart_legend": {
+                            "x": "resource type",
+                            "y": "count"
+                        },
+                        "extra_queries": []
                     },
                     {
                         "position": 6,
-                        "type": "count",
-                        "count_query": "SELECT (COUNT(*) AS ?count) WHERE {?s ?p <https://w3id.org/musow/vocab/software>.}",
-                        "count_label": "Software",
-                        "operations": []
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>While collecting information about resources is important, we also focused on understanding the potential audience of the resources. We discovered that most of surveyed resources are targeted to scholars.</p>",
+                        "extra_queries": []
                     },
                     {
                         "position": 7,
-                        "type": "chart",
-                        "chart_type": "barchart",
-                        "chart_query": "PREFIX musow: <https://w3id.org/musow/vocab/> \r\nSELECT ?label (COUNT(?content) AS ?count) \r\nWHERE { {?content ?p musow:repository . musow:repository rdfs:label ?label .} UNION {?content ?p musow:catalogue . musow:catalogue rdfs:label ?label .} UNION {?content ?p musow:dataset . musow:dataset rdfs:label ?label .} UNION {?content ?p musow:digital-library . musow:digital-library rdfs:label ?label .} UNION {?content ?p musow:software . musow:software rdfs:label ?label .} } GROUP BY ?label",
-                        "chart_title": "Content Overview",
-                        "operations": []
-                    },
-                    {
-                        "position": 8,
-                        "type": "chart",
-                        "chart_type": "linechart",
-                        "chart_query": "SELECT ?label (COUNT(?label) AS ?count) WHERE { { SELECT ?time (DAY(?time) AS ?label) WHERE { ?entry <http://www.w3.org/ns/prov#generatedAtTime> ?time . } } } GROUP BY ?label ORDER BY ?label",
-                        "chart_title": "New Entries",
-                        "operations": []
-                    },
-                    {
-                        "position": 9,
-                        "type": "text",
-                        "text": "While collecting information about resources is important, we also focused on understanding the potential audience of the resources. We discovered that most of surveyed resources are targeted to scholars.",
-                        "operations": []
-                    },
-                    {
-                        "position": 10,
+                        "operations": [],
                         "type": "chart",
                         "chart_type": "doughnutchart",
+                        "chart_title": "Audiences",
                         "chart_query": "SELECT ?label WHERE { ?entry ?p <https://w3id.org/musow/vocab/repository> . ?entry <https://schema.org/audience> ?audience . ?audience rdfs:label ?label . }",
-                        "chart_title": "Audience of music resources",
-                        "operations": [
-                            {
-                                "action": "count",
-                                "param": "label"
-                            }
-                        ]
+                        "chart_series": "",
+                        "chart_legend": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "extra_queries": []
                     }
                 ],
                 "action": "save"
@@ -238,68 +216,1337 @@
                     }
                 ],
                 "curator": "Marilena Daquino"
-            }
-        },
-        "zeri": {
-            "female_portraits_": {
-                "sparql_endpoint": "http://data.fondazionezeri.unibo.it/sparql",
-                "template_mode": "maps",
-                "title": "Female portraits ",
+            },
+            "relations_between_music_bands_an_exploration": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Relations between music bands - An exploration",
                 "color_code": [
-                    "#d357fe",
-                    "#0042aa"
+                    "#24d3ff",
+                    "#5565e2"
                 ],
-                "section_name": "Zeri",
-                "subtitle": "All the female portraits studied by Federico Zeri",
-                "curator": "",
-                "description": "",
-                "action": "save",
+                "section_name": "wikidata",
+                "subtitle": "Explore relations, connections and resources between music bands with wikidata",
+                "curator": "Marco Grasso",
+                "description": "Search for music bands, choose from the list of results, click on the buttons that appear next to the result and keep exploring relations. New tables will appear, including more actions and relations to explore.\r\n\r\n",
                 "dynamic_elements": [
                     {
-                        "position": 1,
-                        "type": "map",
-                        "map_title": "Female portraits over the world",
-                        "map_points_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX psv: <http://www.wikidata.org/prop/statement/value/>\r\nPREFIX wikibase: <http://wikiba.se/ontology#>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\n \r\nSELECT DISTINCT  ?point ?artwork ?keeperLabel ?lat ?long WHERE {\r\n ?s fabio:hasSubjectTerm <https://w3id.org/zericatalog/subject/ritratto-femminile> ;\r\n    fabio:hasManifestation ?manif .\r\n ?manif frbr:exemplar ?point .\r\n  ?point crm:P50_has_current_keeper ?keeper ; rdfs:label ?artwork.\r\n  \r\n ?keeper crm:P74_has_current_or_former_residence ?location .\r\n OPTIONAL {?keeper rdfs:label ?keeperLabel}\r\n ?location owl:sameAs ?wdlocation .\r\n FILTER(LANG(?artwork) = \"\" || LANGMATCHES(LANG(?artwork), \"en\"))\r\n FILTER(LANG(?keeperLabel) = \"\" || LANGMATCHES(LANG(?keeperLabel), \"en\"))\r\n FILTER(contains (str(?wdlocation), \"wikidata\") )\r\n  SERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> {\r\n   ?wdlocation p:P625 ?coords_stmt .\r\n   ?coords_stmt ps:P625 ?coords;\r\n                psv:P625 [\r\n                  wikibase:geoLatitude ?lat;\r\n                  wikibase:geoLongitude ?long ] .\r\n }\r\n} LIMIT 10\r\n",
+                        "position": 0,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "Search music band",
+                        "textsearch_query": "SELECT DISTINCT ?band ?bandLabel ?category ?categoryLabel ?country ?countryLabel WHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search <<searchterm>>;\r\n                      mwapi:language \"en\".\r\n      ?band wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  {\r\n   {?band wdt:P31 ?category ; wdt:P495 ?country .\r\n              ?category wdt:P31 wd:Q105756498 . }\r\n    UNION\r\n   {?band wdt:P31 ?category ; wdt:P495 ?country .\r\n    ?category wdt:P279 wd:Q2088357 }\r\n   }\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 10",
+                        "textsearch": {
+                            "band": [
+                                "Show music genres",
+                                "Show members"
+                            ],
+                            "country": [
+                                "Other bands from this country"
+                            ],
+                            "genre": [
+                                "Show band of same genre"
+                            ]
+                        },
                         "extra_queries": [],
-                        "operations": []
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "Show music genres",
+                        "action_query": "SELECT DISTINCT ?genre ?genreLabel\r\nWHERE { \r\n  <<item>> wdt:P136 ?genre .\r\n\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 20\r\n",
+                        "extra_queries": [],
+                        "map_filters": []
                     },
                     {
                         "position": 2,
-                        "type": "map_filter",
-                        "map_filter_title": "keeper",
-                        "map_filter_bind_query": "1__map_points_query",
-                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P50_has_current_keeper ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "Show members",
+                        "action_query": "SELECT DISTINCT ?member ?memberLabel ?image\r\nWHERE { \r\n  <<item>> wdt:P527 ?member . \r\n OPTIONAL { ?member wdt:P18 ?image . }\r\n\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 20",
                         "extra_queries": [],
-                        "operations": []
+                        "map_filters": []
                     },
                     {
                         "position": 3,
-                        "type": "map_filter",
-                        "map_filter_title": "artist",
-                        "map_filter_bind_query": "1__map_points_query",
-                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\r\nPREFIX fabio: <http://purl.org/spar/fabio/>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point ^frbr:exemplar / ^fabio:hasManifestation / crm:P94i_was_created_by / crm:P14_carried_out_by  ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"it\"))\r\n}",
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "Other bands from this country",
+                        "action_query": "SELECT DISTINCT ?band ?bandLabel ?category ?categoryLabel WHERE { \r\n  ?band wdt:P495 <<item>> . \r\n  ?band wdt:P31 ?category .\r\n  ?category wdt:P31 wd:Q105756498 .\r\n\r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}\r\nLIMIT 20",
                         "extra_queries": [],
-                        "operations": []
+                        "map_filters": []
                     },
                     {
                         "position": 4,
-                        "type": "map_filter",
-                        "map_filter_title": "technique",
-                        "map_filter_bind_query": "1__map_points_query",
-                        "map_filter_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point crm:P108i_was_produced_by ?prod .\r\n?prod crm:P32_used_general_technique ?filter .\r\n?filter rdfs:label ?filterLabel . \r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\"))\r\n}",
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "Show band of same genre",
+                        "action_query": "SELECT DISTINCT ?band ?bandLabel ?category ?categoryLabel ?country ?countryLabel WHERE {\r\n    ?band wdt:P31 ?category ; wdt:P495 ?country ; wdt:P136 <<item>> .\r\n    ?category wdt:P279 wd:Q2088357 \r\nSERVICE wikibase:label { \r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }\r\n}  LIMIT 20",
                         "extra_queries": [],
-                        "operations": []
+                        "map_filters": []
+                    }
+                ]
+            },
+            "mapping_us_recording_studios": {
+                "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
+                "template_mode": "statistics",
+                "title": "Mapping US Recording Studios",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "wikidata",
+                "subtitle": "Two maps show recording studios in the world",
+                "curator": "Marco Grasso",
+                "description": "Important recording studios are more than just bricks, mortar, and audio equipment to musicians. Let's map all the recording studios locations available on wikidata and lets take a closer look at recording studios in the US.",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "Recording studios in the World",
+                        "map_points_query": "SELECT DISTINCT ?point ?pointLabel ?villeIdLabel ?lat ?long\r\nWHERE\r\n{\r\n  ?point wdt:P31 wd:Q746369. #recording studio\r\n  ?point wdt:P131 ?villeId.\r\n  ?point p:P625 ?statement.\r\n  ?statement psv:P625 ?node.\r\n  ?node wikibase:geoLatitude ?lat.\r\n  ?node wikibase:geoLongitude ?long.\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\r\n}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "Recording studios in the US",
+                        "map_points_query": "SELECT DISTINCT ?point ?pointLabel ?villeIdLabel ?lat ?long\r\nWHERE {\r\n?point wdt:P31 wd:Q746369; wdt:P17 wd:Q30;\r\nwdt:P131 ?villeId; p:P625 ?statement.\r\n?statement psv:P625 ?node. ?node wikibase:geoLatitude ?lat ; wikibase:geoLongitude ?long.\r\nSERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". } }",
+                        "map_filters": [
+                            {
+                                "map_filter_query": "SELECT DISTINCT ?point ?filter ?filterLabel\r\nWHERE {\r\n?point wdt:P31 wd:Q746369; wdt:P17 wd:Q30 .\r\n?point wdt:P131 ?filter. ?filter rdfs:label ?filterLabel .\r\nFILTER(LANG(?filterLabel) = \"\" || LANGMATCHES(LANG(?filterLabel), \"en\")). }",
+                                "extra_id": "1685349578592_0",
+                                "position": 0,
+                                "map_filter_title": "Cities"
+                            }
+                        ],
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "Search country",
+                        "textsearch_query": "SELECT DISTINCT ?pic ?sheep ?sheepLabel ?color ?colorLabel ?status ?statusLabel  ?country ?countryLabel\r\nWHERE {\r\n  SERVICE wikibase:mwapi {\r\n      bd:serviceParam wikibase:endpoint \"www.wikidata.org\";\r\n                      wikibase:api \"EntitySearch\";\r\n                      mwapi:search <<searchterm>>; #country\r\n                      mwapi:language \"en\".\r\n      ?country wikibase:apiOutputItem mwapi:item.\r\n  }\r\n  ?sheep wdt:P31 wd:Q15622363 .\r\n  ?sheep wdt:P495 ?country .\r\n  ?sheep wdt:P2371 ?status .\r\n  OPTIONAL {?sheep wdt:P18 ?pic ; wdt:P462 ?color }\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\".}\r\n  FILTER regex(str(?pic), \"jpg\").\r\n}\r\nORDER BY ?sheep\r\nLIMIT 5\r\n\r\n\r\n\r\n",
+                        "textsearch": {
+                            "country": [
+                                "Other animals"
+                            ]
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "Other animals",
+                        "action_query": "SELECT DISTINCT ?pic ?animal ?animalLabel (SAMPLE(?colorlabel) as ?Colour)\r\nWHERE {\r\n  ?animal wdt:P279* wd:Q729 .\r\n  ?animal wdt:P495 <<item>> .\r\n  ?animal wdt:P18 ?pic .\r\n  ?animal wdt:P462 ?color .\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\".}\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\".\r\n          ?color rdfs:label ?colorlabel.\r\n      }\r\n  FILTER regex(str(?pic), \"jpg\").\r\n}\r\nGROUP BY ?pic ?animal ?animalLabel\r\nLIMIT 10\r\n\r\n\r\n\r\n\r\n",
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
+            },
+            "through_the_prism_of_diversity": {
+                "sparql_endpoint": "https://query.wikidata.org/sparql",
+                "template_mode": "statistics",
+                "title": "Through the Prism of Diversity",
+                "color_code": [
+                    "#3aee96",
+                    "#49b681"
+                ],
+                "section_name": "wikidata",
+                "subtitle": "Discover the Intriguing Links: Human Origins, Eye Colours, and Feline Companions Unveiled!",
+                "curator": "Giulia Renda",
+                "description": "Come join us on an exciting journey that combines data visualizations and storytelling, revealing the captivating connections between human origins, eye colours, and the special bonds we form with our beloved feline pals. This concise data story takes you deep into the realms of human history, genetic diversity, and the irresistible charm of our mysterious furry companions. Get ready to be amazed!",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(*) AS ?count)\r\nWHERE {\r\n  ?item wdt:P31 wd:Q5 .\r\n}",
+                        "count_label": "Number of humans in Wikidata",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>With a staggering count of more that 10 millions individuals, the vast and diverse realm of humanity comes to life within the expansive realm of Wikidata. This digital repository of knowledge encapsulates a wealth of information about people from all walks of life, spanning cultures, eras, and continents.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "Continents Revealed: Mapping the Birthplaces of some Individuals",
+                        "map_points_query": "SELECT DISTINCT ?point ?pointLabel ?personLabel ?lat ?long\r\nWHERE {\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" }\r\n  ?person wdt:P31 wd:Q5;\r\n          wdt:P19 ?point .\r\n           \r\n  ?point wdt:P31 wd:Q5107 .\r\n  ?point p:P625 ?statement.\r\n  ?statement psv:P625 ?node.\r\n  ?node wikibase:geoLatitude ?lat.\r\n  ?node wikibase:geoLongitude ?long.\r\n}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Eye Candy: the Kaleidoscope of Common Eye Colours",
+                        "chart_query": "SELECT ?label (COUNT(?human) AS ?count)\r\nWHERE\r\n{\r\n  ?human wdt:P31 wd:Q5.\r\n  ?human wdt:P1340 ?eyeColor.\r\n  ?eyeColor rdfs:label ?label .\r\n  FILTER(lang(?label) = \"en\")\r\n\r\n}\r\nGROUP BY ?label\r\nORDER BY DESC(?count)\r\nLIMIT 10",
+                        "chart_series": "Humans per colour",
+                        "chart_legend": {
+                            "x": "colour",
+                            "y": "n. of humans"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>From rich chocolate browns to sparkling emeralds, and from oceanic blues to mysterious hazels, behold the mesmerising kaleidoscope of eye colours that captivate our hearts. Each slice of the chart gives you a sneak peek into the abundance of people rocking those fabulous eye hues, letting you see the relative popularity at a glance.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<h2>Paws and Companions: Exploring the Pet Owners among Wikidata's Human Tapestry</h2>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 6,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?human) AS ?count)\r\nWHERE \r\n{\r\n  ?cat wdt:P31 wd:Q146.\r\n  ?human wdt:P31 wd:Q5 .\r\n  ?human wdt:P1429|wdt:P1830 ?cat .\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\r\n}",
+                        "count_label": "Known Cat Owners in Wikidata",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 7,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>&nbsp;Let's take a closer look at these incredible duos.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 8,
+                        "operations": [],
+                        "type": "table",
+                        "table_title": "Purrfect Pals: Cat Owners and Their Furry Friends",
+                        "table_query": "SELECT DISTINCT ?human ?humanLabel ?cat ?catLabel ?birthDate ?birthPlace ?birthPlaceLabel ?breed ?breedLabel ?pic\r\nWHERE \r\n{\r\n  ?cat wdt:P31 wd:Q146.\r\n  ?human wdt:P31 wd:Q5 .\r\n  ?human wdt:P1429|wdt:P1830 ?cat .\r\n  OPTIONAL { ?cat wdt:P569 ?birthDate . }\r\n  OPTIONAL { ?cat wdt:P19 ?birthPlace . }\r\n  OPTIONAL { ?cat wdt:P4743 ?breed . }\r\n  OPTIONAL { ?cat wdt:P18 ?pic . }\r\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\r\n}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Each entry unveils a unique story of love, devotion, and the extraordinary bonds forged between humans and their beloved pets.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Building upon the cool cats listed in the table, we've got a whole lot more to uncover about their intriguing characteristics. Want to know about similar breeds, hair colours, or even the reasons behind their goodbyes? Just pick a cat's name from the table, and get ready to be blown away by the awesome info that's waiting for you. Let the adventure begin!</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "Find your cat",
+                        "textsearch_query": "SELECT DISTINCT ?cat ?catLabel ?deathCause  ?deathCauseLabel\r\nWHERE {\r\n  ?cat wdt:P31 wd:Q146;\r\n  rdfs:label ?catLabel .\r\n?cat wdt:P509 ?deathCause .\r\n         ?deathCause rdfs:label ?deathCauseLabel .\r\n           FILTER (lang(?deathCauseLabel) = 'en')\r\nFILTER regex(str(?catLabel), <<searchterm>>,  'i')\r\nFILTER (lang(?catLabel) = 'en')\r\n}",
+                        "textsearch": {
+                            "breed": [
+                                "same breed"
+                            ],
+                            "cat": [
+                                "same breed",
+                                "same colour"
+                            ],
+                            "deathCause": [
+                                "same death"
+                            ],
+                            "hairColour": [
+                                "same colour"
+                            ]
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "same breed",
+                        "action_query": "SELECT ?cat ?catLabel ?owner ?ownerLabel WHERE { \r\n?cat  wdt:P4743 <<item>> .\r\n?owner wdt:P1429|wdt:P1830 ?cat .\r\nSERVICE wikibase:label {\r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "same breed",
+                        "action_query": "SELECT ?cat ?catLabel ?owner ?ownerLabel WHERE { \r\n<<item>  wdt:P4743 ?breed .\r\n?cat wdt:P4743 ?breed .\r\n?owner wdt:P1429|wdt:P1830 ?cat .\r\nSERVICE wikibase:label {\r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 14,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "same colour",
+                        "action_query": "SELECT ?cat ?catLabel ?owner ?ownerLabel WHERE { \r\n<<item>>  wdt:P1884|wdt:P462 ?hairColour .\r\n?cat wdt:P1884|wdt:P462 ?hairColour .\r\n?owner wdt:P1429|wdt:P1830 ?cat .\r\nSERVICE wikibase:label {\r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 15,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "same death",
+                        "action_query": "SELECT ?cat ?catLabel ?owner ?ownerLabel WHERE { \r\n?cat  wdt:P509 <<item>> .\r\n?owner wdt:P1429|wdt:P1830 ?cat .\r\nSERVICE wikibase:label {\r\n    bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"\r\n  }}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
+            },
+            "d": {
+                "sparql_endpoint": "d",
+                "template_mode": "statistics",
+                "title": "d",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "wikidata",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "dynamic_elements": []
+            }
+        },
+        "sound_and_vision": {
+            "dutch_broadcast_concert_collection": {
+                "sparql_endpoint": "https://cat.apis.beeldengeluid.nl/sparql",
+                "template_mode": "statistics",
+                "title": "Dutch Broadcast Concert Collection",
+                "color_code": [
+                    "#05c8f0",
+                    "#ff00bc"
+                ],
+                "section_name": "Sound and Vision",
+                "subtitle": "Exploring live concerts on Dutch television and radio",
+                "curator": "Mari Wigham",
+                "description": "The Dutch Broadcast Concert Collection (Dutch name MOZ - Muziekopnamen Zendgemachtigden) contains recordings of concerts broadcast live by Dutch public service broadcasters, and metadata describing the recordings, including related persons.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX schema: <http://schema.org/>\r\nPREFIX sdo: <https://schema.org/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n\r\n\r\nSELECT DISTINCT (COUNT(?program) AS ?count) \r\nWHERE { \r\n\r\n  \t?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season sdo:partOfSeries ?series . \r\n  ?program sdo:partOfSeason ?season .  \r\n}",
+                        "count_label": "concerts",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX schema: <http://schema.org/>\r\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\r\nPREFIX sdo: <https://schema.org/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n\r\nSELECT (COUNT(distinct ?entityName) as ?count)\r\nWHERE {\r\n?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season sdo:partOfSeries ?series . \r\n  ?program_uri sdo:partOfSeason ?season . \r\n  {\r\n    ?program_uri a sdo:CreativeWork ;\r\n      (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer)/\r\n      (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer) ?entity  .\r\n    ?entity skos:prefLabel ?entityName\r\n  }\r\n  UNION\r\n  {\r\n    ?program_uri sdo:isPartOfSeason ?season .\r\n\r\n    ?season  (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer)/\r\n    (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer) ?entity  .\r\n\r\n    ?entity skos:prefLabel ?entityName\r\n  }\r\n  UNION\r\n  {\r\n    ?program_uri sdo:isPartOfSeason/sdo:isPartOfSeries ?series .\r\n\r\n    ?series  (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer)/\r\n    (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer) ?entity  .\r\n\r\n    ?entity skos:prefLabel ?entityName\r\n  }\r\n  UNION\r\n  {\r\n    ?scene sdo:hasPart ?program_uri.\r\n\r\n    ?scene  (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer)/\r\n    (sdo:about|sdo:mentions|sdo:creator|sdo:contributor|sdo:actor|sdo:crew|sdo:performer) ?entity  .\r\n\r\n    ?entity skos:prefLabel ?entityName \r\n  }\r\n} ",
+                        "count_label": "related persons",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "linechart",
+                        "chart_title": "Distribution of concerts over time",
+                        "chart_query": "PREFIX schema: <http://schema.org/>\r\nPREFIX sdo: <https://schema.org/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\n\r\n\r\nSELECT ?label\r\nWHERE {\r\n  \t?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season sdo:partOfSeries ?series . \r\n  ?program sdo:partOfSeason ?season .  \r\n  ?program <https://schema.org/datePublished> ?date .\r\n  BIND(substr(?date, 1, 4) as ?label)}  ",
+                        "chart_series": "concerts",
+                        "chart_legend": {
+                            "x": "year",
+                            "y": "concerts"
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>The concerts span a time range from 1934 through to the present day. Note that the data point in 1900 comes from a concert that cannot be more precisely dated than to the twentieth century.</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "doughnutchart",
+                        "chart_title": "Roles of persons in the concert collection",
+                        "chart_query": "PREFIX schema: <http://schema.org/>\r\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\r\nPREFIX sdo: <https://schema.org/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n\r\n# Toon alleen items die ook op GPP te bekijken/beluisteren zijn.\r\nSELECT ?count ?label\r\nWHERE{\r\n  {\r\nSELECT (COUNT(distinct ?entityName) as ?count) ?role\r\nWHERE {\r\n?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season sdo:partOfSeries ?series . \r\n  ?program_uri sdo:partOfSeason ?season . \r\n    ?program_uri a sdo:CreativeWork .\r\n    ?program_uri ?role ?roleEntity . ?roleEntity ?role ?entity  .\r\n    ?entity skos:prefLabel ?entityName\r\n    } group by ?role  LIMIT 3}\r\n?role rdfs:label ?label}order by desc(?count)",
+                        "chart_series": "",
+                        "chart_legend": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Persons in the collection either performed music, or created it, or were simply mentioned in the concert metadata. The donut chart above shows that most of the persons included in the collection have the role of performer (linked to concerts with the property byArtist).</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 6,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Top 5 most frequently occurring creators",
+                        "chart_query": "PREFIX schema: <http://schema.org/>\r\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\r\nPREFIX sdo: <https://schema.org/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n\r\n# Toon alleen items die ook op GPP te bekijken/beluisteren zijn.\r\nSELECT ?count ?label\r\nWHERE{\r\n  {\r\nSELECT (COUNT(distinct ?program_uri) as ?count) ?label\r\nWHERE {\r\n?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season sdo:partOfSeries ?series . \r\n  ?program_uri sdo:partOfSeason ?season . \r\n  {\r\n    ?program_uri a sdo:CreativeWork ;\r\n     sdo:creator/sdo:creator ?entity  .\r\n    ?entity skos:prefLabel ?label\r\n  }\r\n  UNION\r\n  {\r\n    ?program_uri sdo:isPartOfSeason ?season .\r\n\r\n    ?season  sdo:creator/sdo:creator ?entity  .\r\n\r\n    ?entity skos:prefLabel ?label\r\n  }\r\n  UNION\r\n  {\r\n    ?program_uri sdo:isPartOfSeason/sdo:isPartOfSeries ?series .\r\n\r\n    ?series sdo:creator/sdo:creator ?entity  .\r\n\r\n    ?entity skos:prefLabel ?label\r\n  }\r\n  UNION\r\n  {\r\n    ?scene sdo:hasPart ?program_uri.\r\n\r\n    ?scene  sdo:creator/sdo:creator?entity  .\r\n\r\n    ?entity skos:prefLabel ?label \r\n  }\r\n    } group by ?label }}order by desc(?count) LIMIT 5",
+                        "chart_series": "N. of creators",
+                        "chart_legend": {
+                            "x": "creator",
+                            "y": "frequency "
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 7,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>This graph shows the top five most frequently occurring creators in the concert collection. International classical composers such as Beethoven and Mozart are mixed with modern musicians such as Jean-Pierre Gabri\u00ebl, who conducts multiple orchestras in the Netherlands, Ron Ford, a Dutch-American composer, and Myrthe van Dijk, who composed songs for the iconic 'Kinderen voor Kinderen' youth choir.</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 8,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Top 10 most frequently occurring performers",
+                        "chart_query": "PREFIX schema: <http://schema.org/>\r\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\r\nPREFIX sdo: <https://schema.org/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\n\r\n# Toon alleen items die ook op GPP te bekijken/beluisteren zijn.\r\nSELECT ?count ?label\r\nWHERE{\r\n  {\r\nSELECT (COUNT(distinct ?program_uri) as ?count) ?label\r\nWHERE {\r\n?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season sdo:partOfSeries ?series . \r\n  ?program_uri sdo:partOfSeason ?season . \r\n  {\r\n    ?program_uri a sdo:CreativeWork ;\r\n     sdo:byArtist/sdo:byArtist ?entity  .\r\n    ?entity skos:prefLabel ?label\r\n  }\r\n  UNION\r\n  {\r\n    ?program_uri sdo:isPartOfSeason ?season .\r\n\r\n    ?season  sdo:byArtist/sdo:byArtist ?entity  .\r\n\r\n    ?entity skos:prefLabel ?label\r\n  }\r\n  UNION\r\n  {\r\n    ?program_uri sdo:isPartOfSeason/sdo:isPartOfSeries ?series .\r\n\r\n    ?series sdo:byArtist/sdo:byArtist ?entity  .\r\n\r\n    ?entity skos:prefLabel ?label\r\n  }\r\n  UNION\r\n  {\r\n    ?scene sdo:hasPart ?program_uri.\r\n\r\n    ?scene sdo:byArtist/sdo:byArtist ?entity  .\r\n\r\n    ?entity skos:prefLabel ?label \r\n  }\r\n    } group by ?label }}order by desc(?count) LIMIT 10",
+                        "chart_series": "N. of performers",
+                        "chart_legend": {
+                            "x": "performer",
+                            "y": "frequency"
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Plotting the top ten performers reveals that the collection has an emphasis on music performed by orchestras, choirs and ensembles. Dolf van der Linden, a Dutch conductor, and Marinus Voorberg, a Dutch conductor and pianist, also feature in the top ten.</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>All concerts are under copyright. They were produced by a variety of production companies</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Top 10 production companies",
+                        "chart_query": "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\r\nSELECT ?label ?count\r\nWHERE\r\n{\r\n  {\r\nSELECT distinct ?label (COUNT(?program_uri) AS ?count)  WHERE {\r\n?series <https://schema.org/name> \"Muziekopnamen Zendgemachtigden (MOZ)\"^^xsd:string .  \r\n\t?season <https://schema.org/partOfSeries> ?series . \r\n  ?program_uri <https://schema.org/partOfSeason> ?season . \r\n ?program_uri <https://schema.org/productionCompany> ?prod_company . \r\n  ?prod_company <https://schema.org/productionCompany> ?prod_entity . ?prod_entity skos:prefLabel ?label\r\n} GROUP BY ?label \r\n  }}  ORDER BY desc(?count) LIMIT 10",
+                        "chart_series": "N. of companies",
+                        "chart_legend": {
+                            "x": "company",
+                            "y": "frequency"
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>The production companies reflect the diversity of the collection. From Omroep MAX, a public service broadcaster that serves older viewers, to Mojo Concerts, an important concert promotor in the Netherlands.</p>",
+                        "extra_queries": []
+                    }
+                ]
+            }
+        },
+        "bells": {
+            "overview_of_bells_in_liguria": {
+                "sparql_endpoint": "https://dati.cultura.gov.it/sparql",
+                "template_mode": "statistics",
+                "title": "Overview of bells in Liguria",
+                "color_code": [
+                    "#b18cfe",
+                    "#008cb4"
+                ],
+                "section_name": "Bells",
+                "subtitle": "",
+                "curator": "Fabrizio Magnani, Elena Musumeci, Chiara Veninata",
+                "description": "In Liguria, the art of bell-making is very widespread, thanks also to the historical presence of numerous foundries, now closed. Depending on the location, the number of bells for each bell tower differs.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "prefix a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/> \r\n \r\nSELECT (COUNT(?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane') .\r\n}",
+                        "count_label": "Churches with bells in Liguria",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>In the Genoese and Levant areas from the 1960s onwards we witness an increase in the number of bells contained in every bell tower and the birth of the first numerous sets, reaching as many as 12 bells.</p><p>In the Ponente, on the other hand, it still remains the main one, given the average of 3 sets, a maximum of 5 bells for a tower.&nbsp;</p><p>The geographical distribution of the bells on the territory is a very interesting fact because it can help to highlight many aspects. In fact, we can understand what the density of the bells is by area, but also make an initial assessment of the possible impact on the soundscape.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix dc: <http://purl.org/dc/elements/1.1/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\n\r\nSELECT (COUNT(DISTINCT ?church) AS ?count)\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?province .\r\n?province l0:name ?prov FILTER(str(?prov)='GE') .\r\n}",
+                        "count_label": "Churches with bells in Genova",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "Churches with bells in Liguria",
+                        "map_points_query": "PREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX cis: <http://dati.beniculturali.it/cis/>\r\nSELECT DISTINCT ?point ?lat ?long SAMPLE(?addres as ?address) ?region\r\n\r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?point; dc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasRegion ?reg .\r\n?reg l0:name ?region FILTER(str(?region)='Liguria') .\r\n?point a-loc:hasCulturalPropertyAddress ?a ; clv:hasGeometry ?g.\r\n?a rdfs:label ?addres .\r\n?g a-loc:hasCoordinates ?coord .\r\n?coord a-loc:lat ?lat ; a-loc:long ?long.\r\n}",
+                        "map_filters": [
+                            {
+                                "map_filter_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nSELECT DISTINCT ?point ?filter (SAMPLE(?label) as ?filterLabel)\r\nWHERE {\r\n?point a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?filter;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?filter rdfs:label ?label .\r\n}",
+                                "extra_id": "1685424548422_0",
+                                "position": 0,
+                                "map_filter_title": "district"
+                            }
+                        ],
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "N. of bells per province",
+                        "chart_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\n\r\nSELECT ?label \r\nWHERE {\r\n?setOfBells a-cd:isLocatedIn ?church ;\r\ndc:subject ?o FILTER(str(?o)='concerto di campane' || str(?o)='campana') .\r\n?setOfBells a-loc:hasCulturalPropertyAddress ?cpa .\r\n?cpa clv:hasProvince ?l ;\r\nclv:hasRegion ?region .\r\n?region l0:name ?reg FILTER(str(?reg)='Liguria') .\r\n?l rdfs:label ?label .\r\n}\r\n",
+                        "chart_series": "bells",
+                        "chart_legend": {
+                            "x": "Province",
+                            "y": "N. of bells"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "doughnutchart",
+                        "chart_title": "Materials",
+                        "chart_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\n\r\nSELECT ?label\r\nWHERE {\r\n?bell a arco:MusicHeritage ;\r\na-dd:hasMaterial ?materialObj ;\r\ndc:subject ?o FILTER(str(?o)='campana') .\r\nBIND (STRAFTER(STR(?materialObj),\"c/\") as ?label) .\r\n}",
+                        "chart_series": "",
+                        "chart_legend": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 6,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Bells made with the intention of producing a functional sound are usually made by casting a bronze alloy. Over the course of history there has been a lot of experimentation to achieve the best results; However, the best recognized composition for melting bells is a ratio of around 80% copper and 20% tin. Other materials occasionally used for casting bells are brass or iron. Steel was tried in the mid 19th century in England for its lower cost than bronze, but it was found to be not durable and production ceased in 1870. Glass was also made. but although the bells of this type produced a pleasant sound, this substance being very fragile was unable to withstand continued use.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 7,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "linechart",
+                        "chart_title": "Bells production over time",
+                        "chart_query": "PREFIX a-cd: <https://w3id.org/arco/ontology/context-description/>\r\nPREFIX clv: <https://w3id.org/italia/onto/CLV/>\r\nPREFIX l0: <https://w3id.org/italia/onto/l0/>\r\nprefix a-loc: <https://w3id.org/arco/ontology/location/>\r\nprefix ti: <https://w3id.org/italia/onto/TI/>\r\n\r\nSELECT ?label\r\nWHERE {\r\n?bell a arco:MusicHeritage ;\r\na-cd:hasDating ?dating ;\r\ndc:subject ?o FILTER(str(?o)='campana') .\r\n?dating a-cd:hasDatingEvent ?datingEv .\r\n?datingEv rdfs:label ?datingEvType FILTER(str(?datingEvType)='realizzazione') .\r\n?datingEv a-cd:specificTime ?when .\r\n?when arco:startTime ?label .\r\n}",
+                        "chart_series": "bells",
+                        "chart_legend": {
+                            "x": "year",
+                            "y": "count"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 8,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>The bell casting date is very relevant for the reconstruction of the history that characterizes this artifact in the territory, and connects to other relevant information such as the presence of foundries in the area, the shape of the bells and the sound produced. It is also very relevant for the protection of cultural heritage</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "table",
+                        "table_title": "Listen the sound of bells",
+                        "table_query": "SELECT ?b ?bLabel ?audio\r\nWHERE {\r\n?b arco:isCulturalPropertyComponentOf <https://w3id.org/arco/resource/MusicHeritage/0700377974-0> ;\r\ncore:description ?bLabel ;\r\ndc:subject?o filter(str(?o)='campana') .\r\n?doc a-cd:isDocumentationOf ?b ;\r\n<https://w3id.org/italia/onto/SM/URL> ?audio ;\r\nrdf:type ?docType FILTER(?docType = a-cd:AudioDocumentation) .\r\n} ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "table",
+                        "table_title": "or watch some videos and images",
+                        "table_query": "SELECT ?t ?tLabel ?docURL ?pic\r\nWHERE {\r\n?t rdf:type arco:DemoEthnoAnthropologicalHeritage ;\r\na-loc:hasCulturalPropertyAddress ?l ;\r\nfoaf:depiction ?pic ;\r\ndc:subject ?o FILTER regex(str(?o), \"tastiera\") .\r\n?l rdfs:label ?tLabel .\r\n?doc a-cd:isDocumentationOf ?t ;\r\n<https://w3id.org/italia/onto/SM/URL> ?docURL .\r\n} ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "Search bells",
+                        "textsearch_query": "SELECT DISTINCT ?vari ?variLabel ?class ?classLabel\r\nWHERE {\r\n?vari rdf:type arco:DemoEthnoAnthropologicalHeritage;\r\nrdfs:label ?variLabel; a ?class . ?class rdfs:label ?classLabel .\r\nFILTER regex(str(?variLabel), <<searchterm>>, \"i\")\r\nFILTER (lang(?classLabel) = \"it\")\r\n} LIMIT 10 ",
+                        "textsearch": {
+                            "prop": [
+                                "objects",
+                                "properties"
+                            ],
+                            "title": [
+                                "properties",
+                                "objects"
+                            ],
+                            "vari": [
+                                "properties"
+                            ]
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "properties",
+                        "action_query": "SELECT DISTINCT ?prop \r\nWHERE {<<item>> ?prop ?something}\r\nLIMIT 20 ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "objects",
+                        "action_query": "SELECT DISTINCT ?title \r\nWHERE {?subj <<item>> ?title}\r\nLIMIT 10",
+                        "extra_queries": [],
+                        "map_filters": []
                     }
                 ],
-                "https://w3id.org/zericatalog/galleria-borghese-roma": "https://w3id.org/zericatalog/galleria-borghese-roma",
-                "https://w3id.org/zericatalog/collezione-privata-roma": "https://w3id.org/zericatalog/collezione-privata-roma",
-                "https://w3id.org/zericatalog/asta-lantonina-roma": "https://w3id.org/zericatalog/asta-lantonina-roma",
-                "https://w3id.org/zericatalog/palazzo-pitti-galleria-palatina-e-appartamenti-reali-firenze": "https://w3id.org/zericatalog/palazzo-pitti-galleria-palatina-e-appartamenti-reali-firenze",
-                "https://w3id.org/zericatalog/alte-pinakothek-bayerische-staatsgemaldesammlungen-monaco-di-baviera": "https://w3id.org/zericatalog/alte-pinakothek-bayerische-staatsgemaldesammlungen-monaco-di-baviera",
-                "https://w3id.org/zericatalog/collezione-privata-napoli": "https://w3id.org/zericatalog/collezione-privata-napoli",
-                "https://w3id.org/zericatalog/mercato-antiquario-roma": "https://w3id.org/zericatalog/mercato-antiquario-roma",
-                "https://w3id.org/zericatalog/collezione-privata-firenze": "https://w3id.org/zericatalog/collezione-privata-firenze",
-                "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma": "https://w3id.org/zericatalog/galleria-doria-pamphilj-roma"
+                "https://w3id.org/arco/resource/Province/sp": "https://w3id.org/arco/resource/Province/sp",
+                "https://w3id.org/arco/resource/Province/ge": "https://w3id.org/arco/resource/Province/ge"
+            }
+        },
+        "musicbo": {
+            "music_in_bologna_textual_corpus_overview": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/musicbo/sparql",
+                "template_mode": "statistics",
+                "title": "Music in Bologna - Textual corpus overview",
+                "color_code": [
+                    "#03ecfc",
+                    "#00fa79"
+                ],
+                "section_name": "MusicBo",
+                "subtitle": "Exploring Bologna's role in music history through Knowledge Extraction",
+                "curator": "Valentina Carriero, Arianna Graciotti, Eleonora Marzi, Valentina Presutti",
+                "description": "MusicBO corpus contains 135 texts in 4 languages (Italian, English, French, and Spanish) published between 1800 and today and referring to a period between 1600 to the present. We processed the corpus with Natural Language Processing and Understanding (NLP/NLU) technologies to retrieve, integrate and disseminate knowledge about Bologna's role in the European musical landscape.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Person>}",
+                        "count_label": "people",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Organization>}",
+                        "count_label": "organisations",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Country>}",
+                        "count_label": "countries",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/City>}",
+                        "count_label": "cities",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Work-of-art>}",
+                        "count_label": "works of art",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "SELECT (COUNT(DISTINCT ?s) AS ?count) \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Publication>}",
+                        "count_label": "publications",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 6,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Top 10 types of entity",
+                        "chart_query": "SELECT ?label (count(distinct ?s) as ?count)  \r\nWHERE {?s rdf:type ?class; <http://www.ontologydesignpatterns.org/ont/amr/name> ?name   \r\nFILTER regex(str(?class), \"(?:^http://www.ontologydesignpatterns.org/ont/amr/)\")      BIND (REPLACE(STR(?class), \"^.+?([^/#]+)$\", \"$1\") as ?label)} \r\nGROUP BY ?label   \r\nORDER BY DESC (?count) \r\nLIMIT 10  ",
+                        "chart_series": "entities",
+                        "chart_legend": {
+                            "x": "entity type",
+                            "y": "count"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 7,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>We analysed MusicBO corpus through the lens of Named Entities Recognition (NER), a standard Natural Language Processing task. We discovered that the entanglement of Bologna and music history is a composite network of people, places, and organizations. Publications, works of art and books are frequently mentioned in the corpus, revealing that Bologna was an important centre for artistic production.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 8,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Top 10 situations involving people",
+                        "chart_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  \r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \r\nSELECT distinct ?label (count(distinct ?s) as ?count)  \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Person> . ?frameInstance ?p ?s ; rdf:type ?frame . ?frame rdfs:label ?label }  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) \r\nLIMIT 10",
+                        "chart_series": "event type",
+                        "chart_legend": {
+                            "x": "situation",
+                            "y": "frequency"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>According to the insights extracted from the MusicBO corpus through NLP and NLU techniques, people linked to Bologna and related to music were mainly involved in events and situations that implied the creation and production of art.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Persons in situations",
+                        "chart_query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  \r\nPREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>    \r\nSELECT ?label (count(distinct ?frameInstance) as ?count)  \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Person> . ?frameInstance ?p ?s ; rdf:type ?frame . ?frame rdfs:label ?frameLabel . ?frame rdfs:subClassOf dul:Event .   \r\n?s <http://www.ontologydesignpatterns.org/ont/amr/name> ?label  \r\nFILTER (!regex(str(?s), \"san_petronio\",'i'))}  \r\n   \r\nGROUP BY ?label   \r\nORDER BY DESC (?count)\r\nLIMIT 10 ",
+                        "chart_series": "events",
+                        "chart_legend": {
+                            "x": "persons",
+                            "y": "frequency"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Among the many people in the MusicBO corpus, Rossini is the most frequently mentioned as involved in events and situations.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "doughnutchart",
+                        "chart_title": "Top 10 roles played by people in different types of situations",
+                        "chart_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nSELECT distinct ?label (count(distinct ?s) as ?count) \r\nWHERE {?s rdf:type <http://www.ontologydesignpatterns.org/ont/amr/Person> . ?frameInstance ?p ?s ; rdf:type ?frame . \r\n#?frame rdfs:label ?label  \r\nBIND (REPLACE(STR(?p), \"^.*/([^/]*)$\", \"$1\") as ?label)  \r\nFILTER (!regex(str(?p), \"entity_\"))  \r\nFILTER (!regex(str(?p), \"#\"))  \r\nFILTER (!regex(str(?p), \"subset\")) }  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) \r\nLIMIT 10 ",
+                        "chart_series": "",
+                        "chart_legend": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>What roles did people linked to music and the city of Bologna played? Characters relevant to the music scene that crossed Bologna over the centuries were mostly authors and artists, but also office holders, writers, agents, and editors. Such insights suggest that Bologna was both a point of reference for artistic production and for music-related activities, as criticism and business. Last but not least, Bologna attracted music students.</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 14,
+                        "operations": [],
+                        "type": "map",
+                        "map_title": "Bologna as a lively cultural centre in Europe",
+                        "map_points_query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX dbpedia: <http://dbpedia.org/resource/>\r\nPREFIX sc: <http://purl.org/science/owl/sciencecommons/>\r\nPREFIX schema: <http://schema.org/>\r\nPREFIX wdt: <http://www.wikidata.org/prop/direct/>\r\nPREFIX wikibase: <http://wikiba.se/ontology#>\r\nPREFIX p: <http://www.wikidata.org/prop/>\r\nPREFIX wd: <http://www.wikidata.org/entity/>\r\nPREFIX ps: <http://www.wikidata.org/prop/statement/>\r\nPREFIX psv: <http://www.wikidata.org/prop/statement/value/>\r\nPREFIX wdr: <http://www.w3.org/2007/05/powder#>\r\nPREFIX amr: <http://www.ontologydesignpatterns.org/ont/amr/> \r\nSELECT DISTINCT ?point ?label ?frameInstance ?lat ?long\r\nWHERE { ?cityUri rdf:type amr:City ;  owl:sameAs ?point ;  amr:name ?label .  \r\n\tFILTER (regex(str(?point), \"http://www.wikidata.org/entity/\", \"i\"))  \r\n\t?frameInstance ?p ?cityUri ; rdf:type ?frame .  \r\nSERVICE <https://query.wikidata.org/bigdata/namespace/wdq/sparql> { \r\n\t?point wdt:P31/wdt:P279* wd:Q515 .  \r\n\t?point p:P625 ?coords_stmt .  \r\n\t?coords_stmt ps:P625 ?coords; \r\n\tpsv:P625 [  wikibase:geoLatitude ?lat;  wikibase:geoLongitude ?long ] . }\r\n} ",
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
+            }
+        },
+        "fonn": {
+            "frequently_occurring_patterns": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/fonn/sparql",
+                "template_mode": "statistics",
+                "title": "Frequently Occurring Patterns ",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "fonn",
+                "subtitle": "FoNN - FOlk N-gram aNalysis",
+                "curator": "Danny, Pushkar, Ashahid, and James",
+                "description": "FoNN is a software component implementing similarity measures for melodies based on n-gram models. FONN defines several variations of patterns as n-grams. In this story, we define a pattern as a 6-gram of pitch classes in the melody. Have a look at the list of the top 20 most frequent 6-gram patterns in the corpus. Several are rather uninteresting, e.g. containing repeated notes. The pattern in 11th place is the 6-gram 7_0_2_0_7_0, containing the root note (0) as a pedal tone. By clicking on the button \"Tunes list using this pattern\", we can see that this common motif occurs in The Barnacle, A Merry Christmas, and many other tunes in \"The Session\", a large corpus of 40,000 tunes representing the living tradition of Irish music.",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "How many patterns do you want to see? Eg, 10.",
+                        "textsearch_query": "PREFIX jams:<http://w3id.org/polifonia/ontology/jams/> \r\nSELECT ?pattern  (sum(?pattern_frequency) as ?totalFreq)\r\nwhere { \r\n  ?observation  jams:hasFrequency ?pattern_frequency. \r\n  ?observation  jams:ofPattern ?pattern .} \r\n group by ?pattern\r\n order by DESC (?totalFreq) \r\nLIMIT 20",
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
+            }
+        },
+        "choco": {
+            "chord_corpus_statistics": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/choco/sparql",
+                "template_mode": "statistics",
+                "title": "Chord Corpus Statistics",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "choco",
+                "subtitle": "Exploring Chord data from different genres and historic periods",
+                "curator": "Andrea Poltronieri, Jacopo de Berardinis",
+                "description": "Besides being one of the most studied subjects in music, harmony has attracted the interest of musicologists, computer scientists, and psychologists due to its multi-faceted and inter-disciplinary nature. The basic constituents of harmony are chords, groups of simultaneous notes, and their progressions, which convey notions of consonance (pleasant, euphonious) or dissonance (unpleasant, discordant) in music. The Chord Corpus (ChoCo) is a large-scale dataset that semantically integrates harmonic data from 18 different sources in various representations and formats (Harte, Leadsheet, Roman numerals, ABC). We leverage JAMS (JSON Annotated Music Specification), a popular data structure for annotations in Music Information Retrieval, to effectively represent a variety of chord-related information (chord, key, mode, etc.) in a uniform way. On top of it, we propose a novel ontology modelling music annotations and involved entities (artists, scores, etc.), build a 30M triple knowledge graph on chords, and find 3K links to other datasets (MIDI-LD, LED).",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type core:Composer}",
+                        "count_label": "Composers",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type core:Performer}",
+                        "count_label": "Performers",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type jams:JAMSAnnotation}",
+                        "count_label": "Annotations",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type jams:JAMSScoreAnnotation}",
+                        "count_label": "Score annotations",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type jams:JAMSAudioAnnotation}",
+                        "count_label": "Audio annotations",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Annotation types",
+                        "chart_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT distinct ?label (count(distinct ?s) as ?count) \r\nWHERE {?s rdf:type jams:JAMSAnnotation;\r\n\tjams:hasAnnotationType ?label}  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) LIMIT 10",
+                        "chart_series": "annotations",
+                        "chart_legend": {
+                            "x": "annotation type",
+                            "y": "count"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 6,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT (COUNT(DISTINCT ?s) AS ?count) WHERE {?s rdf:type jams:JAMSObservation}",
+                        "count_label": "Observations",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 7,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<h3>Original Datasets</h3>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 8,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Source datasets",
+                        "chart_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT distinct ?label (count(distinct ?s) as ?count) \r\nWHERE {?s ?p ?o ; \r\n    prov:wasDerivedFrom ?label .}  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) LIMIT 9",
+                        "chart_series": "datasets",
+                        "chart_legend": {
+                            "x": "source",
+                            "y": "quantity"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Annotator Types</p>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "doughnutchart",
+                        "chart_title": "Annotator types",
+                        "chart_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nSELECT distinct ?label (count(distinct ?s) as ?count) \r\nWHERE {?s ?p ?o ; \r\n    jams:hasAnnotatorType ?raw_label .\r\n  BIND (REPLACE(STR(?raw_label), \"^.*/([^/]*)$\", \"$1\") as ?label)\r\n}  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) LIMIT 9 ",
+                        "chart_series": "",
+                        "chart_legend": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Chord data",
+                        "chart_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nPREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>\r\nSELECT distinct ?label (count(distinct ?s) as ?count) \r\nWHERE {?s rdf:type jams:JAMSAnnotation;\r\n    jams:includesObservation ?observation.\r\n  ?observation rdfs:label ?label .\r\n}  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) \r\nLIMIT 10",
+                        "chart_series": "chords",
+                        "chart_legend": {
+                            "x": "name",
+                            "y": "quantity"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<h3>Chord Data</h3>",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 13,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Most frequent Roman Numerals Chords",
+                        "chart_query": "PREFIX jams: <http://w3id.org/polifonia/ontology/jams/>\r\nPREFIX mf: <http://w3id.org/polifonia/ontology/musical-features/>\r\nPREFIX core: <http://w3id.org/polifonia/ontology/core/>\r\nPREFIX prov: <http://www.w3.org/ns/prov#>\r\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r\nPREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>\r\nSELECT distinct ?label (count(distinct ?s) as ?count) \r\nWHERE {?s rdf:type jams:JAMSAnnotation;\r\n    jams:hasAnnotationType \"chord_roman\" ;\r\n    jams:includesObservation ?observation .\r\n  ?observation rdfs:label ?label .\r\n}  \r\nGROUP BY ?label  \r\nORDER BY DESC(?count) \r\nLIMIT 10",
+                        "chart_series": "Chords",
+                        "chart_legend": {
+                            "x": "names",
+                            "y": "quantity"
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
+            }
+        },
+        "tunes": {
+            "tunes_statistics": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/tunes/sparql",
+                "template_mode": "statistics",
+                "title": "Tunes Statistics",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "Tunes",
+                "subtitle": "",
+                "curator": "Peter van Kranenburg",
+                "description": "The project is about relations between songs from different geographical origins.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>This data story presents relations between four collections of European Folk Songs: The Meertens Tune Collections (MTC) (Dutch), The Essen Folksong Collection (German), The Session corpus (Irish), and the Ceol Rince na h\u00c9ireann corpus (Irish).</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>The total number of songs in the four collections is:</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX tunes: <http://example.com/tunes/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE {?s a tunes:Song}",
+                        "count_label": "songs",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>Distributed over the collections as follows:</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": " Count of songs in the four collections",
+                        "chart_query": "PREFIX : <http://example.com/tunes/>\r\nSELECT ?label (COUNT(?content) AS ?count)\r\nWHERE {\r\n    ?content a :Song .\r\n    ?content :songcollection ?label .\r\n } GROUP BY ?label",
+                        "chart_series": "N. of songs per collection",
+                        "chart_legend": {
+                            "x": "collection",
+                            "y": "songs"
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 5,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>The Meertens corpus (Dutch) contains Tune Family annotations. All songs that can be considered the 'same' song are grouped in a Tune Family. The total number of tune families:</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 6,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX : <http://example.com/tunes/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE {?s a :TuneFamily}",
+                        "count_label": "Tune families",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 7,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>For the Dutch data set, we also have metadata about the sources of the songs, including printed books, manuscripts, audio recordings, leaflets, etc. The number of sources for the Dutch songs is:</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 8,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX : <http://example.com/tunes/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE {?s a :Source}",
+                        "count_label": "sources ",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 9,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "linechart",
+                        "chart_title": "Distribution of Dutch sources over time",
+                        "chart_query": "PREFIX : <http://example.com/tunes/>\r\nSELECT ?label (COUNT(?content) AS ?count)\r\nWHERE {\r\nvalues (?label ?min ?max) {\r\n    (\"1500-1549\" 1500 1549)\r\n    (\"1550-1599\" 1550 1599)\r\n    (\"1600-1649\" 1600 1649)\r\n    (\"1650-1699\" 1650 1699)\r\n    (\"1700-1749\" 1700 1749)\r\n    (\"1750-1799\" 1750 1799)\r\n    (\"1800-1849\" 1800 1849)\r\n    (\"1850-1899\" 1850 1899)\r\n    (\"1900-1949\" 1900 1949)\r\n    (\"1950-1999\" 1950 1999)\r\n    (\"2000-2049\" 2000 2049) }\r\n  \r\n  ?content a :Source .\r\n    ?content :sourcesortingyear ?year .\r\n  \r\n  filter( ?min <= ?year && ?year <= ?max)\r\n  \r\n } GROUP BY ?label\r\nORDER BY ASC(?label)",
+                        "chart_series": "N. of sources per period",
+                        "chart_legend": {
+                            "x": "time period",
+                            "y": "n. of sources"
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 10,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>We are interested in relations between the songs from different geographic origins. Therefore, we compute the similarity between all pairs of songs. Songs with high similarity across collections are specifically of interest.</p>",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 11,
+                        "operations": [],
+                        "type": "chart",
+                        "chart_type": "barchart",
+                        "chart_title": "Count of highly similar song pairs across collections",
+                        "chart_query": "PREFIX : <http://example.com/tunes/>\r\nSELECT ?label (COUNT(?song) AS ?count)\r\nWHERE {\r\n  ?song :highlysimilar ?othersong .\r\n  ?song :songcollection ?labela .\r\n  ?othersong :songcollection ?labelb .\r\n  BIND(concat(str(?labela), \"-\", str(?labelb) ) as ?label)\r\n } GROUP BY ?label",
+                        "chart_series": "N. of similar songs per collection",
+                        "chart_legend": {
+                            "x": "collection",
+                            "y": "N. of similar songs"
+                        },
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 12,
+                        "operations": [],
+                        "type": "text",
+                        "text": "<p>This shows that the Dutch and German collections are stronger connected than the Dutch and the Irish, while, not surprisingly, the two Irish collections have a large number of songs in common.</p>",
+                        "extra_queries": []
+                    }
+                ]
+            },
+            "explore_similarity_relations_among_songs": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/tunes/sparql",
+                "template_mode": "statistics",
+                "title": "Explore similarity relations among songs",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "tunes",
+                "subtitle": "",
+                "curator": "",
+                "description": "",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "tunes",
+                        "textsearch_query": "PREFIX tune: <http://example.com/tunes/>\r\nPREFIX bds: <http://www.bigdata.com/rdf/search#>\r\nPREFIX dct: <http://purl.org/dc/terms/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nSELECT DISTINCT ?song ?songLabel ?tunefamily \r\nWHERE {\r\n?songtitle bds:search <<searchterm>> .\r\n?song dct:title ?songLabel .  \r\n?song a tune:Song .    \r\n?song tune:songtunefamily ?tfid .   \r\n?tfobj rdf:label ?tfid .   \r\n ?tfobj tune:tunefamilyname ?tunefamily .}\r\nLIMIT 40",
+                        "textsearch": {
+                            "song": [
+                                "similar tunes"
+                            ]
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "similar tunes",
+                        "action_query": "PREFIX : <http://example.com/tunes/>\r\nPREFIX dct: <http://purl.org/dc/terms/>\r\nSELECT DISTINCT ?song ?songLabel WHERE {\r\n<<item>> :highlysimilar ?song . \r\n ?song dct:title ?songLabel .}",
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "textsearch",
+                        "textsearch_userinput": "",
+                        "textsearch_title": "search for a tune family",
+                        "textsearch_query": "PREFIX : <http://example.com/tunes/>\r\nPREFIX bds: <http://www.bigdata.com/rdf/search#>\r\nPREFIX dct: <http://purl.org/dc/terms/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nSELECT DISTINCT ?tunefamily ?tunefamilyLabel WHERE {\r\n?tunefamilyLabel bds:search <<searchterm>> .\r\n?tunefamily rdf:label ?tfid . \r\n?tunefamily :tunefamilyname ?tunefamilyLabel .}\r\nLIMIT 20",
+                        "textsearch": {
+                            "song": [
+                                "similar tunes"
+                            ],
+                            "tunefamily": [
+                                "tunes in this family"
+                            ]
+                        },
+                        "extra_queries": [],
+                        "map_filters": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "action",
+                        "action_title": "tunes in this family",
+                        "action_query": "PREFIX : <http://example.com/tunes/>\r\nPREFIX dct: <http://purl.org/dc/terms/>\r\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nSELECT DISTINCT ?song ?songLabel  \r\nWHERE {\r\n<<item>> rdf:label ?tunefamily .\r\n?song :songtunefamily ?tunefamily .\r\n?song dct:title ?songLabel . }",
+                        "extra_queries": [],
+                        "map_filters": []
+                    }
+                ]
+            }
+        },
+        "tonalities": {
+            "tonalities": {
+                "sparql_endpoint": "https://data-iremus.huma-num.fr/sparql",
+                "template_mode": "statistics",
+                "title": "Tonalities ",
+                "color_code": [
+                    "#3fb1c1",
+                    "#cb68b2"
+                ],
+                "section_name": "Tonalities",
+                "subtitle": "",
+                "curator": "Thomas Bottini\r\nAdam Filaber\r\nChristophe Guillotel-Nothmann\r\nMarco Gurrieri",
+                "description": "This story (under construction) presents some key information about Tonalities and its annotation interface. It also shows how the pilot study evolves and how stakeholders use it for their purposes.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n\r\nSELECT ?label (COUNT(?concept) AS ?count)\r\nWHERE {\r\n\tGRAPH <http://data-iremus.huma-num.fr/graph/modality-tonality-ontology> {\r\n        ?concept rdf:type owl:Class.\r\n        ?ontology rdf:type owl:Ontology.\r\n        FILTER(STRSTARTS(STR(?concept), STR(?ontology))).\r\n        BIND(REPLACE(STR(?ontology), \"^.*/([^/]*)$\", \"$1\") AS ?label)\r\n    }\r\n}\r\nGROUP BY ?label",
+                        "count_label": "Number of theoretical/analytical concepts",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n\r\nSELECT ?label (COUNT(?property) AS ?count)\r\nWHERE {\r\n\tGRAPH <http://data-iremus.huma-num.fr/graph/modality-tonality-ontology> {\r\n        ?property rdf:type owl:ObjectProperty.\r\n        ?ontology rdf:type owl:Ontology.\r\n        FILTER(STRSTARTS(STR(?property), STR(?ontology))).\r\n        BIND(REPLACE(STR(?ontology), \"^.*/([^/]*)$\", \"$1\") AS ?label)\r\n    }\r\n}\r\nGROUP BY ?label",
+                        "count_label": "Number of analytical properties",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\r\n\r\nSELECT (COUNT(?ontology) as ?count)\r\nWHERE {\r\n   \tGRAPH <http://data-iremus.huma-num.fr/graph/modality-tonality-ontology> {\r\n    \t?ontology rdf:type owl:Ontology.\r\n  \t}\r\n}",
+                        "count_label": "Number of theoretical models available",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\n\r\nSELECT \r\n(COUNT(?score) AS ?count)\r\nWHERE {\r\n    GRAPH <http://data-iremus.huma-num.fr/graph/mei> {\r\n        ?score crm:P2_has_type <http://data-iremus.huma-num.fr/id/bf9dce29-8123-4e8e-b24d-0c7f134bbc8e> #SCORE\r\n    }\r\n}",
+                        "count_label": "Number of available scores",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 4,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX sherlock: <http://data-iremus.huma-num.fr/ns/sherlock#>\r\nPREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\r\n\r\nSELECT (COUNT(?selection) AS ?count)\r\nWHERE {\r\n    GRAPH <http://data-iremus.huma-num.fr/graph/sherlock> { #ALL SELECTIONS ARE SUPPOSED TO BE DONE IN SHERLOCK GRAPH\r\n        ?selection crm:P2_has_type <http://data-iremus.huma-num.fr/id/9d0388cb-a178-46b2-b047-b5a98f7bdf0b> .#SELECTION TYPE\r\n    \t?selection sherlock:has_document_context ?context\r\n        GRAPH <http://data-iremus.huma-num.fr/graph/mei> {\r\n          ?context crm:P2_has_type <http://data-iremus.huma-num.fr/id/bf9dce29-8123-4e8e-b24d-0c7f134bbc8e> #SCORE\r\n        }\r\n    }\r\n}",
+                        "count_label": "Number of selections within these scores",
+                        "extra_queries": []
+                    }
+                ]
+            }
+        },
+        "organs": {
+            "organs_statistics": {
+                "sparql_endpoint": "https://polifonia.disi.unibo.it/organs/sparql",
+                "template_mode": "statistics",
+                "title": "ORGANS Statistics",
+                "color_code": [
+                    "#39c6b4",
+                    "#17cf31"
+                ],
+                "section_name": "organs",
+                "subtitle": "",
+                "curator": "Peter van Kranenburg",
+                "description": "The project is about documenting pipe organs of historic importance.",
+                "action": "save",
+                "dynamic_elements": [
+                    {
+                        "position": 0,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX : <http://example.com/orgels/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE { ?s a :Orgel . }\r\n",
+                        "count_label": "Number of organs",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 1,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX : <http://example.com/orgels/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE { ?s a :Orgelbouwer . }",
+                        "count_label": "Number of organ builders",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 2,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX : <http://example.com/orgels/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE { ?s a :Plaats . }",
+                        "count_label": "Number of places",
+                        "extra_queries": []
+                    },
+                    {
+                        "position": 3,
+                        "operations": [],
+                        "type": "count",
+                        "count_query": "PREFIX : <http://example.com/orgels/>\r\nSELECT (COUNT(?s) AS ?count)\r\nWHERE { ?s a :Aanpassing . }",
+                        "count_label": "Number of adaptations",
+                        "extra_queries": []
+                    }
+                ]
             }
         }
     }

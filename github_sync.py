@@ -2,6 +2,7 @@ import os
 import requests
 from github import Github, InputGitAuthor
 import conf
+import data_methods
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -10,7 +11,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 clientId = conf.clientID
 clientSecret = conf.clientSecret
-
+github_auth = "https://github.com/login/oauth/authorize"
 
 def ask_user_permission(code):
     """ Get user permission when authenticating via Github.
@@ -86,6 +87,18 @@ def get_github_users(userlogin):
     return is_valid_user
 
 
+def validate_credentials(code):
+    """Given the user token, check if melody user or external."""
+    res = ask_user_permission(code)
+    if res:
+        userlogin, usermail, bearer_token = get_user_login(res)
+        is_valid_user = get_github_users(userlogin)
+        user_name = userlogin
+        user_type = 'polifonia' if is_valid_user == True else 'extra'
+    else:
+        user_name, user_type = 'None' , 'extra'
+    return user_name, user_type
+
 def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=None, action='', path=False):
     """ Create a new file or update an existing file in a Github repository.
 
@@ -156,3 +169,88 @@ def delete_file(local_file_path, branch, gituser=None, email=None, bearer_token=
     contents = repo.get_contents(local_file_path)
     message = "deleted file "+local_file_path
     repo.delete_file(contents.path, message, contents.sha, branch=branch)
+
+
+def get_raw_json(branch='main', absolute_file_path=None):
+    '''
+    This function request the raw version of a json file hosted in a Github repository.
+    Args:
+        branch (str): the repository branch from which the file is requested. Default is "main".
+        absolute_file_path (str): a string that identifies the name of the file (or its path).
+
+    Returns:
+        data (dict): a disctionary containing th econtent of the json file.
+    '''
+    try:
+        json_url = 'https://raw.githubusercontent.com/' + conf.melody_owner + '/' + \
+            conf.melody_repo_name+'/' + branch + '/' + \
+            conf.melody_sub_dir + '/' + absolute_file_path
+        r = requests.get(json_url)
+        data = r.json()
+    except:
+        data = None
+    return data
+
+
+def publish_datastory(host,PREFIX,section_name,datastory_name,session):
+    """
+    Publish a data story on the external catalogue
+    """
+
+    r = requests.get(host + PREFIX[1:] + section_name +
+                     '/' + datastory_name)
+
+    # open and create html file
+    data_methods.create_html(r, datastory_name, section_name)
+
+    story_data = data_methods.read_json(
+        'static/temp/config_'+section_name+'.json')
+
+    new_story = {
+        'user_name': session['name'],
+        'id': section_name,
+        'title': story_data['title']
+    }
+
+    stories_list = get_raw_json(
+        branch='main', absolute_file_path='stories_list.json')
+
+    if stories_list is not None:
+        data_methods.update_json(
+            'static/temp/stories_list.json', stories_list)
+        if new_story in stories_list:
+            pass
+        elif new_story not in stories_list:
+            for story in stories_list:
+                # check if story id is present
+                if new_story['id'] in story.values():
+                    # update title
+                    story['title'] = new_story['title']
+                    data_methods.update_json(
+                        'static/temp/stories_list.json', stories_list)
+                    break
+                else:
+                    # append new story
+                    stories_list.append(new_story)
+                    data_methods.update_json(
+                        'static/temp/stories_list.json', stories_list)
+    else:
+        stories_list = []
+        stories_list.append(new_story)
+        data_methods.update_json(
+            'static/temp/stories_list.json', stories_list)
+
+    # commit config and html to repo
+    push('static/temp/config_'+section_name+'.json', 'main', conf.gituser,
+                     conf.email, conf.melody_token, '@'+session['name'])
+    push('static/temp/story_'+section_name+'.html', 'main', conf.gituser,
+                     conf.email, conf.melody_token, '@'+session['name'])
+
+    # commit stories list to repo
+    push('static/temp/stories_list.json', 'main', conf.gituser,
+                     conf.email, conf.melody_token)
+
+    # remove the files
+    os.remove('static/temp/config_'+section_name+'.json')
+    os.remove('static/temp/story_'+section_name+'.html')
+    os.remove('static/temp/stories_list.json')

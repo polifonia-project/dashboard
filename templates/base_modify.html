@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %} Modify {{ datastory_data.title }} {% endblock %}
+
+<!-- CSS for this template -->
+{% block stylesheets %}
+<link rel="stylesheet" href="/melody/static/css/templates.css">
+<script src="https://unpkg.com/react@18/umd/react.{{ react_version }}" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.{{ react_version }}" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/javascript"> var datastory_data = {{ datastory_data | tojson }};</script>
+<script type="text/javascript"> var general_data = {{ general_data | tojson }};</script>
+<script src="https://unpkg.com/@jitbit/htmlsanitizer@latest/HtmlSanitizer.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.css">
+<link rel="stylesheet" href="/melody/static/css/MarkerCluster.Default.css">
+<link rel="stylesheet" href="/melody/static/css/leaflet-sidebar.css">
+{% endblock stylesheets %}
+
+<!-- Content of this template -->
+{% block content %}
+<div class="content row modifystory">
+  {% include 'modify_secondarymenu.html' %}
+  <form id="modifystory_form" action="" method="post" class="card col-md-9 col-sm-12"">
+    {% include 'modify_story_heading.html' %}
+    <!-- interactive elements -->
+    <div class="page-inner mt--5">
+      <div class="row row-card-no-pd">
+        <div class="col-md-12 nopaddingleft">
+          <div class="card">
+            {% include 'modify_description.html' %}
+            <div class="card-body nopaddingleft" id="sortable">
+                <span id='loader' class='lds-dual-ring hidden overlay'></span>
+                <!-- <script src="/melody/static/js/react/Map.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Count.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Table.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Chart.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/Textbox.js" type="text/babel"></script>
+                <script src="/melody/static/js/react/add_components.js" type="text/babel"></script> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- save buttons -->
+    <div class="card-action" style="margin:auto;">
+        <button type="submit" name="action" value="save" class="btn btn-success prevent_alert">Save</button>
+        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+    </div>
+  </form>
+</div>
+
+{% include 'notify.html' %}
+{% endblock content %}
+
+<!-- JS for this template -->
+{% block javascripts %}
+
+{% if datastory_data.user_name %}
+<script>
+    let beforeUnloadAlert = true;
+    window.addEventListener('beforeunload', function (e) {
+        if (!beforeUnloadAlert) return;
+
+        // etc
+        e.preventDefault();
+        e.returnValue = '';
+    });
+
+    function myFunction() {
+        beforeUnloadAlert = false;
+    }
+    var myObj = document.getElementsByClassName('prevent_alert')
+    console.log(myObj);
+    for (el of myObj) {
+        el.addEventListener('click', myFunction);
+    }
+</script>
+{% endif %}
+{% endblock javascripts %}
