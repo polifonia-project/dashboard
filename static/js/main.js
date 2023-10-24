@@ -1,4 +1,3 @@
-
 addEventListener("DOMContentLoaded", function () {
     if (Object.getOwnPropertyNames(datastory_data).length > 0) {
         colorSwitch(datastory_data.color_code[0], datastory_data.color_code[1]);
@@ -28,6 +27,7 @@ const storyList = document.getElementById('story-list');
 if (storyList) { fillDropDownList(storyList); }
 
 function auto_grow(element) { }
+
 //// WYSIWYG FORM FUNCTIONS ////
 
 // disable submit form when pressing return
@@ -44,8 +44,6 @@ function disableKeypress() {
 function detach_table(index) {
     document.getElementById(index + "__textsearchresults").innerHTML = '&nbsp;';
 }
-
-
 
 //// RELATIONS TEMPLATE FUNCTIONS ////
 
@@ -343,7 +341,7 @@ function colorSwitch(color_1, color_2) {
     var gradientEl = document.querySelector(".secondarymenuinner");
     var gradientPreview = document.querySelectorAll(".previewtextsearch");
     var counters = document.querySelectorAll(".count_result");
-    //var mapSidebar = document.querySelectorAll(".leaflet-sidebar");
+    var mapSidebar = document.querySelectorAll(".leaflet-sidebar");
     // var mapSidebarTab = document.querySelectorAll(".leaflet-sidebar-tabs");
     //var textsearch_buttons = document.querySelectorAll(".textsearch_button");
     //gradientEl.classList.remove("bg-primary-gradient");
@@ -374,13 +372,10 @@ function colorSwitch(color_1, color_2) {
 
 }
 
-
-
 // colors for charts
 function chartColor(colorStart, colorEnd, dataLength) {
     return d3.quantize(d3.interpolateHcl(colorStart, colorEnd), dataLength);
 }
-
 
 
 // autoresize textarea
@@ -505,7 +500,7 @@ const cleanString = (dirtyString) => {
 //         fromEditorToInput(pos);
 //     }
 // }
-//
+
 // const toolbarOptions = () => {
 //     let toolbarOptions = [];
 //     toolbarOptions = [
@@ -515,10 +510,10 @@ const cleanString = (dirtyString) => {
 //         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
 //         ['clean']
 //     ]
-//
+
 //     return toolbarOptions;
 // }
-//
+
 // const fromEditorToInput = (pos) => {
 //     let editor = document.getElementById(pos + '__editor');
 //     editor.onmouseleave = function () {
@@ -533,18 +528,14 @@ const cleanString = (dirtyString) => {
 ///// MODIFY CSS
 const overwriteCSS = () => {
     if (!(window.location.href).includes('published_stories')) {
-
         const style = document.createElement('style');
-
         style.textContent = `
-            .main-header, .sidebar {
-                display: block;
-            }
-
-            .main-panel {
-                width: calc(100% - 250px);
-            }`;
-
+        .main-header, .sidebar {
+            display: block;
+        }
+        .main-panel {
+            width: calc(100% - 250px);
+        }`;
         document.head.appendChild(style);
     }
 }
