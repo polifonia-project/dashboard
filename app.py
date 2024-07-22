@@ -11,6 +11,7 @@ import glob
 from apscheduler.schedulers.background import BackgroundScheduler
 import bleach
 from SPARQLWrapper import SPARQLWrapper, JSON
+import url_to_html
 
 # Sessions config
 app = Flask(__name__, static_url_path='/melody/static')
@@ -235,32 +236,12 @@ def redirect_to_modify(section_name, datastory_name, whatever=None):
 @app.route("/melody/api")
 @app.route(PREFIX+"api")
 def api_url_to_html():
-    entity_id = request.args['entity_id']
-    endpoint = request.args['sparql_endpoint']
-    query = request.args['query']
-    query = query.replace('{}', '{<'+entity_id+'>}')
-    html_content = request.args['html_content']
-
-    sparql = SPARQLWrapper(endpoint)
-    sparql.setQuery(query)
-    sparql.setReturnFormat(JSON)
-    results = {}
-    try:
-        results = sparql.query().convert()
-        vars = results['head']['vars']
-        bindings = results['results']['bindings'][0]
-        for var in vars:
-            var_value = bindings[var]['value']
-            if len(var_value) > 0:
-                html_content = html_content.replace(
-                    '<<<' + var + '>>>', bindings[var]['value'])
-            else:
-                html_content = html_content.replace(
-                    '<<<' + var + '>>>', '')
-        return html_content
-    except Exception as e:
-        print('ERROR for ', endpoint, e)
-        return '<p>Impossible to retrieve information.</p>'
+    request_args = request.args
+    if 'config_file' in request_args:
+        api_response = url_to_html.complex_response(request_args)
+    else:
+        api_response = url_to_html.simple_response(request_args)
+    return api_response
 
 
 utils.static_modifications(False)
