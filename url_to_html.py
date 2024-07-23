@@ -4,16 +4,26 @@ import requests
 from flask import jsonify
 
 
-def simple_response(request_args):
+def collect_uris(request_args):
     entity_ids = {}
     for arg in request_args:
         if 'uri' in arg:
             entity_ids[arg] = request_args[arg]
-    endpoint = request_args['sparql_endpoint']
-    query = request_args['query']
+    return entity_ids
+
+
+def insert_uri_in_query(entity_ids, query):
     for var, entity in entity_ids.items():
         if var in query:
             query = query.replace(f'<<<{var}>>>', f'<{entity}>')
+    return query
+
+
+def simple_response(request_args):
+    entity_ids = collect_uris(request_args)
+    endpoint = request_args['sparql_endpoint']
+    query = request_args['query']
+    query = insert_uri_in_query(entity_ids, query)
     html_content = request_args['html_content']
 
     sparql = SPARQLWrapper(endpoint)
@@ -39,10 +49,7 @@ def simple_response(request_args):
 
 
 def complex_response(request_args):
-    entity_ids = {}
-    for arg in request_args:
-        if 'uri' in arg:
-            entity_ids[arg] = request_args[arg]
+    entity_ids = collect_uris(request_args)
 
     config_file_url = request_args['config_file']
 
