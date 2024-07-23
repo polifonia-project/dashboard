@@ -1,18 +1,18 @@
 {
     "category": "painting",
-    "style": "https://raw.githubusercontent.com/polifonia-project/dashboard/development/static/css/style.css",
+    "style": "https://raw.githubusercontent.com/polifonia-project/dashboard/api-url-to-html/test_style.css",
     "content": {
         "01": {
             "type": "text",
             "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
-            "query": "SELECT DISTINCT ?title ?desc ?entity_type ?inception WHERE { VALUES ?obj {} OPTIONAL {?obj wdt:P1476 ?title . FILTER(lang(?title) = \"it\")} OPTIONAL {?obj schema:description ?desc . FILTER(lang(?desc) = \"en\") } OPTIONAL {?obj wdt:P31 ?type . ?type rdfs:label ?entity_type . FILTER(lang(?entity_type) = \"en\")} OPTIONAL {?obj wdt:P571 ?inception .}} LIMIT 1",
+            "query": "SELECT DISTINCT ?title ?desc ?entity_type ?inception WHERE { VALUES ?obj {<<<uri1>>>} OPTIONAL {?obj wdt:P1476 ?title . FILTER(lang(?title) = \"it\")} OPTIONAL {?obj schema:description ?desc . FILTER(lang(?desc) = \"en\") } OPTIONAL {?obj wdt:P31 ?type . ?type rdfs:label ?entity_type . FILTER(lang(?entity_type) = \"en\")} OPTIONAL {?obj wdt:P571 ?inception .}} LIMIT 1",
             "html_content": "<div><h1><<<title>>></h1><h3><<<desc>>></h3><p>This <<<entity_type>>> was created in <<<inception>>>.</p></div>"
         },
         "02": {
             "type": "data_viz",
             "viz_type": "histogram",
             "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
-            "query": "SELECT ?countryLabel (COUNT(?painting) AS ?paintingCount) WHERE {VALUES ?obj {} ?obj wdt:P571 ?objInception . ?painting wdt:P571 ?objInception ; wdt:P17 ?country . SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }} GROUP BY ?countryLabel",
+            "query": "SELECT ?countryLabel (COUNT(?painting) AS ?paintingCount) WHERE {VALUES ?obj {<<<uri1>>>} ?obj wdt:P571 ?objInception . ?painting wdt:P571 ?objInception ; wdt:P17 ?country . SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }} GROUP BY ?countryLabel",
             "html_content": "<div><h2>Geographic Distribution of paintings of Same Period</h2><canvas></canvas></div>"
         }
     }
