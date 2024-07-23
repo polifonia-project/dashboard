@@ -1,4 +1,7 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
+import json
+import requests
+from flask import jsonify
 
 
 def simple_response(request_args):
@@ -36,4 +39,18 @@ def simple_response(request_args):
 
 
 def complex_response(request_args):
-    pass
+    entity_ids = {}
+    for arg in request_args:
+        if 'uri' in arg:
+            entity_ids[arg] = request_args[arg]
+
+    config_file_url = request_args['config_file']
+
+    # Parse the raw JSON string
+    try:
+        resp = requests.get(config_file_url)
+        parsed_json = json.loads(resp.text)
+        print(parsed_json)
+        return '<p>Ciao</p>'
+    except json.JSONDecodeError as e:
+        return jsonify({"error": "Invalid JSON string", "message": str(e)}), 400
