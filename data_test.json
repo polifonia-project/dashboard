@@ -1,6 +1,6 @@
 {
     "category": "painting",
-    "style": "https://raw.githubusercontent.com/polifonia-project/dashboard/api-url-to-html/test_style.css",
+    "style": "https://raw.githack.com/polifonia-project/dashboard/api-url-to-html/test_style.css",
     "content": {
         "01": {
             "type": "text",
