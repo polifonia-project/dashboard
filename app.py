@@ -241,7 +241,7 @@ def api_url_to_html():
         api_response = url_to_html.complex_response(request_args)
     else:
         api_response = url_to_html.simple_response(request_args)
-    return api_response
+    return render_template('test_template.html', general_data=api_response)
 
 
 utils.static_modifications(False)
