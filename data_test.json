@@ -4,16 +4,9 @@
     "content": {
         "01": {
             "type": "text",
-            "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
-            "query": "SELECT DISTINCT ?title ?desc ?entity_type ?inception WHERE { VALUES ?obj {<<<uri1>>>} OPTIONAL {?obj wdt:P1476 ?title . FILTER(lang(?title) = \"it\")} OPTIONAL {?obj schema:description ?desc . FILTER(lang(?desc) = \"en\") } OPTIONAL {?obj wdt:P31 ?type . ?type rdfs:label ?entity_type . FILTER(lang(?entity_type) = \"en\")} OPTIONAL {?obj wdt:P571 ?inception .}} LIMIT 1",
-            "html_content": "<div><h1><<<title>>></h1><h3><<<desc>>></h3><p>This <<<entity_type>>> was created in <<<inception>>>.</p></div>"
-        },
-        "02": {
-            "type": "data_viz",
-            "viz_type": "histogram",
-            "sparql_endpoint": "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
-            "query": "SELECT ?countryLabel (COUNT(?painting) AS ?paintingCount) WHERE {VALUES ?obj {<<<uri1>>>} ?obj wdt:P571 ?objInception . ?painting wdt:P571 ?objInception ; wdt:P17 ?country . SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }} GROUP BY ?countryLabel",
-            "html_content": "<div><h2>Geographic Distribution of paintings of Same Period</h2><canvas></canvas></div>"
+            "sparql_endpoint": "http://localhost:3030/aldrovandi-object/sparql",
+            "query": "PREFIX aat: <http://vocab.getty.edu/page/aat/>\nPREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\nPREFIX crmdig: <http://www.ics.forth.gr/isl/CRMdig/>\nPREFIX ex: <https://w3id.org/dharc/ontology/chad-ap/data/example/>\nPREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> \nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\nSELECT DISTINCT ?title ?desc\nWHERE {\n  VALUES (?item_id) { (<PLACEHOLDER_URI>) }\n  ?manifestation lrmoo:R7i_is_exemplified_by ?item_id .\n  ?expression lrmoo:R4i_is_embodied_in ?manifestation .\n  ?work lrmoo:R3_is_realised_in ?expression ;\n        crm:P102_has_title ?title_id.\n  ?title_id crm:P190_has_symbolic_content ?title .\n\n  FILTER (lang(?title) = \"en\")\n  ?item_id crm:P3_has_note ?desc .\n}",
+            "html_content": "<div><h1><<<title>>></h1><h3><<<desc>>></h3></div>"
         }
     }
 }
