@@ -12,9 +12,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import bleach
 from SPARQLWrapper import SPARQLWrapper, JSON
 import url_to_html
+from flask_cors import CORS
 
 # Sessions config
 app = Flask(__name__, static_url_path='/melody/static')
+CORS(app)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
