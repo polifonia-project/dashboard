@@ -59,44 +59,54 @@ def simple_response(request_args):
 def complex_response(request_args):
     entity_ids = collect_uris(request_args)
 
-    config_file_url = request_args['config_file']
+    config_file_input = request_args.get('config_file')
 
     parsed_json = {}
-    # Parse the raw JSON string
-    try:
-        resp = requests.get(config_file_url)
-        parsed_json = json.loads(resp.text)
-        content_blocks = parsed_json['content']
-        content_dict = {}
-        content_dict['style'] = parsed_json['style']
-        blocks = {}
-        for block, info in content_blocks.items():
-            block_dict = {}
-            type = info['type']
-            endpoint = info['sparql_endpoint']
-            query = info['query']
-            query = insert_uri_in_query(entity_ids, query)
-            html_content = info['html_content']
-            results = query_data(endpoint, query)
-            if type == 'text':
-                html_content = fill_text_html(results, html_content)
-            if type == 'data_viz':
-                viz_type = info['viz_type']
-                if viz_type == 'histogram':
-                    data = {}
-                    vars = results['head']['vars']
-                    # Assume the first variable is the key and the second is the value
-                    key_var = vars[0]
-                    value_var = vars[1]
-                    for result in results["results"]["bindings"]:
-                        key = result[key_var]["value"]
-                        value = int(result[value_var]["value"])
-                        data[key] = value
-                    block_dict['data'] = data
 
-            block_dict['html_content'] = html_content
-            blocks[block] = block_dict
-        content_dict['blocks'] = blocks
-        return content_dict
+    try:
+        if isinstance(config_file_input, str):
+            # Check if the config_file_input appears to be a URL
+            if config_file_input.strip().startswith("http"):
+                # If it's a URL, fetch the content from that URL
+                resp = requests.get(config_file_input)
+                parsed_json = json.loads(resp.text)
+            else:
+                # Otherwise, assume it's a raw JSON string passed directly
+                parsed_json = json.loads(config_file_input)
+        elif isinstance(config_file_input, dict):
+            parsed_json = config_file_input
     except json.JSONDecodeError as e:
         return jsonify({"error": "Invalid JSON string", "message": str(e)}), 400
+
+    content_blocks = parsed_json['content']
+    content_dict = {}
+    content_dict['style'] = parsed_json['style']
+    blocks = {}
+    for block, info in content_blocks.items():
+        block_dict = {}
+        type = info['type']
+        endpoint = info['sparql_endpoint']
+        query = info['query']
+        query = insert_uri_in_query(entity_ids, query)
+        html_content = info['html_content']
+        results = query_data(endpoint, query)
+        if type == 'text':
+            html_content = fill_text_html(results, html_content)
+        if type == 'data_viz':
+            viz_type = info['viz_type']
+            if viz_type == 'histogram':
+                data = {}
+                vars = results['head']['vars']
+                # Assume the first variable is the key and the second is the value
+                key_var = vars[0]
+                value_var = vars[1]
+                for result in results["results"]["bindings"]:
+                    key = result[key_var]["value"]
+                    value = int(result[value_var]["value"])
+                    data[key] = value
+                block_dict['data'] = data
+
+        block_dict['html_content'] = html_content
+        blocks[block] = block_dict
+    content_dict['dynamic_elements'] = blocks
+    return content_dict

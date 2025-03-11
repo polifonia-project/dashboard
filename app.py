@@ -233,15 +233,24 @@ def redirect_to_modify(section_name, datastory_name, whatever=None):
     return redirect("/melody"+url_for('modify_datastory', section_name=section_name, datastory_name=datastory_name))
 
 
-@app.route("/melody/api")
-@app.route(PREFIX+"api")
+@app.route("/melody/api", methods=['GET', 'POST'])
+@app.route(PREFIX+"api", methods=['GET', 'POST'])
 def api_url_to_html():
-    request_args = request.args
-    if 'config_file' in request_args:
-        api_response = url_to_html.complex_response(request_args)
+    # If the request method is POST and the content type is JSON,
+    # try to get JSON data; otherwise, use request.values which
+    # merges query parameters and form data.
+    # (to handle both Content-Type multipart/form-data and application/json)
+    if request.method == 'POST' and request.is_json:
+        parameters = request.get_json()
     else:
-        api_response = url_to_html.simple_response(request_args)
-    return render_template('test_template.html', general_data=api_response)
+        # combines request.args and request.form
+        parameters = request.values
+
+    if 'config_file' in parameters:
+        api_response = url_to_html.complex_response(parameters)
+    else:
+        api_response = url_to_html.simple_response(parameters)
+    return render_template('test_template.html', datastory_data=api_response)
 
 
 utils.static_modifications(False)
