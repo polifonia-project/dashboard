@@ -16,7 +16,10 @@ def insert_uri_in_query(entity_ids, query):
     for var, entity in entity_ids.items():
         if var in query:
             query = query.replace(f'<<<{var}>>>', f'<{entity}>')
-    return query
+            return query
+        else:
+            print('var not n query')
+            return False
 
 
 def query_data(endpoint, query):
@@ -29,7 +32,7 @@ def query_data(endpoint, query):
         return results
     except Exception as e:
         print('ERROR for ', endpoint, e)
-        return '<p>Impossible to retrieve information.</p>'
+        return results
 
 
 def fill_text_html(results, html_content):
@@ -50,9 +53,12 @@ def simple_response(request_args):
     endpoint = request_args['sparql_endpoint']
     query = request_args['query']
     query = insert_uri_in_query(entity_ids, query)
-    html_content = request_args['html_content']
-    results = query_data(endpoint, query)
-    html_content = fill_text_html(results, html_content)
+    if query == False:
+        html_content = ''
+    else:
+        html_content = request_args['html_content']
+        results = query_data(endpoint, query)
+        html_content = fill_text_html(results, html_content)
     return html_content
 
 
@@ -80,7 +86,8 @@ def complex_response(request_args):
 
     content_blocks = parsed_json['content']
     content_dict = {}
-    content_dict['style'] = parsed_json['style']
+    if 'style' in parsed_json:
+        content_dict['style'] = parsed_json['style']
     blocks = {}
     for block, info in content_blocks.items():
         block_dict = {}
@@ -88,23 +95,29 @@ def complex_response(request_args):
         endpoint = info['sparql_endpoint']
         query = info['query']
         query = insert_uri_in_query(entity_ids, query)
-        html_content = info['html_content']
-        results = query_data(endpoint, query)
-        if type == 'text':
-            html_content = fill_text_html(results, html_content)
-        if type == 'data_viz':
-            viz_type = info['viz_type']
-            if viz_type == 'histogram':
-                data = {}
-                vars = results['head']['vars']
-                # Assume the first variable is the key and the second is the value
-                key_var = vars[0]
-                value_var = vars[1]
-                for result in results["results"]["bindings"]:
-                    key = result[key_var]["value"]
-                    value = int(result[value_var]["value"])
-                    data[key] = value
-                block_dict['data'] = data
+        if query == False:
+            html_content = ''
+        else:
+            html_content = info['html_content']
+            results = query_data(endpoint, query)
+            if type == 'text':
+                if len(results) == 0 or len(results['results']['bindings']) == 0:
+                    html_content = ''
+                else:
+                    html_content = fill_text_html(results, html_content)
+            if type == 'data_viz':
+                viz_type = info['viz_type']
+                if viz_type == 'histogram':
+                    data = {}
+                    vars = results['head']['vars']
+                    # Assume the first variable is the key and the second is the value
+                    key_var = vars[0]
+                    value_var = vars[1]
+                    for result in results["results"]["bindings"]:
+                        key = result[key_var]["value"]
+                        value = int(result[value_var]["value"])
+                        data[key] = value
+                    block_dict['data'] = data
 
         block_dict['html_content'] = html_content
         blocks[block] = block_dict
