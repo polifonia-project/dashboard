@@ -44,7 +44,8 @@ def fill_text(results, content):
             content = content.replace(
                 '<<<' + var + '>>>', bindings[var]['value'])
         else:
-            content = content.replace('<<<' + var + '>>>', '')
+            # content = content.replace('<<<' + var + '>>>', '')
+            content = ''
     return content
 
 
