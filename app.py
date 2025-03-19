@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, render_template, request, url_for, redirect, session, json
+from flask import Flask, render_template, request, url_for, redirect, session, jsonify
 import requests
 from flask_session import Session
 import github_sync
@@ -248,11 +248,18 @@ def api_url_to_html():
         # combines request.args and request.form
         parameters = request.values
 
+    response_format = parameters.get('format', 'html').lower()
+
     if 'config_file' in parameters:
         api_response = url_to_html.complex_response(parameters)
     else:
         api_response = url_to_html.simple_response(parameters)
-    return render_template('test_template.html', datastory_data=api_response)
+
+    if response_format == "json":
+        print(api_response)
+        return jsonify(api_response)
+    else:
+        return render_template('test_template.html', datastory_data=api_response)
 
 
 utils.static_modifications(False)

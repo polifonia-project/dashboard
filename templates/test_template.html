@@ -5,21 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test for API</title>
-    {% if general_data %}
-    <link rel="stylesheet" href={{general_data.style}} type='text/css'>
+    {% if datastory_data.style %}
+    <link rel="stylesheet" href={{datastory_data.style}} type='text/css'>
     {% endif %}
 </head>
 
 <body>
-    {% if general_data %}
+    {% if datastory_data %}
+    {% set count = datastory_data.dynamic_elements|length %}
     <div id='main'>
-        {% for block_number, block_info in general_data.blocks.items()|sort %}
-        <div class='block' id='{{block_number}}_block'>{{block_info.html_content|safe}}</div>
+        {% for block_number, block_info in datastory_data.dynamic_elements.items()|sort %}
+        <div class='block' id='{{block_number}}_block'>{{block_info.content|safe}}</div>
         {% endfor %}
     </div>
     {% endif %}
     <script type="text/javascript">
-        var general_data = {{ general_data | tojson }};
+        var general_data = {{ datastory_data | tojson }};
         var datastory_data = {};
     </script>
 </body>

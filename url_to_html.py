@@ -35,17 +35,17 @@ def query_data(endpoint, query):
         return results
 
 
-def fill_text_html(results, html_content):
+def fill_text(results, content):
     vars = results['head']['vars']
     bindings = results['results']['bindings'][0]
     for var in vars:
         var_value = bindings[var]['value']
         if len(var_value) > 0:
-            html_content = html_content.replace(
+            content = content.replace(
                 '<<<' + var + '>>>', bindings[var]['value'])
         else:
-            html_content = html_content.replace('<<<' + var + '>>>', '')
-    return html_content
+            content = content.replace('<<<' + var + '>>>', '')
+    return content
 
 
 def simple_response(request_args):
@@ -54,12 +54,12 @@ def simple_response(request_args):
     query = request_args['query']
     query = insert_uri_in_query(entity_ids, query)
     if query == False:
-        html_content = ''
+        content = ''
     else:
-        html_content = request_args['html_content']
+        content = request_args['content']
         results = query_data(endpoint, query)
-        html_content = fill_text_html(results, html_content)
-    return html_content
+        content = fill_text(results, content)
+    return content
 
 
 def complex_response(request_args):
@@ -96,15 +96,15 @@ def complex_response(request_args):
         query = info['query']
         query = insert_uri_in_query(entity_ids, query)
         if query == False:
-            html_content = ''
+            content = ''
         else:
-            html_content = info['html_content']
+            content = info['content']
             results = query_data(endpoint, query)
             if type == 'text':
                 if len(results) == 0 or len(results['results']['bindings']) == 0:
-                    html_content = ''
+                    content = ''
                 else:
-                    html_content = fill_text_html(results, html_content)
+                    content = fill_text(results, content)
             if type == 'data_viz':
                 viz_type = info['viz_type']
                 if viz_type == 'histogram':
@@ -119,7 +119,7 @@ def complex_response(request_args):
                         data[key] = value
                     block_dict['data'] = data
 
-        block_dict['html_content'] = html_content
+        block_dict['content'] = content
         blocks[block] = block_dict
     content_dict['dynamic_elements'] = blocks
     return content_dict
