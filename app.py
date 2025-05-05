@@ -15,8 +15,7 @@ import url_to_html
 from flask_cors import CORS
 
 # Sessions config
-app = Flask(__name__, static_url_path='/melody/static')
-CORS(app)
+app = Flask(__name__, static_url_path=conf.static_url_path)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -233,7 +232,6 @@ def modify_bkg_datastory(section_name, datastory_name):
 @app.route(PREFIX+"<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])
 def redirect_to_modify(section_name, datastory_name, whatever=None):
     return redirect("/melody"+url_for('modify_datastory', section_name=section_name, datastory_name=datastory_name))
-
 
 @app.route("/melody/api", methods=['GET', 'POST'])
 @app.route(PREFIX+"api", methods=['GET', 'POST'])
