@@ -259,7 +259,7 @@ def api_url_to_html():
         print(api_response)
         return jsonify(api_response)
     else:
-        return render_template('test_template.html', datastory_data=api_response)
+        return render_template('api_template.html', datastory_data=api_response)
 
 
 utils.static_modifications(False)
