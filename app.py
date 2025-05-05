@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, render_template, request, url_for, redirect, session, json
+from flask import Flask, render_template, request, url_for, redirect, session, jsonify
 import requests
 from flask_session import Session
 import github_sync
@@ -10,6 +10,9 @@ import os
 import glob
 from apscheduler.schedulers.background import BackgroundScheduler
 import bleach
+from SPARQLWrapper import SPARQLWrapper, JSON
+import url_to_html
+from flask_cors import CORS
 
 # Sessions config
 app = Flask(__name__, static_url_path=conf.static_url_path)
@@ -229,6 +232,32 @@ def modify_bkg_datastory(section_name, datastory_name):
 @app.route(PREFIX+"<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])
 def redirect_to_modify(section_name, datastory_name, whatever=None):
     return redirect("/melody"+url_for('modify_datastory', section_name=section_name, datastory_name=datastory_name))
+
+@app.route("/melody/api", methods=['GET', 'POST'])
+@app.route(PREFIX+"api", methods=['GET', 'POST'])
+def api_url_to_html():
+    # If the request method is POST and the content type is JSON,
+    # try to get JSON data; otherwise, use request.values which
+    # merges query parameters and form data.
+    # (to handle both Content-Type multipart/form-data and application/json)
+    if request.method == 'POST' and request.is_json:
+        parameters = request.get_json()
+    else:
+        # combines request.args and request.form
+        parameters = request.values
+
+    response_format = parameters.get('format', 'html').lower()
+
+    if 'config_file' in parameters:
+        api_response = url_to_html.complex_response(parameters)
+    else:
+        api_response = url_to_html.simple_response(parameters)
+
+    if response_format == "json":
+        print(api_response)
+        return jsonify(api_response)
+    else:
+        return render_template('api_template.html', datastory_data=api_response)
 
 
 utils.static_modifications(False)
