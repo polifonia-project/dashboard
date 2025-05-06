@@ -16,6 +16,7 @@ from flask_cors import CORS
 
 # Sessions config
 app = Flask(__name__, static_url_path=conf.static_url_path)
+CORS(app)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -74,10 +75,11 @@ def oauthcallback(is_valid_user=None):
     session["name"], session["user_type"] = github_sync.validate_credentials(
         code)
     if session["name"] != 'None':
+        print("LOGIN type:", session["user_type"],
+              "| username:", session["name"])
         return redirect('/melody'+url_for('setup'))
     else:
         return redirect('/melody'+url_for('home'))
-    print("LOGIN type:", session["user_type"], "| username:", session["name"])
 
 
 @app.route("/melody/signout")
@@ -232,6 +234,7 @@ def modify_bkg_datastory(section_name, datastory_name):
 @app.route(PREFIX+"<string:whatever>/modify/<string:section_name>/<string:datastory_name>", strict_slashes=False, methods=['POST', 'GET'])
 def redirect_to_modify(section_name, datastory_name, whatever=None):
     return redirect("/melody"+url_for('modify_datastory', section_name=section_name, datastory_name=datastory_name))
+
 
 @app.route("/melody/api", methods=['GET', 'POST'])
 @app.route(PREFIX+"api", methods=['GET', 'POST'])
