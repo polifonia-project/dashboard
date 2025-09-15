@@ -2,6 +2,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import json
 import requests
 from flask import jsonify
+from typing import Dict, List, Tuple, Any
 
 
 def collect_uris(request_args):
@@ -47,6 +48,76 @@ def fill_text(results, content):
             # content = content.replace('<<<' + var + '>>>', '')
             content = ''
     return content
+
+
+def _is_number(value: str) -> bool:
+    try:
+        float(value)
+        return True
+    except Exception:
+        return False
+
+
+def _infer_type(value: str) -> str:
+    # Simple inference: number or string
+    return 'number' if _is_number(value) else 'string'
+
+
+def _coerce_value(value: str, inferred_type: str) -> Any:
+    if inferred_type == 'number':
+        try:
+            # Prefer int when possible, else float
+            as_float = float(value)
+            if as_float.is_integer():
+                return int(as_float)
+            return as_float
+        except Exception:
+            return value
+    return value
+
+
+def _build_table_from_results(results: Dict, selected_vars: List[str] = None) -> Tuple[List[Dict], List[Dict]]:
+    """Build a normalized columns/rows table from SPARQL JSON results.
+
+    Args:
+        results: SPARQLWrapper JSON
+        selected_vars: optional subset/order of variables to include
+
+    Returns:
+        (columns, rows)
+    """
+    if not results or 'head' not in results or 'results' not in results:
+        return [], []
+
+    vars_list = results['head'].get('vars', [])
+    if selected_vars:
+        vars_list = [v for v in selected_vars if v in vars_list]
+
+    bindings = results['results'].get('bindings', [])
+    if not bindings:
+        # No rows, but still return columns based on selected vars
+        columns = [{'name': v, 'type': 'string'} for v in vars_list]
+        return columns, []
+
+    # Infer types from first row
+    first = bindings[0]
+    columns = []
+    for v in vars_list:
+        val = first.get(v, {}).get('value', '')
+        inferred = _infer_type(val)
+        columns.append({'name': v, 'type': inferred})
+
+    # Build rows with coerced values
+    rows = []
+    for b in bindings:
+        row = {}
+        for col in columns:
+            name = col['name']
+            raw = b.get(name, {}).get('value', '')
+            row[name] = _coerce_value(raw, col['type'])
+        rows.append(row)
+
+    return columns, rows
 
 
 def simple_response(request_args):
@@ -97,35 +168,89 @@ def complex_response(request_args):
     blocks = {}
     for block, info in content_blocks.items():
         block_dict = {}
-        type = info['type']
-        endpoint = info['sparql_endpoint']
-        query = info['query']
+        block_type = info.get('type')
+        endpoint = info.get('sparql_endpoint')
+        query = info.get('query', '')
         query = insert_uri_in_query(entity_ids, query)
-        if query == False:
-            content = ''
-        else:
-            content = info['content']
+        results = {}
+        content = ''
+        if query is not False and endpoint:
             results = query_data(endpoint, query)
-            if type == 'text':
-                if len(results) == 0 or len(results['results']['bindings']) == 0:
-                    content = ''
-                else:
-                    content = fill_text(results, content)
-            if type == 'data_viz':
-                viz_type = info['viz_type']
-                if viz_type == 'histogram':
-                    data = {}
-                    vars = results['head']['vars']
-                    # Assume the first variable is the key and the second is the value
-                    key_var = vars[0]
-                    value_var = vars[1]
-                    for result in results["results"]["bindings"]:
-                        key = result[key_var]["value"]
-                        value = int(result[value_var]["value"])
-                        data[key] = value
-                    block_dict['data'] = data
 
-        block_dict['content'] = content
+        if block_type == 'text':
+            content = info.get('content', '')
+            if not results or not results.get('results', {}).get('bindings'):
+                content = ''
+            else:
+                content = fill_text(results, content)
+            block_dict['content'] = content
+
+        elif block_type == 'data_viz':
+            viz_type = info.get('viz_type', 'table')
+            # e.g., {"x": "labelVar", "y": "countVar"}
+            encoding = info.get('encoding')
+            title = info.get('title')
+            x_label = info.get('xLabel')
+            y_label = info.get('yLabel')
+
+            errors = []
+            columns: List[Dict] = []
+            rows: List[Dict] = []
+            meta: Dict[str, Any] = {}
+
+            if title:
+                meta['title'] = title
+            if x_label:
+                meta['xLabel'] = x_label
+            if y_label:
+                meta['yLabel'] = y_label
+
+            if results and results.get('head') and results.get('results'):
+                vars_in_result = results['head'].get('vars', [])
+
+                if isinstance(encoding, dict) and len(encoding) > 0:
+                    # Validate encoding vars exist in results
+                    used_vars = []
+                    for role, var_name in encoding.items():
+                        if var_name not in vars_in_result:
+                            errors.append(
+                                f"Encoding var '{var_name}' not in result set")
+                        else:
+                            used_vars.append(var_name)
+                    if errors:
+                        # Fall back to a table view
+                        columns, rows = _build_table_from_results(results)
+                        viz_kind = 'table'
+                    else:
+                        columns, rows = _build_table_from_results(
+                            results, used_vars)
+                        viz_kind = viz_type
+                        block_dict['encoding'] = encoding
+                else:
+                    # No encoding provided: return table
+                    columns, rows = _build_table_from_results(results)
+                    viz_kind = 'table'
+            else:
+                # Empty or failed query: default empty dataset
+                viz_kind = viz_type if isinstance(
+                    encoding, dict) and len(encoding) > 0 else 'table'
+                meta['empty'] = True
+
+            if errors:
+                meta['errors'] = errors
+
+            block_dict.update({
+                'type': 'data_viz',
+                'viz_type': viz_kind,
+                'columns': columns,
+                'rows': rows,
+                'meta': meta
+            })
+
+        else:
+            # Unknown type: keep as empty content
+            block_dict['content'] = ''
+
         blocks[block] = block_dict
     content_dict['dynamic_elements'] = blocks
     return content_dict
