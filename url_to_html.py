@@ -87,8 +87,13 @@ def complex_response(request_args):
 
     content_blocks = parsed_json['content']
     content_dict = {}
-    if 'style' in parsed_json:
-        content_dict['style'] = parsed_json['style']
+    # Add optional assets only if non-empty strings
+    style_val = parsed_json.get('style')
+    if isinstance(style_val, str) and style_val.strip():
+        content_dict['style'] = style_val
+    script_val = parsed_json.get('script')
+    if isinstance(script_val, str) and script_val.strip():
+        content_dict['script'] = script_val
     blocks = {}
     for block, info in content_blocks.items():
         block_dict = {}
