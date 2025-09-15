@@ -3,6 +3,7 @@ import json
 import requests
 from flask import jsonify
 from typing import Dict, List, Tuple, Any
+import re
 
 
 def collect_uris(request_args):
@@ -14,13 +15,32 @@ def collect_uris(request_args):
 
 
 def insert_uri_in_query(entity_ids, query):
-    for var, entity in entity_ids.items():
-        if var in query:
-            query = query.replace(f'<<<{var}>>>', f'<{entity}>')
-            return query
-        else:
-            print('var not n query')
-            return False
+    """Replace placeholder tokens <<<var>>> with <URI> when provided.
+
+    Behavior:
+    - If the query has no placeholders, return it unchanged (supports data_viz without restriction).
+    - If placeholders exist, all must be provided in entity_ids; otherwise return False.
+    - Replace all placeholders found with corresponding URIs.
+    """
+    # Find all placeholder variable names in the query
+    placeholders = set(re.findall(r"<<<([^>]+)>>>", query))
+
+    # No placeholders: nothing to do
+    if not placeholders:
+        return query
+
+    # Ensure all placeholders have corresponding values
+    missing = [name for name in placeholders if name not in entity_ids]
+    if missing:
+        print('Missing URI(s) for placeholder(s):', ', '.join(missing))
+        return False
+
+    # Perform replacements for all placeholders
+    for name in placeholders:
+        uri = entity_ids[name]
+        query = query.replace(f'<<<{name}>>>', f'<{uri}>')
+
+    return query
 
 
 def query_data(endpoint, query):
