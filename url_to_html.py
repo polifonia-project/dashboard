@@ -207,8 +207,10 @@ def complex_response(request_args):
 
         elif block_type == 'data_viz':
             viz_type = info.get('viz_type', 'table')
-            # e.g., {"x": "labelVar", "y": "countVar"}
-            encoding = info.get('encoding')
+            # Accept both 'encoding' and 'encodings' keys from config
+            _encoding_single = info.get('encoding')
+            _encoding_plural = info.get('encodings')
+            encoding = _encoding_single or _encoding_plural
             title = info.get('title')
             x_label = info.get('xLabel')
             y_label = info.get('yLabel')
@@ -232,11 +234,13 @@ def complex_response(request_args):
                     # Validate encoding vars exist in results
                     used_vars = []
                     for role, var_name in encoding.items():
-                        if var_name not in vars_in_result:
-                            errors.append(
-                                f"Encoding var '{var_name}' not in result set")
-                        else:
-                            used_vars.append(var_name)
+                        # Some encodings may be non-string (e.g., colors arrays); include only string var names
+                        if isinstance(var_name, str):
+                            if var_name not in vars_in_result:
+                                errors.append(
+                                    f"Encoding var '{var_name}' not in result set")
+                            else:
+                                used_vars.append(var_name)
                     if errors:
                         # Fall back to a table view
                         columns, rows = _build_table_from_results(results)
@@ -245,7 +249,11 @@ def complex_response(request_args):
                         columns, rows = _build_table_from_results(
                             results, used_vars)
                         viz_kind = viz_type
-                        block_dict['encoding'] = encoding
+                        # Echo back the same encoding key as provided by the config
+                        if _encoding_single is not None:
+                            block_dict['encoding'] = encoding
+                        elif _encoding_plural is not None:
+                            block_dict['encodings'] = encoding
                 else:
                     # No encoding provided: return table
                     columns, rows = _build_table_from_results(results)
@@ -266,6 +274,12 @@ def complex_response(request_args):
                 'rows': rows,
                 'meta': meta
             })
+            # Provide content from configuration when present; else an HTML canvas placeholder
+            cfg_content = info.get('content')
+            if isinstance(cfg_content, str) and cfg_content.strip():
+                block_dict['content'] = cfg_content
+            else:
+                block_dict['content'] = f"<canvas id='{block}'></canvas>"
 
         else:
             # Unknown type: keep as empty content
