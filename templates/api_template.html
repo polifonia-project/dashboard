@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test for API</title>
+    <title>MELODY API response</title>
     {% if datastory_data.style %}
     <link rel="stylesheet" href={{datastory_data.style}} type='text/css'>
     {% endif %}
@@ -19,10 +19,6 @@
         {% endfor %}
     </div>
     {% endif %}
-    <script type="text/javascript">
-        var general_data = {{ datastory_data | tojson }};
-        var datastory_data = {};
-    </script>
 </body>
 
 </html>
