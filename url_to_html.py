@@ -274,12 +274,7 @@ def complex_response(request_args):
                 'rows': rows,
                 'meta': meta
             })
-            # Provide content from configuration when present; else an HTML canvas placeholder
-            cfg_content = info.get('content')
-            if isinstance(cfg_content, str) and cfg_content.strip():
-                block_dict['content'] = cfg_content
-            else:
-                block_dict['content'] = f"<canvas id='{block}'></canvas>"
+            # No HTML content for data_viz here; canvas is created in the template
 
         else:
             # Unknown type: keep as empty content
