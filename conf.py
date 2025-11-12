@@ -9,4 +9,5 @@ melody_sub_dir = ''
 melody_token = ''
 gituser = ''
 email = ''
-static_url_path = ''  # '/melody' for production, '/melody/static' for local instance
+# '/melody' for production, '/melody/static' for local instance (default)
+static_url_path = '/melody/static'
