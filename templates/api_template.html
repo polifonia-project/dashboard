@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MELODY API response</title>
     {% if datastory_data.style %}
-    <link rel="stylesheet" href={{datastory_data.style}} type='text/css'>
+    <link rel="stylesheet" href="{{ datastory_data.style }}" type="text/css">
     {% endif %}
     {% if datastory_data.script %}
-    <script src={{datastory_data.script}} type='text/javascript'></script>
+    <script src="{{ datastory_data.script }}" type="text/javascript"></script>
+    {% else %}
+    <script src="{{ url_for('static', filename='/vendors/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api_default.js') }}"></script>
     {% endif %}
 </head>
 

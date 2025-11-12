@@ -60,10 +60,10 @@ def fill_text(results, content):
     vars = results['head']['vars']
     bindings = results['results']['bindings'][0]
     for var in vars:
-        var_value = bindings[var]['value']
+        binding = bindings[var]
+        var_value = _normalize_temporal_value(binding, var)
         if len(var_value) > 0:
-            content = content.replace(
-                '<<<' + var + '>>>', bindings[var]['value'])
+            content = content.replace('<<<' + var + '>>>', var_value)
         else:
             # content = content.replace('<<<' + var + '>>>', '')
             content = ''
@@ -94,6 +94,141 @@ def _coerce_value(value: str, inferred_type: str) -> Any:
         except Exception:
             return value
     return value
+
+
+_TEMPORAL_KEYWORDS = (
+    '#date', '#datetime', '#time', '#gyear', '#gyearmonth',
+    'xmlschema#date', 'xmlschema#datetime', 'xmlschema#time'
+)
+_EDTF_KEYWORDS = ('edtf', 'extended')
+_END_FIELD_HINTS = ('end', 'finish', 'to', 'latest', 'upper', 'stop')
+_EDTF_YEAR_RE = re.compile(r'^Y([+-]?\d+)(?:[-/T ].*)?$', flags=re.IGNORECASE)
+_SIGNED_YEAR_RE = re.compile(r'^([+-]?\d+)(?:[-/T ].*)?$')
+
+
+def _strip_literal_wrappers(value: str) -> str:
+    stripped = value.strip()
+    if '^^' in stripped:
+        stripped = stripped.split('^^', 1)[0].strip()
+    if (stripped.startswith('"') and stripped.endswith('"')) or (stripped.startswith("'") and stripped.endswith("'")):
+        stripped = stripped[1:-1]
+    return stripped
+
+
+def _is_end_field(name: str) -> bool:
+    lowered = (name or '').lower()
+    return any(h in lowered for h in _END_FIELD_HINTS)
+
+
+def _looks_like_edtf(datatype: str, value: str) -> bool:
+    dtype = (datatype or '').lower()
+    return value.startswith('Y') or any(keyword in dtype for keyword in _EDTF_KEYWORDS)
+
+
+def _binding_is_temporal(binding: Dict[str, Any], value: str) -> bool:
+    datatype = (binding.get('datatype') or '').lower()
+    if any(keyword in datatype for keyword in _TEMPORAL_KEYWORDS):
+        return True
+    return _looks_like_edtf(datatype, value)
+
+
+def _ensure_timezone(value: str) -> str:
+    if value.endswith('Z') or re.search(r'[+\-]\d{2}:?\d{2}$', value):
+        return value
+    return value + 'Z'
+
+
+def _append_missing_time(value: str, is_end: bool) -> str:
+    suffix = 'T23:59:59Z' if is_end else 'T00:00:00Z'
+    return value + suffix
+
+
+def _normalize_temporal_value(binding: Dict[str, Any], var_name: str = '') -> str:
+    if not isinstance(binding, dict):
+        return binding
+    raw_value = binding.get('value', '')
+    if not isinstance(raw_value, str):
+        return raw_value
+    sanitized = _strip_literal_wrappers(raw_value)
+    if not sanitized:
+        return sanitized
+    if not _binding_is_temporal(binding, sanitized):
+        return sanitized
+    datatype = binding.get('datatype') or ''
+    if _looks_like_edtf(datatype, sanitized):
+        if 'T' not in sanitized:
+            return _append_missing_time(sanitized, _is_end_field(var_name))
+        return _ensure_timezone(sanitized)
+    if 'T' in sanitized:
+        return _ensure_timezone(sanitized)
+    return _append_missing_time(sanitized, _is_end_field(var_name))
+
+
+def _extract_year_number(value: Any) -> Any:
+    if value is None:
+        return None
+    raw_val = value
+    if isinstance(value, dict):
+        raw_val = value.get('value')
+    if raw_val is None:
+        return None
+    sanitized = _strip_literal_wrappers(str(raw_val))
+    if not sanitized:
+        return None
+    m = _EDTF_YEAR_RE.match(sanitized)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            return None
+    m = _SIGNED_YEAR_RE.match(sanitized)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            return None
+    return None
+
+
+def _to_snake_case(name: str) -> str:
+    if not name:
+        return ''
+    # Convert camelCase/PascalCase to snake_case
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    snake = re.sub('([a-z0-9])([A-Z])', r'\1_\2',
+                   s1).replace('__', '_').lower()
+    return snake
+
+
+def _to_camel_case(name: str) -> str:
+    if not name:
+        return ''
+    if '_' not in name:
+        return name[0].lower() + name[1:] if name else name
+    parts = [p for p in name.split('_') if p]
+    if not parts:
+        return ''
+    first = parts[0].lower()
+    rest = ''.join(p.capitalize() for p in parts[1:])
+    return first + rest
+
+
+def _store_year_variants(row: Dict[str, Any], field_name: str, year_value: Any) -> None:
+    if year_value is None:
+        return
+    keys = set()
+    snake = _to_snake_case(field_name)
+    camel = _to_camel_case(field_name)
+    if snake:
+        keys.add(f'{snake}_year')
+    if camel:
+        keys.add(f'{camel}Year')
+    # Also keep direct suffix without conversion when useful
+    keys.add(f'{field_name}_year')
+    keys.add(f'{field_name}Year')
+    for key in keys:
+        if key and key not in row:
+            row[key] = year_value
 
 
 def _build_table_from_results(results: Dict, selected_vars: List[str] = None) -> Tuple[List[Dict], List[Dict]]:
@@ -133,8 +268,13 @@ def _build_table_from_results(results: Dict, selected_vars: List[str] = None) ->
         row = {}
         for col in columns:
             name = col['name']
-            raw = b.get(name, {}).get('value', '')
+            binding_val = b.get(name, {})
+            raw = _normalize_temporal_value(binding_val, name)
             row[name] = _coerce_value(raw, col['type'])
+            year_number = _extract_year_number(binding_val)
+            if year_number is None and isinstance(raw, str):
+                year_number = _extract_year_number(raw)
+            _store_year_variants(row, name, year_number)
         rows.append(row)
 
     return columns, rows
