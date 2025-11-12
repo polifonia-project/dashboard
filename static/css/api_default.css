@@ -1,0 +1,64 @@
+/* Sidebar styles for API-rendered content */
+#title-object {
+    font-family: 'PT Serif', serif;
+    color: var(--color-secondary);
+}
+
+.item-sidebar {
+    background-color: var(--bs-dark);
+    color: var(--color-secondary);
+}
+
+.item-sidebar .sidebar-title {
+    font-family: 'PT Serif', serif;
+    font-size: 1.25rem;
+    margin: 0 0 .5rem 0;
+}
+
+/* .item-sidebar .metadata-header,
+.item-sidebar .metadata-digitisation {
+  margin: .3rem 0;
+} */
+
+.item-sidebar .metadata-caption {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    text-transform: none;
+    color: var(--color-secondary);
+}
+
+.item-sidebar .metadata-content {
+    color: var(--color-secondary);
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.item-sidebar .badge {
+    background-color: var(--color-accent);
+    color: var(--color-secondary);
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-weight: 400;
+    border-radius: 0.1rem;
+    text-transform: uppercase;
+}
+
+.item-sidebar .sidebar-button a {
+    display: inline-block;
+    padding: .25rem .5rem;
+    border: 1px solid var(--color-secondary);
+    color: var(--color-secondary);
+    text-decoration: none;
+}
+
+.item-sidebar a {
+    color: var(--color-secondary);
+}
+
+.item-sidebar a:hover {
+    background-color: var(--color-accent);
+}
+
+/* BORDER ONLY ON THE LAST METADATA-HEADER */
+.metadata-header:not(:has(+ .metadata-header)) {
+    border-bottom: 1px solid var(--color-secondary);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
