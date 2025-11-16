@@ -120,9 +120,8 @@ def datastory(section_name, datastory_name):
 
     elif request.method == 'POST':
         # save datastory to github
-        host = request.host_url
         github_sync.publish_datastory(
-            host, PREFIX, section_name, datastory_name, session)
+            section_name, datastory_name, session, stories_path, react_version)
         return redirect('https://'+conf.melody_owner+'.github.io/'+conf.melody_repo_name+'/#catalogue')
 
 
@@ -250,12 +249,10 @@ def api_url_to_html():
         parameters = request.values
 
     response_format = parameters.get('format', 'html').lower()
-
     if 'config_file' in parameters:
         api_response = url_to_html.complex_response(parameters)
     else:
         api_response = url_to_html.simple_response(parameters)
-
     if response_format == "json":
         print(api_response)
         return jsonify(api_response)

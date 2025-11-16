@@ -3,6 +3,7 @@ import requests
 from github import Github, InputGitAuthor
 import conf
 import data_methods
+from flask import render_template
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -194,24 +195,33 @@ def get_raw_json(branch='main', absolute_file_path=None):
     return data
 
 
-def publish_datastory(host, PREFIX, section_name, datastory_name, session):
+def publish_datastory(section_name, datastory_name, session, stories_path, react_version):
     """
     Publish a data story on the external catalogue
     """
+    # same data load of GET
+    datastory_data = data_methods.get_datastory_data(
+        section_name, datastory_name)
+    if not datastory_data:
+        raise ValueError('Unknown datastory')
 
-    r = requests.get(host + PREFIX[1:] + section_name +
-                     '/' + datastory_name)
+    # render the HTML directly instead of requesting it via HTTP
+    general_data = data_methods.read_json('config.json')
+    template_mode = datastory_data['template_mode']
+    html = render_template(f'datastory_{template_mode}.html', datastory_data=datastory_data, general_data=general_data,
+                           section_name=section_name, datastory_name=datastory_name, stories_path=stories_path, react_version=react_version)
 
-    # open and create html file
-    data_methods.create_html(r, datastory_name, section_name)
-
-    story_data = data_methods.read_json(
-        'static/temp/config_'+section_name+'.json')
+    # write the artifacts to temp files
+    config_path = f'static/temp/config_{section_name}.json'
+    html_path = f'static/temp/story_{section_name}.html'
+    data_methods.update_json(config_path, datastory_data)
+    with open(html_path, 'w', encoding='utf-8') as f:
+        f.write(html)
 
     new_story = {
         'user_name': session['name'],
         'id': section_name,
-        'title': story_data['title']
+        'title': datastory_data['title']
     }
 
     stories_list = get_raw_json(
