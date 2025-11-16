@@ -13,6 +13,7 @@ clientId = conf.clientID
 clientSecret = conf.clientSecret
 github_auth = "https://github.com/login/oauth/authorize"
 
+
 def ask_user_permission(code):
     """ Get user permission when authenticating via Github.
 
@@ -96,8 +97,9 @@ def validate_credentials(code):
         user_name = userlogin
         user_type = 'polifonia' if is_valid_user == True else 'extra'
     else:
-        user_name, user_type = 'None' , 'extra'
+        user_name, user_type = 'None', 'extra'
     return user_name, user_type
+
 
 def push(local_file_path, branch='main', gituser=None, email=None, bearer_token=None, action='', path=False):
     """ Create a new file or update an existing file in a Github repository.
@@ -192,7 +194,7 @@ def get_raw_json(branch='main', absolute_file_path=None):
     return data
 
 
-def publish_datastory(host,PREFIX,section_name,datastory_name,session):
+def publish_datastory(host, PREFIX, section_name, datastory_name, session):
     """
     Publish a data story on the external catalogue
     """
@@ -220,20 +222,20 @@ def publish_datastory(host,PREFIX,section_name,datastory_name,session):
             'static/temp/stories_list.json', stories_list)
         if new_story in stories_list:
             pass
-        elif new_story not in stories_list:
+        else:
+            found = False
             for story in stories_list:
                 # check if story id is present
-                if new_story['id'] in story.values():
+                if story.get('id') == new_story['id']:
                     # update title
                     story['title'] = new_story['title']
-                    data_methods.update_json(
-                        'static/temp/stories_list.json', stories_list)
+                    found = True
                     break
-                else:
-                    # append new story
-                    stories_list.append(new_story)
-                    data_methods.update_json(
-                        'static/temp/stories_list.json', stories_list)
+            if not found:
+                # append new story
+                stories_list.append(new_story)
+            data_methods.update_json(
+                'static/temp/stories_list.json', stories_list)
     else:
         stories_list = []
         stories_list.append(new_story)
@@ -242,13 +244,13 @@ def publish_datastory(host,PREFIX,section_name,datastory_name,session):
 
     # commit config and html to repo
     push('static/temp/config_'+section_name+'.json', 'main', conf.gituser,
-                     conf.email, conf.melody_token, '@'+session['name'])
+         conf.email, conf.melody_token, '@'+session['name'])
     push('static/temp/story_'+section_name+'.html', 'main', conf.gituser,
-                     conf.email, conf.melody_token, '@'+session['name'])
+         conf.email, conf.melody_token, '@'+session['name'])
 
     # commit stories list to repo
     push('static/temp/stories_list.json', 'main', conf.gituser,
-                     conf.email, conf.melody_token)
+         conf.email, conf.melody_token)
 
     # remove the files
     os.remove('static/temp/config_'+section_name+'.json')
