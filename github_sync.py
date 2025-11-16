@@ -266,3 +266,33 @@ def publish_datastory(section_name, datastory_name, session, stories_path, react
     os.remove('static/temp/config_'+section_name+'.json')
     os.remove('static/temp/story_'+section_name+'.html')
     os.remove('static/temp/stories_list.json')
+
+
+def delete_published_datastory(section_name):
+    """Remove a published datastory (config/html + stories_list entry)."""
+    token = conf.melody_token
+    owner = conf.melody_owner
+    repo_name = conf.melody_repo_name
+    repo = Github(token).get_repo(f"{owner}/{repo_name}")
+
+    # delete generated config/html
+    published_files = [
+        f"{conf.melody_sub_dir}/config_{section_name}.json",
+        f"{conf.melody_sub_dir}/story_{section_name}.html",
+    ]
+    for file_path in published_files:
+        try:
+            contents = repo.get_contents(file_path, ref="main")
+            repo.delete_file(file_path, f"Remove datastory {section_name}",
+                             contents.sha, branch="main")
+        except Exception as exc:
+            print(f"Skipping {file_path}: {exc}")
+
+    # update stories_list
+    stories_list = get_raw_json(
+        branch="main", absolute_file_path="stories_list.json") or []
+    stories_list = [s for s in stories_list if s.get("id") != section_name]
+    temp_path = "static/temp/stories_list.json"
+    data_methods.update_json(temp_path, stories_list)
+    push(temp_path, "main", conf.gituser, conf.email, conf.melody_token)
+    os.remove(temp_path)

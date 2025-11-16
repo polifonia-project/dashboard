@@ -10,6 +10,7 @@ import unidecode
 import bleach
 import components
 import os
+import github_sync
 
 
 def read_json(file_name):
@@ -351,8 +352,15 @@ def delete_story(general_data, section_name, datastory_name, user_type):
         if len(general_data['data_sources'][section_name]) == 0:
             general_data = delete_empty_section(general_data, section_name)
         update_json('config.json', general_data)
-    elif user_type in ['extra', 'random']:
-        os.remove('static/temp/config_' + section_name+'.json')
+        return
+    temp_path = f'static/temp/config_{section_name}.json'
+    if user_type == 'extra':
+        github_sync.delete_published_datastory(section_name)
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+    elif user_type == 'random':
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 
 def create_html(r, datastory_name, section_name):
