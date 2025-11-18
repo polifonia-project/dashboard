@@ -15,11 +15,10 @@
     <button class="exportbutton" type="button"><a onclick="getHTML(this)" href="#"
         download="{{datastory_data.title}}.html">HTML</a></button>
     <button class="exportbutton" type="button">
-      <a href="#" data-toggle="modal" data-target="#queryModal"
-        id="sparqlQuery">JSON</a></button>
+      <a href="#" data-toggle="modal" data-target="#queryModal" id="sparqlQuery">JSON</a></button>
 
     <!-- publish button -->
-    {% if datastory_data.id and session['user_type'] == 'extra' %}
+    {% if not published and datastory_data.id and session['user_type'] == 'extra' %}
     <hr>
     <form method="post">
       <button type="submit" method="post" class="btn btn-success prevent_alert publish_btn">Publish
@@ -27,16 +26,16 @@
     </form>
     {% endif %}
     <!-- modify button -->
-    {% if datastory_data.id and session['user_type'] in ['extra', 'random'] %}
-    <a class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
+    {% if not published and datastory_data.id and session['user_type'] in ['extra', 'random'] %} <a
+      class="btn btn-success publish_btn prevent_alert" id="prevent_alert"
       href="/melody{{ url_for('modify_datastory', section_name=datastory_data.id, datastory_name=datastory_data.title|replace(' ', '_')|lower ) }}">
       Modify
     </a>
     {% endif %}
   </section>
 
-  <div class="modal fade" id="queryModal" tabindex="-1" role="dialog"
-    aria-labelledby="queryModalLabel" aria-hidden="true">
+  <div class="modal fade" id="queryModal" tabindex="-1" role="dialog" aria-labelledby="queryModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content card">
         <div class="modal-header">
@@ -51,8 +50,7 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger"
-                data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
