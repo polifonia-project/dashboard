@@ -209,7 +209,7 @@ def publish_datastory(section_name, datastory_name, session, stories_path, react
     general_data = data_methods.read_json('config.json')
     template_mode = datastory_data['template_mode']
     html = render_template(f'datastory_{template_mode}.html', datastory_data=datastory_data, general_data=general_data,
-                           section_name=section_name, datastory_name=datastory_name, stories_path=stories_path, react_version=react_version)
+                           section_name=section_name, datastory_name=datastory_name, stories_path=stories_path, react_version=react_version, published=True)
     html = html.replace('/melody/static', 'static')
 
     # write the artifacts to temp files
