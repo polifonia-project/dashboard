@@ -13,7 +13,7 @@
     {% if datastory_data.script %}
     <script src="{{ datastory_data.script }}" type="text/javascript"></script>
     {% else %}
-    <script src="{{ url_for('static', filename='/vendors/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendors/chart.js/chart.umd.js') }}"></script>
     <script src="{{ url_for('static', filename='js/api_default.js') }}"></script>
     {% endif %}
 </head>

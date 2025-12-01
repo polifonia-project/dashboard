@@ -1,37 +1,58 @@
+:root {
+    /* Brand colors */
+    --color-primary: #1E1E1E;
+    --color-secondary: #FFF8F0;
+    --color-accent: #A62176;
+
+    /* Typography */
+    --font-base: 'PT Serif', serif;
+
+    /* Bootstrap mapping */
+    --bs-body-bg: var(--color-secondary);
+    --bs-body-bg-rgb: 255, 248, 240;
+    /* for .bg-body */
+    --bs-body-color: var(--color-primary);
+    --bs-body-color-rgb: 30, 30, 30;
+    --bs-dark: var(--color-primary);
+    --bs-dark-rgb: 30, 30, 30;
+    /* for .bg-dark/.border-dark */
+    --bs-border-color: var(--color-primary);
+    --bs-border-color-translucent: rgba(30, 30, 30, 0.2);
+    /* layout helpers (approx header/footer heights) */
+    --header-h: 64px;
+    --footer-h: 56px;
+}
+
 /* Sidebar styles for API-rendered content */
-#title-object {
+.sidebar-title {
     font-family: 'PT Serif', serif;
     color: var(--color-secondary);
 }
 
-.item-sidebar {
-    background-color: var(--bs-dark);
+#melody_api_response {
     color: var(--color-secondary);
 }
 
-.item-sidebar .sidebar-title {
+#melody_api_response .sidebar-title {
     font-family: 'PT Serif', serif;
-    font-size: 1.25rem;
-    margin: 0 0 .5rem 0;
+    font-size: 2rem;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
 
-/* .item-sidebar .metadata-header,
-.item-sidebar .metadata-digitisation {
-  margin: .3rem 0;
-} */
-
-.item-sidebar .metadata-caption {
+#melody_api_response .metadata-caption {
     font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     text-transform: none;
     color: var(--color-secondary);
 }
 
-.item-sidebar .metadata-content {
+#melody_api_response .metadata-content {
     color: var(--color-secondary);
     font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
-.item-sidebar .badge {
+.metadata-content.badge,
+.metadata-digitisation .badge {
     background-color: var(--color-accent);
     color: var(--color-secondary);
     font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -40,7 +61,7 @@
     text-transform: uppercase;
 }
 
-.item-sidebar .sidebar-button a {
+#melody_api_response .sidebar-button a {
     display: inline-block;
     padding: .25rem .5rem;
     border: 1px solid var(--color-secondary);
@@ -48,17 +69,17 @@
     text-decoration: none;
 }
 
-.item-sidebar a {
+#melody_api_response a {
     color: var(--color-secondary);
 }
 
-.item-sidebar a:hover {
+#melody_api_response a:hover {
     background-color: var(--color-accent);
 }
 
 /* BORDER ONLY ON THE LAST METADATA-HEADER */
 .metadata-header:not(:has(+ .metadata-header)) {
     border-bottom: 1px solid var(--color-secondary);
-    padding-bottom: 12px;
-    margin-bottom: 12px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
