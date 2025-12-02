@@ -300,6 +300,9 @@ def simple_response(request_args):
 
 def complex_response(request_args):
     entity_ids = collect_uris(request_args)
+    primary_item_uri = entity_ids.get('uri1')
+    if not primary_item_uri and entity_ids:
+        primary_item_uri = next(iter(entity_ids.values()), '')
 
     config_file_input = request_args.get('config_file')
 
@@ -418,6 +421,8 @@ def complex_response(request_args):
                 'rows': rows,
                 'meta': meta
             })
+            if primary_item_uri:
+                block_dict['item_uri'] = primary_item_uri
             # No HTML content for data_viz here; canvas is created in the template
 
         else:
