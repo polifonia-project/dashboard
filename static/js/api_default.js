@@ -25,6 +25,137 @@
             ? window.MELODY_CONFIG
             : datasetCfg;
         console.log('Melody item sidebar config:', cfg);
+        let timelineLang = detectTimelineLang(container, cfg);
+
+        const MIN_NATIVE_ISO_YEAR = -271821;
+        const MAX_NATIVE_ISO_YEAR = 275760;
+
+        function yearSuffix(year, lang = timelineLang) {
+            const isBC = Number.isFinite(year) && year < 0;
+            if (lang === 'en') return isBC ? 'BC' : 'AD';
+            return isBC ? 'a.C.' : 'd.C.';
+        }
+        function formatYearNumber(absYear, lang = timelineLang) {
+            const locale = lang === 'it' ? 'it-IT' : 'en-US';
+            const useCompact = absYear >= 1000;
+            try {
+                const formatter = new Intl.NumberFormat(locale, {
+                    notation: useCompact ? 'compact' : 'standard',
+                    compactDisplay: 'short',
+                    maximumFractionDigits: useCompact ? 1 : 0
+                });
+                return formatter.format(absYear);
+            } catch (e) {
+                return String(absYear);
+            }
+        }
+        function formatYearCompact(year, lang = timelineLang) {
+            if (!Number.isFinite(year)) return '';
+            const abs = Math.abs(year);
+            const number = formatYearNumber(abs, lang);
+            const suffix = yearSuffix(year, lang);
+            return number ? `${number} ${suffix}` : suffix;
+        }
+        function formatRangeLabel(startYear, endYear, lang = timelineLang) {
+            const hasStart = Number.isFinite(startYear);
+            const hasEnd = Number.isFinite(endYear);
+            if (!hasStart && !hasEnd) return '';
+            if (hasStart && hasEnd) {
+                const suffixStart = yearSuffix(startYear, lang);
+                const suffixEnd = yearSuffix(endYear, lang);
+                const numStart = formatYearNumber(Math.abs(startYear), lang);
+                const numEnd = formatYearNumber(Math.abs(endYear), lang);
+                if (suffixStart === suffixEnd) {
+                    if (numStart === numEnd) return `${numStart} ${suffixStart}`.trim();
+                    return `${numStart}\u2013${numEnd} ${suffixStart}`.trim();
+                }
+                return `${numStart} ${suffixStart} \u2013 ${numEnd} ${suffixEnd}`.trim();
+            }
+            return hasStart ? formatYearCompact(startYear, lang) : formatYearCompact(endYear, lang);
+        }
+        function coerceYearValue(value) {
+            if (value == null || value === '') return NaN;
+            if (typeof value === 'object' && value !== null && 'value' in value) return coerceYearValue(value.value);
+            if (typeof value === 'number') return Number.isFinite(value) ? value : NaN;
+            const str = String(value).trim();
+            if (!str) return NaN;
+            const edtf = str.match(/^Y(-?\d+)(?:-.*)?$/i);
+            if (edtf) {
+                const year = Number(edtf[1]);
+                if (Number.isFinite(year)) return year;
+            }
+            if (/^-?\d+$/.test(str)) return Number(str);
+            const date = new Date(str);
+            return Number.isFinite(date.getTime()) ? date.getUTCFullYear() : NaN;
+        }
+        function getYearUTC(x) { return coerceYearValue(x); }
+        function representativeYear(a, b) {
+            return (a === b) ? a : Math.round((a + b) / 2);
+        }
+        function safeIsoFromYear(year, { endOfYear = false } = {}) {
+            if (!Number.isFinite(year)) return null;
+            if (year < MIN_NATIVE_ISO_YEAR || year > MAX_NATIVE_ISO_YEAR) return null;
+            const month = endOfYear ? 11 : 0;
+            const day = endOfYear ? 31 : 1;
+            const hour = endOfYear ? 23 : 0;
+            const minute = endOfYear ? 59 : 0;
+            const second = endOfYear ? 59 : 0;
+            const ms = endOfYear ? 999 : 0;
+            const date = new Date(Date.UTC(year, month, day, hour, minute, second, ms));
+            return Number.isFinite(date.getTime()) ? date.toISOString() : null;
+        }
+        function pickYear(...candidates) {
+            for (const candidate of candidates) {
+                const y = getYearUTC(candidate);
+                if (Number.isFinite(y)) return y;
+            }
+            return NaN;
+        }
+        function floorToBinStart(y, binSize) {
+            return Math.floor(y / binSize) * binSize;
+        }
+        function makeBinLabel(start, end) {
+            return formatRangeLabel(start, end, timelineLang);
+        }
+
+        function normalizeRef(value) { let out = String(value || "").trim(); if (out.startsWith("<") && out.endsWith(">")) out = out.slice(1, -1); out = out.toLowerCase(); out = out.replace(/[\\/#]+$/, ""); out = out.replace(/^http:\/\//, "https://"); return out; }
+        const ROW_URI_KEYS = ['item', 'id', 'uri', 'itemUri', 'item_uri', 'itemId', 'itemID', 'entity', 'entityId', 'uri1', 'uri2', 'source', 'target', 'subject', 'object', 'work', 'expression', 'manifestation'];
+        function ensureRowItem(row, normalizedTarget = '') {
+            if (!row || typeof row !== 'object') return '';
+            if (row.__normalizedItem && (!normalizedTarget || row.__normalizedItem === normalizedTarget)) {
+                return row.__normalizedItem;
+            }
+            const assignValue = (candidate) => {
+                if (!candidate) return '';
+                let raw = candidate;
+                if (typeof candidate === 'object' && candidate !== null && 'value' in candidate) {
+                    raw = candidate.value;
+                }
+                if (typeof raw !== 'string') return '';
+                const trimmed = raw.trim();
+                if (!trimmed) return '';
+                if (!row.item) row.item = trimmed;
+                const normalized = normalizeRef(trimmed);
+                row.__normalizedItem = normalized;
+                return normalized;
+            };
+            if (row.item) {
+                const normalizedExisting = assignValue(row.item);
+                if (!normalizedTarget || normalizedExisting === normalizedTarget) return normalizedExisting;
+            }
+            for (const key of ROW_URI_KEYS) {
+                if (key === 'item') continue;
+                const normalized = assignValue(row[key]);
+                if (normalized && (!normalizedTarget || normalized === normalizedTarget)) return normalized;
+            }
+            if (normalizedTarget) {
+                for (const value of Object.values(row)) {
+                    const normalized = assignValue(value);
+                    if (normalized === normalizedTarget) return normalized;
+                }
+            }
+            return row.__normalizedItem || '';
+        }
 
         // Chart.js loader (must be defined before any passive rendering attempts)
         // Chart.js is shipped under /vendors/chart.js/ via public/ static mount
@@ -32,6 +163,19 @@
         console.log('Melody item sidebar Chart.js source:', CHART_JS_SRC);
         let chartLoaderPromise = null;
         let timelinePluginRegistered = false;
+
+        function detectTimelineLang(rootEl, config = {}) {
+            const explicit =
+                config.LANG ||
+                (rootEl && rootEl.dataset ? rootEl.dataset.lang : '') ||
+                (typeof document !== 'undefined' ? (document.documentElement && document.documentElement.lang) : '') ||
+                '';
+            const normalized = String(explicit).trim().toLowerCase();
+            if (!normalized) return 'it';
+            if (normalized.startsWith('en')) return 'en';
+            if (normalized.startsWith('it')) return 'it';
+            return normalized.slice(0, 2) || 'it';
+        }
 
         // Timeline plugins (must be initialized regardless of active/passive mode)
         const highlightGlowPlugin = {
@@ -129,8 +273,6 @@
             return obj;
         }
 
-        function normalizeRef(value) { let out = String(value || "").trim(); if (out.startsWith("<") && out.endsWith(">")) out = out.slice(1, -1); out = out.toLowerCase(); out = out.replace(/[\\/#]+$/, ""); out = out.replace(/^http:\/\//, "https://"); return out; }
-
         function parseJsonSafe(raw) {
             if (!raw) return null;
             try {
@@ -171,30 +313,59 @@
             const { r = 0, g = 0, b = 0 } = rgb || {};
             return alpha === 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
-        function getYearUTC(x) {
-            const d = new Date(x);
-            return Number.isFinite(d.getTime()) ? d.getUTCFullYear() : NaN;
-        }
-        function representativeYear(a, b) {
-            return (a === b) ? a : Math.round((a + b) / 2);
-        }
-        function floorToBinStart(y, binSize) {
-            return Math.floor(y / binSize) * binSize;
-        }
-        function makeBinLabel(start, binSize, clampEndToYear = null) {
-            if (binSize <= 1) return String(start);
-            let end = start + binSize - 1;
-            if (Number.isFinite(clampEndToYear)) end = Math.min(end, clampEndToYear);
-            return String(start) + '-' + String(end);
+
+        function createYearTransform(years, opts = {}) {
+            if (!years.length) {
+                return { forward: (value) => value, inverse: (value) => value };
+            }
+            const spanRaw = Number(opts.logThreshold);
+            const span = Number.isFinite(spanRaw) && spanRaw > 0 ? spanRaw : 1000;
+            const compressPos = Boolean(opts.logCompressPositive);
+            const forward = (year) => {
+                if (!Number.isFinite(year)) return NaN;
+                if (year < -span) {
+                    const ratio = Math.max(1, (-year) / span);
+                    return -1 - Math.log10(ratio);
+                }
+                if (compressPos && year > span) {
+                    const ratio = Math.max(1, year / span);
+                    return 1 + Math.log10(ratio);
+                }
+                return year / span;
+            };
+            const inverse = (value) => {
+                if (!Number.isFinite(value)) return NaN;
+                if (value < -1) {
+                    const ratio = Math.pow(10, -(value + 1));
+                    return -span * ratio;
+                }
+                if (compressPos && value > 1) {
+                    const ratio = Math.pow(10, value - 1);
+                    return span * ratio;
+                }
+                return value * span;
+            };
+            return { forward, inverse };
         }
 
-        function chooseBinSize(minYear, maxYear) {
+        function chooseBinSize(minYear, maxYear, opts = {}) {
             const range = Math.max(0, (maxYear ?? 0) - (minYear ?? 0) + 1);
+            const target = Math.max(4, Number(opts.targetBins) || 64);
+            const minBins = Math.max(3, Number(opts.minBins) || 24);
+            const maxBins = Math.max(minBins, Number(opts.maxBins) || 128);
+            const candidates = Array.isArray(opts.allowed)
+                ? opts.allowed
+                : [
+                    0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5,
+                    1, 2, 5, 10, 20, 25, 50, 75, 100,
+                    200, 250, 500, 1000, 2000, 2500, 5000, 7500, 10000,
+                    20000, 25000, 50000, 100000, 200000, 250000, 500000,
+                    1000000, 2000000, 2500000, 5000000,
+                    10000000, 20000000, 25000000, 50000000,
+                    100000000, 200000000, 250000000, 500000000,
+                    1000000000
+                ];
             if (!range || range <= 1) return 1;
-            const candidates = [1, 2, 5, 10, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 5000, 10000];
-            const target = 32;
-            const minBins = 12;
-            const maxBins = 64;
             let best = candidates[0];
             let bestScore = Infinity;
             for (const s of candidates) {
@@ -210,18 +381,20 @@
             return best;
         }
 
-        function processToBins(data) {
+        function processToBins(data, opts = {}) {
             const years = [];
+            let actualMin = Infinity;
+            let actualMax = -Infinity;
             for (const obj of data) {
-                const beginRaw = obj.begin ?? obj?.begin?.value ?? obj.start ?? obj.dateBegin ?? obj.from;
-                const endRaw = obj.end ?? obj?.end?.value ?? obj.finish ?? obj.dateEnd ?? obj.to ?? beginRaw;
-                if (!beginRaw || !endRaw) continue;
-                const by = getYearUTC(beginRaw);
-                const ey = getYearUTC(endRaw);
-                if (!Number.isFinite(by) || !Number.isFinite(ey)) continue;
+                const by = pickYear(obj.beginYear, obj.begin, obj?.begin?.value, obj.start, obj.dateBegin, obj.from);
+                let ey = pickYear(obj.endYear, obj.end, obj?.end?.value, obj.finish, obj.dateEnd, obj.to);
+                if (!Number.isFinite(by)) continue;
+                if (!Number.isFinite(ey)) ey = by;
+                actualMin = Math.min(actualMin, by, ey);
+                actualMax = Math.max(actualMax, by, ey);
                 years.push(representativeYear(by, ey));
             }
-            if (!years.length) {
+            if (!years.length || !Number.isFinite(actualMin) || !Number.isFinite(actualMax)) {
                 return {
                     starts: [],
                     labels: [],
@@ -229,42 +402,75 @@
                     maxCount: 0,
                     minYear: null,
                     maxYear: null,
-                    binSize: 0
+                    binSize: 0,
+                    ranges: []
                 };
             }
-            const minYear = Math.min(...years);
-            const maxYear = Math.max(...years);
-            const binSize = chooseBinSize(minYear, maxYear);
-            const countMap = {};
-            for (const y of years) {
-                const bucket = floorToBinStart(y, binSize);
-                countMap[bucket] = (countMap[bucket] || 0) + 1;
+            const transform = createYearTransform(years, opts);
+            const transformedYears = years.map(transform.forward).filter(Number.isFinite);
+            if (!transformedYears.length) {
+                return {
+                    starts: [],
+                    labels: [],
+                    counts: [],
+                    maxCount: 0,
+                    minYear: null,
+                    maxYear: null,
+                    binSize: 0,
+                    ranges: []
+                };
+            }
+            const minTrans = Math.min(...transformedYears);
+            const maxTrans = Math.max(...transformedYears);
+            const binSize = chooseBinSize(minTrans, maxTrans, opts);
+            const bucketCount = Math.max(1, Math.ceil((maxTrans - minTrans) / binSize));
+            const countsByBucket = new Array(bucketCount + 1).fill(0);
+            for (const value of transformedYears) {
+                const idx = Math.max(0, Math.min(bucketCount, Math.floor((value - minTrans) / binSize)));
+                countsByBucket[idx] = (countsByBucket[idx] || 0) + 1;
             }
             const starts = [];
             const labels = [];
             const counts = [];
-            for (let b = floorToBinStart(minYear, binSize); b <= maxYear; b += binSize) {
-                starts.push(b);
-                labels.push(makeBinLabel(b, binSize, maxYear));
-                counts.push(countMap[b] ?? 0);
+            const ranges = [];
+            for (let idx = 0; idx <= bucketCount; idx++) {
+                const startTrans = minTrans + idx * binSize;
+                const endTrans = Math.min(maxTrans, startTrans + binSize);
+                let startActual = transform.inverse(startTrans);
+                let endActual = transform.inverse(endTrans);
+                if (Number.isFinite(startActual)) startActual = Math.max(actualMin, Math.min(actualMax, startActual));
+                if (Number.isFinite(endActual)) endActual = Math.max(actualMin, Math.min(actualMax, endActual));
+                if (Number.isFinite(startActual) && Number.isFinite(endActual) && endActual < startActual) {
+                    const tmp = startActual;
+                    startActual = endActual;
+                    endActual = tmp;
+                }
+                starts.push(startActual);
+                labels.push(makeBinLabel(startActual, endActual));
+                counts.push(countsByBucket[idx] || 0);
+                ranges.push({ start: startActual, end: endActual });
             }
             const maxCount = counts.length ? Math.max(...counts) : 0;
-            return { starts, labels, counts, maxCount, minYear, maxYear, binSize };
+            return { starts, labels, counts, maxCount, minYear: actualMin, maxYear: actualMax, binSize, ranges };
         }
 
-        function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex) {
+        function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex, opts = {}) {
             const datasets = [];
-            const rgbWhite = { r: 255, g: 255, b: 255 };
+            const rgbWhite = hexToRgb('#fdf9fb');
             const rgbAccent = hexToRgb('#A62176');
             const denom = maxCount > 0 ? maxCount : 1;
+            const displayLabels = Array.isArray(opts.displayLabels) && opts.displayLabels.length === labels.length
+                ? opts.displayLabels
+                : labels;
             for (let i = 0; i < starts.length; i++) {
                 const c = counts[i];
                 const t = c / denom;
                 const isHighlight = i === highlightIndex;
                 const baseRgb = lerpColorRGB(rgbWhite, rgbAccent, t || 0);
                 const backgroundColor = rgbToCss(baseRgb, isHighlight ? 1 : 0.85);
+                const label = displayLabels[i] ?? labels[i];
                 datasets.push({
-                    label: labels[i],
+                    label,
                     data: [1],
                     backgroundColor,
                     borderColor: 'transparent',
@@ -278,15 +484,16 @@
             return datasets;
         }
 
-        function dedupeTimelineRows(rows) {
+        function dedupeTimelineRows(rows, normalizedTarget = '') {
             const seen = new Set();
             const out = [];
             for (const r of rows) {
+                const normalizedItem = ensureRowItem(r, normalizedTarget);
                 const item = r.item || r.id || r.uri;
                 const begin = r.begin ?? r.start ?? r.dateBegin ?? r.from;
                 const end = r.end ?? r.finish ?? r.dateEnd ?? r.to ?? begin;
                 if (!begin) continue;
-                const key = item ? `item:${item}` : `range:${begin}|${end}`;
+                const key = normalizedItem ? `item:${normalizedItem}` : (item ? `item:${normalizeRef(item)}` : `range:${begin}|${end}`);
                 if (seen.has(key)) continue;
                 seen.add(key);
                 out.push(r);
@@ -302,44 +509,113 @@
                 const endRaw = r.end ?? r.finish ?? r.dateEnd ?? r.to ?? beginRaw;
                 if (!beginRaw) continue;
                 const key = item || `range:${beginRaw}|${endRaw}`;
-                const entry = byKey.get(key) || { item: item || null, minY: Infinity, maxY: -Infinity };
+                const entry = byKey.get(key) || { item: item || null, minY: Infinity, maxY: -Infinity, minRaw: null, maxRaw: null };
                 const by = getYearUTC(beginRaw);
                 const ey = getYearUTC(endRaw);
-                if (Number.isFinite(by)) entry.minY = Math.min(entry.minY, by);
-                if (Number.isFinite(ey)) entry.maxY = Math.max(entry.maxY, ey);
+                if (Number.isFinite(by)) {
+                    if (!(Number.isFinite(entry.minY)) || by < entry.minY) {
+                        entry.minY = by;
+                        entry.minRaw = beginRaw;
+                    }
+                }
+                if (Number.isFinite(ey)) {
+                    if (!(Number.isFinite(entry.maxY)) || ey > entry.maxY) {
+                        entry.maxY = ey;
+                        entry.maxRaw = endRaw;
+                    }
+                }
                 byKey.set(key, entry);
             }
             const result = [];
             for (const value of byKey.values()) {
                 if (!Number.isFinite(value.minY) || !Number.isFinite(value.maxY)) continue;
-                const beginISO = new Date(Date.UTC(value.minY, 0, 1)).toISOString();
-                const endISO = new Date(Date.UTC(value.maxY, 11, 31, 23, 59, 59)).toISOString();
-                result.push({ item: value.item, begin: beginISO, end: endISO });
+                const beginISO = safeIsoFromYear(value.minY) ?? (value.minRaw != null ? String(value.minRaw) : null) ?? String(value.minY);
+                const endISO = safeIsoFromYear(value.maxY, { endOfYear: true }) ?? (value.maxRaw != null ? String(value.maxRaw) : null) ?? String(value.maxY);
+                result.push({ item: value.item, begin: beginISO, end: endISO, beginYear: value.minY, endYear: value.maxY });
             }
             return result;
         }
 
-        function findHighlightIndex(rows, starts, binSize, itemUri) {
-            if (!itemUri || !starts.length || !binSize) return -1;
-            const normalizedTarget = normalizeRef(itemUri); const match = rows.find(r => normalizeRef(r.item || r.id || r.uri) === normalizedTarget); if (!match) { console.log('melody_item: no highlight match for', normalizedTarget); return -1; }
-            const beginYear = getYearUTC(match.begin);
-            const endYear = getYearUTC(match.end ?? match.begin);
+        function filterRowsByRange(rows, range) {
+            if (!Array.isArray(rows) || !rows.length || !range) return [];
+            const start = Number(range.start);
+            const end = Number(range.end);
+            if (!Number.isFinite(start) || !Number.isFinite(end)) return [];
+            const minRange = Math.min(start, end);
+            const maxRange = Math.max(start, end);
+            return rows.filter(r => {
+                const beginYear = Number.isFinite(r.beginYear) ? r.beginYear : getYearUTC(r.begin);
+                let endYear = Number.isFinite(r.endYear) ? r.endYear : getYearUTC(r.end ?? r.begin);
+                if (!Number.isFinite(beginYear)) return false;
+                if (!Number.isFinite(endYear)) endYear = beginYear;
+                const rowStart = Math.min(beginYear, endYear);
+                const rowEnd = Math.max(beginYear, endYear);
+                return rowEnd >= minRange && rowStart <= maxRange;
+            });
+        }
+
+        function findHighlightIndex(rows, ranges, normalizedTarget) {
+            if (!normalizedTarget || !Array.isArray(ranges) || !ranges.length) return -1;
+            const match = rows.find(r => ensureRowItem(r, normalizedTarget) === normalizedTarget);
+            if (!match) return -1;
+            const beginYear = Number.isFinite(match.beginYear) ? match.beginYear : getYearUTC(match.begin);
+            let endYear = Number.isFinite(match.endYear) ? match.endYear : getYearUTC(match.end ?? match.begin);
             if (!Number.isFinite(beginYear)) return -1;
-            const year = Number.isFinite(endYear) ? representativeYear(beginYear, endYear) : beginYear;
+            if (!Number.isFinite(endYear)) endYear = beginYear;
+            const year = representativeYear(beginYear, endYear);
             if (!Number.isFinite(year)) return -1;
-            const bucketStart = floorToBinStart(year, binSize);
-            const idx = starts.indexOf(bucketStart); console.log('melody_item: highlight index', idx, 'year', year, 'bucketStart', bucketStart); return idx;
+            return ranges.findIndex(range => {
+                if (!range) return false;
+                const start = Number.isFinite(range.start) ? range.start : year;
+                const end = Number.isFinite(range.end) ? range.end : start;
+                return year >= Math.min(start, end) && year <= Math.max(start, end);
+            });
         }
 
         function renderTimelineChart(canvas, rawRows, itemUri) {
-            const deduped = dedupeTimelineRows(rawRows);
+            const normalizedTarget = itemUri ? normalizeRef(itemUri) : '';
+            const deduped = dedupeTimelineRows(rawRows, normalizedTarget);
             const normalized = normalizeTimelineRows(deduped);
             if (!normalized.length) return;
-            const bucketed = processToBins(normalized);
-            const { starts, labels, counts, maxCount, binSize } = bucketed;
+            let rowsForChart = normalized;
+            let bucketed = processToBins(rowsForChart, { logThreshold: 1000 });
+            if (!bucketed.starts.length) return;
+            let { starts, labels, counts, maxCount, ranges } = bucketed;
+            const approxDetailBins = Math.min(32, Math.max(12, (ranges?.length || 16)));
+            const initialHighlight = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
+            if (initialHighlight >= 0 && ranges && ranges[initialHighlight]) {
+                const detailRows = filterRowsByRange(normalized, ranges[initialHighlight]);
+                if (detailRows.length) {
+                    const detailBucketed = processToBins(detailRows, {
+                        logThreshold: 1000,
+                        targetBins: approxDetailBins,
+                        minBins: 8,
+                        maxBins: 48
+                    });
+                    if (detailBucketed.starts.length) {
+                        rowsForChart = detailRows;
+                        bucketed = detailBucketed;
+                        ({ starts, labels, counts, maxCount, ranges } = detailBucketed);
+                    }
+                }
+            }
             if (!starts.length) return;
-            const highlightIndex = findHighlightIndex(normalized, starts, binSize || 1, itemUri);
-            const datasets = buildEqualWidthDatasets(starts, labels, counts, maxCount || 0, highlightIndex); console.log('melody_item: chart bins', labels.length, 'rows', normalized.length, 'highlight', highlightIndex);
+            const highlightIndex = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
+            const rangeLabels = ranges && ranges.length
+                ? ranges.map(r => formatRangeLabel(r?.start, r?.end, timelineLang))
+                : labels;
+            const tickLabels = ranges && ranges.length
+                ? ranges.map(r => formatYearCompact(representativeYear(r?.start, r?.end), timelineLang))
+                : rangeLabels;
+            const datasets = buildEqualWidthDatasets(
+                starts,
+                labels,
+                counts,
+                maxCount || 0,
+                highlightIndex,
+                { displayLabels: rangeLabels }
+            );
+            console.log('melody_item: chart bins', labels.length, 'rows', rowsForChart.length, 'highlight', highlightIndex);
 
             ensureTimelinePlugins();
             if (typeof Chart === 'undefined') return;
@@ -349,7 +625,7 @@
             canvas.style.height = canvas.dataset.height || '160px';
 
             const n = labels.length;
-            const tickEvery = Math.max(1, Math.ceil(n / 20));
+            const tickEvery = Math.max(1, Math.ceil(tickLabels.length / 10));
             canvas._chart = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: [''], datasets },
@@ -371,9 +647,8 @@
                                     const idx = Math.round(val - 0.5);
                                     if (!(idx >= 0 && idx < n)) return '';
                                     if (idx % tickEvery !== 0) return '';
-                                    const lab = labels[idx] || '';
-                                    const start = String(lab).split(/[^0-9]/)[0] || lab;
-                                    return start;
+                                    const lab = tickLabels[idx];
+                                    return lab != null ? String(lab) : '';
                                 },
                                 maxRotation: 0,
                                 minRotation: 0,
@@ -415,8 +690,12 @@
         }
 
         async function renderMelodyVisualizations(rootEl, cfgObj) {
-            if (!rootEl) return; const itemUri = (cfgObj && cfgObj.ITEM_URI) || rootEl.dataset.itemUri || (window.MELODY_CONFIG && window.MELODY_CONFIG.ITEM_URI) || '';
-            const blocks = Array.from(rootEl.querySelectorAll('.melody-data-viz')); console.log('melody_item: found viz blocks', blocks.length, 'itemUri set:', !!itemUri); if (!blocks.length) return;
+            if (!rootEl) return;
+            const itemUri = (cfgObj && cfgObj.ITEM_URI) || rootEl.dataset.itemUri || (window.MELODY_CONFIG && window.MELODY_CONFIG.ITEM_URI) || '';
+            const blocks = Array.from(rootEl.querySelectorAll('.melody-data-viz'));
+            console.log('melody_item: found viz blocks', blocks.length, 'itemUri set:', !!itemUri);
+            if (!blocks.length) return;
+            const normalizedTarget = itemUri ? normalizeRef(itemUri) : '';
             const pending = [];
             for (const block of blocks) {
                 const canvas = block.querySelector('canvas');
@@ -425,9 +704,11 @@
                 const parsed = parseJsonSafe(rawCfg);
                 const rows = Array.isArray(parsed?.rows) ? parsed.rows : [];
                 if (!rows.length) continue;
-                const includesItem = itemUri ? rows.some(r => normalizeRef(r.item || r.id || r.uri) === normalizeRef(itemUri)) : true;
+                const blockItemUri = parsed?.item_uri || parsed?.itemUri || itemUri;
+                const blockNormalizedTarget = blockItemUri ? normalizeRef(blockItemUri) : normalizedTarget;
+                const includesItem = blockNormalizedTarget ? rows.some(r => ensureRowItem(r, blockNormalizedTarget) === blockNormalizedTarget) : true;
                 if (!includesItem) { console.log('melody_item: block skipped (no match for ITEM_URI)'); continue; }
-                pending.push({ canvas, rows });
+                pending.push({ canvas, rows, itemUri: blockItemUri || itemUri });
             }
             console.log('melody_item: pending charts to render', pending.length); if (!pending.length) return;
             try {
@@ -436,9 +717,9 @@
                 console.warn('Chart.js not available for melody visualization', err);
                 return;
             }
-            for (const { canvas, rows } of pending) {
+            for (const { canvas, rows, itemUri: blockTarget } of pending) {
                 try {
-                    renderTimelineChart(canvas, rows, itemUri);
+                    renderTimelineChart(canvas, rows, blockTarget || itemUri);
                 } catch (err) {
                     console.error('Failed to render melody timeline', err);
                 }
@@ -485,6 +766,3 @@
         init();
     }
 })();
-
-
-
