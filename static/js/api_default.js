@@ -56,7 +56,27 @@
             const suffix = yearSuffix(year, lang);
             return number ? `${number} ${suffix}` : suffix;
         }
-        function formatRangeLabel(startYear, endYear, lang = timelineLang) {
+        function formatYearExact(year, lang = timelineLang) {
+            if (!Number.isFinite(year)) return '';
+            const locale = lang === 'it' ? 'it-IT' : 'en-US';
+            try {
+                return new Intl.NumberFormat(locale, {
+                    notation: 'standard',
+                    maximumFractionDigits: 0
+                }).format(Math.abs(year));
+            } catch (e) {
+                return String(Math.abs(year));
+            }
+        }
+        function formatSingleYearLabel(year, lang = timelineLang, preferExact = false) {
+            if (!Number.isFinite(year)) return '';
+            if (preferExact) {
+                return `${formatYearExact(year, lang)} ${yearSuffix(year, lang)}`.trim();
+            }
+            const compact = formatYearNumber(Math.abs(year), lang);
+            return `${compact} ${yearSuffix(year, lang)}`.trim();
+        }
+        function formatRangeLabel(startYear, endYear, lang = timelineLang, preferExact = false) {
             const hasStart = Number.isFinite(startYear);
             const hasEnd = Number.isFinite(endYear);
             if (!hasStart && !hasEnd) return '';
@@ -65,11 +85,18 @@
                 const suffixEnd = yearSuffix(endYear, lang);
                 const numStart = formatYearNumber(Math.abs(startYear), lang);
                 const numEnd = formatYearNumber(Math.abs(endYear), lang);
+                const exactStart = formatYearExact(startYear, lang);
+                const exactEnd = formatYearExact(endYear, lang);
+                const sameActual = Math.abs(startYear - endYear) < 1e-9;
                 if (suffixStart === suffixEnd) {
-                    if (numStart === numEnd) return `${numStart} ${suffixStart}`.trim();
-                    return `${numStart}\u2013${numEnd} ${suffixStart}`.trim();
+                    if (sameActual) return `${exactStart} ${suffixStart}`.trim();
+                    const startVal = preferExact ? exactStart : numStart;
+                    const endVal = preferExact ? exactEnd : numEnd;
+                    return `${startVal}\u2013${endVal} ${suffixStart}`.trim();
                 }
-                return `${numStart} ${suffixStart} \u2013 ${numEnd} ${suffixEnd}`.trim();
+                const startOut = preferExact ? exactStart : numStart;
+                const endOut = preferExact ? exactEnd : numEnd;
+                return `${startOut} ${suffixStart} \u2013 ${endOut} ${suffixEnd}`.trim();
             }
             return hasStart ? formatYearCompact(startYear, lang) : formatYearCompact(endYear, lang);
         }
@@ -114,8 +141,8 @@
         function floorToBinStart(y, binSize) {
             return Math.floor(y / binSize) * binSize;
         }
-        function makeBinLabel(start, end) {
-            return formatRangeLabel(start, end, timelineLang);
+        function makeBinLabel(start, end, preferExact = false) {
+            return formatRangeLabel(start, end, timelineLang, preferExact);
         }
 
         function normalizeRef(value) { let out = String(value || "").trim(); if (out.startsWith("<") && out.endsWith(">")) out = out.slice(1, -1); out = out.toLowerCase(); out = out.replace(/[\\/#]+$/, ""); out = out.replace(/^http:\/\//, "https://"); return out; }
@@ -406,6 +433,7 @@
                     ranges: []
                 };
             }
+            const preferExactBins = Boolean(opts.preferExactBins);
             const transform = createYearTransform(years, opts);
             const transformedYears = years.map(transform.forward).filter(Number.isFinite);
             if (!transformedYears.length) {
@@ -446,7 +474,7 @@
                     endActual = tmp;
                 }
                 starts.push(startActual);
-                labels.push(makeBinLabel(startActual, endActual));
+                labels.push(makeBinLabel(startActual, endActual, preferExactBins));
                 counts.push(countsByBucket[idx] || 0);
                 ranges.push({ start: startActual, end: endActual });
             }
@@ -461,6 +489,9 @@
             const denom = maxCount > 0 ? maxCount : 1;
             const displayLabels = Array.isArray(opts.displayLabels) && opts.displayLabels.length === labels.length
                 ? opts.displayLabels
+                : labels;
+            const rangeLabels = Array.isArray(opts.rangeLabels) && opts.rangeLabels.length === labels.length
+                ? opts.rangeLabels
                 : labels;
             for (let i = 0; i < starts.length; i++) {
                 const c = counts[i];
@@ -478,7 +509,8 @@
                     stack: 'timeline',
                     clip: false,
                     _realCount: c,
-                    _isHighlight: isHighlight
+                    _isHighlight: isHighlight,
+                    _rangeLabel: rangeLabels[i] ?? label
                 });
             }
             return datasets;
@@ -582,38 +614,54 @@
             if (!bucketed.starts.length) return;
             let { starts, labels, counts, maxCount, ranges } = bucketed;
             const approxDetailBins = Math.min(32, Math.max(12, (ranges?.length || 16)));
+            let usingDetailBins = false;
             const initialHighlight = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
             if (initialHighlight >= 0 && ranges && ranges[initialHighlight]) {
+                console.log('melody_item: attempting detail bins for range', ranges[initialHighlight]);
                 const detailRows = filterRowsByRange(normalized, ranges[initialHighlight]);
+                console.log('melody_item: detail rows count', detailRows.length);
                 if (detailRows.length) {
                     const detailBucketed = processToBins(detailRows, {
-                        logThreshold: 1000,
+                        logThreshold: null,
                         targetBins: approxDetailBins,
                         minBins: 8,
-                        maxBins: 48
+                        maxBins: 48,
+                        preferExactBins: true
+                    });
+                    console.log('melody_item: detail bin results', {
+                        starts: detailBucketed.starts ? detailBucketed.starts.length : 0,
+                        binSize: detailBucketed.binSize,
+                        minYear: detailBucketed.minYear,
+                        maxYear: detailBucketed.maxYear
                     });
                     if (detailBucketed.starts.length) {
                         rowsForChart = detailRows;
                         bucketed = detailBucketed;
+                        console.log('melody_item: using detail bins for rendering');
                         ({ starts, labels, counts, maxCount, ranges } = detailBucketed);
+                        usingDetailBins = true;
                     }
                 }
             }
             if (!starts.length) return;
             const highlightIndex = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
             const rangeLabels = ranges && ranges.length
-                ? ranges.map(r => formatRangeLabel(r?.start, r?.end, timelineLang))
+                ? ranges.map(r => formatRangeLabel(r?.start, r?.end, timelineLang, usingDetailBins))
                 : labels;
-            const tickLabels = ranges && ranges.length
-                ? ranges.map(r => formatYearCompact(representativeYear(r?.start, r?.end), timelineLang))
-                : rangeLabels;
+            const globalStartLabel = ranges.length
+                ? formatSingleYearLabel(ranges[0]?.start, timelineLang, usingDetailBins)
+                : '';
+            const globalEndLabel = ranges.length
+                ? formatSingleYearLabel(ranges[ranges.length - 1]?.end, timelineLang, usingDetailBins)
+                : '';
+            console.log('melody_item: final bins', ranges);
             const datasets = buildEqualWidthDatasets(
                 starts,
                 labels,
                 counts,
                 maxCount || 0,
                 highlightIndex,
-                { displayLabels: rangeLabels }
+                { displayLabels: rangeLabels, rangeLabels }
             );
             console.log('melody_item: chart bins', labels.length, 'rows', rowsForChart.length, 'highlight', highlightIndex);
 
@@ -625,7 +673,7 @@
             canvas.style.height = canvas.dataset.height || '160px';
 
             const n = labels.length;
-            const tickEvery = Math.max(1, Math.ceil(tickLabels.length / 10));
+            const tickEvery = Math.max(1, Math.ceil(n / 10));
             canvas._chart = new Chart(ctx, {
                 type: 'bar',
                 data: { labels: [''], datasets },
@@ -646,9 +694,9 @@
                                 callback: (val) => {
                                     const idx = Math.round(val - 0.5);
                                     if (!(idx >= 0 && idx < n)) return '';
-                                    if (idx % tickEvery !== 0) return '';
-                                    const lab = tickLabels[idx];
-                                    return lab != null ? String(lab) : '';
+                                    if (idx === 0) return globalStartLabel || '';
+                                    if (idx === n - 1) return globalEndLabel || '';
+                                    return '';
                                 },
                                 maxRotation: 0,
                                 minRotation: 0,
@@ -671,7 +719,10 @@
                         tooltip: {
                             displayColors: false,
                             callbacks: {
-                                title: items => items[0]?.dataset?.label || '',
+                                title: items => {
+                                    const dataset = items[0]?.dataset || {};
+                                    return dataset._rangeLabel || dataset.label || '';
+                                },
                                 label: (item) => {
                                     const dataset = item.dataset || {};
                                     const count = dataset._realCount ?? 0;
