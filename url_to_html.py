@@ -45,6 +45,7 @@ def insert_uri_in_query(entity_ids, query):
 
 def query_data(endpoint, query):
     sparql = SPARQLWrapper(endpoint)
+    print('Querying SPARQL endpoint:', endpoint)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = {}
@@ -52,7 +53,7 @@ def query_data(endpoint, query):
         results = sparql.query().convert()
         return results
     except Exception as e:
-        print('ERROR for ', endpoint, e)
+        print('ERROR for ', endpoint, e, query)
         return results
 
 
@@ -60,7 +61,10 @@ def fill_text(results, content):
     vars = results['head']['vars']
     bindings = results['results']['bindings'][0]
     for var in vars:
-        binding = bindings[var]
+        binding = bindings.get(var)
+        if binding is None:
+            content = ''
+            break
         var_value = _normalize_temporal_value(binding, var)
         if len(var_value) > 0:
             content = content.replace('<<<' + var + '>>>', var_value)
