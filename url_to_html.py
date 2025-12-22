@@ -124,9 +124,14 @@ def _is_end_field(name: str) -> bool:
     return any(h in lowered for h in _END_FIELD_HINTS)
 
 
+_EDTF_PREFIX_RE = re.compile(r'^Y[+\-]?\d')
+
+
 def _looks_like_edtf(datatype: str, value: str) -> bool:
     dtype = (datatype or '').lower()
-    return value.startswith('Y') or any(keyword in dtype for keyword in _EDTF_KEYWORDS)
+    if any(keyword in dtype for keyword in _EDTF_KEYWORDS):
+        return True
+    return bool(_EDTF_PREFIX_RE.match(value))
 
 
 def _binding_is_temporal(binding: Dict[str, Any], value: str) -> bool:
@@ -299,6 +304,7 @@ def simple_response(request_args):
 
 
 def complex_response(request_args):
+    print('Processing complex_response with args:', request_args)
     entity_ids = collect_uris(request_args)
     primary_item_uri = entity_ids.get('uri1')
     if not primary_item_uri and entity_ids:
@@ -341,6 +347,7 @@ def complex_response(request_args):
         query = insert_uri_in_query(entity_ids, query)
         results = {}
         content = ''
+        print(query)
         if query is not False and endpoint:
             results = query_data(endpoint, query)
 
