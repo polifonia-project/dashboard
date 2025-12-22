@@ -351,6 +351,9 @@
             if (!years.length) {
                 return { forward: (value) => value, inverse: (value) => value };
             }
+            if (opts.disableLogCompression) {
+                return { forward: (value) => value, inverse: (value) => value };
+            }
             const spanRaw = Number(opts.logThreshold);
             const span = Number.isFinite(spanRaw) && spanRaw > 0 ? spanRaw : 1000;
             const compressPos = Boolean(opts.logCompressPositive);
@@ -611,13 +614,13 @@
             });
         }
 
-        function renderTimelineChart(canvas, rawRows, itemUri, lang = globalTimelineLang || DEFAULT_LANG) {
+        function renderTimelineChart(canvas, rawRows, itemUri, lang = globalTimelineLang || DEFAULT_LANG, blockTitle = '') {
             const normalizedTarget = itemUri ? normalizeRef(itemUri) : '';
             const deduped = dedupeTimelineRows(rawRows, normalizedTarget);
             const normalized = normalizeTimelineRows(deduped);
             if (!normalized.length) return;
             let rowsForChart = normalized;
-            let bucketed = processToBins(rowsForChart, { logThreshold: 1000, lang });
+            let bucketed = processToBins(rowsForChart, { lang, disableLogCompression: false });
             if (!bucketed.starts.length) return;
             let { starts, labels, counts, maxCount, ranges } = bucketed;
             const approxDetailBins = Math.min(32, Math.max(12, (ranges?.length || 16)));
@@ -627,14 +630,14 @@
                 console.log('melody_item: attempting detail bins for range', ranges[initialHighlight]);
                 const detailRows = filterRowsByRange(normalized, ranges[initialHighlight]);
                 console.log('melody_item: detail rows count', detailRows.length);
-                if (detailRows.length) {
+                if (detailRows.length > 3) {
                     const detailBucketed = processToBins(detailRows, {
-                        logThreshold: null,
                         targetBins: approxDetailBins,
                         minBins: 8,
-                        maxBins: 48,
+                        maxBins: 30,
                         preferExactBins: true,
-                        lang
+                        lang,
+                        disableLogCompression: true
                     });
                     console.log('melody_item: detail bin results', {
                         starts: detailBucketed.starts ? detailBucketed.starts.length : 0,
@@ -689,7 +692,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     indexAxis: 'y',
-                    layout: { padding: 5 },
+                    layout: { padding: 8 },
                     scales: {
                         x: {
                             type: 'linear',
@@ -699,6 +702,7 @@
                             position: 'top',
                             ticks: {
                                 stepSize: 1,
+                                autoSkip: false,
                                 callback: (val) => {
                                     const idx = Math.round(val - 0.5);
                                     if (!(idx >= 0 && idx < n)) return '';
@@ -708,9 +712,9 @@
                                 },
                                 maxRotation: 0,
                                 minRotation: 0,
-                                align: 'center',
+                                align: 'inner',
                                 crossAlign: 'center',
-                                padding: 5
+                                padding: 12
                             },
                             grid: { drawOnChartArea: false, drawTicks: false, drawBorder: false },
                             border: { display: false }
@@ -729,15 +733,26 @@
                             callbacks: {
                                 title: items => {
                                     const dataset = items[0]?.dataset || {};
-                                    return dataset._rangeLabel || dataset.label || '';
+                                    return blockTitle || dataset._rangeLabel || dataset.label || '';
                                 },
                                 label: (item) => {
                                     const dataset = item.dataset || {};
                                     const count = dataset._realCount ?? 0;
+                                    const isItalian = String(lang || '').toLowerCase().startsWith('it');
                                     if (dataset._isHighlight) {
-                                        return `Count: ${count} (current item)`;
+                                        return isItalian
+                                            ? [
+                                                'Questo oggetto appartiene a questo periodo.',
+                                                `${count} oggetti provengono da questo periodo.`
+                                            ]
+                                            : [
+                                                'This object belongs to this period.',
+                                                `${count} other objects come from this period.`
+                                            ];
                                     }
-                                    return `Count: ${count}`;
+                                    return isItalian
+                                        ? `${count} oggetti provengono da questo periodo.`
+                                        : `${count} objects come from this period.`;
                                 }
                             }
                         },
@@ -773,9 +788,18 @@
                     block.dataset?.lang,
                     globalTimelineLang
                 );
+                const blockTitle = typeof encodingCfg?.title === 'string' ? encodingCfg.title : '';
                 const includesItem = blockNormalizedTarget ? rows.some(r => ensureRowItem(r, blockNormalizedTarget) === blockNormalizedTarget) : true;
-                if (!includesItem) { console.log('melody_item: block skipped (no match for ITEM_URI)'); continue; }
-                pending.push({ canvas, rows, itemUri: blockItemUri || itemUri, lang: blockLang });
+                if (!includesItem) {
+                    console.log('melody_item: block skipped (no match for ITEM_URI)'); const canvas = block.querySelector('canvas');
+                    if (canvas) {
+                        canvas.remove();
+                    }
+                } else {
+                    const titleEl = document.querySelector('.melody-data-viz-title');
+                    if (titleEl) titleEl.style.removeProperty('display');
+                }
+                pending.push({ canvas, rows, itemUri: blockItemUri || itemUri, lang: blockLang, title: blockTitle || parsed?.title || '' });
             }
             console.log('melody_item: pending charts to render', pending.length); if (!pending.length) return;
             try {
@@ -784,9 +808,9 @@
                 console.warn('Chart.js not available for melody visualization', err);
                 return;
             }
-            for (const { canvas, rows, itemUri: blockTarget, lang } of pending) {
+            for (const { canvas, rows, itemUri: blockTarget, lang, title: blockTitle } of pending) {
                 try {
-                    renderTimelineChart(canvas, rows, blockTarget || itemUri, lang || globalTimelineLang);
+                    renderTimelineChart(canvas, rows, blockTarget || itemUri, lang || globalTimelineLang, blockTitle || '');
                 } catch (err) {
                     console.error('Failed to render melody timeline', err);
                 }

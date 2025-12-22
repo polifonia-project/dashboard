@@ -23,6 +23,9 @@
     <div id='melody_api_response'>
         {% for block_number, block_info in datastory_data.dynamic_elements.items()|sort %}
         {% if block_info.type == 'data_viz' %}
+        {% if block_info.title %}
+        <h4 class="melody-data-viz-title" style='display: none;'>{{ block_info.title }}</h4>
+        {% endif %}
         <div class="melody-data-viz" data-block="{{ block_number }}" data-config='{{ block_info|tojson }}'>
             <canvas id="{{ block_number }}"></canvas>
         </div>

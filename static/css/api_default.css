@@ -87,6 +87,22 @@
     margin-bottom: 15px;
 }
 
+/* BORDER ONLY ON THE LAST METADATA-HEADER */
+.metadata-digitisation:not(:has(+ .metadata-digitisation)) {
+    border-bottom: 1px solid var(--color-secondary);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
 .melody-data-viz {
     margin-bottom: 2rem;
+}
+
+#melody_api_response .melody-data-viz-title {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+    font-family: var(--font-base);
+    color: var(--color-secondary);
 }

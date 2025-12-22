@@ -376,6 +376,7 @@ def complex_response(request_args):
 
             if title:
                 meta['title'] = title
+                block_dict['title'] = title
             if x_label:
                 meta['xLabel'] = x_label
             if y_label:
