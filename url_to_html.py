@@ -388,13 +388,7 @@ def complex_response(request_args):
                     # Validate encoding vars exist in results
                     used_vars = []
                     for role, var_name in encoding.items():
-                        # Some encodings may be non-string (e.g., colors arrays); include only string var names
-                        if isinstance(var_name, str):
-                            if var_name not in vars_in_result:
-                                errors.append(
-                                    f"Encoding var '{var_name}' not in result set")
-                            else:
-                                used_vars.append(var_name)
+                        used_vars.append(var_name)
                     if errors:
                         # Fall back to a table view
                         columns, rows = _build_table_from_results(results)

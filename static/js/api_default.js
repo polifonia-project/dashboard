@@ -25,17 +25,24 @@
             ? window.MELODY_CONFIG
             : datasetCfg;
         console.log('Melody item sidebar config:', cfg);
-        let timelineLang = detectTimelineLang(container, cfg);
+        const DEFAULT_LANG = 'it';
+        const globalTimelineLang = resolveLang(
+            cfg.LANG,
+            container.dataset.lang,
+            typeof document !== 'undefined'
+                ? (document.documentElement && document.documentElement.lang)
+                : ''
+        );
 
         const MIN_NATIVE_ISO_YEAR = -271821;
         const MAX_NATIVE_ISO_YEAR = 275760;
 
-        function yearSuffix(year, lang = timelineLang) {
+        function yearSuffix(year, lang = DEFAULT_LANG) {
             const isBC = Number.isFinite(year) && year < 0;
-            if (lang === 'en') return isBC ? 'BC' : 'AD';
+            if (lang === 'en') return isBC ? 'BCE' : 'CE';
             return isBC ? 'a.C.' : 'd.C.';
         }
-        function formatYearNumber(absYear, lang = timelineLang) {
+        function formatYearNumber(absYear, lang = DEFAULT_LANG) {
             const locale = lang === 'it' ? 'it-IT' : 'en-US';
             const useCompact = absYear >= 1000;
             try {
@@ -49,14 +56,14 @@
                 return String(absYear);
             }
         }
-        function formatYearCompact(year, lang = timelineLang) {
+        function formatYearCompact(year, lang = DEFAULT_LANG) {
             if (!Number.isFinite(year)) return '';
             const abs = Math.abs(year);
             const number = formatYearNumber(abs, lang);
             const suffix = yearSuffix(year, lang);
             return number ? `${number} ${suffix}` : suffix;
         }
-        function formatYearExact(year, lang = timelineLang) {
+        function formatYearExact(year, lang = DEFAULT_LANG) {
             if (!Number.isFinite(year)) return '';
             const locale = lang === 'it' ? 'it-IT' : 'en-US';
             try {
@@ -68,7 +75,7 @@
                 return String(Math.abs(year));
             }
         }
-        function formatSingleYearLabel(year, lang = timelineLang, preferExact = false) {
+        function formatSingleYearLabel(year, lang = DEFAULT_LANG, preferExact = false) {
             if (!Number.isFinite(year)) return '';
             if (preferExact) {
                 return `${formatYearExact(year, lang)} ${yearSuffix(year, lang)}`.trim();
@@ -76,7 +83,7 @@
             const compact = formatYearNumber(Math.abs(year), lang);
             return `${compact} ${yearSuffix(year, lang)}`.trim();
         }
-        function formatRangeLabel(startYear, endYear, lang = timelineLang, preferExact = false) {
+        function formatRangeLabel(startYear, endYear, lang = DEFAULT_LANG, preferExact = false) {
             const hasStart = Number.isFinite(startYear);
             const hasEnd = Number.isFinite(endYear);
             if (!hasStart && !hasEnd) return '';
@@ -141,8 +148,8 @@
         function floorToBinStart(y, binSize) {
             return Math.floor(y / binSize) * binSize;
         }
-        function makeBinLabel(start, end, preferExact = false) {
-            return formatRangeLabel(start, end, timelineLang, preferExact);
+        function makeBinLabel(start, end, preferExact = false, lang = DEFAULT_LANG) {
+            return formatRangeLabel(start, end, lang, preferExact);
         }
 
         function normalizeRef(value) { let out = String(value || "").trim(); if (out.startsWith("<") && out.endsWith(">")) out = out.slice(1, -1); out = out.toLowerCase(); out = out.replace(/[\\/#]+$/, ""); out = out.replace(/^http:\/\//, "https://"); return out; }
@@ -191,17 +198,16 @@
         let chartLoaderPromise = null;
         let timelinePluginRegistered = false;
 
-        function detectTimelineLang(rootEl, config = {}) {
-            const explicit =
-                config.LANG ||
-                (rootEl && rootEl.dataset ? rootEl.dataset.lang : '') ||
-                (typeof document !== 'undefined' ? (document.documentElement && document.documentElement.lang) : '') ||
-                '';
-            const normalized = String(explicit).trim().toLowerCase();
-            if (!normalized) return 'it';
-            if (normalized.startsWith('en')) return 'en';
-            if (normalized.startsWith('it')) return 'it';
-            return normalized.slice(0, 2) || 'it';
+        function resolveLang(...candidates) {
+            for (const candidate of candidates) {
+                if (candidate == null) continue;
+                const normalized = String(candidate).trim().toLowerCase();
+                if (!normalized) continue;
+                if (normalized.startsWith('en')) return 'en';
+                if (normalized.startsWith('it')) return 'it';
+                if (normalized.length >= 2) return normalized.slice(0, 2);
+            }
+            return DEFAULT_LANG;
         }
 
         // Timeline plugins (must be initialized regardless of active/passive mode)
@@ -409,6 +415,7 @@
         }
 
         function processToBins(data, opts = {}) {
+            const langPref = resolveLang(opts.lang);
             const years = [];
             let actualMin = Infinity;
             let actualMax = -Infinity;
@@ -474,7 +481,7 @@
                     endActual = tmp;
                 }
                 starts.push(startActual);
-                labels.push(makeBinLabel(startActual, endActual, preferExactBins));
+                labels.push(makeBinLabel(startActual, endActual, preferExactBins, langPref));
                 counts.push(countsByBucket[idx] || 0);
                 ranges.push({ start: startActual, end: endActual });
             }
@@ -604,13 +611,13 @@
             });
         }
 
-        function renderTimelineChart(canvas, rawRows, itemUri) {
+        function renderTimelineChart(canvas, rawRows, itemUri, lang = globalTimelineLang || DEFAULT_LANG) {
             const normalizedTarget = itemUri ? normalizeRef(itemUri) : '';
             const deduped = dedupeTimelineRows(rawRows, normalizedTarget);
             const normalized = normalizeTimelineRows(deduped);
             if (!normalized.length) return;
             let rowsForChart = normalized;
-            let bucketed = processToBins(rowsForChart, { logThreshold: 1000 });
+            let bucketed = processToBins(rowsForChart, { logThreshold: 1000, lang });
             if (!bucketed.starts.length) return;
             let { starts, labels, counts, maxCount, ranges } = bucketed;
             const approxDetailBins = Math.min(32, Math.max(12, (ranges?.length || 16)));
@@ -626,7 +633,8 @@
                         targetBins: approxDetailBins,
                         minBins: 8,
                         maxBins: 48,
-                        preferExactBins: true
+                        preferExactBins: true,
+                        lang
                     });
                     console.log('melody_item: detail bin results', {
                         starts: detailBucketed.starts ? detailBucketed.starts.length : 0,
@@ -646,13 +654,13 @@
             if (!starts.length) return;
             const highlightIndex = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
             const rangeLabels = ranges && ranges.length
-                ? ranges.map(r => formatRangeLabel(r?.start, r?.end, timelineLang, usingDetailBins))
+                ? ranges.map(r => formatRangeLabel(r?.start, r?.end, lang, usingDetailBins))
                 : labels;
             const globalStartLabel = ranges.length
-                ? formatSingleYearLabel(ranges[0]?.start, timelineLang, usingDetailBins)
+                ? formatSingleYearLabel(ranges[0]?.start, lang, usingDetailBins)
                 : '';
             const globalEndLabel = ranges.length
-                ? formatSingleYearLabel(ranges[ranges.length - 1]?.end, timelineLang, usingDetailBins)
+                ? formatSingleYearLabel(ranges[ranges.length - 1]?.end, lang, usingDetailBins)
                 : '';
             console.log('melody_item: final bins', ranges);
             const datasets = buildEqualWidthDatasets(
@@ -753,13 +761,21 @@
                 const rawCfg = block.dataset.config;
                 if (!canvas || !rawCfg) continue;
                 const parsed = parseJsonSafe(rawCfg);
+                console.log('melody_item: block config parsed', parsed);
                 const rows = Array.isArray(parsed?.rows) ? parsed.rows : [];
                 if (!rows.length) continue;
                 const blockItemUri = parsed?.item_uri || parsed?.itemUri || itemUri;
                 const blockNormalizedTarget = blockItemUri ? normalizeRef(blockItemUri) : normalizedTarget;
+                const encodingCfg = parsed?.encoding || parsed?.encodings || {};
+                const blockLang = resolveLang(
+                    encodingCfg?.language,
+                    parsed?.language,
+                    block.dataset?.lang,
+                    globalTimelineLang
+                );
                 const includesItem = blockNormalizedTarget ? rows.some(r => ensureRowItem(r, blockNormalizedTarget) === blockNormalizedTarget) : true;
                 if (!includesItem) { console.log('melody_item: block skipped (no match for ITEM_URI)'); continue; }
-                pending.push({ canvas, rows, itemUri: blockItemUri || itemUri });
+                pending.push({ canvas, rows, itemUri: blockItemUri || itemUri, lang: blockLang });
             }
             console.log('melody_item: pending charts to render', pending.length); if (!pending.length) return;
             try {
@@ -768,9 +784,9 @@
                 console.warn('Chart.js not available for melody visualization', err);
                 return;
             }
-            for (const { canvas, rows, itemUri: blockTarget } of pending) {
+            for (const { canvas, rows, itemUri: blockTarget, lang } of pending) {
                 try {
-                    renderTimelineChart(canvas, rows, blockTarget || itemUri);
+                    renderTimelineChart(canvas, rows, blockTarget || itemUri, lang || globalTimelineLang);
                 } catch (err) {
                     console.error('Failed to render melody timeline', err);
                 }
