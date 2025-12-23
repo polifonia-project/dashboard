@@ -599,18 +599,19 @@
         function findHighlightIndex(rows, ranges, normalizedTarget) {
             if (!normalizedTarget || !Array.isArray(ranges) || !ranges.length) return -1;
             const match = rows.find(r => ensureRowItem(r, normalizedTarget) === normalizedTarget);
-            if (!match) return -1;
             const beginYear = Number.isFinite(match.beginYear) ? match.beginYear : getYearUTC(match.begin);
             let endYear = Number.isFinite(match.endYear) ? match.endYear : getYearUTC(match.end ?? match.begin);
-            if (!Number.isFinite(beginYear)) return -1;
             if (!Number.isFinite(endYear)) endYear = beginYear;
             const year = representativeYear(beginYear, endYear);
-            if (!Number.isFinite(year)) return -1;
             return ranges.findIndex(range => {
                 if (!range) return false;
                 const start = Number.isFinite(range.start) ? range.start : year;
                 const end = Number.isFinite(range.end) ? range.end : start;
-                return year >= Math.min(start, end) && year <= Math.max(start, end);
+                const min = Math.min(start, end);
+                const max = Math.max(start, end);
+                const scale = Math.max(1, Math.abs(year), Math.abs(start), Math.abs(end));
+                const eps = Math.max(1e-6, Number.EPSILON * 10 * scale);
+                return year >= (min - eps) && year <= (max + eps);
             });
         }
 
