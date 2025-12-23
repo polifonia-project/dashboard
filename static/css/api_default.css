@@ -24,20 +24,19 @@
 }
 
 /* Sidebar styles for API-rendered content */
-.sidebar-title {
-    font-family: 'PT Serif', serif;
-    color: var(--color-secondary);
-}
 
 #melody_api_response {
     color: var(--color-secondary);
 }
 
 #melody_api_response .sidebar-title {
+    color: var(--color-secondary);
     font-family: 'PT Serif', serif;
-    font-size: 2rem;
+    font-size: 1.6rem;
     padding-bottom: 15px;
     margin-bottom: 15px;
+    font-weight: 400;
+    margin-top: 0;
 }
 
 #melody_api_response .metadata-caption {
@@ -87,23 +86,18 @@
     margin-bottom: 15px;
 }
 
-/* BORDER ONLY ON THE LAST METADATA-HEADER */
-.metadata-digitisation:not(:has(+ .metadata-digitisation)) {
-    border-bottom: 1px solid var(--color-secondary);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
-
 .melody-data-viz {
     margin-bottom: 2rem;
 }
 
 #melody_api_response .melody-data-viz-title {
+    border-top: 1px solid var(--color-secondary);
+    padding-top: 15px;
     margin-top: 1.5rem;
     margin-bottom: 0;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 400;
     font-family: var(--font-base);
     color: var(--color-secondary);
-    width: 90%;
+    white-space: pre-line;
 }

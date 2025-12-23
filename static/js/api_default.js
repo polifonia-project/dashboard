@@ -494,7 +494,7 @@
 
         function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex, opts = {}) {
             const datasets = [];
-            const rgbWhite = hexToRgb('#fdf9fb');
+            const rgbWhite = hexToRgb('#f2deea');
             const rgbAccent = hexToRgb('#A62176');
             const denom = maxCount > 0 ? maxCount : 1;
             const displayLabels = Array.isArray(opts.displayLabels) && opts.displayLabels.length === labels.length
