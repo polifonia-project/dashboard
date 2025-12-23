@@ -101,8 +101,9 @@
 #melody_api_response .melody-data-viz-title {
     margin-top: 1.5rem;
     margin-bottom: 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 400;
     font-family: var(--font-base);
     color: var(--color-secondary);
+    width: 90%;
 }

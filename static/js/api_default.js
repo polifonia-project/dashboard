@@ -733,7 +733,7 @@
                             callbacks: {
                                 title: items => {
                                     const dataset = items[0]?.dataset || {};
-                                    return blockTitle || dataset._rangeLabel || dataset.label || '';
+                                    return dataset._rangeLabel || dataset.label || '';
                                 },
                                 label: (item) => {
                                     const dataset = item.dataset || {};
