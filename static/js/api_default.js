@@ -702,6 +702,7 @@
                             stacked: true,
                             position: 'top',
                             ticks: {
+                                color: '#FFF8F0',
                                 stepSize: 1,
                                 autoSkip: false,
                                 callback: (val) => {
