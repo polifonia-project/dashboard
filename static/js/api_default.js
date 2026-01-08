@@ -749,7 +749,7 @@
                                             ]
                                             : [
                                                 'This object belongs to this period.',
-                                                `${count} other objects come from this period.`
+                                                `${count} objects come from this period.`
                                             ];
                                     }
                                     return isItalian
