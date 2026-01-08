@@ -440,7 +440,8 @@
                     minYear: null,
                     maxYear: null,
                     binSize: 0,
-                    ranges: []
+                    ranges: [],
+                    bucketMeta: null
                 };
             }
             const preferExactBins = Boolean(opts.preferExactBins);
@@ -455,7 +456,8 @@
                     minYear: null,
                     maxYear: null,
                     binSize: 0,
-                    ranges: []
+                    ranges: [],
+                    bucketMeta: null
                 };
             }
             const minTrans = Math.min(...transformedYears);
@@ -489,7 +491,23 @@
                 ranges.push({ start: startActual, end: endActual });
             }
             const maxCount = counts.length ? Math.max(...counts) : 0;
-            return { starts, labels, counts, maxCount, minYear: actualMin, maxYear: actualMax, binSize, ranges };
+            return {
+                starts,
+                labels,
+                counts,
+                maxCount,
+                minYear: actualMin,
+                maxYear: actualMax,
+                binSize,
+                ranges,
+                bucketMeta: {
+                    minTrans,
+                    maxTrans,
+                    binSize,
+                    bucketCount,
+                    transform
+                }
+            };
         }
 
         function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex, opts = {}) {
@@ -596,13 +614,21 @@
             });
         }
 
-        function findHighlightIndex(rows, ranges, normalizedTarget) {
+        function findHighlightIndex(rows, ranges, normalizedTarget, bucketMeta) {
             if (!normalizedTarget || !Array.isArray(ranges) || !ranges.length) return -1;
             const match = rows.find(r => ensureRowItem(r, normalizedTarget) === normalizedTarget);
             const beginYear = Number.isFinite(match.beginYear) ? match.beginYear : getYearUTC(match.begin);
             let endYear = Number.isFinite(match.endYear) ? match.endYear : getYearUTC(match.end ?? match.begin);
             if (!Number.isFinite(endYear)) endYear = beginYear;
             const year = representativeYear(beginYear, endYear);
+            if (bucketMeta && bucketMeta.transform && Number.isFinite(bucketMeta.minTrans) && Number.isFinite(bucketMeta.binSize)) {
+                const yearTrans = bucketMeta.transform.forward(year);
+                if (Number.isFinite(yearTrans)) {
+                    const rawIdx = Math.floor((yearTrans - bucketMeta.minTrans) / bucketMeta.binSize);
+                    const maxIdx = Number.isFinite(bucketMeta.bucketCount) ? bucketMeta.bucketCount : (ranges.length - 1);
+                    return Math.max(0, Math.min(maxIdx, rawIdx));
+                }
+            }
             return ranges.findIndex(range => {
                 if (!range) return false;
                 const start = Number.isFinite(range.start) ? range.start : year;
@@ -626,7 +652,7 @@
             let { starts, labels, counts, maxCount, ranges } = bucketed;
             const approxDetailBins = Math.min(32, Math.max(12, (ranges?.length || 16)));
             let usingDetailBins = false;
-            const initialHighlight = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
+            const initialHighlight = findHighlightIndex(rowsForChart, ranges, normalizedTarget, bucketed.bucketMeta);
             if (initialHighlight >= 0 && ranges && ranges[initialHighlight]) {
                 console.log('melody_item: attempting detail bins for range', ranges[initialHighlight]);
                 const detailRows = filterRowsByRange(normalized, ranges[initialHighlight]);
@@ -656,7 +682,7 @@
                 }
             }
             if (!starts.length) return;
-            const highlightIndex = findHighlightIndex(rowsForChart, ranges, normalizedTarget);
+            const highlightIndex = findHighlightIndex(rowsForChart, ranges, normalizedTarget, bucketed.bucketMeta);
             const rangeLabels = ranges && ranges.length
                 ? ranges.map(r => formatRangeLabel(r?.start, r?.end, lang, usingDetailBins))
                 : labels;
