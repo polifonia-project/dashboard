@@ -434,3 +434,19 @@ def complex_response(request_args):
         blocks[block] = block_dict
     content_dict['dynamic_elements'] = blocks
     return content_dict
+
+
+def join_text_blocks(content_dict):
+    """Join text block contents into a single plain-text response."""
+    if not isinstance(content_dict, dict):
+        return ''
+    dynamic_elements = content_dict.get('dynamic_elements')
+    if not isinstance(dynamic_elements, dict):
+        return ''
+    parts = []
+    for _, block in dynamic_elements.items():
+        if isinstance(block, dict) and block.get('type') == 'text':
+            content = block.get('content', '')
+            if isinstance(content, str) and content.strip():
+                parts.append(content.strip())
+    return '\n\n'.join(parts)

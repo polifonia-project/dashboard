@@ -249,15 +249,25 @@ def api_url_to_html():
         parameters = request.values
 
     response_format = parameters.get('format', 'html').lower()
-    if 'config_file' in parameters:
+    is_complex = 'config_file' in parameters
+    if is_complex:
         api_response = url_to_html.complex_response(parameters)
     else:
         api_response = url_to_html.simple_response(parameters)
-    if response_format == "json":
-        print(api_response)
-        return jsonify(api_response)
+
+    if is_complex:
+        if response_format == "json":
+            print(api_response)
+            return jsonify(api_response)
+        elif response_format == "text":
+            text_response = url_to_html.join_text_blocks(api_response)
+            return app.response_class(text_response, mimetype='text/plain')
+        else:
+            return render_template('api_template.html', datastory_data=api_response)
     else:
-        return render_template('api_template.html', datastory_data=api_response)
+        if response_format == "html":
+            return app.response_class(str(api_response), mimetype='text/html')
+        return app.response_class(str(api_response), mimetype='text/plain')
 
 
 utils.static_modifications(False)
