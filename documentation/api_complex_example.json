@@ -1,0 +1,108 @@
+{
+  "content": {
+    "01": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?title WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression ; crm:P102_has_title ?title_uri . ?title_uri crm:P2_has_type aat:300417207; crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"it\")}",
+      "content": "<h1 class='sidebar-title'><<<title>>></h1>"
+    },
+    "02": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?label WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type . ?type rdfs:label ?label . FILTER( lang(?label) = \"it\")}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>OGGETTO</span> - <span class='metadata-content badge'><<<label>>></span></p>"
+    },
+    "03": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?label WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P32_used_general_technique ?technique . ?technique rdfs:label ?label . FILTER( lang(?label) = \"it\")}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>TECNICA</span> - <span class='metadata-content badge'><<<label>>></span></p>"
+    },
+    "04": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item (GROUP_CONCAT(DISTINCT REPLACE(STR(?label), \"_\", \" \"); SEPARATOR=\"; \" ) AS ?subjects) WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation ; crm:P129_is_about ?subject . ?subject crm:P1_is_identified_by ?sub_app . ?sub_app crm:P190_has_symbolic_content ?label . FILTER(LANG(?label) = \"it\")} GROUP BY ?item",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>TEMI</span> - <span class='metadata-content'><<<subjects>>></span></p>"
+    },
+    "05": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> PREFIX edtf: <http://id.loc.gov/datatypes/edtf/> SELECT ?item ?date WHERE { VALUES ?item { <<<uri1>>> } ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end . BIND(DATATYPE(?begin) AS ?beginDT) BIND(DATATYPE(?end) AS ?endDT) BIND(IF(?beginDT IN (xsd:dateTime, xsd:date), YEAR(?begin), xsd:integer(REPLACE(STR(?begin), \"^Y?(-?\\\\d+).*$\", \"$1\"))) AS ?beginYear) BIND(IF(?endDT IN (xsd:dateTime, xsd:date), YEAR(?end), xsd:integer(REPLACE(STR(?end), \"^Y?(-?\\\\d+).*$\", \"$1\"))) AS ?endYear) BIND(IF(?beginYear < 0, CONCAT(STR(ABS(?beginYear)), \" a.C.\"), CONCAT(STR(?beginYear), \" d.C.\")) AS ?beginLabel) BIND(IF(?endYear < 0, CONCAT(STR(ABS(?endYear)), \" a.C.\"), CONCAT(STR(?endYear), \" d.C.\")) AS ?endLabel) BIND(IF(?beginYear = ?endYear, ?beginLabel, CONCAT(?beginLabel, \" - \", ?endLabel)) AS ?date) }",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>CREAZIONE</span> - <span class='metadata-content'><<<date>>></span></p>"
+    },
+    "06": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT distinct ?item ?actor_name WHERE {VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P9_consists_of ?activities . ?activities crm:P2_has_type aat:300404387 ; crm:P14_carried_out_by ?actor . ?actor crm:P1_is_identified_by ?actor_app . ?actor_app crm:P190_has_symbolic_content ?actor_label . BIND(IF(LANG(?actor_label) != \"\", STRLANG(REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\"), LANG(?actor_label)), REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\")) AS ?actor_name) FILTER( LANG(?actor_name) = \"it\" || LANG(?actor_name) = \"\" )}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>CREATORE</span> - <span class='metadata-content'><<<actor_name>>></span></p>"
+    },
+    "07": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?actor_name WHERE {VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P9_consists_of ?activities . ?activities crm:P2_has_type aat:300404386 ; crm:P14_carried_out_by ?actor . ?actor crm:P1_is_identified_by ?actor_app . ?actor_app crm:P190_has_symbolic_content ?actor_label . BIND(IF(LANG(?actor_label) != \"\", STRLANG(REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\"), LANG(?actor_label)), REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\")) AS ?actor_name) FILTER( LANG(?actor_name) = \"it\" || LANG(?actor_name) = \"\" )}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>SCOPRITORE</span> - <span class='metadata-content'><<<actor_name>>></span></p>"
+    },
+    "08": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?actor_name WHERE {VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P9_consists_of ?activities . ?activities crm:P2_has_type aat:300053225 ; crm:P14_carried_out_by ?actor . ?actor crm:P1_is_identified_by ?actor_app . ?actor_app crm:P190_has_symbolic_content ?actor_label . BIND(IF(LANG(?actor_label) != \"\", STRLANG(REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\"), LANG(?actor_label)), REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\")) AS ?actor_name) FILTER( LANG(?actor_name) = \"it\" || LANG(?actor_name) = \"\" )}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>INCISORE</span> - <span class='metadata-content'><<<actor_name>>></span></p>"
+    },
+    "09": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?actor_name WHERE {VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P9_consists_of ?activities . ?activities crm:P2_has_type aat:300054686 ; crm:P14_carried_out_by ?actor . ?actor crm:P1_is_identified_by ?actor_app . ?actor_app crm:P190_has_symbolic_content ?actor_label . BIND(IF(LANG(?actor_label) != \"\", STRLANG(REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\"), LANG(?actor_label)), REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\")) AS ?actor_name) FILTER( LANG(?actor_name) = \"it\" || LANG(?actor_name) = \"\" )}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>EDITORE</span> - <span class='metadata-content'><<<actor_name>>></span></p>"
+    },
+    "10": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?actor_name WHERE {VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P9_consists_of ?activities . ?activities crm:P2_has_type aat:300417639 ; crm:P14_carried_out_by ?actor . ?actor crm:P1_is_identified_by ?actor_app . ?actor_app crm:P190_has_symbolic_content ?actor_label . BIND(IF(LANG(?actor_label) != \"\", STRLANG(REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\"), LANG(?actor_label)), REPLACE(STR(?actor_label), \"\\\\s*\\\\([^)]*\\\\)\", \"\")) AS ?actor_name) FILTER( LANG(?actor_name) = \"it\" || LANG(?actor_name) = \"\" )}",
+      "content": "<p class='metadata-header'><span class='metadata-caption'>COMMITTENTE</span> - <span class='metadata-content'><<<actor_name>>></span></p>"
+    },
+    "11": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?label WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?uri . ?uri crm:P1_is_identified_by ?appellation . ?appellation crm:P190_has_symbolic_content ?label. FILTER( LANG(?actor_nlabelame) = \"it\" || LANG(?label) = \"\" )}",
+      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>ISTITUZIONE DI PROVENIENZA</span> - <span class='metadata-content'><<<label>>></span></p>"
+    },
+    "12": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item (REPLACE(REPLACE(STR(?conservation_place), \".*/([^/]+)/[^/]+$\", \"$1\"), \"_\", \" \" ) AS ?conservation_place_label) WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?conservation_org . ?conservation_org crm:P74_has_current_or_former_residence ?conservation_place . }",
+      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>LUOGO DI CONSERVAZIONE</span> - <span class='metadata-content'><<<conservation_place_label>>></span></p>"
+    },
+    "13": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?digital_repr WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P130i_features_are_also_found_on ?digital_repr . }",
+      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>DIGITALIZZAZIONE</span> - <a href='<<<digital_repr>>>' target='_blank'>Versione digitale alternativa</a></p>"
+    },
+    "14": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?existing_model WHERE {VALUES ?item {<<<uri1>>>}   ?item a lrmoo:F5_Item ; crm:P130i_features_are_also_found_on ?3d_model . ?3d_model crm:P130_shows_features_of ?existing_model .}",
+      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>DIGITALIZZAZIONE</span> - <a href='<<<existing_model>>>' target='_blank'>Modello 3D preesistente</a></p>"
+    },
+    "15": {
+      "type": "text",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX crmdig: <http://www.cidoc-crm.org/extensions/crmdig/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?item ?license_label WHERE {VALUES ?item {<<<uri1>>>}   ?item a lrmoo:F5_Item ;  crm:P138i_has_representation ?model .   OPTIONAL {{   ?acquisition crmdig:L1_digitized ?item ; crmdig:L11_had_output ?raw .} UNION { ?item crm:P130i_features_are_also_found_on ?raw .}   ?processing crmdig:L10_had_input ?raw ;crmdig:L11_had_output ?rawp .  ?modelling crmdig:L10_had_input ?rawp ;crmdig:L11_had_output ?dcho .  ?optimisation crmdig:L10_had_input ?dcho ; crmdig:L11_had_output ?dchoo . ?license crm:P2_has_type aat:300435434 ; crm:P67_refers_to ?dchoo ;crm:P1_is_identified_by ?license_apl ; crm:P70i_is_documented_in ?license_link .  ?license_apl crm:P190_has_symbolic_content ?license_label .  }}",
+      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>LICENZA OGGETTO 3D </span> - <span class='metadata-content badge'><<<license_label>>></span></p>"
+    },
+    "16": {
+      "type": "data_viz",
+      "viz_type": "timeline",
+      "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+      "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?begin ?end WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end . }",
+      "encodings": {
+        "item": "item",
+        "begin": "begin",
+        "end": "end",
+        "colors": [
+          "#A62176"
+        ]
+      }
+    }
+  }
+}
